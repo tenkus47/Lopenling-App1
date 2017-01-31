@@ -54,11 +54,6 @@ class Witness(models.Model):
     """The text content of the witness"""
     content = models.TextField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        if self.pk is not None:
-            self.revision += 1
-        super(Witness, self).save(*args, **kwargs)
-
 
 class Annotation(models.Model):
     witness = models.ForeignKey(Witness)
