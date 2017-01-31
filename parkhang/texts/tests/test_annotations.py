@@ -22,22 +22,24 @@ class AnnotationTests(TestCase):
     witness_annotation = None
     user_annotation = None
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         user, created = User.objects.get_or_create(
-            username=self.username,
-            password=self.password
+            username=cls.username,
+            password=cls.password
         )
 
-        text, created = Text.objects.get_or_create(name=self.text_name)
+        text, created = Text.objects.get_or_create(name=cls.text_name)
 
-        base_source, created = Source.objects.get_or_create(name=self.base_source_name)
+        base_source, created = Source.objects.get_or_create(name=cls.base_source_name)
         base_witness, created = Witness.objects.get_or_create(
             text=text,
             source=base_source,
-            content=self.witness_content
+            content=cls.witness_content
         )
 
-        creator_source, created = Source.objects.get_or_create(name=self.creator_source_name)
+        creator_source, created = Source.objects.get_or_create(
+            name=cls.creator_source_name)
         creator_source_witness, created = Witness.objects.get_or_create(
             text=text,
             source=creator_source,
@@ -46,18 +48,19 @@ class AnnotationTests(TestCase):
 
         witness_annotation, created = Annotation.objects.get_or_create(
             witness=base_witness,
-            start=self.annotation_start,
-            length=self.annotation_length,
-            content=self.annotation_content,
+            start=cls.annotation_start,
+            length=cls.annotation_length,
+            content=cls.annotation_content,
             creator_witness=creator_source_witness
         )
 
+        cls.user = user
+        cls.base_source = base_source
+        cls.creator_source = creator_source
+        cls.witness_annotation = witness_annotation
 
-
-        self.user = user
-        self.base_source = base_source
-        self.creator_source = creator_source
-        self.witness_annotation = witness_annotation
+    def setUp(self):
+        pass
 
     def test_annotation(self):
         self.assertEqual(self.creator_source_name, self.witness_annotation.creator_name())
