@@ -30,7 +30,11 @@ class Source(models.Model):
     such as Derge.
     """
 
+    """The name of the source.
+    e.g. སྡེ་དགེ. This should be localised"""
     name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    """True if this source will be the default base text."""
+    is_default_base_text = models.BooleanField(default=False)
 
 
 class Witness(models.Model):
