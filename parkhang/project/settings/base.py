@@ -43,7 +43,7 @@ PREREQ_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.weixin',
-
+    'rest_framework',
 ]
 
 PROJECT_APPS = [
@@ -141,3 +141,8 @@ STATIC_URL = '/static/'
 
 # For Sites, used by allauth
 SITE_ID = 1
+
+# django-rest-framework
+REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
