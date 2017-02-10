@@ -61,16 +61,16 @@ class AnnotationList(APIView):
         user's annotations for the text.
         """
 
-        annotation_list = Annotation.objects.filter(pk=text_id)
         if request.user.is_authenticated:
-            # Also et any annotations added by the current user
-            # if logged in.
-            annotation_list = annotation_list.filter(
-                Q(user=request.user) |
-                Q(witness__isnull=False)
+            annotation_list = Annotation.objects.filter(
+                Q(witness__text__pk=text_id),
+                Q(creator_user=request.user) | Q(creator_witness__isnull=False)
             )
         else:
-            annotation_list = annotation_list.filter(user=None)
+            annotation_list = Annotation.objects.filter(
+                witness__text__pk=text_id,
+                creator_user=None
+            )
 
         serializer = AnnotationSerializer(annotation_list, many=True)
         return Response(serializer.data)
