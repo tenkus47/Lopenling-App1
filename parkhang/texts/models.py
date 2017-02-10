@@ -74,6 +74,7 @@ class Annotation(models.Model):
             return self.creator_witness
         if self.creator_user:
             return self.creator_user
+        
         return None
 
     def creator_name(self):
@@ -82,7 +83,7 @@ class Annotation(models.Model):
             if isinstance(creator, Witness):
                 return creator.source.name
             if isinstance(creator, User):
-                return creator.get_full_name()
+                return creator.username
 
     def clean(self):
         if self.creator_witness and self.creator_user:
@@ -90,7 +91,8 @@ class Annotation(models.Model):
                                     'a witness, not both.'))
 
     def __str__(self):
-        return f'{self.witness.text.name} ({self.witness.source.name}): {self.start}-{self.start+self.length}'
+        name = self.creator_name()
+        return f'{self.witness.text.name} ({self.witness.source.name}): {self.start}-{self.start+self.length} - {name}'
 
 class AppliedUserAnnotations(models.Model):
     """
