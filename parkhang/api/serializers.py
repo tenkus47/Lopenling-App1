@@ -18,10 +18,15 @@ class SourceSerializer(serializers.ModelSerializer):
 class WitnessSerializer(serializers.ModelSerializer):
     text = serializers.PrimaryKeyRelatedField(read_only=True)
     source = serializers.PrimaryKeyRelatedField(read_only=True)
+    is_base = serializers.SlugRelatedField(
+        source='source',
+        slug_field='is_default_base_text',
+        read_only=True
+    )
 
     class Meta:
         model = Witness
-        fields = ('id', 'text', 'source', 'revision', 'content')
+        fields = ('id', 'text', 'source', 'is_base', 'revision', 'content')
 
 
 class AnnotationSerializer(serializers.ModelSerializer):
