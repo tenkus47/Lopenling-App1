@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer
-from texts.models import Text, Annotation
+from texts.models import Text, Source, Witness, Annotation
 
 
 class TextList(APIView):
@@ -73,4 +73,16 @@ class AnnotationList(APIView):
             )
 
         serializer = AnnotationSerializer(annotation_list, many=True)
+        return Response(serializer.data)
+
+
+class SourceList(APIView):
+
+    def get(self, request):
+        """
+        Get list of witness sources.
+        """
+
+        source_list = Source.objects.all()
+        serializer = SourceSerializer(source_list, many=True)
         return Response(serializer.data)
