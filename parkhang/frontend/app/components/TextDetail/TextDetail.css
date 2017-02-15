@@ -1,0 +1,5 @@
+.textDetail {
+    flex-grow: 1;
+    background-color: white;
+    border-left: 1px solid #ccc;
+}

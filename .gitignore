@@ -2,3 +2,8 @@
 .env
 db.sqlite3
 .coverage
+parkhang/frontend/node_modules
+parkhang-dev.js
+styles-dev.css
+webpack-stats-dev.json
+parkhang/frontend/static/bundles
