@@ -53,7 +53,7 @@ class WitnessList(APIView):
 
 class AnnotationList(APIView):
 
-    def get(self, request, text_id):
+    def get(self, request, text_id, witness_id):
         """
         Get list of annotations for the given text.
 
@@ -63,12 +63,12 @@ class AnnotationList(APIView):
 
         if request.user.is_authenticated:
             annotation_list = Annotation.objects.filter(
-                Q(witness__text__pk=text_id),
+                Q(witness=witness_id),
                 Q(creator_user=request.user) | Q(creator_witness__isnull=False)
             )
         else:
             annotation_list = Annotation.objects.filter(
-                witness__text__pk=text_id,
+                witness=witness_id,
                 creator_user=None
             )
 

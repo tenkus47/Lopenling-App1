@@ -114,12 +114,11 @@ class TextsTestCase(APITestCase):
         self.assertEqual(response.data[0]['name'], self.source_name)
 
     def test_get_annotations(self):
-        url = f'/api/texts/{self.text.pk}/annotations/'
+        url = f'/api/texts/{self.text.pk}/{self.witness.pk}/annotations/'
         factory = APIRequestFactory()
         request = factory.get(url)
 
-        response = AnnotationList.as_view()(request, self.text.pk)
-        print(response.data)
+        response = AnnotationList.as_view()(request, self.text.pk, self.witness.pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['witness'], self.witness.pk)
@@ -131,6 +130,6 @@ class TextsTestCase(APITestCase):
 
         request = factory.get(url)
         force_authenticate(request, user=self.user)
-        response = AnnotationList.as_view()(request, self.text.pk)
+        response = AnnotationList.as_view()(request, self.text.pk,  self.witness.pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
