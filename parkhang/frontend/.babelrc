@@ -1,0 +1,31 @@
+{
+  "presets": [
+    [
+      "latest",
+      {
+        "modules": false
+      }
+    ],
+    "react"
+  ],
+  "plugins": [
+    "transform-object-rest-spread"
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "transform-es2015-modules-commonjs",
+        "transform-object-rest-spread"
+      ],
+      "presets": [
+        [
+          "latest",
+          {
+            "modules": false
+          }
+        ],
+        "react"
+      ]
+    }
+  }
+}

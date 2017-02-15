@@ -1,0 +1,26 @@
+@import 'css/type.css';
+
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: var(--fonts);
+}
+
+.container {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.interface {
+    flex: 1;
+}

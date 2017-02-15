@@ -1,0 +1,11 @@
+@import "css/type.css";
+@import "css/colour.css";
+
+
+.header {
+    background-color: var(--main-tint);
+    font-family: var(--fonts);
+    font-size: 42px;
+    color: white;
+    padding: 20px;
+}
