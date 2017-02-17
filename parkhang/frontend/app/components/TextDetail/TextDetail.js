@@ -24,7 +24,7 @@ const TextDetail = props => {
     return (
         <div className={classnames(styles.textDetail, utilStyles.flex, utilStyles.flexColumn)}>
             <TextHeading text={text} />
-            <Text witness={witness} />
+            <Text witness={witness} annotations={props.annotations} />
         </div>
     );
 };
