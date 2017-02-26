@@ -6,4 +6,5 @@ parkhang/frontend/node_modules
 parkhang-dev.js
 styles-dev.css
 webpack-stats-dev.json
-parkhang/frontend/static/bundles
+.vagrant
+ubuntu-xenial-16.04-cloudimg-console.log
