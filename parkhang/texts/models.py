@@ -1,7 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+from django.contrib.auth import get_user_model
+
 
 
 # Constants
@@ -64,7 +66,7 @@ class Annotation(models.Model):
     """Set if added from another witness"""
     creator_witness = models.ForeignKey(Witness, null=True, blank=True, related_name="creator_witness")
     """Set if created by a user"""
-    creator_user = models.ForeignKey(User, null=True, blank=True)
+    creator_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     """Set to False if annotation is simply a note"""
     is_variant = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
@@ -82,6 +84,7 @@ class Annotation(models.Model):
         if creator:
             if isinstance(creator, Witness):
                 return creator.source.name
+            User = get_user_model()
             if isinstance(creator, User):
                 return creator.username
 
@@ -99,7 +102,7 @@ class AppliedUserAnnotations(models.Model):
     Annotations that a User has selected to be active.
     """
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     annotation = models.ForeignKey(Annotation)
     """Intended to allow a user to say why they applied this annotation"""
     note = models.TextField(null=True, blank=True)
