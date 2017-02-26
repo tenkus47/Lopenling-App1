@@ -4,7 +4,7 @@ var BundleTracker = require('webpack-bundle-tracker');
 var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+// var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     context: __dirname,
@@ -28,9 +28,9 @@ module.exports = {
     plugins: [
         new BundleTracker({filename: './webpack-stats-dev.json'}),
         new ExtractTextPlugin("styles-dev.css"),
-        new HtmlWebpackPlugin({
-            template: './app/index-template.html'
-        }),
+        // new HtmlWebpackPlugin({
+        //     template: './app/index-template.html'
+        // }),
         new webpack.DefinePlugin({
             'process.env':{
                 'NODE_ENV': JSON.stringify('development')
