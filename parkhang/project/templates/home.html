@@ -1,0 +1,23 @@
+{% load render_bundle from webpack_loader %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% render_bundle 'parkhang' 'css' config='MAIN' %}
+    <script>
+
+{% if user.is_authenticated %}
+USER_LOGGED_IN = true;
+USER_NAME = "{{ user.username }}";
+{% else %}
+USER_LOGGED_IN = false;
+USER_NAME = "";
+{% endif %}
+    </script>
+</head>
+<body>
+<div id="app" style="width: 100vw; height: 100vh;"></div>
+{% render_bundle 'parkhang' 'js' config='MAIN' %}
+</body>
+</html>

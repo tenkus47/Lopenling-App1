@@ -14,6 +14,7 @@ module.exports = {
             './app/index',
             // 'webpack-dev-server/client?http://127.0.0.1:3000',
             // 'webpack/hot/only-dev-server',
+            './website/index',
         ]
     },
 
@@ -59,6 +60,7 @@ module.exports = {
             },
             {
                 test: /\.css$/,
+                exclude: /accounts\.css/,
                 use: ExtractTextPlugin.extract({
                     fallback: "style-loader",
                     use: [
@@ -69,6 +71,37 @@ module.exports = {
                                 importLoaders: 1,
                                 modules: true,
                                 localIdentName:"[name]---[local]"
+                            }
+                        },
+                        {
+                            loader: 'postcss-loader',
+                            options: {
+                                sourceMap: true,
+                                plugins: () => [
+                                    postcssImport({
+                                        addDependencyTo: webpack,
+                                        path: path.resolve('./app'),
+                                    }),
+                                    postcssCssnext({
+                                        compress: true,
+                                    }),
+                                ]
+                            }
+                        }
+                    ]
+                })
+            },
+            {
+                test: /accounts\.css/,
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: [
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true,
+                                importLoaders: 1,
+                                modules: false,
                             }
                         },
                         {

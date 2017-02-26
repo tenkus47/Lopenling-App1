@@ -17,10 +17,13 @@ from django.conf.urls import url, include
 from django.conf import settings
 from django.contrib import admin
 
+from project.views import HomeView
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include('api.urls')),
+    url(r'^$', HomeView.as_view())
 ]
 
 # If we are devloping, load frontend static files via runserver

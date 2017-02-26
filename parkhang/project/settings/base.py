@@ -42,12 +42,14 @@ PREREQ_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.weixin',
+    # 'allauth.socialaccount.providers.weixin',
     'rest_framework',
+    'webpack_loader',
 ]
 
 PROJECT_APPS = [
     'texts',
+    'users',
 ]
 
 INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
@@ -67,7 +69,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,6 +121,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.User'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -139,10 +143,26 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    '%s/../static/' % (BASE_DIR),
+]
+
 # For Sites, used by allauth
 SITE_ID = 1
 
 # django-rest-framework
 REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
+
+# Authentication settings
+
+LOGIN_REDIRECT_URL = '/'
+
+# WEBPACK
+WEBPACK_LOADER = {
+    'MAIN': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, '../frontend/webpack-stats-dev.json'),
+    }
 }

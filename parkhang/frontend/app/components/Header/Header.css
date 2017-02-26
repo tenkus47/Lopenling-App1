@@ -8,4 +8,44 @@
     font-size: 42px;
     color: white;
     padding: 20px;
+    display: flex;
+}
+
+.header p {
+    margin: 0;
+    padding: 0;
+    flex-grow: 2;
+}
+
+.controls {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.controls a:link,
+.controls a:visited {
+    text-decoration: none;
+    color: white;
+}
+
+.textLink {
+    color: white;
+    margin-right: 20px;
+}
+
+.textLink a:link,
+.textLink a:visited {
+    color: white;
+}
+
+.buttonLink {
+    background-color: white;
+    border-radius: 4px;
+    padding: 5px 20px;
+}
+
+.buttonLink a:link,
+.buttonLink a:visited {
+    color: var(--main-tint);
 }

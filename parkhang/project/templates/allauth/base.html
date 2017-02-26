@@ -1,0 +1,45 @@
+{% load render_bundle from webpack_loader %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
+    {% render_bundle 'parkhang' 'css' config='MAIN' %}
+</head>
+<body class="{% if password_reset_form %}passwordReset{% elif signup_url %}login{% elif login_url %}signup{% endif %}">
+<header class="header"><a href="/">Esukhia</a></header>
+{% block body %}
+    {% if messages %}
+        <!--
+        <div>
+            <strong>Messages:</strong>
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        -->
+    {% endif %}
+
+    <div class="account-menu">
+        <ul>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
+                <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+            {% else %}
+                <li class="account-menu-signinLink"><a href="{% url 'account_login' %}">Sign In</a></li>
+                <li class="account-menu-signupLink"><a href="{% url 'account_signup' %}">Sign Up</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="account-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+{% endblock %}
+{% block extra_body %}
+{% endblock %}
+</body>
+</html>
