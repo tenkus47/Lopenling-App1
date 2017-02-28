@@ -83,7 +83,7 @@ class Command(BaseCommand):
 
                 base_witness = base_witnesses[text_name]
 
-                command_args = f'--aggregate-changes -d "།།༌་ \n" "{base_path}" "{filepath}"'
+                command_args = f'--start-delete="|" --stop-delete="|" --aggregate-changes -d "།།༌་ \n" "{base_path}" "{filepath}"'
                 command = f"/usr/local/bin/dwdiff {command_args}"
 
                 try:
@@ -91,7 +91,11 @@ class Command(BaseCommand):
                 except Exception as e:
                     print(e)
 
-                annotations = parse_word_diff(diff)
+                try:
+                    annotations = parse_word_diff(diff)
+                except Exception as e:
+                    print(f'dir: {dir}, filename: {filename}')
+
                 for annotation_data in annotations:
                     annotation = Annotation()
                     annotation.witness = base_witness
