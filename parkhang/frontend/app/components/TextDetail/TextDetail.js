@@ -3,6 +3,7 @@ import classnames from 'classnames'
 
 import TextHeading from './TextHeading'
 import Text from './Text'
+import Loader from 'react-loader'
 
 import styles from './TextDetail.css'
 import utilStyles from 'css/util.css'
@@ -24,6 +25,7 @@ const TextDetail = props => {
     return (
         <div className={classnames(styles.textDetail, utilStyles.flex, utilStyles.flexColumn)}>
             <TextHeading text={text} />
+            <Loader loaded={!props.loading} />
             <Text witness={witness} annotations={props.annotations} />
         </div>
     );

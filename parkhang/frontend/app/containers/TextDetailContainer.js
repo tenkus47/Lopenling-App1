@@ -27,7 +27,8 @@ const mapStateToProps = (state) => {
         text: selectedText,
         witnesses: witnesses,
         baseWitness: baseWitness,
-        annotations: annotations
+        annotations: annotations,
+        loading: state.data.loadingWitnesses || state.data.loadingAnnotations,
     };
 };
 
