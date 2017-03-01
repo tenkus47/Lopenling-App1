@@ -1,8 +1,13 @@
+@import 'css/type.css';
+
+
 .text {
     font-size: 24px;
-    line-height: 1.5;
+    line-height: 2;
     padding: 20px;
     max-width: 600px;
+    font-family: var(--tibetan-fonts);
+    letter-spacing: 0.04em;
 }
 
 .textContainer {
