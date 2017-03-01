@@ -83,7 +83,7 @@ class Command(BaseCommand):
 
                 base_witness = base_witnesses[text_name]
 
-                command_args = f'--start-delete="|" --stop-delete="|" --aggregate-changes -d "།།༌་ \n" "{base_path}" "{filepath}"'
+                command_args = f'--start-delete="|" --stop-delete="/" --aggregate-changes -d "།།༌་ \n" "{base_path}" "{filepath}"'
                 command = f"/usr/local/bin/dwdiff {command_args}"
 
                 try:

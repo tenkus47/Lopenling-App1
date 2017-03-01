@@ -1,7 +1,7 @@
 
 
 def fix_diff(diff):
-    diff = diff.replace("-| {+", "-|{+")
+    diff = diff.replace("-/ {+", "-/{+")
 
     return diff
 
@@ -23,7 +23,7 @@ def parse_word_diff(diff):
                 in_sub = True
             elif char == "{":
                 in_add = True
-            elif char in ["|", "}"]:
+            elif char in ["/", "}"]:
                 if in_add:
 
                     if prev_annotation and \
