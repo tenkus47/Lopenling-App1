@@ -4,8 +4,18 @@ import TextList from 'components/TextList';
 import { selectedText } from 'actions'
 
 const mapStateToProps = (state) => {
+    const searchValue = state.ui.searchValue;
+    let texts = state.data.texts;
+    if (searchValue.length > 0) {
+        // TODO: use reselect to cache this selector
+        texts = texts.filter(text => {
+            // return text.name.substring(0, searchValue.length) == searchValue;
+            return (text.name.indexOf(searchValue) === 0);
+        });
+    }
+
     return {
-        texts: state.data.texts
+        texts: texts
     }
 };
 

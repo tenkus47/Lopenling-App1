@@ -1,0 +1,21 @@
+:root {
+    --inputHeight: 21px;
+}
+
+.textsSearch {
+    padding: 10px;
+    display: flex;
+    background-color: #394a59;
+}
+
+.textsSearch input {
+    font-size: 1em;
+    margin-right: 10px;
+    flex-grow: 1;
+    height: var(--inputHeight);
+}
+
+.textsSearch select {
+    font-size: 0.8em;
+    height: var(--inputHeight);
+}

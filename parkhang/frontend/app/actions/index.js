@@ -29,7 +29,8 @@ export const LOADED_TEXT_DATA = 'LOADED_TEXT_DATA';
 
 // UI
 
-export const SELECTED_TEXT = 'SELECTED_TEXT';
+export const SELECTED_TEXT = 'textList/SELECTED_TEXT';
+export const CHANGED_SEARCH_VALUE = 'textList/CHANGED_SEARCH_VALUE';
 
 
 /** Action creators **/
@@ -175,5 +176,12 @@ export function selectedText(text) {
     return {
         type: SELECTED_TEXT,
         text,
+    };
+}
+
+export function changedSearchValue(searchValue) {
+    return {
+        type: CHANGED_SEARCH_VALUE,
+        searchValue,
     };
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import {AutoSizer, List} from 'react-virtualized';
 import 'react-virtualized/styles.css'; // only needs to be imported once
+import TextsSearchContainer from 'components/TextsSearch/TextsSearchContainer'
 import styles from './TextList.css'
 
 class TextList extends React.Component {
@@ -28,6 +29,7 @@ class TextList extends React.Component {
 
         return (
             <div className={styles.textList}>
+
                 { this.props.texts ?
 
                     <AutoSizer>

@@ -24,3 +24,8 @@ body {
 .interface {
     flex: 1;
 }
+
+.listContainer {
+    display: flex;
+    flex-direction: column;
+}
