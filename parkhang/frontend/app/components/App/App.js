@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import Header from 'components/Header'
 import TextsSearchContainer from 'components/TextsSearch/TextsSearchContainer'
 import TextListContainer from 'containers/TextListContainer'
-import TextDetailContainer from 'containers/TextDetailContainer'
+import TextDetailContainer from 'components/TextDetail/TextDetailContainer'
 
 import styles from './App.css'
 import utilStyles from 'css/util.css'
