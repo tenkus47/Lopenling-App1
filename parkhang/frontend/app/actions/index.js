@@ -32,6 +32,8 @@ export const LOADED_TEXT_DATA = 'LOADED_TEXT_DATA';
 export const SELECTED_TEXT = 'textList/SELECTED_TEXT';
 export const CHANGED_SEARCH_VALUE = 'textList/CHANGED_SEARCH_VALUE';
 
+export const CHANGED_SHOW_PAGE_IMAGES = 'text/CHANGED_SHOW_PAGE_IMAGES';
+
 
 /** Action creators **/
 
@@ -184,4 +186,11 @@ export function changedSearchValue(searchValue) {
         type: CHANGED_SEARCH_VALUE,
         searchValue,
     };
+}
+
+export function changedShowPageImages(showPageImages) {
+    return {
+        type: CHANGED_SHOW_PAGE_IMAGES,
+        showPageImages,
+    }
 }

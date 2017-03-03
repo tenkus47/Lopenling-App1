@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import dataReducers, { initialDataState } from './data'
-import uiReducers, { initialUIState } from './ui'
+import uiReducers, { initialUIState, showPageImages as showPageImagesUI } from './ui'
 
 function createReducer(initialState, handlers) {
     return function reducer(state = initialState, action) {
@@ -15,6 +15,13 @@ function createReducer(initialState, handlers) {
 
 export const dataReducer = createReducer(initialDataState, dataReducers);
 const uiReducer = createReducer(initialUIState, uiReducers);
+
+// Selectors
+
+export const showPageImages = (state) => {
+    console.log('in index showPageImages: %o', state);
+    return showPageImagesUI(state.ui);
+};
 
 // Root
 

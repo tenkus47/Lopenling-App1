@@ -2,6 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import TextDetail from 'components/TextDetail';
 import { selectedText } from 'actions'
+import { showPageImages } from 'reducers'
+
+import PaginatedTibetanText from 'lib/PaginatedTibetanText'
+import SegmentedText from 'lib/SegmentedText'
 
 const mapStateToProps = (state) => {
     const selectedText = state.ui.selectedText;
@@ -29,6 +33,7 @@ const mapStateToProps = (state) => {
         baseWitness: baseWitness,
         annotations: annotations,
         loading: state.data.loadingWitnesses || state.data.loadingAnnotations,
+        paginated: showPageImages(state)
     };
 };
 

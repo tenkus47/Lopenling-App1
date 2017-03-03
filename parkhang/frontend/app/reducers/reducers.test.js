@@ -22,6 +22,8 @@ const initialState = {
     },
     ui: {
         selectedText: false,
+        searchValue: "",
+        showPageImages: false,
     },
 };
 
