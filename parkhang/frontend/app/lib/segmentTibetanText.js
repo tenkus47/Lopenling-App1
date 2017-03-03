@@ -1,14 +1,6 @@
 import SegmentedText from './SegmentedText'
 import TextSegment from './TextSegment';
 
-function makeSegment(text, start) {
-    return {
-        text: text,
-        start: start,
-        length: text.length
-    }
-}
-
 export default function segmentTibetanText(text) {
     const breaks = "༄༅།";
     const spaces = " ་";
