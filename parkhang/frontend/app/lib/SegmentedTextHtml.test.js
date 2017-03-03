@@ -1,94 +1,27 @@
 import SegmentedTextHtml from './SegmentedTextHtml'
 import segmentTibetanText from 'lib/segmentTibetanText'
+import TextSegment from './TextSegment'
 
 const text = "༄༅། །ཐེག་པ་ཆེན་པོ་ཉི་ཤུ་པ།";
 
 const segments = [
-    {
-        text: "༄༅།",
-        start: 0,
-        length: 3
-    },
-    {
-        text: " ",
-        start: 3,
-        length: 1
-    },
-    {
-        text: "།",
-        start: 4,
-        length: 1
-    },
-    {
-        text: "ཐེག",
-        start: 5,
-        length: 3
-    },
-    {
-        text: "་",
-        start: 8,
-        length: 1
-    },
-    {
-        text: "པ",
-        start: 9,
-        length: 1
-    },
-    {
-        text: "་",
-        start: 10,
-        length: 1
-    },
-    {
-        text: "ཆེན",
-        start: 11,
-        length: 3
-    },
-    {
-        text: "་",
-        start: 14,
-        length: 1
-    },
-    {
-        text: "པོ",
-        start: 15,
-        length: 2
-    },
-    {
-        text: "་",
-        start: 17,
-        length: 1
-    },
-    {
-        text: "ཉི",
-        start: 18,
-        length: 2
-    },
-    {
-        text: "་",
-        start: 20,
-        length: 1
-    },
-    {
-        text: "ཤུ",
-        start: 21,
-        length: 2
-    },
-    {
-        text: "་",
-        start: 23,
-        length: 1
-    },
-    {
-        text: "པ",
-        start: 24,
-        length: 1
-    },
-    {
-        text: "།",
-        start: 25,
-        length: 1
-    }
+    new TextSegment(0, "༄༅།"),
+    new TextSegment(3, " "),
+    new TextSegment(4, "།"),
+    new TextSegment(5, "ཐེག"),
+    new TextSegment(8, "་"),
+    new TextSegment(9, "པ"),
+    new TextSegment(10, "་"),
+    new TextSegment(11, "ཆེན"),
+    new TextSegment(14, "་"),
+    new TextSegment(15, "པོ"),
+    new TextSegment(17, "་"),
+    new TextSegment(18, "ཉི"),
+    new TextSegment(20, "་"),
+    new TextSegment(21, "ཤུ"),
+    new TextSegment(23, "་"),
+    new TextSegment(24, "པ"),
+    new TextSegment(25, "།")
 ];
 
 describe('SegmentedTextHtml', () => {

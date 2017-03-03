@@ -1,10 +1,34 @@
+import TextSegment from './TextSegment'
+
 export default class SegmentedText {
-    constructor(text, segments) {
-        this.text = text;
+
+    /**
+     *
+     * @param {TextSegment[]} segments - Array of TextSegments
+     * @param {number} positionOffset - Offset to apply when getting segments
+     */
+    constructor(segments, positionOffset=0) {
         this.segments = segments;
+        this.positionOffset = positionOffset;
         this._sortedSegments = null;
     }
 
+    /**
+     * Combine all the text's segments into a string.
+     *
+     * @returns {string}
+     */
+    getText() {
+        return this.sortedSegments().reduce((prevResult, segment) => {
+            return prevResult += segment.text;
+        }, "");
+    }
+
+    /**
+     * Get the texts segments sorted by start position.
+     *
+     * @returns {TextSegment[]|null}
+     */
     sortedSegments() {
         if (!this._sortedSegments) {
             this._sortedSegments = Object.assign([], this.segments);
@@ -22,6 +46,12 @@ export default class SegmentedText {
         return this._sortedSegments;
     }
 
+    /**
+     * Get the TextSegment at the given position in the text.
+     *
+     * @param {number} position
+     * @returns {TextSegment}
+     */
     segmentAtPosition(position) {
         let foundSegment = false;
         for (let segment of this.segments) {
@@ -35,6 +65,13 @@ export default class SegmentedText {
         return foundSegment;
     }
 
+    /**
+     * Get TextSegments within the given range of characters in the text.
+     *
+     * @param {number} start
+     * @param {number} length
+     * @returns {TextSegment[]}
+     */
     segmentsInRange(start, length) {
         let segments = [];
         const rangeEnd = start + length - 1;

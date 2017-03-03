@@ -1,4 +1,5 @@
 import SegmentedText from './SegmentedText'
+import TextSegment from './TextSegment';
 
 function makeSegment(text, start) {
     return {
@@ -24,7 +25,7 @@ export default function segmentTibetanText(text) {
                 currentSegment += char;
             } else {
                 if (count > 0) {
-                    const newSegment = makeSegment(currentSegment, currentStart);
+                    const newSegment = new TextSegment(currentStart, currentSegment);
                     segments.push(newSegment);
                 }
 
@@ -38,7 +39,7 @@ export default function segmentTibetanText(text) {
                 currentSegment += char;
             } else {
                 if (count > 0) {
-                    const newSegment = makeSegment(currentSegment, currentStart);
+                    const newSegment = new TextSegment(currentStart, currentSegment);
                     segments.push(newSegment);
                 }
 
@@ -50,7 +51,7 @@ export default function segmentTibetanText(text) {
         } else {
             if (inSpace || inBreak) {
                 if (count > 0) {
-                    const newSegment = makeSegment(currentSegment, currentStart);
+                    const newSegment = new TextSegment(currentStart, currentSegment);
                     segments.push(newSegment);
                 }
 
@@ -67,10 +68,10 @@ export default function segmentTibetanText(text) {
     }
 
     if (currentSegment) {
-        const newSegment = makeSegment(currentSegment, currentStart);
+        const newSegment = new TextSegment(currentStart, currentSegment);
         segments.push(newSegment);
     }
 
-    const segmentedText = new SegmentedText(text, segments);
+    const segmentedText = new SegmentedText(segments);
     return segmentedText;
 }

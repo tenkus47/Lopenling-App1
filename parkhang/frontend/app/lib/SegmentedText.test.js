@@ -1,148 +1,41 @@
 import SegmentedText from './SegmentedText'
+import TextSegment from './TextSegment'
 
 const text = "༄༅། །ཐེག་པ་ཆེན་པོ་ཉི་ཤུ་པ།༄༅༅། །རྒྱ་གར་སྐད་དུ།";
 
 const segments = [
-    {
-        text: "༄༅།",
-        start: 0,
-        length: 3
-    },
-    {
-        text: " ",
-        start: 3,
-        length: 1
-    },
-    {
-        text: "།",
-        start: 4,
-        length: 1
-    },
-    {
-        text: "ཐེག",
-        start: 5,
-        length: 3
-    },
-    {
-        text: "་",
-        start: 8,
-        length: 1
-    },
-    {
-        text: "པ",
-        start: 9,
-        length: 1
-    },
-    {
-        text: "་",
-        start: 10,
-        length: 1
-    },
-    {
-        text: "ཆེན",
-        start: 11,
-        length: 3
-    },
-    {
-        text: "་",
-        start: 14,
-        length: 1
-    },
-    {
-        text: "པོ",
-        start: 15,
-        length: 2
-    },
-    {
-        text: "་",
-        start: 17,
-        length: 1
-    },
-    {
-        text: "ཉི",
-        start: 18,
-        length: 2
-    },
-    {
-        text: "་",
-        start: 20,
-        length: 1
-    },
-    {
-        text: "ཤུ",
-        start: 21,
-        length: 2
-    },
-    {
-        text: "་",
-        start: 23,
-        length: 1
-    },
-    {
-        text: "པ",
-        start: 24,
-        length: 1
-    },
-    {
-        text: "།༄༅༅།",
-        start: 25,
-        length: 5
-    },
-    {
-        text: " ",
-        start: 30,
-        length: 1
-    },
-    {
-        text: "།",
-        start: 31,
-        length: 1
-    },
-    {
-        text: "རྒྱ",
-        start: 32,
-        length: 3
-    },
-    {
-        text: "་",
-        start: 35,
-        length: 1
-    },
-    {
-        text: "གར",
-        start: 36,
-        length: 2
-    },
-    {
-        text: "་",
-        start: 38,
-        length: 1
-    },
-    {
-        text: "སྐད",
-        start: 39,
-        length: 3
-    },
-    {
-        text: "་",
-        start: 42,
-        length: 1
-    },
-    {
-        text: "དུ",
-        start: 43,
-        length: 2
-    },
-    {
-        text: "།",
-        start: 45,
-        length: 1
-    }
+    new TextSegment(0, "༄༅།"),
+    new TextSegment(3, " "),
+    new TextSegment(4, "།"),
+    new TextSegment(5, "ཐེག"),
+    new TextSegment(8, "་"),
+    new TextSegment(9, "པ"),
+    new TextSegment(10, "་"),
+    new TextSegment(11, "ཆེན"),
+    new TextSegment(14, "་"),
+    new TextSegment(15, "པོ"),
+    new TextSegment(17, "་"),
+    new TextSegment(18, "ཉི"),
+    new TextSegment(20, "་"),
+    new TextSegment(21, "ཤུ"),
+    new TextSegment(23, "་"),
+    new TextSegment(24, "པ"),
+    new TextSegment(25, "།༄༅༅།"),
+    new TextSegment(30, " "),
+    new TextSegment(31, "།"),
+    new TextSegment(32, "རྒྱ"),
+    new TextSegment(35, "་"),
+    new TextSegment(36, "གར"),
+    new TextSegment(38, "་"),
+    new TextSegment(39, "སྐད"),
+    new TextSegment(42, "་"),
+    new TextSegment(43, "དུ"),
+    new TextSegment(45, "།")
 ];
 
 describe('SegmentedText', () => {
 
-    const segmentedText = new SegmentedText(text, segments);
+    const segmentedText = new SegmentedText(segments);
 
     it('should return segments', () => {
         expect(
@@ -150,13 +43,14 @@ describe('SegmentedText', () => {
         ).toEqual(segments);
     });
 
-    it('should return the correct segment for the given position', () => {
-        const expectedSegment = {
-            text: "ཆེན",
-            start: 11,
-            length: 3
-        };
+    it('should return the correct complete text', () => {
+       expect(
+           segmentedText.getText()
+       ).toEqual(text);
+    });
 
+    it('should return the correct segment for the given position', () => {
+        const expectedSegment = new TextSegment(11, "ཆེན");
         expect(
             segmentedText.segmentAtPosition(11)
         ).toEqual(expectedSegment);
@@ -180,26 +74,10 @@ describe('SegmentedText', () => {
 
     it('should return the correct segments for the given range', () => {
         const expectedSegments = [
-            {
-                text: "༄༅།",
-                start: 0,
-                length: 3
-            },
-            {
-                text: " ",
-                start: 3,
-                length: 1
-            },
-            {
-                text: "།",
-                start: 4,
-                length: 1
-            },
-            {
-                text: "ཐེག",
-                start: 5,
-                length: 3
-            }
+            new TextSegment(0, "༄༅།"),
+            new TextSegment(3, " "),
+            new TextSegment(4, "།"),
+            new TextSegment(5, "ཐེག")
         ];
 
         expect(
