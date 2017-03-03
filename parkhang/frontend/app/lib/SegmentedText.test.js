@@ -101,4 +101,39 @@ describe('SegmentedText', () => {
         ).not.toEqual([expectedSegments[0]]);
 
     })
+
+
+});
+
+describe('Partial SegmentedText', () => {
+    const slicedSegments = segments.slice(2);
+    const partialSegmentedText = new SegmentedText(slicedSegments);
+
+    it('should return the correct segment for the given position', () => {
+        const expectedSegment = new TextSegment(11, "ཆེན");
+
+        expect(
+            partialSegmentedText.segmentAtPosition(11)
+        ).toEqual(expectedSegment);
+    });
+
+    it('should return the correct segments for the given range', () => {
+        const expectedSegments = [
+            new TextSegment(4, "།"),
+            new TextSegment(5, "ཐེག")
+        ];
+
+        expect(
+            partialSegmentedText.segmentsInRange(4, 1)
+        ).toEqual([expectedSegments[0]]);
+
+        expect(
+            partialSegmentedText.segmentsInRange(6, 1)
+        ).toEqual([expectedSegments[1]]);
+
+        expect(
+            partialSegmentedText.segmentsInRange(0, 1)
+        ).not.toEqual([expectedSegments[0]]);
+
+    })
 });
