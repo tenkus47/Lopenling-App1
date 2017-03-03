@@ -5,11 +5,9 @@ export default class SegmentedText {
     /**
      *
      * @param {TextSegment[]} segments - Array of TextSegments
-     * @param {number} positionOffset - Offset to apply when getting segments
      */
-    constructor(segments, positionOffset=0) {
+    constructor(segments) {
         this.segments = segments;
-        this.positionOffset = positionOffset;
         this._sortedSegments = null;
     }
 
