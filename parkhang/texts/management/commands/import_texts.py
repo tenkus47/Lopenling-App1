@@ -84,7 +84,7 @@ class Command(BaseCommand):
                 base_witness = base_witnesses[text_name]
 
                 command_args = f'--start-delete="|" --stop-delete="/" --aggregate-changes -d "།།༌་ \n" "{base_path}" "{filepath}"'
-                command = f"/usr/local/bin/dwdiff {command_args}"
+                command = f"dwdiff {command_args}"
 
                 try:
                     diff = subprocess.run(shlex.split(command), stdout=subprocess.PIPE, encoding='utf-8').stdout
