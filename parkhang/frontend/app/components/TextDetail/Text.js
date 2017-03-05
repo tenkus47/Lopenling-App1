@@ -57,7 +57,8 @@ export default class Text extends React.Component {
                     for (let segmentId of segmentIds) {
                         let el = document.getElementById(segmentId);
                         if (el) {
-                            el.style.color = 'red';
+                            el.className = styles.annotation;
+                            // el.style.color = 'red';
                             el.onclick = function (e) {
                                 console.log('clicked annotation: %o', annotation);
                             }
