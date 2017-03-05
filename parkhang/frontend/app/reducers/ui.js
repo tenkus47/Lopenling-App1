@@ -38,6 +38,5 @@ uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
 export default uiReducers;
 
 export const showPageImages = (state) => {
-    console.log('in ui showPageImages: %o', state);
     return state.showPageImages;
 };
