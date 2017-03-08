@@ -1,8 +1,8 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
-
+from django.contrib.auth import get_user_model
 from texts.models import Text, Witness, Annotation, Source
 
+User = get_user_model()
 
 class AnnotationTests(TestCase):
     username = "TestUser"
@@ -54,14 +54,27 @@ class AnnotationTests(TestCase):
             creator_witness=creator_source_witness
         )
 
+        user_annotation, created = Annotation.objects.get_or_create(
+            witness=base_witness,
+            start=cls.annotation_start,
+            length=cls.annotation_length,
+            content=cls.annotation_content,
+            creator_user=user
+        )
+
         cls.user = user
         cls.base_source = base_source
         cls.creator_source = creator_source
         cls.witness_annotation = witness_annotation
+        cls.user_annotation = user_annotation
 
     def setUp(self):
         pass
 
     def test_annotation(self):
-        self.assertEqual(self.creator_source_name, self.witness_annotation.creator_name())
         self.assertTrue(isinstance(self.witness_annotation.creator(), Witness))
+        self.assertEqual(self.creator_source_name, self.witness_annotation.creator_name())
+
+        self.assertTrue(isinstance(self.user_annotation.creator(), User))
+        self.assertEqual(self.username, self.user_annotation.creator_name())
+
