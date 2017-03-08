@@ -9,9 +9,10 @@ export default class AnnotatedText {
      * @param {SegmentedText} originalText
      * @param {Annotation[]} [annotations]
      */
-    constructor(originalText, annotations=[]) {
+    constructor(originalText, annotations=[], segmenter=null) {
         this.originalText = originalText;
         this.annotations = annotations;
+        this.segmenter = segmenter;
         /** @type {SegmentedText} */
         this._generatedText = null;
         this._segmentPositions = {};
@@ -48,12 +49,22 @@ export default class AnnotatedText {
             let targets = text.segmentsInRange(annotation.start, annotation.length);
             if (targets.length > 0) {
                 let start = targets[0].start;
-                let annotationSegment = new TextSegment(start, annotation.content);
                 let firstIndex = newSegments.indexOf(targets[0]);
-                newSegments.splice(firstIndex, targets.length, annotationSegment);
+                const deleted = (annotation.content.length == 0);
+                if (this.segmenter != null && !deleted) {
+                    let annotationSegments = this.segmenter(annotation.content);
+                    for (let j=0; j < annotationSegments.length; j++) {
+                        let annotationSegment = annotationSegments[j];
+                        annotationSegment._annotation = annotation;
+                    }
+                    newSegments.splice(firstIndex, targets.length, ...annotationSegments);
+                } else {
+                    let annotationSegment = new TextSegment(start, annotation.content);
+                    annotationSegment._annotation = annotation;
+                    newSegments.splice(firstIndex, targets.length, annotationSegment);
+                }
 
                 // store replaced segments to use when setting position below
-                annotationSegment._annotation = annotation;
                 replacedSegments[annotation.id] = targets;
             }
         }

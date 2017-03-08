@@ -26,13 +26,16 @@ const annotations = [
     new Annotation(6, baseWitness, 256, 2,  "",    otherWitness)
 ];
 
+function segmenter(text) {
+    return segmentTibetanText(text).segments;
+}
 
 describe('AnnotatedText', () => {
 
     const expectedTextContent = "༄༅༅། །རྒྱ་གར་སྐད་དུ། ས་པྲཛྙཱ་ཤྲི་མ་ཧཱ་ཀཱ་ལ་སཱ་དྷ་ན་ནཱ་མ། བོད་སྐད་དུ། དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ། བླ་མ་དང་དཔལ་རྡོ་རྗེ་མཁའ་འགྲོ་ལ་ཕྱག་འཚལ་ལོ། །འགྱེལ་བའི་རོ་ན་ལ་ཞབས་མཆོག་མཉམ་པའི་སྟབས་ཀྱིས་བཞུགས་ཤིང་སྦོམ་ཐུང་དྲག་གསུས་ཁྱིམ་ཡངས།";
 
     const segmentedText = segmentTibetanText(baseWitness.content);
-    const annotatedText = new AnnotatedText(segmentedText, annotations);
+    const annotatedText = new AnnotatedText(segmentedText, annotations, segmenter);
 
     test('Return the correct text', () => {
         expect(
