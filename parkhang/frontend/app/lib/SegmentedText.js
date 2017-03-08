@@ -9,6 +9,7 @@ export default class SegmentedText {
     constructor(segments) {
         this.segments = segments;
         this._sortedSegments = null;
+        this._sortedText = null;
     }
 
     /**
@@ -17,9 +18,15 @@ export default class SegmentedText {
      * @returns {string}
      */
     getText() {
-        return this.sortedSegments().reduce((prevResult, segment) => {
-            return prevResult += segment.text;
-        }, "");
+        if (this._sortedText == null) {
+            let sorted = this.sortedSegments();
+            let text = "";
+            for(let i=0; i < sorted.length; i++) {
+                text += sorted[i].text;
+            }
+            this._sortedText = text;
+        }
+        return this._sortedText;
     }
 
     /**
@@ -52,7 +59,8 @@ export default class SegmentedText {
      */
     segmentAtPosition(position) {
         let foundSegment = false;
-        for (let segment of this.segments) {
+        for (let i=0; i < this.segments.length; i++) {
+            let segment = this.segments[i];
             const segmentEnd = segment.start + segment.text.length - 1;
             if ((segment.start <= position)
                 && (segmentEnd >= position )) {
@@ -74,7 +82,8 @@ export default class SegmentedText {
         let segments = [];
         const rangeEnd = start + length - 1;
         const sorted = this.sortedSegments();
-        for (let segment of sorted) {
+        for (let i=0; i < sorted.length; i++) {
+            let segment = sorted[i];
             const segmentEnd = segment.start + segment.text.length - 1;
 
             if (
