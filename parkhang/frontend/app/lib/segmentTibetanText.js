@@ -2,8 +2,8 @@ import SegmentedText from './SegmentedText'
 import TextSegment from './TextSegment';
 
 export default function segmentTibetanText(text) {
-    const breaks = "༄༅།";
-    const spaces = " ་";
+    const breaks = "།།";
+    const spaces = "༌་ \n";
 
     let segments = [];
     let currentSegment = "";
@@ -63,7 +63,5 @@ export default function segmentTibetanText(text) {
         const newSegment = new TextSegment(currentStart, currentSegment);
         segments.push(newSegment);
     }
-
-    const segmentedText = new SegmentedText(segments);
-    return segmentedText;
+    return new SegmentedText(segments);
 }
