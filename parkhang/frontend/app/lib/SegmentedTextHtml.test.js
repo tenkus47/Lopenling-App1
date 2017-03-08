@@ -5,7 +5,8 @@ import TextSegment from './TextSegment'
 const text = "༄༅། །ཐེག་པ་ཆེན་པོ་ཉི་ཤུ་པ།";
 
 const segments = [
-    new TextSegment(0, "༄༅།"),
+    new TextSegment(0, "༄༅"),
+    new TextSegment(2, "།"),
     new TextSegment(3, " "),
     new TextSegment(4, "།"),
     new TextSegment(5, "ཐེག"),
@@ -28,7 +29,7 @@ describe('SegmentedTextHtml', () => {
     const segmentedText = segmentTibetanText(text);
     const segmentedTextHtml = new SegmentedTextHtml(segmentedText);
 
-    const expectedHtml = '<span id="s_0">༄༅།</span><span id="s_3"> </span><span id="s_4">།</span><span id="s_5">ཐེག</span><span id="s_8">་</span><span id="s_9">པ</span><span id="s_10">་</span><span id="s_11">ཆེན</span><span id="s_14">་</span><span id="s_15">པོ</span><span id="s_17">་</span><span id="s_18">ཉི</span><span id="s_20">་</span><span id="s_21">ཤུ</span><span id="s_23">་</span><span id="s_24">པ</span><span id="s_25">།</span>';
+    const expectedHtml = '<span id="s_0">༄༅</span><span id="s_2">།</span><span id="s_3"> </span><span id="s_4">།</span><span id="s_5">ཐེག</span><span id="s_8">་</span><span id="s_9">པ</span><span id="s_10">་</span><span id="s_11">ཆེན</span><span id="s_14">་</span><span id="s_15">པོ</span><span id="s_17">་</span><span id="s_18">ཉི</span><span id="s_20">་</span><span id="s_21">ཤུ</span><span id="s_23">་</span><span id="s_24">པ</span><span id="s_25">།</span>';
 
     it('should return the correct html', () => {
         expect(
