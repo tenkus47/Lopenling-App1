@@ -1,0 +1,16 @@
+---
+- name: Django | Pip | Install Requirements and setup virtualenv
+  become: true
+#   become_user: "{{project.user}}"
+  pip: >
+    requirements={{item}}
+    virtualenv={{project.virtualenv}}
+    virtualenv_python=python{{project.python}}
+  with_items: "{{project.requirements}}"
+  ignore_errors: yes
+  tags:
+    - packages
+    - application
+    - pip
+    - app
+

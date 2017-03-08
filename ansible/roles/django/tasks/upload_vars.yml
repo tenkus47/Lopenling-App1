@@ -1,0 +1,7 @@
+---
+- name: Upload .env file used by django settings
+  copy:
+    src: ../{{project.name}}/.env
+    dest: "{{django.root}}.env"
+    owner: "{{project.user}}"
+    group: "{{project.group}}"

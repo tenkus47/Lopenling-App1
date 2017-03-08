@@ -1,0 +1,17 @@
+---
+- name: Create data directory in project
+  file:
+    path: /opt/{{project.name}}/data
+    state: directory
+
+- name: Upload texts in a valid directory structure to be imported into parkhang.
+  synchronize:
+    src: ../data/texts/
+    dest: /opt/{{project.name}}/data/texts
+    archive: yes
+    rsync_opts:
+      - "--exclude='.DS_Store'"
+  become: yes
+  tags:
+    - data
+    - texts

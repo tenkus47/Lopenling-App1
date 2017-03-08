@@ -1,0 +1,6 @@
+---
+- name: Setup data for app
+  hosts: appservers
+  become: yes
+  roles:
+    - { role: data }

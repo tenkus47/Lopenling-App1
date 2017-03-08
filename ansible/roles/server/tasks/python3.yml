@@ -1,0 +1,55 @@
+---
+- name: Install required packages for CPython
+  apt: >
+    name={{item}}
+    state=installed
+    update-cache=yes
+  with_items:
+    - build-essential
+    - checkinstall
+    - libreadline-gplv2-dev
+    - libncursesw5-dev
+    - libssl-dev
+    - libsqlite3-dev
+    - tk-dev
+    - libgdbm-dev
+    - libc6-dev
+    - libbz2-dev
+  tags:
+    - python3
+    - provision
+    - server
+
+# - name: Check python 3.6 has been installed
+#   stat: 
+#     path: /usr/local/bin/python3.6
+#   register: python36_result
+
+- name: Download and expand source
+  unarchive:
+    src: https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz
+    dest: /usr/local/src/
+    remote_src: True
+    creates: /usr/local/src/Python-3.6.0
+  become: yes
+  # when: python36_result.stat.exists == False
+
+- name: configure python 3.6
+  command: >
+    ./configure
+    chdir=/usr/local/src/Python-3.6.0
+    creates=/usr/local/bin/python3.6
+  become: yes
+
+- name: build and install python 3.6
+  command: >
+    make altinstall
+    chdir=/usr/local/src/Python-3.6.0
+    creates=/usr/local/bin/python3.6
+  become: yes
+
+- name: install virtualenv
+  pip:
+    name: virtualenv
+    executable: /usr/local/bin/pip3.6
+

@@ -1,0 +1,18 @@
+[uwsgi]
+project = {{project.name}}
+uid = www-data
+base = {{django.root}}
+
+chdir = {{django.root}}
+home = {{project.root}}venv
+module = project.wsgi:application
+env = DJANGO_SETTINGS_MODULE=project.settings.base
+
+master = true
+processes = 5
+
+socket = {{project.root}}%(project).sock
+chown-socket = %(uid):www-data
+chmod-socket = 666
+logger = file:{{project.root}}logs/uwsgi.log
+vacuum = true

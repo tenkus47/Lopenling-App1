@@ -1,0 +1,8 @@
+---
+- name: Create project user
+  user:
+    name: "{{project.user}}"
+    group: "{{project.group}}"
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa

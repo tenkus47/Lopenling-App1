@@ -1,0 +1,13 @@
+[appservers]
+parkhang.phurba.net
+
+[dbservers]
+parkhang.phurba.net
+
+[webservers]
+parkhang.phurba.net
+
+[development:children]
+appservers
+dbservers
+webservers

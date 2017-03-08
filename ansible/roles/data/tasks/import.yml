@@ -1,0 +1,9 @@
+---
+- name: Import the texts data into the app
+  django_manage:
+    command: "import_texts '{{project.root}}data/texts' སྡེ་དགེ"
+    app_path: "{{django.root}}"
+    settings: "project.settings.base"
+    virtualenv: "{{project.virtualenv}}"
+  tags:
+  - data_import

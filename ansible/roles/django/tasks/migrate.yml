@@ -1,0 +1,9 @@
+---
+- name: Migrate django apps
+  django_manage:
+    command: migrate
+    app_path: "{{django.root}}"
+    virtualenv: "{{project.virtualenv}}"
+    settings: project.settings.base
+  tags:
+    - django.migrate

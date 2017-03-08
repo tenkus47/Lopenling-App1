@@ -1,0 +1,18 @@
+---
+- name: restart uwsgi
+  become_user: root
+  systemd: >
+    name=uwsgi
+    state=restarted
+
+- name: reload uwsgi
+  become_user: root
+  systemd: >
+    name=uwsgi
+    state=reloaded
+
+- name: reload project
+  become: yes
+  file:
+    path: /etc/uwsgi/sites/{{project.name}}.ini 
+    state: touch

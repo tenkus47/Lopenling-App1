@@ -1,0 +1,10 @@
+---
+- include: common.yml
+- include: packages.yml
+- include: git.yml
+- include: upload_vars.yml
+- include: pip.yml
+# - include: settings.yml
+# - include: database.yml
+# - include: assets.yml
+- include: migrate.yml

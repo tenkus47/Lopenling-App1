@@ -1,0 +1,21 @@
+---
+- name: uWSGI | Setup directories
+  file: >
+    dest=/etc/uwsgi/sites
+    state=directory
+  become: true
+  become_user: root
+
+- name: uWSGI | Create project uwsgi site.
+  notify: restart uwsgi
+  template: >
+    src=site.ini.j2
+    dest=/etc/uwsgi/sites/{{project.name}}.ini
+    owner=root
+    group=root
+    mode=0644
+  tags:
+    - configuration
+    - uwsgi
+    - appserver
+    - update

@@ -1,0 +1,8 @@
+---
+- name: Create default doc root dir
+  file:
+    path: "{{project.root}}www"
+    state: directory
+    mode: 0755
+    owner: "{{project.user}}"
+    group: "{{project.group}}"

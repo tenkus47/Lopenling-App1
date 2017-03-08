@@ -1,0 +1,74 @@
+# server {
+#     listen 80;
+    
+# 	server_name {% for name in nginx.servernames %}{{name}} {%endfor%};
+	
+#     # Allow serving from letsencrypt cert verification folder
+#     location /.well-known/ {
+#         alias "/var/www/rigdzin.org/shedra/.well-known/";
+#         allow all;
+#     }
+
+# 	# redirect all traffic to https
+#     location / {
+#         return 301 https://$host$request_uri;
+#     }
+# }
+
+
+server {
+    listen 80;
+    {% if nginx.ssl is defined  %}
+    listen                  443 ssl;
+    {% endif %}
+    
+    charset                 utf-8;
+		
+	server_name {% for name in nginx.servernames %}{{name}} {%endfor%};
+
+    {% if nginx.ssl is defined  %}
+    ssl_certificate         /etc/nginx/ssl/{{ project.name }}-public;
+    ssl_certificate_key     /etc/nginx/ssl/{{ project.name }}-private;
+    {% endif %}
+
+    access_log              "{{ project.root }}logs/nginx.access.{{ ansible_fqdn }}.log";
+    error_log               "{{ project.root }}logs/nginx.error.{{ ansible_fqdn }}.log";
+
+    expires modified        -1d;
+
+    rewrite                 ^/(.*)/favicon.ico$ /favicon.ico last;
+	
+    # Allow serving from letsencrypt cert verification folder
+    location /.well-known/ {
+        alias "{{ project.root }}www/.well-known/";
+        allow all;
+    }
+
+    location / {
+        root "{{django.root}}static";
+        # serve static files from defined root folder;
+        try_files $uri @{{project.name}};
+    }
+    	
+    location /bundles {
+        alias "{{django.root}}frontend/static/bundles";
+        try_files $uri @{{project.name}};
+        autoindex off;
+    }
+
+    location @{{ project.name }} {
+        proxy_read_timeout          300;
+        proxy_connect_timeout       300;
+        proxy_redirect              off;
+
+        proxy_set_header            X-Forwarded-Proto $scheme;
+        proxy_set_header            Host              $http_host;
+        proxy_set_header            X-Real-IP         $remote_addr;
+
+        # uwsgi_pass                  django_{{ project.name }};
+        uwsgi_pass                  unix:{{project.root}}{{project.name}}.sock;
+        # include                     /etc/nginx/uwsgi_params;
+        include                     uwsgi_params;
+    }
+	
+}

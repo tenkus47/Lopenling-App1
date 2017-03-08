@@ -1,0 +1,17 @@
+---
+
+- hosts: all
+  gather_facts: False
+  
+  pre_tasks:
+  - name: install python 2
+    become: true
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    changed_when: False
+  - setup:
+
+- name: Configure all servers
+  hosts: appservers
+  become: yes
+  roles:
+    - { role: server }

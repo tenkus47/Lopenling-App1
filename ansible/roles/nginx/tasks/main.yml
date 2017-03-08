@@ -1,0 +1,7 @@
+---
+- include: packages.yml
+- include: logging.yml
+- include: docroot.yml
+# - include: certificates.yml
+- include: vhost.yml
+- include: conf.yml

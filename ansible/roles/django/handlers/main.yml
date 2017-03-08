@@ -1,0 +1,11 @@
+- name: restart uwsgi
+  become_user: root
+  service: >
+    name={{project.name}}-uwsgi
+    state=restarted
+
+- name: reload uwsgi
+  become_user: root
+  service: >
+    name={{project.name}}-uwsgi
+    state=restarted

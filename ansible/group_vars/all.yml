@@ -1,0 +1,47 @@
+---
+
+ansible_user: root
+
+project_name: parkhang
+project_root: /opt/{{ project_name }}/
+project:
+  name: "{{ project_name }}"
+  user: www-data
+  group: www-data
+  mode: live
+  root: "{{ project_root }}"
+  python: "3.6"
+  virtualenv: "{{ project_root }}venv/"
+  # list of absolute paths to requirement files you
+  # want pip to process
+  # ${project.root}/code/ is the root of the git checkout
+  requirements:
+    - "{{ project_root }}code/{{project_name}}/requirements/production.txt"
+    # - "{{ project_root }}code/{{project_name}}requirements/dev.list"
+
+repo:
+  branch: master
+  url: "git@bitbucket.org:sherab/parkhang.git"
+
+django:
+  settings: project.settings.base
+  wsgi: project.wsgi
+  # absolute path to the root of your django project
+  # in my case this is where the manage.py lives
+  # It's also where the SCM module dumps your project
+  root: "{{project.root}}code/{{project.name}}/"
+  port: 8001
+
+nginx:
+  # Upstreams
+  # Your upstreams are going to be any nodes defined
+  # in the [appservers] inventory group
+  # SSL private and public key
+#   ssl:
+#     private: files+'ssl/dev'
+#     public: files+'ssl/dev.pub'
+
+  # list of hostnames you want nginx to
+  # make the vhost respond to
+  servernames:
+    - "parkhang.phurba.net"

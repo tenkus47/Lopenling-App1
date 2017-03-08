@@ -1,0 +1,26 @@
+---
+- name: Django | Git | Pull sources from the repository.
+  git: >
+    repo={{repo.url}}
+    dest={{project.root}}code/
+    version={{repo.branch}}
+    force=yes
+    update=yes
+    accept_hostkey=yes
+  become: true
+  # become_user: "{project.user}"
+  tags:
+    - repo
+    - app
+
+  notify:
+    - restart uwsgi
+
+- name: Django | Git | Change owner of cloned repo
+  notify: reload project
+  file: >
+    dest={{project.root}}code/
+    owner=www-data
+    group=www-data
+    recurse=yes
+  become: true

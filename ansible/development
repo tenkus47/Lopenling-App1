@@ -1,0 +1,13 @@
+[appservers]
+192.168.33.108
+
+[dbservers]
+192.168.33.108
+
+[webservers]
+192.168.33.108
+
+[production:children]
+appservers
+dbservers
+webservers

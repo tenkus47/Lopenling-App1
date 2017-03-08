@@ -1,0 +1,11 @@
+---
+- name: Nginx | Create log directory
+  file: >
+    dest={{project.root}}logs/
+    state=directory
+    owner: "{{project.user}}"
+    become: true
+    become_user: "{{project.user}}"
+    update: true
+  tags:
+    - webserver
