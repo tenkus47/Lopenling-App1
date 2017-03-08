@@ -4,7 +4,8 @@ import TextSegment from './TextSegment'
 const text = "༄༅། །ཐེག་པ་ཆེན་པོ་ཉི་ཤུ་པ།༄༅༅། །རྒྱ་གར་སྐད་དུ།";
 
 const expectedSegments = [
-    new TextSegment(0, "༄༅།"),
+    new TextSegment(0, "༄༅"),
+    new TextSegment(2, "།"),
     new TextSegment(3, " "),
     new TextSegment(4, "།"),
     new TextSegment(5, "ཐེག"),
@@ -20,7 +21,9 @@ const expectedSegments = [
     new TextSegment(21, "ཤུ"),
     new TextSegment(23, "་"),
     new TextSegment(24, "པ"),
-    new TextSegment(25, "།༄༅༅།"),
+    new TextSegment(25, "།"),
+    new TextSegment(26, "༄༅༅"),
+    new TextSegment(29, "།"),
     new TextSegment(30, " "),
     new TextSegment(31, "།"),
     new TextSegment(32, "རྒྱ"),
