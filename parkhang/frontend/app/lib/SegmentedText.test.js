@@ -100,6 +100,14 @@ describe('SegmentedText', () => {
             segmentedText.segmentsInRange(8, 3)
         ).not.toEqual([expectedSegments[0]]);
 
+        expect(
+            segmentedText.segmentsInRange(8, 1)
+        ).not.toEqual([expectedSegments[3]]);
+
+        let tshegSeg = new TextSegment(8, "་");
+        expect(
+            segmentedText.segmentsInRange(8, 1)
+        ).toEqual([tshegSeg]);
     })
 
 
