@@ -48,7 +48,6 @@ describe('AnnotatedText', () => {
     });
 
     test('Get segment at original position', () => {
-        // console.log("annotatedText._segmentPositions: %o", annotatedText._segmentPositions);
 
         let testSegment = new TextSegment(224, "དྲག");
         expect(
