@@ -30,7 +30,9 @@ const TextDetail = props => {
     }
 
     let textComponent = null;
-    if (props.paginated && props.baseWitness != null) {
+    if (!props.text || props.loading) {
+        textComponent = <div />
+    } else if (props.paginated && props.baseWitness != null) {
         const paginatedText = new PaginatedTibetanText(props.baseWitness.content, null, 500);
         textComponent = <PechaText paginatedText={paginatedText} annotations={props.annotations} />
     } else {
@@ -39,17 +41,9 @@ const TextDetail = props => {
 
     return (
         <div className={classnames(styles.textDetail, utilStyles.flex, utilStyles.flexColumn)}>
-            {
-                props.text ? (
-                    <div>
-                        <TextHeadingContainer text={text} />
-                        <Loader loaded={!props.loading} />
-                        {textComponent}
-                    </div>
-                ) : (
-                    <div />
-                )
-            }
+            <TextHeadingContainer text={text} />
+            <Loader loaded={!props.loading} />
+            {textComponent}
 
         </div>
     );
