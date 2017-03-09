@@ -39,9 +39,18 @@ const TextDetail = props => {
 
     return (
         <div className={classnames(styles.textDetail, utilStyles.flex, utilStyles.flexColumn)}>
-            <TextHeadingContainer text={text} />
-            <Loader loaded={!props.loading} />
-            {textComponent}
+            {
+                props.text ? (
+                    <div>
+                        <TextHeadingContainer text={text} />
+                        <Loader loaded={!props.loading} />
+                        {textComponent}
+                    </div>
+                ) : (
+                    <div />
+                )
+            }
+
         </div>
     );
 };
