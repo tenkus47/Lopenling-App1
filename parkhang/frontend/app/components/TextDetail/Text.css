@@ -8,10 +8,14 @@
     padding: 20px;
     font-family: var(--tibetan-fonts);
     letter-spacing: 0.04em;
+    background-color: white;
+    margin: 20px auto;
+    border-radius: 4px;
 }
 
 .textContainer {
     overflow: auto;
+    background-color: #ddd;
 }
 
 .limitWidth {
