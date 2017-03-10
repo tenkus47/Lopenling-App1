@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import {AutoSizer, List} from 'react-virtualized';
 import 'react-virtualized/styles.css'; // only needs to be imported once
 import TextsSearchContainer from 'components/TextsSearch/TextsSearchContainer'
@@ -7,17 +8,23 @@ import styles from './TextList.css'
 class TextList extends React.Component {
 
     render() {
+        const selectedText = this.props.selectedText;
+        const selectedTextId = (selectedText) ? selectedText.id : -1;
         const texts = this.props.texts;
         const onSelectedText = this.props.onSelectedText;
 
         function rowRenderer({
             key, index, isScrolling, isVisible, style
         }) {
+            let className = styles.textListRow;
+            if (texts[index].id == selectedTextId) {
+                className = classnames(className, styles.selectedRow);
+            }
             return (
                 <div
                     key={key}
                     style={style}
-                    className={styles.textListRow}
+                    className={className}
                     onClick={() => {
                         onSelectedText(texts[index]);
                     }}

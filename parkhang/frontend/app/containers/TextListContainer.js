@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import TextList from 'components/TextList';
 import { selectedText } from 'actions'
+import { getSelectedText } from 'reducers'
 
 const mapStateToProps = (state) => {
     const searchValue = state.ui.searchValue;
@@ -15,7 +16,8 @@ const mapStateToProps = (state) => {
     }
 
     return {
-        texts: texts
+        texts: texts,
+        selectedText: getSelectedText(state)
     }
 };
 

@@ -24,3 +24,8 @@
     white-space: nowrap;
     font-family: var(--tibetan-fonts);
 }
+
+.selectedRow {
+    background-color: #888;
+    color: white;
+}
