@@ -99,13 +99,24 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 stateProps.availableAnnotations,
                 (value) => value.id == annotationId
             );
-
-            dispatch(
-                batchActions([
-                    addedAnnotation(selectedAnnotation),
-                    changedActiveAnnotation(selectedAnnotation)
-                ])
-            )
+            if (annotationId == BASE_ANNOTATION_ID) {
+                let actions = stateProps.availableAnnotations.reduce(
+                    (actions, annotation) => {
+                        actions.push(removedAnnotation(annotation));
+                        return actions;
+                }, []);
+                actions.push(changedActiveAnnotation(stateProps.baseAnnotation));
+                dispatch(
+                    batchActions(actions)
+                )
+            } else {
+                dispatch(
+                    batchActions([
+                        addedAnnotation(selectedAnnotation),
+                        changedActiveAnnotation(selectedAnnotation)
+                    ])
+                )
+            }
         }
     }
 };

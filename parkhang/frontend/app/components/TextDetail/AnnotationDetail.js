@@ -17,10 +17,6 @@ const AnnotationDetail = (props) => {
     }
 
     let clickHandler = props.onClickHandler;
-    // TODO: update click handler to handle base annotations
-    if (props.annotationData.id == BASE_ANNOTATION_ID) {
-        clickHandler = null;
-    }
 
     return (
         <div className={className} onClick={clickHandler}>
