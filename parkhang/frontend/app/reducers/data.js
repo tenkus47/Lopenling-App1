@@ -163,7 +163,7 @@ function removedAnnotation(state, action) {
     let annotation = action.annotation;
     let witness = annotation.witness;
     let userAnnotations = state.witnessActiveAnnotationsById[witness.id];
-    if (userAnnotations && userAnnotations.indexOf(annotation.id) == -1) {
+    if (userAnnotations) {
         userAnnotations = userAnnotations.filter(element => element != annotation.id);
     }
     let witnessActiveAnnotationsById = {
