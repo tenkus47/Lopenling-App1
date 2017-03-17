@@ -32,7 +32,12 @@ const PechaText = (props) => {
                         <div className={styles.pechaImage}>
                             <div className={styles.pechaContent}><p>Page {index + 1} image</p></div>
                         </div>
-                        <Text segmentedText={pages[index]} annotations={props.annotations} />
+                        <Text
+                            segmentedText={pages[index]}
+                            annotations={props.annotations}
+                            annotationPositions={props.annotationPositions}
+                            selectedAnnotatedSegments={props.selectedAnnotatedSegments}
+                        />
                     </div>
                 </CellMeasurer>
             )

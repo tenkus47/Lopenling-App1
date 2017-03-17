@@ -2,26 +2,18 @@ import React from 'react'
 import classnames from 'classnames'
 import styles from './Text.css'
 
-import SegmentedTextHtml from 'lib/SegmentedTextHtml'
-
 export default class Text extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            html: {
-                __html: ""
-            },
-            segmentedText: props.segmentedText,
-            segmentedTextHtml: null
+            segmentedText: props.segmentedText
         };
-
-        this.setupTextHtml(props);
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setupTextHtml(nextProps);
+        this.state.segmentedText = nextProps.segmentedText;
     }
 
     componentDidUpdate() {
@@ -32,42 +24,62 @@ export default class Text extends React.Component {
         this.setupAnnotations();
     }
 
-    setupTextHtml(props) {
-        let textHtml = new SegmentedTextHtml(props.segmentedText);
-        const html = {
-            __html: textHtml.html()
-        };
+    annotationsForSegment(segment) {
+        let annotations = [];
+        for (let i=segment.start; i <= segment.end; i++) {
+            let posAnnotations = this.props.annotationPositions[i];
+            if (posAnnotations) {
+                annotations = annotations.concat(posAnnotations);
+            }
+        }
+        return annotations;
+    }
 
-        this.state.html = html;
-        this.state.segmentedText = props.segmentedText;
-        this.state.segmentedTextHtml = textHtml;
+    segmentsContainSegment(segments, segment) {
+        for (let i=0; i < segments.length; i++) {
+            let listSegment = segments[i];
+            if (listSegment.start == segment.start
+                && listSegment.text == segment.text)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     setupAnnotations() {
-        const annotationKeys = Object.keys(this.props.annotations);
-        if (this.props.annotations && annotationKeys.length > 0) {
-            const segmentedTextHtml = this.state.segmentedTextHtml;
-            if (segmentedTextHtml) {
-                for (let annotationId of annotationKeys) {
-                    const annotation = this.props.annotations[annotationId];
-                    let segmentIds = segmentedTextHtml.segmentIdsInRange(
-                        annotation.start,
-                        annotation.length
-                    );
-                    for (let segmentId of segmentIds) {
-                        let el = document.getElementById(segmentId);
-                        if (el) {
-                            el.className = styles.annotation;
-                            // el.style.color = 'red';
-                            el.onclick = function (e) {
-                                console.log('clicked annotation: %o', annotation);
-                            }
-                        }
-                    }
+        // TODO: show annotations that add text
+        // Use green? square at the position of the annotation
 
+        let segments = this.props.segmentedText.sortedSegments();
+        for (let j=0; j < segments.length; j++) {
+            const segment = segments[j];
+            let annotations = this.annotationsForSegment(segment);
+            if (annotations.length > 0) {
+                const segId = this.idForSegment(segment);
+                let el = document.getElementById(segId);
+                if (el) {
+                    el.onclick = (e) => {
+                        this.props.didSelectSegment(segment);
+                    };
+
+                    if (this.segmentsContainSegment(this.props.selectedAnnotatedSegments, segment)) {
+                        el.className = classnames(styles.annotation, styles.selectedAnnotation)
+                    } else {
+                        el.className = styles.annotation;
+                    }
                 }
             }
+
         }
+    }
+
+    idForSegment(segment) {
+        return "s_" + segment.start;
+    }
+
+    idForDeletedSegment(segment) {
+        return "ds_" + segment.start;
     }
 
     render() {
@@ -76,9 +88,32 @@ export default class Text extends React.Component {
             extraClass = styles.limitWidth;
         }
 
+        // Generate HTML manually as it is much faster when
+        // creating large numbers of elements, such as these spans.
+        let segments = this.state.segmentedText.sortedSegments();
+        let segmentHTML = '';
+        for (let i=0; i < segments.length; i++) {
+            let segment = segments[i];
+            let classAttribute = "";
+            // deleted segments has empty text
+            let id = null;
+            if (segment.length == 0) {
+                id = this.idForDeletedSegment(segment);
+                let className = styles.removedByAnnotation;
+                classAttribute = 'class="'+className+'"';
+            } else {
+                id = this.idForSegment(segment);
+            }
+
+            segmentHTML += '<span id='+id+' key='+id+' '+classAttribute+'>'+segment.text+'</span>';
+        }
+        const html = {
+            __html: segmentHTML
+        };
+
         return (
             <div className={styles.textContainer}>
-                <div className={classnames(styles.text, extraClass)} dangerouslySetInnerHTML={this.state.html} />
+                <div className={classnames(styles.text, extraClass)} dangerouslySetInnerHTML={html} />
             </div>
         )
     }

@@ -8,7 +8,9 @@ const initialState = {
         sources: [],
         sourcesById: {},
         textWitnessesById: {},
+        witnessesById: {},
         witnessAnnotationsById: {},
+        witnessActiveAnnotationsById: {},
         loadingInitialData: false,
         loadedInitialData: false,
         loadingTexts: false,
@@ -24,6 +26,8 @@ const initialState = {
         selectedText: false,
         searchValue: "",
         showPageImages: false,
+        selectedSegments: {},
+        activeAnnotations: {},
     },
 };
 

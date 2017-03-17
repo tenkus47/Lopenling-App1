@@ -19,6 +19,10 @@ export default class TextSegment {
         this._start = value;
     }
 
+    get end() {
+        return this._start + this._text.length - 1;
+    }
+
     get text() {
         return this._text;
     }
@@ -29,5 +33,9 @@ export default class TextSegment {
 
     get length() {
         return this._text.length;
+    }
+
+    toString() {
+        return [this._start, this._text].join("_");
     }
 }

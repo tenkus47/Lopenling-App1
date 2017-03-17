@@ -1,6 +1,9 @@
+@import 'css/colour.css';
+
+
 .textDetail {
     flex-grow: 1;
-    background-color: white;
+    background-color: var(--text-bg);
     border-left: 1px solid #ccc;
     position: relative;
 }

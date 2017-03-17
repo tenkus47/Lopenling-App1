@@ -34,6 +34,13 @@ export const CHANGED_SEARCH_VALUE = 'textList/CHANGED_SEARCH_VALUE';
 
 export const CHANGED_SHOW_PAGE_IMAGES = 'text/CHANGED_SHOW_PAGE_IMAGES';
 
+export const CHANGED_SELECTED_SEGMENT = 'text/CHANGED_SELECTED_SEGMENT';
+export const DESELECTED_SEGMENT = 'text/DESELECTED_SEGMENT';
+
+export const ADDED_ANNOTATION = 'text/ADDED_ANNOTATION';
+export const REMOVED_ANNOTATION = 'text/REMOVED_ANNOTATION';
+
+export const CHANGED_ACTIVE_ANNOTATION = 'text/CHANGED_ACTIVE_ANNOTATION';
 
 /** Action creators **/
 
@@ -192,5 +199,42 @@ export function changedShowPageImages(showPageImages) {
     return {
         type: CHANGED_SHOW_PAGE_IMAGES,
         showPageImages,
+    }
+}
+
+/**
+ *
+ * @param {TextSegment} segment
+ * @returns {{type}}
+ */
+export function changedSelectedSegment(segment) {
+    return {
+        type: CHANGED_SELECTED_SEGMENT,
+        segment,
+    }
+}
+
+/**
+ *
+ * @param {Annotation} annotation
+ */
+export function addedAnnotation(annotation) {
+    return {
+        type: ADDED_ANNOTATION,
+        annotation
+    }
+}
+
+export function removedAnnotation(annotation) {
+    return {
+        type: REMOVED_ANNOTATION,
+        annotation
+    }
+}
+
+export function changedActiveAnnotation(annotation) {
+    return {
+        type: CHANGED_ACTIVE_ANNOTATION,
+        annotation
     }
 }

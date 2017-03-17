@@ -25,6 +25,46 @@ export default class Annotation {
         this.note = note;
     }
 
+    toString() {
+        return [this.id, this.start, this.length, this.content].join("_");
+    }
+
+    getSourceName() {
+        if (this.creator.hasOwnProperty('content')) {
+            // is witness
+            return this.creator.source.name;
+        } else {
+            // TODO: implement correctly
+            return "User";
+        }
+    }
+
+    get end() {
+        return this.start + this.length - 1;
+    }
+
+    isWithinRange(start, length) {
+        const rangeEnd = start + length - 1;
+        if (
+                (this.start <= start
+                    && this.end >= start
+                    && this.end <= rangeEnd)
+                    ||
+                    (this.start >= start
+                    && this.end <= rangeEnd
+                    )
+                    ||
+                    (this.start <= rangeEnd
+                    && this.end >= rangeEnd
+                )
+            )
+        {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     get isVariant() {
         return this._isVariant;
     }

@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux'
-import dataReducers, { initialDataState } from './data'
-import uiReducers, { initialUIState, showPageImages as showPageImagesUI } from './ui'
-
+import dataReducers, * as data from './data'
 import uiReducers, * as ui from './ui'
+//initialUIState, showPageImages as showPageImagesUI
 function createReducer(initialState, handlers) {
     return function reducer(state = initialState, action) {
         if (handlers.hasOwnProperty(action.type)) {
@@ -13,19 +12,52 @@ function createReducer(initialState, handlers) {
     }
 }
 
-export const dataReducer = createReducer(initialDataState, dataReducers);
-const uiReducer = createReducer(initialUIState, uiReducers);
+export const dataReducer = createReducer(data.initialDataState, dataReducers);
 const uiReducer = createReducer(ui.initialUIState, uiReducers);
 
-// Selectors
+/* Selectors */
+
+// ui
 
 export const getSelectedText = (state) => {
     return ui.getSelectedText(state.ui);
 };
 
 export const showPageImages = (state) => {
-    return showPageImagesUI(state.ui);
+    return ui.showPageImages(state.ui);
 };
+
+export const getSelectedSegment = (state) => {
+    return ui.selectedSegment(state.ui);
+};
+
+export const getActiveAnnotation = (state) => {
+    return ui.getActiveAnnotation(state.ui);
+};
+
+// data
+
+export const getText = (state, textId) => {
+    return data.getText(state.data, textId);
+};
+
+export const getSource = (state, sourceId) => {
+    return data.getSource(state.data, sourceId);
+};
+
+export const getWitness = (state, witnessId) => {
+    return data.getWitness(state.data, witnessId);
+};
+
+export const getAnnotationsForWitnessId = (state, witnessId) => {
+    return data.annotationsForWitnessId(state.data, witnessId);
+};
+
+export const getActiveAnnotationsForWitnessId = (state, witnessId) => {
+    return data.getActiveAnnotationsForWitnessId(state.data, witnessId);
+};
+
+
 
 // Root
 

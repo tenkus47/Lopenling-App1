@@ -2,6 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import {AutoSizer, List} from 'react-virtualized';
 import 'react-virtualized/styles.css'; // only needs to be imported once
+import addTibetanShay from 'lib/addTibetanShay'
 import TextsSearchContainer from 'components/TextsSearch/TextsSearchContainer'
 import styles from './TextList.css'
 
@@ -29,7 +30,7 @@ class TextList extends React.Component {
                         onSelectedText(texts[index]);
                     }}
                 >
-                    {texts[index].name}
+                    {addTibetanShay(texts[index].name)}
                 </div>
             )
         }
