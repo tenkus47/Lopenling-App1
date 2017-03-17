@@ -134,4 +134,6 @@ module.exports = {
             path.resolve('./app'),
         ]
     },
+
+    devtool: 'eval-source-map'
 }
