@@ -4,6 +4,7 @@ var BundleTracker = require('webpack-bundle-tracker');
 var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 // var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -35,7 +36,8 @@ module.exports = {
             'process.env':{
                 'NODE_ENV': JSON.stringify('development')
             }
-        })
+        }),
+        new LodashModuleReplacementPlugin,
     ],
 
     module: {
