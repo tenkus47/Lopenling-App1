@@ -55,19 +55,31 @@ export default class SegmentedText {
      * Get the TextSegment at the given position in the text.
      *
      * @param {number} position
-     * @returns {TextSegment}
+     * @returns {TextSegment|null}
      */
     segmentAtPosition(position) {
-        let foundSegment = false;
-        for (let i=0; i < this.segments.length; i++) {
-            let segment = this.segments[i];
-            const segmentEnd = segment.start + segment.text.length - 1;
-            if ((segment.start <= position)
-                && (segmentEnd >= position )) {
-                foundSegment = segment;
-                break;
+        let foundSegment = null;
+
+        const segments = this.sortedSegments();
+        let minIndex = 0;
+        let maxIndex = segments.length - 1;
+        let currentIndex;
+        let currentSegment;
+
+        while(minIndex <= maxIndex) {
+            currentIndex = (minIndex + maxIndex) / 2 | 0;
+            currentSegment = segments[currentIndex];
+            const segmentEnd = currentSegment.start + currentSegment.text.length - 1;
+            if (segmentEnd < position) {
+                minIndex = currentIndex + 1;
+            }
+            else if (currentSegment.start > position) {
+                maxIndex = currentIndex - 1;
+            } else {
+                return currentSegment;
             }
         }
+
         return foundSegment;
     }
 
