@@ -1,6 +1,9 @@
 @import 'css/type.css';
 @import 'css/colour.css';
 
+:root {
+    --fontSize: 24px;
+}
 
 .text {
     font-size: 24px;
@@ -35,5 +38,18 @@
     background-color: red;
     display: inline-block;
     width: 10px;
-    height: 10px;
+    height: var(--fontSize);
+    position: relative;
+    top: 10px;
+    cursor: pointer;
+}
+
+.insertion {
+    background-color: #CDFFCF;
+    display: inline-block;
+    width: 10px;
+    height: var(--fontSize);
+    position: relative;
+    top: 10px;
+    cursor: pointer;
 }

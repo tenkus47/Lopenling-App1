@@ -45,8 +45,10 @@ const TextDetail = props => {
         textComponent = <Text
             segmentedText={segmentedText}
             annotations={props.annotations}
+            activeAnnotations={props.activeAnnotations}
             limitWidth={true}
             didSelectSegment={props.didSelectSegment}
+            didSelectAnnotation={props.didSelectAnnotation}
             annotationPositions={props.annotationPositions}
             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
         />

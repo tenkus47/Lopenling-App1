@@ -89,6 +89,7 @@ const mapStateToProps = (state) => {
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
     const { annotatedText, annotationPositions } = stateProps;
+
     return {
         ...stateProps,
         ...ownProps,
@@ -99,7 +100,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             if (activeAnnotations.length > 0) {
                 // get any active annotations
                 activeAnnotation = activeAnnotations[0];
-            } else if (segmentAnnotations.length > 0) {
+            } else if (segmentAnnotations && segmentAnnotations.length > 0) {
                 // get base text annotation for longest annotation highlighted in text
                 let longestAvailable = getLongestAnnotation(segmentAnnotations);
                 let [ start, length ] = annotatedText.getPositionOfAnnotation(longestAvailable);
@@ -109,6 +110,21 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 activeAnnotation = annotatedText.getBaseAnnotation(segment.start, segment.length);
             }
 
+            dispatch(changedActiveAnnotation(activeAnnotation));
+        },
+        didSelectAnnotation: (annotation) => {
+            let activeAnnotation = null;
+            if (_.some(annotatedText.annotations, (active) => annotation.id == active.id)) {
+                activeAnnotation = annotation;
+            } else {
+                let [ start, length ] = annotatedText.getPositionOfAnnotation(annotation);
+                // if it is an insertion, use 0 length
+                if (annotation.length == 0) {
+                    length = 0;
+                }
+                activeAnnotation = annotatedText.getBaseAnnotation(start, length);
+                // console.log('activeAnnotation start: %d, length: %d', start, length);
+            }
             dispatch(changedActiveAnnotation(activeAnnotation));
         }
     }
