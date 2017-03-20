@@ -72,8 +72,7 @@ export default class SegmentedText {
             const segmentEnd = currentSegment.start + currentSegment.text.length - 1;
             if (segmentEnd < position) {
                 minIndex = currentIndex + 1;
-            }
-            else if (currentSegment.start > position) {
+            } else if (currentSegment.start > position) {
                 maxIndex = currentIndex - 1;
             } else {
                 return currentSegment;
