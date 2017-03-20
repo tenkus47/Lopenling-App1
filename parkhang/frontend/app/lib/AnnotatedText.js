@@ -76,16 +76,31 @@ export default class AnnotatedText {
         });
     }
 
+    /**
+     * Return the starting position and length of the text segment that
+     * this annotation would be contained in in the generated text.
+     *
+     * @param annotation
+     * @return {*}
+     */
     getPositionOfAnnotation(annotation) {
         this.segmentedText;
-        if (this._orginalCurrentSegmentPositions[annotation.start] == undefined) {
+        let startKey = annotation.start;
+        let isActive = _.some(this.annotations, (a) => a.id == annotation.id);
+        if (annotation.isInsertion) {
+            // only use isnertion key if it is an active annotation
+            if (isActive) {
+                startKey = String(annotation.start) + INSERTION_KEY;
+            }
+        }
+        if (this._orginalCurrentSegmentPositions[startKey] == undefined) {
             if (this.originalText.getText().length == annotation.start) {
                 return [annotation.start, 0];
             } else {
                 return [null, null];
             }
         }
-        const [ startPos, startWasDeleted ] = this._orginalCurrentSegmentPositions[annotation.start];
+        const [ startPos, startWasDeleted ] = this._orginalCurrentSegmentPositions[startKey];
 
         let length = null;
         if (startWasDeleted) {
@@ -93,7 +108,7 @@ export default class AnnotatedText {
         } else {
             const startSegment = this.segmentedText.segmentAtPosition(startPos);
             let endSegment = null;
-            if (_.some(this.annotations, (active) => annotation.id == active.id)) {
+            if (isActive) {
                 endSegment = this.segmentedText.segmentAtPosition(startPos + annotation.content.length - 1);
             } else {
                 endSegment = this.segmentedText.segmentAtPosition(startPos + annotation.length - 1);

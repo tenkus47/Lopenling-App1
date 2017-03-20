@@ -296,6 +296,18 @@ describe('AnnotatedText', () => {
             newAnnotatedText.getPositionOfAnnotation(endAdditionAnnotation)
         ).toEqual(expectedPosition);
 
+        let insertion = new Annotation(7, baseWitness, 268, 0,  "དང་",  otherWitness);
+        expectedPosition = [238, 3];
+        expect(
+            annotatedText.getPositionOfAnnotation(insertion)
+        ).toEqual(expectedPosition);
+
+        let nonactiveInsertion = new Annotation(77, baseWitness, 268, 0,  "དང་",  otherWitness);
+        expectedPosition = [241, 3];
+        expect(
+            annotatedText.getPositionOfAnnotation(nonactiveInsertion)
+        ).toEqual(expectedPosition);
+
         // TODO: write some more tests for multi-segment changes
     });
 });
