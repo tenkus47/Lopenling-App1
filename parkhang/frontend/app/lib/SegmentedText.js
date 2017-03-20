@@ -80,7 +80,13 @@ export default class SegmentedText {
      */
     segmentsInRange(start, length) {
         let segments = [];
-        const rangeEnd = start + length - 1;
+        let rangeEnd;
+        if (length == 0) {
+            rangeEnd = start;
+        } else {
+            rangeEnd = start + length - 1;
+        }
+
         const sorted = this.sortedSegments();
         for (let i=0; i < sorted.length; i++) {
             let segment = sorted[i];

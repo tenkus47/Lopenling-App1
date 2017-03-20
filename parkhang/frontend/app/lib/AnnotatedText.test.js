@@ -22,17 +22,18 @@ const annotations = [
     new Annotation(3, baseWitness, 57, 4,  "ཤྲི",    otherWitness),
     new Annotation(4, baseWitness, 78, 2,  "ན",    otherWitness),
     // below is gramatically incorrect but useful for testing a single char syllable replacement
-    new Annotation(5, baseWitness, 204, 1,  "ན་ལ",    otherWitness),
-    new Annotation(6, baseWitness, 256, 2,  "",    otherWitness)
+    new Annotation(5, baseWitness, 204, 1,  "ན་ལ",  otherWitness),
+    new Annotation(6, baseWitness, 256, 2,  "",    otherWitness),
+    new Annotation(7, baseWitness, 268, 0,  "དང་",  otherWitness)
 ];
 
 function segmenter(text) {
-    return segmentTibetanText(text).segments;
+    return segmentTibetanText(text).sortedSegments();
 }
 
 describe('AnnotatedText', () => {
 
-    const expectedTextContent = "༄༅༅། །རྒྱ་གར་སྐད་དུ། ས་པྲཛྙཱ་ཤྲི་མ་ཧཱ་ཀཱ་ལ་སཱ་དྷ་ན་ནཱ་མ། བོད་སྐད་དུ། དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ། བླ་མ་དང་དཔལ་རྡོ་རྗེ་མཁའ་འགྲོ་ལ་ཕྱག་འཚལ་ལོ། །འགྱེལ་བའི་རོ་ན་ལ་ཞབས་མཆོག་མཉམ་པའི་སྟབས་ཀྱིས་བཞུགས་ཤིང་སྦོམ་ཐུང་དྲག་གསུས་ཁྱིམ་ཡངས།";
+    const expectedTextContent = "༄༅༅། །རྒྱ་གར་སྐད་དུ། ས་པྲཛྙཱ་ཤྲི་མ་ཧཱ་ཀཱ་ལ་སཱ་དྷ་ན་ནཱ་མ། བོད་སྐད་དུ། དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ། བླ་མ་དང་དཔལ་རྡོ་རྗེ་མཁའ་འགྲོ་ལ་ཕྱག་འཚལ་ལོ། །འགྱེལ་བའི་རོ་ན་ལ་ཞབས་མཆོག་མཉམ་པའི་སྟབས་ཀྱིས་བཞུགས་ཤིང་སྦོམ་ཐུང་དྲག་གསུས་ཁྱིམ་དང་ཡངས།";
 
     const segmentedText = segmentTibetanText(baseWitness.content);
     const annotatedText = new AnnotatedText(segmentedText, annotations, segmenter, baseWitness);
@@ -69,6 +70,11 @@ describe('AnnotatedText', () => {
         expect(
            annotatedText.segmentAtOriginalPosition(256)
         ).toEqual(228);
+
+        testSegment = new TextSegment(241, "ཡངས");
+        expect(
+            annotatedText.segmentAtOriginalPosition(268)
+        ).toEqual(testSegment);
     });
 
     const noAnnotatedText = new AnnotatedText(segmentedText, []);
@@ -103,7 +109,7 @@ describe('AnnotatedText', () => {
             annotatedText.segmentedText.sortedSegments()
         ).toContainEqual(deletedSegment);
 
-        let unchangedAnnotation = new Annotation(7, baseWitness, 223, 15, "", baseWitness);
+        let unchangedAnnotation = new Annotation(17, baseWitness, 223, 15, "", baseWitness);
         let unchangedSegments = [
             new TextSegment(195, "སྟབས"),
             new TextSegment(199, "་"),
@@ -124,7 +130,16 @@ describe('AnnotatedText', () => {
         expect(
             annotatedText.segmentsForAnnotation(multipleAdded)
         ).toEqual(addedSegments);
+
+        let insertion = new Annotation(7, baseWitness, 268, 0,  "དང་",  otherWitness);
+        let insertionSegment = new TextSegment(238, "དང");
+        let insertionSegment2 = new TextSegment(240, "་");
+        expect(
+            annotatedText.segmentsForAnnotation(insertion)
+        ).toEqual([insertionSegment, insertionSegment2]);
+
     });
+
 
     test('Get original segments from amended version', () => {
         let expectedSegment = new TextSegment(87, "བོད");
@@ -132,10 +147,16 @@ describe('AnnotatedText', () => {
             annotatedText.originalSegmentAtPosition(57)
         ).toEqual(expectedSegment);
 
+        expectedSegment = new TextSegment(268, "ཡངས");
+        expect(
+            annotatedText.originalSegmentAtPosition(241)
+        ).toEqual(expectedSegment);
+
         expect(
             annotatedText.originalSegmentAtPosition(1000)
         ).toEqual(null);
     });
+
 
     test('Get base annotation', () => {
        let expectedAnnotation = new Annotation(
@@ -165,6 +186,35 @@ describe('AnnotatedText', () => {
         expect(
           annotatedText.getBaseAnnotation(0, 3)
         ).toEqual(expectedAdditionAnnotation);
+
+
+        let expectedInsertion = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            190,
+            0,
+            "",
+            annotatedText.baseWitness,
+            false
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(160, 0)
+        ).toEqual(expectedInsertion);
+
+        expectedInsertion = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            268,
+            0,
+            "",
+            annotatedText.baseWitness,
+            false
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(238, 3)
+        ).toEqual(expectedInsertion);
     });
 
 
@@ -194,7 +244,12 @@ describe('AnnotatedText', () => {
         expect(
             annotatedText.annotationsForPosition(228)
         ).toEqual([deletedAnnotation]);
-    })
+
+        let expectedInsertion= new Annotation(7, baseWitness, 268, 0,  "དང་",  otherWitness);
+        expect(
+            annotatedText.annotationsForPosition(238)
+        ).toEqual([expectedInsertion]);
+    });
 
     test('Get current position of annotation', () => {
         let annotation = new Annotation(1, baseWitness, 0,  27, "", otherWitness);
@@ -230,7 +285,7 @@ describe('AnnotatedText', () => {
         ).toEqual(expectedPosition);
 
         expectedPosition = [197, 15];
-        let unchangedAnnotation = new Annotation(7, baseWitness, 223, 15, "", baseWitness);
+        let unchangedAnnotation = new Annotation(9, baseWitness, 223, 15, "", baseWitness);
         expect(
             newAnnotatedText.getPositionOfAnnotation(unchangedAnnotation)
         ).toEqual(expectedPosition);

@@ -68,4 +68,8 @@ export default class Annotation {
     get isVariant() {
         return this._isVariant;
     }
+
+    get isInsertion() {
+        return this.length == 0;
+    }
 }

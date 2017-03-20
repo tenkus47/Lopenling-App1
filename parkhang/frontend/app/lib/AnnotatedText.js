@@ -5,6 +5,8 @@ import _ from 'Lodash'
 
 export const BASE_ANNOTATION_ID = -1;
 
+const INSERTION_KEY = 'i';
+
 export default class AnnotatedText {
 
     /**
@@ -59,8 +61,14 @@ export default class AnnotatedText {
 
     annotationsForPosition(position) {
         return this.annotations.filter((annotation) => {
-            let [currentStart] = this._orginalCurrentSegmentPositions[annotation.start];
-            let [currentEnd] = this._orginalCurrentSegmentPositions[annotation.end];
+            let start = annotation.start;
+            let end = annotation.end;
+            if (annotation.isInsertion) {
+                start = String(start) + INSERTION_KEY;
+                end = start;
+            }
+            let [currentStart] = this._orginalCurrentSegmentPositions[start];
+            let [currentEnd] = this._orginalCurrentSegmentPositions[end];
 
             return (
                 currentStart <= position && currentEnd >= position
@@ -113,16 +121,22 @@ export default class AnnotatedText {
         let startPos = this._currentOriginalSegmentPositions[start];
         let endPos = this._currentOriginalSegmentPositions[start+length];
         let origLength = endPos - startPos;
+        let activeAnnotation = null;
         if (activeAnnotations.length > 0) {
-            let activeAnnotation = activeAnnotations[0];
+            activeAnnotation = activeAnnotations[0];
             startPos = activeAnnotation.start;
             origLength = activeAnnotation.length;
         }
 
-        let segments = this.originalText.segmentsInRange(startPos, origLength);
-        let content = segments.reduce((content, segment) => {
-            return content + segment.text;
-        }, "");
+        let content = "";
+        if (length == 0 || (activeAnnotation && activeAnnotation.isInsertion)) {
+            origLength = 0;
+        } else {
+            let segments = this.originalText.segmentsInRange(startPos, origLength);
+            content = segments.reduce((content, segment) => {
+                return content + segment.text;
+            }, "");
+        }
         let annotation = new Annotation(
             BASE_ANNOTATION_ID,
             this.baseWitness,
@@ -152,9 +166,12 @@ export default class AnnotatedText {
         }
 
         if (isActive) {
-            let [ start, deleted ] = this._orginalCurrentSegmentPositions[annotation.start];
+            let key = annotation.start;
+            if (annotation.isInsertion) {
+                key += INSERTION_KEY;
+            }
+            let [ start, deleted ] = this._orginalCurrentSegmentPositions[key];
             let end = start + annotation.content.length;
-
             for (let i=start; i < end; i++) {
                 let segment = this.segmentedText.segmentAtPosition(i);
                 if (segments.indexOf(segment) == -1) {
@@ -208,19 +225,32 @@ export default class AnnotatedText {
                 const deleted = (annotation.content.length == 0);
                 if (this.segmenter != null && !deleted) {
                     let annotationSegments = this.segmenter(annotation.content);
+                    let annoSegStart = start;
                     for (let j=0; j < annotationSegments.length; j++) {
                         let annotationSegment = annotationSegments[j];
+                        annotationSegment.start = annoSegStart;
                         annotationSegment._annotation = annotation;
+                        annoSegStart += annotationSegment.text.length;
                     }
-                    newSegments.splice(firstIndex, targets.length, ...annotationSegments);
+                    if (annotation.isInsertion) {
+                        newSegments.splice(firstIndex, 0, ...annotationSegments);
+                    } else {
+                        newSegments.splice(firstIndex, targets.length, ...annotationSegments);
+                    }
                 } else {
                     let annotationSegment = new TextSegment(start, annotation.content);
                     annotationSegment._annotation = annotation;
-                    newSegments.splice(firstIndex, targets.length, annotationSegment);
+                    if (annotation.isInsertion) {
+                        newSegments.splice(firstIndex, 0, annotationSegment);
+                    } else {
+                        newSegments.splice(firstIndex, targets.length, annotationSegment);
+                    }
                 }
 
                 // store replaced segments to use when setting position below
-                replacedSegments[annotation.id] = targets;
+                if (!annotation.isInsertion) {
+                    replacedSegments[annotation.id] = targets;
+                }
             }
         }
 
@@ -234,7 +264,10 @@ export default class AnnotatedText {
             {
                 const deleted = (segment.text.length == 0);
                 const replaced = replacedSegments[segment._annotation.id];
-                if (replaced) {
+                if (segment._annotation.isInsertion) {
+                    this._orginalCurrentSegmentPositions[String(segment.start) + INSERTION_KEY] = [currentPosition, deleted];
+                    processedSegmentAnnotations[segment._annotation.id] = true;
+                } else if (replaced) {
                     for (let j=0; j < replaced.length; j++) {
                         let replacedSeg = replaced[j];
                         for (let k=0; k < replacedSeg.length; k++) {
