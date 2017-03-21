@@ -72,7 +72,6 @@ const mapStateToProps = (state, ownProps) => {
         baseAnnotation = activeAnnotation;
     } else {
         let [ start, length ] = ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
-        // let end = start + length;
         baseAnnotation = ownProps.annotatedText.getBaseAnnotation(start, length);
         const baseAnnotationData = getAnnotationsData([baseAnnotation]);
         annotationsData = baseAnnotationData.concat(annotationsData);
