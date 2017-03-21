@@ -1,9 +1,9 @@
-from django.contrib.auth.models import User
-
+from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 
-from api.views import TextList, SourceList, WitnessList, AnnotationList
-from texts.models import Text, Source, Witness, Annotation
+from users.models import User
+from api.views import TextList, SourceList, WitnessList, AnnotationList, AppliedUserAnnotations
+from texts.models import Text, Source, Witness, Annotation, AppliedUserAnnotation
 
 class TextsTestCase(APITestCase):
     username = "TestUser"
@@ -133,3 +133,28 @@ class TextsTestCase(APITestCase):
         response = AnnotationList.as_view()(request, self.text.pk,  self.witness.pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
+
+    def test_apply_user_annotation(self):
+        url = f'/api/texts/{self.text.pk}/{self.witness.pk}/applied_annotations/'
+        factory = APIRequestFactory()
+
+        # add applied annotation
+        request = factory.post(url, {'annotation_id' : self.annotation.pk})
+        force_authenticate(request, user=self.user)
+        response = AppliedUserAnnotations.as_view()(request)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        applied_annotation = AppliedUserAnnotation.objects.get(annotation=self.annotation)
+
+        request = factory.get(url)
+        force_authenticate(request, user=self.user)
+        response = AppliedUserAnnotations.as_view()(request, self.annotation.witness_id)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['annotation'], self.annotation.pk)
+
+        request = factory.delete(url, {'annotation_id' : self.annotation.pk})
+        force_authenticate(request, user=self.user)
+        response = AppliedUserAnnotations.as_view()(request)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(AppliedUserAnnotation.objects.count(), 0)

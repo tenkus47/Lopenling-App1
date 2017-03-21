@@ -1,6 +1,6 @@
 from rest_framework import routers, serializers, viewsets
 
-from texts.models import Text, Source, Witness, Annotation
+from texts.models import Text, Source, Witness, Annotation, AppliedUserAnnotation
 
 
 class TextSerializer(serializers.ModelSerializer):
@@ -39,3 +39,11 @@ class AnnotationSerializer(serializers.ModelSerializer):
         fields = ('id', 'witness', 'start', 'length', 'content', 'note',
                   'creator_witness', 'creator_user', 'is_variant',
                   'is_deleted')
+
+
+class AppliedUserAnnotationSerializer(serializers.ModelSerializer):
+    annotation = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = AppliedUserAnnotation
+        fields = ('id', 'annotation')
