@@ -97,7 +97,8 @@ class Annotation(models.Model):
         name = self.creator_name()
         return f'{self.witness.text.name} ({self.witness.source.name}): {self.start}-{self.start+self.length} - {name}'
 
-class AppliedUserAnnotations(models.Model):
+
+class AppliedUserAnnotation(models.Model):
     """
     Annotations that a User has selected to be active.
     """
