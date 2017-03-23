@@ -31,7 +31,7 @@ const initialState = {
     },
 };
 
-describe('root reducer', () => {
+describe('Root reducer', () => {
     it('should return initial state', () => {
         expect(
             rootReducer(undefined, {}),
@@ -39,7 +39,7 @@ describe('root reducer', () => {
     });
 });
 
-describe('texts reducer', () => {
+describe('Texts reducer', () => {
    it('should handle loadedInitialData', () => {
        expect(
            dataReducer(initialState.data, actions.loadedInitialData())
