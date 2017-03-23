@@ -1,4 +1,4 @@
-import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { call, put, take, fork, takeEvery, takeLatest } from 'redux-saga/effects'
 import {
     LOAD_INITIAL_DATA,
     loadedTexts,
@@ -12,21 +12,19 @@ import {
     loadWitnessAnnotations,
     loadingWitnessAnnotations,
     loadedWitnessAnnotations,
-    SELECTED_TEXT
+    SELECTED_TEXT,
+    ADDED_ANNOTATION,
+    REMOVED_ANNOTATION
 } from 'actions'
 
-import {
-    fetchTexts,
-    fetchSources,
-    fetchTextWitnesses,
-    fetchWitnessAnnotations
-} from 'api'
+import * as api from 'api'
+import { BATCH } from 'redux-batched-actions'
 
 // INITIAL DATA
 
 export function* loadTexts() {
     try {
-        const texts = yield call(fetchTexts);
+        const texts = yield call(api.fetchTexts);
         yield put(loadedTexts(texts))
     } catch(e) {
         console.log("FAILED loadTexts! %o", e);
@@ -35,7 +33,7 @@ export function* loadTexts() {
 
 function* loadSources() {
     try {
-        const sources = yield call(fetchSources);
+        const sources = yield call(api.fetchSources);
         yield put(loadedSources(sources));
     } catch(e) {
         console.log("FAILED loadSources! %o", e);
@@ -52,7 +50,8 @@ function* loadInitialData() {
 }
 
 export function* watchLoadInitialData() {
-    yield takeLatest(LOAD_INITIAL_DATA, loadInitialData);
+    //yield takeLatest(LOAD_INITIAL_DATA, loadInitialData);
+    yield takeLatest(LOAD_INITIAL_DATA, typeCalls[LOAD_INITIAL_DATA]);
     yield put(loadingInitialData())
 }
 
@@ -75,7 +74,7 @@ function* watchSelectedText() {
 
 function* loadWitnesses(action) {
     try {
-        const witnesses = yield call(fetchTextWitnesses, action.text);
+        const witnesses = yield call(api.fetchTextWitnesses, action.text);
         yield put(loadedWitnesses(action.text, witnesses));
         let baseWitness = null;
         for (const witness of witnesses) {
@@ -97,7 +96,7 @@ function* loadWitnesses(action) {
 
 function *loadAnnotations(action) {
     yield put(loadingWitnessAnnotations(action.witness));
-    const annotations = yield call(fetchWitnessAnnotations, action.witness);
+    const annotations = yield call(api.fetchWitnessAnnotations, action.witness);
     yield put(loadedWitnessAnnotations(action.witness, annotations));
 }
 
@@ -105,12 +104,69 @@ function* watchLoadAnnotations() {
     yield takeLatest(LOAD_WITNESS_ANNOTATIONS, loadAnnotations)
 }
 
+function *applyAnnotation(action) {
+    try {
+        yield call(api.applyAnnotation, action.annotation);
+    } catch(e) {
+        console.log('applyAnnotation failed: %o, %o', e, action);
+    }
+}
+
+function* watchAddedAnnotation() {
+    yield takeEvery(ADDED_ANNOTATION, typeCalls[ADDED_ANNOTATION])
+}
+
+function *removedAnnotation(action) {
+    try {
+        yield call(api.removeAnnotation, action.annotation);
+    } catch(e) {
+        console.log('removedAnnotation failed: %o, %o', e, action);
+    }
+
+}
+
+function* watchRemovedAnnotation() {
+    yield takeEvery(REMOVED_ANNOTATION, typeCalls[REMOVED_ANNOTATION])
+}
+
+function *dispatchedBatch(action) {
+    const actions = action.payload;
+    for (let i=0; i < actions.length; i++) {
+        const batchedAction = actions[i];
+        if (typeCalls.hasOwnProperty(batchedAction.type)) {
+            yield fork(typeCalls[batchedAction.type], batchedAction);
+        }
+    }
+}
+
+function* watchBatchedActions() {
+    yield takeEvery(BATCH, dispatchedBatch);
+}
+
+
+/**
+ * Stores functions by action type.
+ * Used primarily to allow batched actions to be handled
+ * automatically by dispatchedBatch.
+ *
+ * @type {Object.<string, function>}
+ */
+const typeCalls = {
+    [LOAD_INITIAL_DATA]: loadInitialData,
+    [ADDED_ANNOTATION]: applyAnnotation,
+    [REMOVED_ANNOTATION]: removedAnnotation,
+};
+
+
 /** Root **/
 
 export default function* rootSaga() {
     yield [
         watchLoadInitialData(),
         watchSelectedText(),
-        watchLoadAnnotations()
+        watchLoadAnnotations(),
+        watchAddedAnnotation(),
+        watchRemovedAnnotation(),
+        watchBatchedActions()
     ]
 }
