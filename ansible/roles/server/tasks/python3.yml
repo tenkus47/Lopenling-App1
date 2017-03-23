@@ -27,25 +27,25 @@
 
 - name: Download and expand source
   unarchive:
-    src: https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz
+    src: https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz
     dest: /usr/local/src/
     remote_src: True
-    creates: /usr/local/src/Python-3.6.0
+    creates: /usr/local/src/Python-3.6.1
   become: yes
   # when: python36_result.stat.exists == False
 
 - name: configure python 3.6
   command: >
     ./configure
-    chdir=/usr/local/src/Python-3.6.0
-    creates=/usr/local/bin/python3.6
+    chdir=/usr/local/src/Python-3.6.1
+    creates=/usr/local/src/Python-3.6.1/python
   become: yes
 
-- name: build and install python 3.6
+- name: build and install python 3.6.1
   command: >
     make altinstall
-    chdir=/usr/local/src/Python-3.6.0
-    creates=/usr/local/bin/python3.6
+    chdir=/usr/local/src/Python-3.6.1
+    creates=/usr/local/src/Python-3.6.1/python
   become: yes
 
 - name: install virtualenv
