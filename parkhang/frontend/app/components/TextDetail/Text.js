@@ -20,14 +20,6 @@ export default class Text extends React.Component {
         this.state.segmentedText = nextProps.segmentedText;
     }
 
-    componentDidUpdate() {
-        //this.setupAnnotations();
-    }
-
-    componentDidMount() {
-        //this.setupAnnotations();
-    }
-
     annotationsForSegment(segment) {
         let annotations = [];
         const foundAnnotations = this.props.annotationPositions[segment.start];
