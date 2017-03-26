@@ -69,7 +69,7 @@ describe('SegmentedText', () => {
 
         expect(
             segmentedText.segmentAtPosition(198)
-        ).toEqual(false);
+        ).toEqual(null);
     });
 
     it('should return the correct segments for the given range', () => {
