@@ -88,7 +88,7 @@ export default class Text extends React.Component {
 
     generateHtml() {
         let segments = this.state.segmentedText.sortedSegments();
-        if (segments !== this._renderedSegments || this._renderedHtml == null) {
+        if (segments !== this._renderedSegments || this._renderedHtml === null) {
             let segmentHTML = '';
             const insertionClass = styles.insertion;
             for (let i = 0; i < segments.length; i++) {
