@@ -52,13 +52,15 @@ export default class SegmentedText {
     }
 
     /**
-     * Get the TextSegment at the given position in the text.
+     * Return the index of the sorted segment at the given position.
+     *
+     * Intended to be used privately by internal methods.
      *
      * @param {number} position
-     * @returns {TextSegment|null}
+     * @return {number} 0 or greater if a segment if found; -1 if not found.
      */
-    segmentAtPosition(position) {
-        let foundSegment = null;
+    indexOfSortedSegmentAtPosition(position) {
+        let foundSegmentIndex = -1;
 
         const segments = this.sortedSegments();
         let minIndex = 0;
@@ -75,10 +77,25 @@ export default class SegmentedText {
             } else if (currentSegment.start > position) {
                 maxIndex = currentIndex - 1;
             } else {
-                return currentSegment;
+                return currentIndex;
             }
         }
 
+        return foundSegmentIndex;
+    }
+
+    /**
+     * Get the TextSegment at the given position in the text.
+     *
+     * @param {number} position
+     * @returns {TextSegment|null}
+     */
+    segmentAtPosition(position) {
+        let foundSegment = null;
+        let segmentIndex = this.indexOfSortedSegmentAtPosition(position);
+        if (segmentIndex > -1) {
+            foundSegment = this.sortedSegments()[segmentIndex];
+        }
         return foundSegment;
     }
 
@@ -99,25 +116,29 @@ export default class SegmentedText {
         }
 
         const sorted = this.sortedSegments();
-        for (let i=0; i < sorted.length; i++) {
-            let segment = sorted[i];
-            const segmentEnd = segment.start + segment.text.length - 1;
+        const firstSegmentIndex = this.indexOfSortedSegmentAtPosition(start);
+        if (firstSegmentIndex > -1) {
+            for (let i = firstSegmentIndex; i < sorted.length; i++) {
+                let segment = sorted[i];
+                const segmentEnd = segment.start + segment.text.length - 1;
 
-            if (
-                (segment.start <= start
-                && segmentEnd >= start
-                && segmentEnd <= rangeEnd)
-                ||
-                (segment.start >= start
-                && segmentEnd <= rangeEnd
-                )
-                ||
-                (segment.start <= rangeEnd
-                && segmentEnd >= rangeEnd
-                )
-            )
-            {
-                segments.push(segment);
+                if (
+                    (segment.start <= start
+                    && segmentEnd >= start
+                    && segmentEnd <= rangeEnd)
+                    ||
+                    (segment.start >= start
+                        && segmentEnd <= rangeEnd
+                    )
+                    ||
+                    (segment.start <= rangeEnd
+                        && segmentEnd >= rangeEnd
+                    )
+                ) {
+                    segments.push(segment);
+                } else {
+                    break;
+                }
             }
         }
 
