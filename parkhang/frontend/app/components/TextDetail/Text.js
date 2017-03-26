@@ -27,13 +27,11 @@ export default class Text extends React.Component {
 
     annotationsForSegment(segment) {
         let annotations = [];
-        for (let i=segment.start; i <= segment.end; i++) {
-            let posAnnotations = this.props.annotationPositions[i];
-            if (posAnnotations) {
-                annotations = annotations.concat(posAnnotations);
-            }
+        const foundAnnotations = this.props.annotationPositions[segment.start];
+        if (foundAnnotations) {
+            annotations = foundAnnotations;
         }
-        return _.uniq(annotations);
+        return annotations;
     }
 
     getAnnotation(id) {
