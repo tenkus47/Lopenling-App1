@@ -93,26 +93,28 @@ export default class Text extends React.Component {
             const insertionClass = styles.insertion;
             for (let i = 0; i < segments.length; i++) {
                 let segment = segments[i];
-                let annotations = this.annotationsForSegment(segment);
-                let insertions = annotations.filter((annotation) => annotation.length == 0);
-                let activeInsertions = _.intersectionWith(
-                    this.props.activeAnnotations,
-                    insertions,
-                    (a, b) => a.id == b.id);
-                let inactiveInsertions = _.differenceWith(insertions, activeInsertions, (a, b) => a.id == b.id);
-                if (inactiveInsertions.length > 0) {
-                    const insertion = inactiveInsertions[0];
-                    const insertionId = this.idForInsertion(insertion);
-
-                    segmentHTML += '<span id=' + insertionId + ' key=' + insertionId + ' class="' + insertionClass + '"></span>';
-                }
-
-                let remainingAnnotations = _.differenceWith(annotations, insertions, (a, b) => a.id == b.id);
                 let classAttribute = "";
-
                 let classes = [];
-                if (remainingAnnotations.length > 0 || activeInsertions.length > 0) {
-                    classes.push(styles.annotation);
+                let annotations = this.annotationsForSegment(segment);
+                if (annotations) {
+                    let insertions = annotations.filter((annotation) => annotation.length == 0);
+                    let activeInsertions = _.intersectionWith(
+                        this.props.activeAnnotations,
+                        insertions,
+                        (a, b) => a.id == b.id);
+                    let inactiveInsertions = _.differenceWith(insertions, activeInsertions, (a, b) => a.id == b.id);
+                    if (inactiveInsertions.length > 0) {
+                        const insertion = inactiveInsertions[0];
+                        const insertionId = this.idForInsertion(insertion);
+
+                        segmentHTML += '<span id=' + insertionId + ' key=' + insertionId + ' class="' + insertionClass + '"></span>';
+                    }
+
+                    let remainingAnnotations = _.differenceWith(annotations, insertions, (a, b) => a.id == b.id);
+
+                    if (remainingAnnotations.length > 0 || activeInsertions.length > 0) {
+                        classes.push(styles.annotation);
+                    }
                 }
                 // deleted segments has empty text
                 let id = null;
