@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import TextDetail from 'components/TextDetail';
 import { changedSelectedSegment, changedActiveAnnotation } from 'actions'
-import { showPageImages, getSelectedSegment, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness } from 'reducers'
+import { showPageImages, getSelectedSegment, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
@@ -26,22 +26,43 @@ const getAnnotationPositions = (annotatedText, annotations) => {
     return positions;
 };
 
-const mapStateToProps = (state) => {
-    const selectedText = state.ui.selectedText;
-    let witnesses = {};
-    let baseWitness = null;
-    if (selectedText && state.data.textWitnessesById.hasOwnProperty(selectedText.id)) {
-        witnesses = state.data.textWitnessesById[selectedText.id];
-        for (let witnessId of Object.keys(witnesses)) {
-            const witness = witnesses[witnessId];
-            if (!baseWitness || witness.is_base) {
-                baseWitness = witness;
+const annotationsFromData = (state, annotationList) => {
+    let annotations = [];
+    if (annotationList) {
+        for (let key in annotationList) {
+            if (annotationList.hasOwnProperty(key)) {
+                let annotationData = annotationList[key];
+                let annotation = annotationFromData(state, annotationData);
+
+                annotations.push(annotation);
             }
         }
-        if (baseWitness) {
-            baseWitness = getWitness(state, baseWitness.id);
+    }
+    return annotations;
+};
+
+const getActiveAnnotations = (state, baseWitnessId) => {
+    const activeAnnotationList = getActiveAnnotationsForWitnessId(state, baseWitnessId);
+    if (!activeAnnotationList) {
+        return [];
+    }
+
+    let activeAnnotationDataList = [];
+    for(let i=0; i < activeAnnotationList.length; i++) {
+        let activeAnnotationId = activeAnnotationList[i];
+        let activeAnnotationData = getAnnotationData(state, baseWitnessId, activeAnnotationId);
+        if (activeAnnotationData) {
+            activeAnnotationDataList.push(activeAnnotationData);
         }
     }
+
+    return annotationsFromData(state, activeAnnotationDataList);
+};
+
+const mapStateToProps = (state) => {
+    const selectedText = getSelectedText(state);
+    let witnesses = {};
+    let baseWitness = getBaseWitness(state, selectedText.id);
 
     let annotationPositions = {};
     let annotations = [];
@@ -52,8 +73,9 @@ const mapStateToProps = (state) => {
     if (baseWitness && selectedText
         && state.data.witnessAnnotationsById.hasOwnProperty(baseWitness.id))
     {
-        annotations = getAnnotationsForWitnessId(state, baseWitness.id);
-        activeAnnotations = getActiveAnnotationsForWitnessId(state, baseWitness.id);
+        let annotationList = getAnnotationsForWitnessId(state, baseWitness.id);
+        annotations = annotationsFromData(state, annotationList);
+        activeAnnotations = getActiveAnnotations(state, baseWitness.id);
         annotatedText = new AnnotatedText(
             segmentTibetanText(baseWitness.content),
             activeAnnotations,
@@ -123,7 +145,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     length = 0;
                 }
                 activeAnnotation = annotatedText.getBaseAnnotation(start, length);
-                // console.log('activeAnnotation start: %d, length: %d', start, length);
             }
             dispatch(changedActiveAnnotation(activeAnnotation));
         }

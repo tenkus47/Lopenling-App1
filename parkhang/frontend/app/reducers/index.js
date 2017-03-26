@@ -49,14 +49,25 @@ export const getWitness = (state, witnessId) => {
     return data.getWitness(state.data, witnessId);
 };
 
+export const getBaseWitness = (state, textId) => {
+    return data.getBaseWitness(state.data, textId);
+};
+
 export const getAnnotationsForWitnessId = (state, witnessId) => {
-    return data.annotationsForWitnessId(state.data, witnessId);
+    return data.getAnnotationsForWitnessId(state.data, witnessId);
 };
 
 export const getActiveAnnotationsForWitnessId = (state, witnessId) => {
     return data.getActiveAnnotationsForWitnessId(state.data, witnessId);
 };
 
+export const annotationFromData = (state, annotationData) => {
+    return data.annotationFromData(state.data, annotationData);
+};
+
+export const getAnnotationData = (state, witnessId, annotationId) => {
+    return data.getAnnotationData(state.data, witnessId, annotationId);
+}
 
 
 // Root

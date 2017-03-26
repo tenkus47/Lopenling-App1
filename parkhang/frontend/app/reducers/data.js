@@ -238,11 +238,24 @@ export const getWitness = (state, witnessId) => {
     return witness;
 };
 
-// export const sourceForWitness = (state, witnessId) => {
-//     const witness =
-// };
+export const getBaseWitness = (state, textId) => {
+    let baseWitness = null;
+    if (state.textWitnessesById.hasOwnProperty(textId)) {
+        const witnesses = state.textWitnessesById[textId];
+        for (let witnessId of Object.keys(witnesses)) {
+            const witness = witnesses[witnessId];
+            if (!baseWitness || witness.is_base) {
+                baseWitness = witness;
+            }
+        }
+        if (baseWitness) {
+            baseWitness = getWitness(state, baseWitness.id);
+        }
+    }
+    return baseWitness;
+};
 
-function annotationFromData(state, annotationData) {
+export function annotationFromData(state, annotationData) {
     let witness = getWitness(state, annotationData.witness);
     let creatorWitness = null;
     let creatorUser = null;
@@ -262,32 +275,19 @@ function annotationFromData(state, annotationData) {
     return annotation;
 }
 
-export const annotationsForWitnessId = (state, witnessId) => {
-    let annotationList = state.witnessAnnotationsById[witnessId];
-    let witnessAnnotations = [];
-    if (annotationList) {
-        for (let key in annotationList) {
-            let annotationData = annotationList[key];
-            let annotation = annotationFromData(state, annotationData);
-
-            witnessAnnotations.push(annotation);
-        }
-    }
-    return witnessAnnotations;
+export const getAnnotationsForWitnessId = (state, witnessId) => {
+    return state.witnessAnnotationsById[witnessId];
 };
 
 export const getActiveAnnotationsForWitnessId = (state, witnessId) => {
-    let annotationList = state.witnessAnnotationsById[witnessId];
-    let activeAnnotationIds = state.witnessActiveAnnotationsById[witnessId];
-    let witnessAnnotations = [];
-    if (annotationList) {
-        for (let key in annotationList) {
-            let annotationData = annotationList[key];
-            let annotation = annotationFromData(state, annotationData);
-            if (activeAnnotationIds && activeAnnotationIds.indexOf(annotation.id) != -1) {
-                witnessAnnotations.push(annotation);
-            }
-        }
+    return state.witnessActiveAnnotationsById[witnessId];
+};
+
+export const getAnnotationData = (state, witnessId, annotationId) => {
+    let annotationData = null;
+    const witnessAnnotations = state.witnessAnnotationsById[witnessId];
+    if (witnessAnnotations) {
+        annotationData = witnessAnnotations[annotationId];
     }
-    return witnessAnnotations;
+    return annotationData;
 };
