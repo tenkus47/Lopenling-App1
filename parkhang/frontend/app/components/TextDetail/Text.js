@@ -46,8 +46,7 @@ export default class Text extends React.Component {
     segmentsContainSegment(segments, segment) {
         for (let i=0; i < segments.length; i++) {
             let listSegment = segments[i];
-            if (listSegment.start == segment.start
-                && listSegment.text == segment.text)
+            if (listSegment.start === segment.start)
             {
                 return true;
             }
