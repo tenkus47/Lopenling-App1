@@ -71,7 +71,6 @@ export default class Text extends React.Component {
         if (segment.id.indexOf('i_') != -1) {
             const annotationId = segment.id.substr(2);
             const annotation = this.getAnnotation(annotationId);
-            console.log('click insertion annotation: %o segment: %o', annotation, segment);
             this.props.didSelectAnnotation(annotation);
         } else if (segment.id.indexOf('s_') != -1) {
             let segmentPosition = segment.id.substr(2);
@@ -80,7 +79,6 @@ export default class Text extends React.Component {
                 this.props.didSelectSegment(textSegment);
             }
         } else if (segment.id.indexOf('ds_') != -1) {
-            console.log('clicked segment');
             let segmentPosition = segment.id.substr(3);
             let textSegment = this.props.segmentedText.segmentAtPosition(segmentPosition);
             if (textSegment) {
