@@ -60,41 +60,6 @@ export default class Text extends React.Component {
         return false;
     }
 
-    setupAnnotations() {
-        let segments = this.props.segmentedText.sortedSegments();
-        for (let j=0; j < segments.length; j++) {
-            const segment = segments[j];
-            let annotations = this.annotationsForSegment(segment);
-
-            if (annotations.length > 0) {
-                let insertions = annotations.filter((annotation) => annotation.length == 0);
-                let inactiveInsertions = _.differenceWith(annotations, insertions, (a, b) => a.id == b.id );
-                let insertion = null;
-                if (inactiveInsertions.length > 0) {
-                    insertion = inactiveInsertions[0];
-                    continue;
-                    // console.log('insertion: %o', insertion);
-                }
-                const segId = this.idForSegment(segment);
-                let el = document.getElementById(segId);
-
-                if (el) {
-
-                    el.onclick = (e) => {
-                        this.props.didSelectSegment(segment);
-                    };
-
-                    if (this.segmentsContainSegment(this.props.selectedAnnotatedSegments, segment)) {
-                        el.className = classnames(styles.annotation, styles.selectedAnnotation)
-                    } else {
-                        el.className = styles.annotation;
-                    }
-                }
-            }
-
-        }
-    }
-
     idForSegment(segment) {
         return "s_" + segment.start;
     }
