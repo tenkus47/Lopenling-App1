@@ -57,7 +57,7 @@ export default class SegmentedText {
      * Intended to be used privately by internal methods.
      *
      * @param {number} position
-     * @return {number} 0 or greater if a segment if found; -1 if not found.
+     * @return {number} 0 or greater if a segment is found; -1 if not found.
      */
     indexOfSortedSegmentAtPosition(position) {
         let foundSegmentIndex = -1;
