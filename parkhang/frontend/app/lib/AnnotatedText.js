@@ -46,19 +46,7 @@ export default class AnnotatedText {
     getText() {
         return this.segmentedText.getText();
     }
-
-    annotationsForSegment(segment) {
-        let annotations = [];
-        for (var i=0; i < this.annotations; i++) {
-            const annotation = this.annotations[i];
-            if (segment.start >= annotation.start && segment.end <= annotation.end) {
-                annotations.push(annotation);
-            }
-        }
-
-        return annotations;
-    }
-
+    
     annotationsForPosition(position) {
         return this.annotations.filter((annotation) => {
             let start = annotation.start;
