@@ -15,6 +15,7 @@
     margin: 0;
     font-weight: normal;
     flex-grow: 1;
+    flex-shrink: 0;
     font-family: var(--tibetan-fonts);
 }
 

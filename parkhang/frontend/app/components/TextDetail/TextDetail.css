@@ -6,6 +6,7 @@
     background-color: var(--text-bg);
     border-left: 1px solid #ccc;
     position: relative;
+    min-width: 0;
 }
 
 :global(.loader) {
