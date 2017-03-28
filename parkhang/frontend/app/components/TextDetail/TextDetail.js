@@ -38,6 +38,9 @@ const TextDetail = props => {
         textComponent = <PechaText
             paginatedText={paginatedText}
             annotations={props.annotations}
+            activeAnnotations={props.activeAnnotations}
+            didSelectSegment={props.didSelectSegment}
+            didSelectAnnotation={props.didSelectAnnotation}
             annotationPositions={props.annotationPositions}
             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
         />
