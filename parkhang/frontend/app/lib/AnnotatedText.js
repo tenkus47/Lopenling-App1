@@ -69,7 +69,7 @@ export default class AnnotatedText {
      * this annotation would be contained in in the generated text.
      *
      * @param annotation
-     * @return {*}
+     * @return {[number, number]} Array, first element is start, second is length
      */
     getPositionOfAnnotation(annotation) {
         this.segmentedText;
