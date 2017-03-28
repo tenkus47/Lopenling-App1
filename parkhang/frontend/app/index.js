@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from 'components/App'
+import AppContainer from 'components/App/AppContainer'
 
 // For dev only
 import Perf from 'react-addons-perf'
@@ -49,7 +49,7 @@ sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <AppContainer />
     </Provider>,
     document.getElementById('app')
 );

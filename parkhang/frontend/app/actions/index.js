@@ -42,6 +42,8 @@ export const REMOVED_ANNOTATION = 'text/REMOVED_ANNOTATION';
 
 export const CHANGED_ACTIVE_ANNOTATION = 'text/CHANGED_ACTIVE_ANNOTATION';
 
+export const CHANGED_TEXT_LIST_VISIBLE = 'textList/CHANGED_TEXT_LIST_VISIBLE';
+
 /** Action creators **/
 
 
@@ -236,5 +238,12 @@ export function changedActiveAnnotation(annotation) {
     return {
         type: CHANGED_ACTIVE_ANNOTATION,
         annotation
+    }
+}
+
+export function changedTextListVisible(isVisible) {
+    return {
+        type: CHANGED_TEXT_LIST_VISIBLE,
+        isVisible
     }
 }

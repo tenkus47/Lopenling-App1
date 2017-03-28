@@ -2,10 +2,15 @@
     --inputHeight: 21px;
 }
 
+.textsSearchContainer {
+    display: flex;
+}
+
 .textsSearch {
     padding: 10px;
     display: flex;
     background-color: #394a59;
+    flex-grow: 1;
 }
 
 .textsSearch input {
@@ -18,4 +23,18 @@
 .textsSearch select {
     font-size: 0.8em;
     height: var(--inputHeight);
+}
+
+.minify {
+    font-family: arial, sans-serif;
+    width: 20px;
+    background-color: #313131;
+    color: white;
+    align-content: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    line-height: 29px;
+    cursor: pointer;
 }

@@ -5,7 +5,8 @@ export const initialUIState = {
     searchValue: "",
     showPageImages: false,
     selectedSegments: {},
-    activeAnnotations: {}
+    activeAnnotations: {},
+    textListVisible: true
 };
 
 function selectedText(state, action) {
@@ -55,13 +56,20 @@ function changedActiveAnnotation(state, action) {
     }
 }
 
+function textListVisibleChanged(state, action) {
+    return {
+        ...state,
+        textListVisible: action.isVisible
+    }
+}
+
 const uiReducers = {};
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
 uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
 uiReducers[actions.CHANGED_SELECTED_SEGMENT] = changedSelectedSegment;
 uiReducers[actions.CHANGED_ACTIVE_ANNOTATION] = changedActiveAnnotation;
-// uiReducers[actions.USER_DESELECTED_ANNOTATION] = changedActiveAnnotation;
+uiReducers[actions.CHANGED_TEXT_LIST_VISIBLE] = textListVisibleChanged;
 export default uiReducers;
 
 export const getSelectedText = (state) => {
@@ -82,4 +90,8 @@ export const getActiveAnnotation = (state) => {
     } else {
         return null;
     }
+};
+
+export const getTextListVisible = (state) => {
+    return state.textListVisible;
 };

@@ -35,6 +35,10 @@ export const getActiveAnnotation = (state) => {
     return ui.getActiveAnnotation(state.ui);
 };
 
+export const getTextListVisible = (state) => {
+    return ui.getTextListVisible(state.ui);
+};
+
 // data
 
 export const getText = (state, textId) => {
@@ -67,7 +71,7 @@ export const annotationFromData = (state, annotationData) => {
 
 export const getAnnotationData = (state, witnessId, annotationId) => {
     return data.getAnnotationData(state.data, witnessId, annotationId);
-}
+};
 
 
 // Root

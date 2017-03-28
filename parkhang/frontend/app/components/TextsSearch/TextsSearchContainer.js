@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import TextsSearch from './TextsSearch'
-import { changedSearchValue } from 'actions'
+import { changedSearchValue, changedTextListVisible } from 'actions'
 
 const mapStateToProps = (state) => {
     return {
@@ -14,6 +14,10 @@ const mapDispatchToProps = (dispatch) => {
         searchChanged: (e) => {
             const value = e.target.value;
             dispatch(changedSearchValue(value));
+        },
+        minimiseButtonClicked: (e) => {
+            const textListIsVisible = false;
+            dispatch(changedTextListVisible(textListIsVisible));
         }
     }
 };
