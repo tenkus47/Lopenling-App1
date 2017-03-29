@@ -1,9 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
 import {AutoSizer, List} from 'react-virtualized';
+import GraphemeSplitter from 'grapheme-splitter';
 import 'react-virtualized/styles.css'; // only needs to be imported once
 import addTibetanShay from 'lib/addTibetanShay'
-import TextsSearchContainer from 'components/TextsSearch/TextsSearchContainer'
 import styles from './TextList.css'
 
 class TextList extends React.Component {
@@ -13,14 +13,42 @@ class TextList extends React.Component {
         const selectedTextId = (selectedText) ? selectedText.id : -1;
         const texts = this.props.texts;
         const onSelectedText = this.props.onSelectedText;
+        const searchTerm = this.props.searchTerm;
+        const splitter = new GraphemeSplitter();
 
         function rowRenderer({
-            key, index, isScrolling, isVisible, style
+            key, index, style
         }) {
             let className = styles.textListRow;
-            if (texts[index].id == selectedTextId) {
+            const text = texts[index];
+            if (text.id == selectedTextId) {
                 className = classnames(className, styles.selectedRow);
             }
+            let name = addTibetanShay(text.name);
+
+            if (searchTerm.length > 0) {
+                const graphemes = splitter.splitGraphemes(name);
+                const start = name.indexOf(searchTerm);
+                const end = start + searchTerm.length;
+                let position = 0;
+                let foundGraphemes = '';
+                for (let i=0; i < graphemes.length; i++) {
+                    let grapheme = graphemes[i];
+                    if (position >= start && position < end) {
+                        foundGraphemes += grapheme;
+                    }
+                    position += grapheme.length;
+                }
+                if (foundGraphemes.length > 0) {
+                    const graphemeSpan = '<span class='+styles.highlight+'>'+foundGraphemes+'</span>';
+                    name = name.replace(foundGraphemes, graphemeSpan);
+                }
+            }
+
+            const html = {
+                __html: name
+            };
+
             return (
                 <div
                     key={key}
@@ -30,7 +58,7 @@ class TextList extends React.Component {
                         onSelectedText(texts[index]);
                     }}
                 >
-                    <span className={styles.textName}>{addTibetanShay(texts[index].name)}</span>
+                    <span className={styles.textName} dangerouslySetInnerHTML={html} />
                 </div>
             )
         }

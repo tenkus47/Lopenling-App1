@@ -15,7 +15,8 @@ const mapStateToProps = (state) => {
 
     return {
         texts: texts,
-        selectedText: getSelectedText(state)
+        selectedText: getSelectedText(state),
+        searchTerm: searchValue
     }
 };
 

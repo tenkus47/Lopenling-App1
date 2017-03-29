@@ -32,3 +32,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.highlight {
+    background-color: #ffe76a;
+}
+
+.selectedRow .highlight {
+    background-color: #d48100;
+}
