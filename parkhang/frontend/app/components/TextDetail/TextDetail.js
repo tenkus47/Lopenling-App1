@@ -71,8 +71,10 @@ const TextDetail = props => {
             <TextHeadingContainer text={text} />
             <Loader loaded={!props.loading} />
             <div className={classnames(styles.textContainer, utilStyles.flex)}>
-                {textComponent}
-                {annotationControls}
+                {!props.loading ? (
+                    [textComponent, annotationControls]
+                ) : (<div/>)
+                }
             </div>
         </div>
     );
