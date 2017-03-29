@@ -1,38 +1,42 @@
 @import 'css/type.css';
-
+@import 'css/colour.css';
 
 .annotationDetail {
     display: flex;
     flex-direction: column;
-    width: 160px;
-    background-color: #fefefe;
-    margin-right: 10px;
-    border-radius: 4px;
+    width: 100%;
+    margin: 0 10px 30px 0;
+    padding: 0 0 10px 0;
+    background-color: #ddd;
 }
 
 .annotationDetail h3 {
     flex-shrink: 0;
-    font-size: 18px;
-    color: white;
-    background-color: #444;
+    font-size: 21px;
+    color: #444;
     font-family: var(--tibetan-fonts);
     font-weight: normal;
-    margin: 0;
+    margin: 0 0 10px 0;
     padding: 5px 10px;
-    text-align: center;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    border-left: 5px solid #aaa;
 }
 
 .annotationDetail p {
     flex-shrink: 0;
-    font-size: 18px;
+    font-size: 21px;
+    color: #000;
     font-family: var(--tibetan-fonts);
     margin: 0;
-    padding: 5px 10px;
+    padding: 0px 10px 5px 10px;
+    margin-left: 5px;
 }
 
 .active {
-    background-color: #99b1c5;
+    background-color: #aebcc7;
+}
+
+.annotationDetail.active h3 {
+    color: var(--main-tint);
+    border-left: 5px solid #446b8c;
 }
 

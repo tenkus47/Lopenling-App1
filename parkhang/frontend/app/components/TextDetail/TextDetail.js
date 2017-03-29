@@ -57,28 +57,23 @@ const TextDetail = props => {
         />
     }
 
-    let segmentControls = null;
-    // console.log('props.selectedSegment: %o', props.selectedSegment);
-    if (props.activeAnnotation != null) {
-        segmentControls = <AnnotationControlsContainer
-            //selectedAnnotations={props.selectedAnnotations}
-            //activeAnnotations={props.annotatedText.annotations}
-            annotationPositions={props.annotationPositions}
-            annotatedText={props.annotatedText}
-        />
-    } else {
-        segmentControls = <div />
+    let annotationControls = null;
+    if (props.text) {
+        annotationControls = <AnnotationControlsContainer
+                                annotationPositions={props.annotationPositions}
+                                annotatedText={props.annotatedText}
+                                activeAnnotation={props.activeAnnotation}
+                            />;
     }
 
     return (
         <div className={classnames(styles.textDetail, utilStyles.flex, utilStyles.flexColumn)}>
             <TextHeadingContainer text={text} />
-            <div>
-                {segmentControls}
-            </div>
             <Loader loaded={!props.loading} />
-            {textComponent}
-
+            <div className={classnames(styles.textContainer, utilStyles.flex)}>
+                {textComponent}
+                {annotationControls}
+            </div>
         </div>
     );
 };

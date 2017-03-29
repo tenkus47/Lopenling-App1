@@ -56,7 +56,15 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, annotationPosi
 };
 
 const mapStateToProps = (state, ownProps) => {
-    let activeAnnotation = getActiveAnnotation(state);
+    if (!ownProps.activeAnnotation) {
+        return {
+            annotationsData: null,
+            activeAnnotation: null,
+            baseAnnotation: null,
+            availableAnnotations: null
+        }
+    }
+    let activeAnnotation = ownProps.activeAnnotation;
     const annotations = getAvailableAnnotations(ownProps.annotatedText, activeAnnotation, ownProps.annotationPositions);
     if (annotations.length == 0) {
         return {
@@ -71,7 +79,7 @@ const mapStateToProps = (state, ownProps) => {
     if (activeAnnotation.id == BASE_ANNOTATION_ID) {
         baseAnnotation = activeAnnotation;
     } else {
-        let [ start, length ] = ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
+        let [start, length] = ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
         baseAnnotation = ownProps.annotatedText.getBaseAnnotation(start, length);
         const baseAnnotationData = getAnnotationsData([baseAnnotation]);
         annotationsData = baseAnnotationData.concat(annotationsData);
@@ -79,6 +87,7 @@ const mapStateToProps = (state, ownProps) => {
 
     // make sure base annotation is first
     annotationsData.sort((a, b) => a.id - b.id);
+
 
     return {
         annotationsData: annotationsData,

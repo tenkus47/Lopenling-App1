@@ -20,6 +20,9 @@
 .textContainer {
     overflow: auto;
     background-color: var(--text-bg);
+    flex-grow: 1;
+    padding: 0 20px;
+    min-width: 200px;
 }
 
 .limitWidth {

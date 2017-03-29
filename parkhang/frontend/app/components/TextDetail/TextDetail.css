@@ -9,6 +9,10 @@
     min-width: 0;
 }
 
+.textContainer {
+    flex-grow: 1;
+}
+
 :global(.loader) {
     position: absolute;
     left: 50%;

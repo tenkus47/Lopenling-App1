@@ -1,22 +1,39 @@
+@import 'css/type.css';
 
 .annotationControls {
     background-color: #eee;
-    box-shadow: 0px 1px 1px #888;
-    padding: 20px;
-    /*height: 200px;*/
+    padding: 20px 0 20px 20px;
     display: flex;
-    flex-shrink: 0;
+    flex-direction: column;
+    /*flex-shrink: 0;*/
+    flex-grow: 1;
     flex-wrap: wrap;
     align-items: flex-start;
     justify-content: flex-start;
-    width: 600px;
-    /*position: absolute;*/
-    left: 0;
+    min-width: 300px;
+    max-width: 450px;
+    top: 0;
     right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 2px;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
+    border-left: 1px solid #ddd;
+    position: relative;
+    transition: right 0.25s ease-in-out;
 }
 
+.annotationControls > h3 {
+    font-family: var(--fonts);
+    font-size: 21px;
+    width: 100%;
+    border-bottom: 1px solid #bbb;
+    padding-bottom: 5px;
+    font-weight: normal;
+    color: #444;
+}
+
+.nothingSelected {
+    position: relative;
+    top: 25%;
+    text-align: center;
+    width: 100%;
+    font-size: 24px;
+    color: #888;
+}
