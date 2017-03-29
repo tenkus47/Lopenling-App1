@@ -30,7 +30,7 @@ class TextList extends React.Component {
                         onSelectedText(texts[index]);
                     }}
                 >
-                    {addTibetanShay(texts[index].name)}
+                    <span className={styles.textName}>{addTibetanShay(texts[index].name)}</span>
                 </div>
             )
         }
@@ -45,7 +45,7 @@ class TextList extends React.Component {
                         <List
                             height={height}
                             rowCount={this.props.texts.length}
-                            rowHeight={40}
+                            rowHeight={50}
                             rowRenderer={rowRenderer}
                             width={width}
                         />

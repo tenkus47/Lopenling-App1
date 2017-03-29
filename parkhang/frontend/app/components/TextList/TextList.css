@@ -18,13 +18,17 @@
     padding: 0 10px;
     cursor: pointer;
     border-bottom: 1px solid #ccc;
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
     font-family: var(--tibetan-fonts);
+    font-size: 18px;
 }
 
 .selectedRow {
     background-color: #888;
     color: white;
+}
+
+.textName {
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
