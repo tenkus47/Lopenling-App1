@@ -60,6 +60,22 @@ const getActiveAnnotations = (state, baseWitnessId) => {
 };
 
 const mapStateToProps = (state) => {
+    const loading = state.data.loadingWitnesses || state.data.loadingAnnotations;
+    if (loading) {
+        return {
+            text: null,
+            witnesses: null,
+            baseWitness: null,
+            annotations: null,
+            loading: loading,
+            paginated: null,
+            annotatedText: null,
+            selectedAnnotatedSegments: null,
+            annotationPositions: null,
+            activeAnnotations: null,
+            activeAnnotation: null
+        };
+    }
     const selectedText = getSelectedText(state);
     let witnesses = {};
     let baseWitness = getBaseWitness(state, selectedText.id);
@@ -98,7 +114,7 @@ const mapStateToProps = (state) => {
         witnesses: witnesses,
         baseWitness: baseWitness,
         annotations: annotations,
-        loading: state.data.loadingWitnesses || state.data.loadingAnnotations,
+        loading: loading,
         paginated: showPageImages(state),
         annotatedText: annotatedText,
         selectedAnnotatedSegments: selectedAnnotatedSegments,
