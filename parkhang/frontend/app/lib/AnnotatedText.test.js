@@ -187,22 +187,7 @@ describe('AnnotatedText', () => {
           annotatedText.getBaseAnnotation(0, 3)
         ).toEqual(expectedAdditionAnnotation);
 
-
         let expectedInsertion = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            190,
-            0,
-            "",
-            annotatedText.baseWitness,
-            false
-        );
-
-        expect(
-            annotatedText.getBaseAnnotation(160, 0)
-        ).toEqual(expectedInsertion);
-
-        expectedInsertion = new Annotation(
             BASE_ANNOTATION_ID,
             annotatedText.baseWitness,
             268,
@@ -215,6 +200,20 @@ describe('AnnotatedText', () => {
         expect(
             annotatedText.getBaseAnnotation(238, 3)
         ).toEqual(expectedInsertion);
+
+        let expectedDeletion = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            256,
+            2,
+            "ལ་",
+            annotatedText.baseWitness,
+            false
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(228, 0)
+        ).toEqual(expectedDeletion);
     });
 
 

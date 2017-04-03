@@ -13,12 +13,21 @@ const getAnnotationPositions = (annotatedText, annotations) => {
     for (let i=0; i < annotations.length; i++) {
         let annotation = annotations[i];
         let [ startPos, length ] = annotatedText.getPositionOfAnnotation(annotation);
-        for (let j=startPos; j < startPos + length; j++) {
-            if (positions[j] == undefined) {
-                positions[j] = [];
+        if (length === 0) {
+            if (positions[startPos] === undefined) {
+                positions[startPos] = [];
             }
-            if (positions[j].indexOf(annotation) == -1) {
-                positions[j].push(annotation);
+            if (positions[startPos].indexOf(annotation) === -1) {
+                positions[startPos].push(annotation);
+            }
+        } else {
+            for (let j = startPos; j < startPos + length; j++) {
+                if (positions[j] === undefined) {
+                    positions[j] = [];
+                }
+                if (positions[j].indexOf(annotation) === -1) {
+                    positions[j].push(annotation);
+                }
             }
         }
     }

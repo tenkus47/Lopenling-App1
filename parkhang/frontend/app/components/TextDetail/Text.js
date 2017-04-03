@@ -71,7 +71,7 @@ export default class Text extends React.Component {
             const annotationId = segment.id.substr(2);
             const annotation = this.getAnnotation(annotationId);
             this.props.didSelectAnnotation(annotation);
-        } else if (segment.id.indexOf('s_') != -1) {
+        } else if (segment.id.indexOf('s_') === 0) {
             let segmentPosition = segment.id.substr(2);
             let textSegment = this.props.segmentedText.segmentAtPosition(segmentPosition);
             if (textSegment) {

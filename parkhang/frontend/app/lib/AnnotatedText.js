@@ -132,7 +132,7 @@ export default class AnnotatedText {
         }
 
         let content = "";
-        if (length == 0 || (activeAnnotation && activeAnnotation.isInsertion)) {
+        if (activeAnnotation && activeAnnotation.isInsertion) {
             origLength = 0;
         } else {
             let segments = this.originalText.segmentsInRange(startPos, origLength);
