@@ -112,6 +112,17 @@ export default class Text extends React.Component {
 
                     let remainingAnnotations = _.differenceWith(annotations, insertions, (a, b) => a.id == b.id);
 
+                    let deletions = remainingAnnotations.filter((annotation) => annotation.isDeletion);
+                    let activeDeletions = _.intersectionWith(
+                        this.props.activeAnnotations,
+                        deletions,
+                        (a, b) => a.id === b.id
+                    );
+                    if (activeDeletions.length > 0) {
+                        // assume any other deletions are the same
+                        remainingAnnotations = remainingAnnotations.filter((annotation) => !annotation.isDeletion);
+                    }
+
                     if (remainingAnnotations.length > 0 || activeInsertions.length > 0) {
                         classes.push(styles.annotation);
                     }
