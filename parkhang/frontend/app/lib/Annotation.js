@@ -70,6 +70,10 @@ export default class Annotation {
     }
 
     get isInsertion() {
-        return this.length == 0;
+        return this.length === 0;
+    }
+
+    get isDeletion() {
+        return this.content.length === 0;
     }
 }
