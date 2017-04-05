@@ -28,6 +28,7 @@ const initialState = {
         showPageImages: false,
         selectedSegments: {},
         activeAnnotations: {},
+        textListVisible: true
     },
 };
 
