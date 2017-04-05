@@ -49,7 +49,7 @@ module.exports = {
                         options: {
                             presets: [
                                 'react',
-                                'latest'
+                                'env'
                             ]
                         }
                     }
