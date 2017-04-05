@@ -19,6 +19,10 @@ project:
     - "{{ project_root }}code/{{project_name}}/requirements/production.txt"
     # - "{{ project_root }}code/{{project_name}}requirements/dev.list"
 
+db:
+  name: "{{ project_name }}"
+  user: "{{ project_name }}"
+
 repo:
   branch: master
   url: "git@bitbucket.org:sherab/parkhang.git"

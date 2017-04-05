@@ -1,0 +1,7 @@
+---
+
+- name: Configure postgres
+  hosts: dbservers
+  become: yes
+  roles:
+    - { role: postgres }
