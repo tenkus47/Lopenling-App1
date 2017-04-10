@@ -13,7 +13,7 @@ import SegmentedText from 'lib/SegmentedText'
 import SplitText from 'lib/SplitText'
 import PaginatedTibetanText from 'lib/PaginatedTibetanText'
 import segmentTibetanText from 'lib/segmentTibetanText'
-import stringSplitter from 'lib/text_splitters/stringSplitter'
+import lengthSplitter from 'lib/text_splitters/lengthSplitter'
 
 import styles from './TextDetail.css'
 import utilStyles from 'css/util.css'
@@ -48,7 +48,7 @@ const TextDetail = props => {
             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
         />
     } else {
-        const splitter = stringSplitter("།།");
+        const splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
         const splitText = new SplitText(props.annotatedText, splitter);
         textComponent = <SplitTextComponent
             splitText={splitText}
