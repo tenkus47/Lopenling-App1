@@ -14,12 +14,11 @@ export default class AnnotatedText {
      * @param {SegmentedText} originalText
      * @param {Annotation[]} [annotations]
      */
-    constructor(originalText, annotations=[], segmenter=null, baseWitness=null, annotationPositions=null) {
+    constructor(originalText, annotations=[], segmenter=null, baseWitness=null) {
         this.originalText = originalText;
         this.annotations = annotations;
         this.segmenter = segmenter;
         this.baseWitness = baseWitness;
-        this.annotationPositions = annotationPositions;
         /** @type {SegmentedText} */
         this._generatedText = null;
         this._orginalCurrentSegmentPositions = {};
