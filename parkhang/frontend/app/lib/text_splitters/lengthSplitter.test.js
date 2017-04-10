@@ -5,7 +5,7 @@ const testString = "༄༅། །སྒྲུབ་ཐབས་ཞེས་བ�
 describe('lengthSplitter', () => {
 
     test('Splitting text correctly with just string', () => {
-        const splitter = lengthSplitter(80, "། ", 2);
+        const splitter = lengthSplitter(80, "། ");
         const expectedPositions = [87, 190];
 
         expect(
