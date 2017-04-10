@@ -1,0 +1,16 @@
+.splitText {
+    width: 100%;
+    background-color: white;
+    flex-grow: 1;
+    min-width: 0;
+    font-size: 24px;
+}
+
+.splitTextRow {
+    overflow: hidden;
+    display: flex;
+}
+
+.splitTextRow .text {
+    max-width: 100%;
+}

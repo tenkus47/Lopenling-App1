@@ -4,13 +4,16 @@ import classnames from 'classnames'
 import TextHeading from './TextHeading'
 import TextHeadingContainer from './TextHeadingContainer'
 import Text from './Text'
+import SplitTextComponent from 'components/TextDetail/SplitText'
 import PechaText from './PechaText'
 import Loader from 'react-loader'
 import AnnotationControlsContainer from './AnnotationControlsContainer'
 
 import SegmentedText from 'lib/SegmentedText'
+import SplitText from 'lib/SplitText'
 import PaginatedTibetanText from 'lib/PaginatedTibetanText'
 import segmentTibetanText from 'lib/segmentTibetanText'
+import stringSplitter from 'lib/text_splitters/stringSplitter'
 
 import styles from './TextDetail.css'
 import utilStyles from 'css/util.css'
@@ -45,8 +48,10 @@ const TextDetail = props => {
             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
         />
     } else {
-        textComponent = <Text
-            segmentedText={segmentedText}
+        const splitter = stringSplitter("།།");
+        const splitText = new SplitText(props.annotatedText, splitter);
+        textComponent = <SplitTextComponent
+            splitText={splitText}
             annotations={props.annotations}
             activeAnnotations={props.activeAnnotations}
             limitWidth={true}

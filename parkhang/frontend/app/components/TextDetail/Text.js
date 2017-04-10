@@ -158,9 +158,14 @@ export default class Text extends React.Component {
     }
 
     render() {
+        let classes = [styles.text];
         let extraClass = "";
         if (this.props.limitWidth) {
             extraClass = styles.limitWidth;
+            classes.push(styles.limitWidth);
+        }
+        if (this.props.row === 0) {
+            classes.push(styles.textFirstRow);
         }
 
         // Generate HTML manually as it is much faster when
@@ -169,7 +174,7 @@ export default class Text extends React.Component {
 
         return (
             <div className={styles.textContainer}>
-                <div className={classnames(styles.text, extraClass)} dangerouslySetInnerHTML={html}  onClick={(e) => this.clickedSegment(e.target)} />
+                <div className={classnames(...classes)} dangerouslySetInnerHTML={html}  onClick={(e) => this.clickedSegment(e.target)} />
             </div>
         )
     }
