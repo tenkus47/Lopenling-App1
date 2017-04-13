@@ -1,4 +1,8 @@
 
+export const ANNOTATION_TYPES = {
+    variant: 'V'
+};
+
 export default class Annotation {
 
     /**
@@ -11,9 +15,10 @@ export default class Annotation {
      * @param {boolean} isVariant
      * @param {Witness|User|null} creator
      * @param {string} note
+     * @param {string} type - one of ANNOTATION_TYPES
      */
     constructor(id, witness, start, length, content,
-                creator=null, isVariant=true, note=null)
+                creator=null, isVariant=true, note=null, type=ANNOTATION_TYPES.variant)
     {
         this.id = id;
         this.witness = witness;
@@ -23,6 +28,7 @@ export default class Annotation {
         this.creator = creator;
         this._isVariant = isVariant;
         this.note = note;
+        this.type = type;
     }
 
     toString() {
