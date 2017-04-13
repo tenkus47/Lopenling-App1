@@ -214,6 +214,51 @@ describe('AnnotatedText', () => {
         expect(
             annotatedText.getBaseAnnotation(228, 0)
         ).toEqual(expectedDeletion);
+
+        let crossBoundaryAnnotation = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            41,
+            10,
+            "དུ། སྟྲཱི་",
+            annotatedText.baseWitness,
+            false
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(17, 6)
+        ).toEqual(crossBoundaryAnnotation);
+
+        let crossBoundaryAnnotationStart = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            45,
+            17,
+            "སྟྲཱི་པྲཛྙཱ་ཤྲཱི་",
+            annotatedText.baseWitness,
+            false
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(21, 12)
+        ).toEqual(crossBoundaryAnnotationStart);
+
+        let includesDeletion = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            248,
+            15,
+            "ཐུང་དྲག་ལ་གསུས་",
+            annotatedText.baseWitness,
+            false
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(220, 13)
+        ).toEqual(includesDeletion);
+
+        // TODO: add test for annotation immediately after deletion
+
     });
 
 

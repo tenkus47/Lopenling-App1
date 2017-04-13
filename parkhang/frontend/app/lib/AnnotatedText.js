@@ -1,4 +1,5 @@
 import Annotation from './Annotation'
+import { ANNOTATION_TYPES } from './Annotation'
 import SegmentedText from './SegmentedText'
 import TextSegment from './TextSegment'
 import _ from 'Lodash'
@@ -119,21 +120,40 @@ export default class AnnotatedText {
      * @return {Annotation}
      */
     getBaseAnnotation(start, length) {
-        let activeAnnotations = this.annotationsForPosition(start);
-        let startPos = this._currentOriginalSegmentPositions[start];
-        let endPos = this._currentOriginalSegmentPositions[start+length];
-        let origLength = endPos - startPos;
-        let activeAnnotation = null;
-        if (activeAnnotations.length > 0) {
-            activeAnnotation = activeAnnotations[0];
-            startPos = activeAnnotation.start;
-            origLength = activeAnnotation.length;
+        let startPos = start;
+        let origLength = 0;
+        if (length === 0) {
+            let annotations = this.annotationsForPosition(start).filter((annotation) => annotation.type === ANNOTATION_TYPES.variant);
+            if (annotations.length > 0) {
+                let annotation = annotations[0];
+                startPos = annotation.start;
+                origLength = annotation.length;
+            }
+        } else {
+            for (let i=start; i < start+length; i++) {
+                let annotations = this.annotationsForPosition(i).filter((annotation) => annotation.type === ANNOTATION_TYPES.variant);
+                if (annotations.length > 0) {
+                    let annotation = annotations[0];
+                    if (i === start) {
+                        startPos = annotation.start;
+                    }
+                    origLength += annotation.length;
+                    if (annotation.isDeletion) {
+                        origLength++;
+                    } else {
+                        i += annotation.content.length - 1;
+                    }
+                } else {
+                    if (i === start) {
+                        startPos = this._currentOriginalSegmentPositions[i];
+                    }
+                    origLength++;
+                }
+            }
         }
 
         let content = "";
-        if (activeAnnotation && activeAnnotation.isInsertion) {
-            origLength = 0;
-        } else {
+        if (origLength > 0) {
             let segments = this.originalText.segmentsInRange(startPos, origLength);
             content = segments.reduce((content, segment) => {
                 return content + segment.text;
