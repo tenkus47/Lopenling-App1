@@ -73,19 +73,24 @@ export default class AnnotatedText {
      * @return {[number, number]} Array, first element is start, second is length
      */
     getPositionOfAnnotation(annotation) {
+        // Make sure generateText has been called.
+        // This ensures this._orginalCurrentSegmentPositions has been updated.
         this.segmentedText;
+
         let startKey = annotation.start;
         let isActive = _.some(this.annotations, (a) => a.id == annotation.id);
         if (annotation.isInsertion) {
-            // only use isnertion key if it is an active annotation
+            // only use insertion key if it is an active annotation
             if (isActive) {
                 startKey = String(annotation.start) + INSERTION_KEY;
             }
         }
         if (this._orginalCurrentSegmentPositions[startKey] == undefined) {
-            if (this.originalText.getText().length == annotation.start) {
+            if (this.originalText.getText().length === annotation.start) {
+                // if the annotation is an insertion at the end of the text
                 return [annotation.start, 0];
             } else {
+                console.warn('Invalid annotation passed to getPositionOfAnnotation: %o', annotation);
                 return [null, null];
             }
         }
