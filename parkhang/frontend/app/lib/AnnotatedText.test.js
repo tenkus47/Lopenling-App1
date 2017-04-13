@@ -1,9 +1,10 @@
-import AnnotatedText, { BASE_ANNOTATION_ID } from './AnnotatedText'
+import AnnotatedText, { BASE_ANNOTATION_ID, WORKING_VERSION_ANNOTATION_ID } from './AnnotatedText'
 import Annotation from './Annotation'
 import Source from './Source'
 import Text from './Text'
 import Witness from './Witness'
 import TextSegment from './TextSegment'
+import User, { getAnonymousUser } from 'lib/User'
 import segmentTibetanText from './segmentTibetanText'
 
 const baseTextContent = "༄༅། །སྒྲུབ་ཐབས་ཞེས་བྱ་བ།༄༅༅། །རྒྱ་གར་སྐད་དུ། སྟྲཱི་པྲཛྙཱ་ཤྲཱི་མ་ཧཱ་ཀཱ་ལ་སཱ་དྷ་ནཾ་ནཱ་མ། བོད་སྐད་དུ། དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ། བླ་མ་དང་དཔལ་རྡོ་རྗེ་མཁའ་འགྲོ་ལ་ཕྱག་འཚལ་ལོ། །འགྱེལ་བའི་རོ་ལ་ཞབས་མཆོག་མཉམ་པའི་སྟབས་ཀྱིས་བཞུགས་ཤིང་སྦོམ་ཐུང་དྲག་ལ་གསུས་ཁྱིམ་ཡངས།";
@@ -350,6 +351,20 @@ describe('AnnotatedText', () => {
         expectedPosition = [241, 3];
         expect(
             annotatedText.getPositionOfAnnotation(nonactiveInsertion)
+        ).toEqual(expectedPosition);
+
+
+        let includesDeletion = new Annotation(
+            WORKING_VERSION_ANNOTATION_ID,
+            baseWitness,
+            248,
+            15,
+            "ཐུང་དྲག་གསུས་",
+            getAnonymousUser()
+        );
+        expectedPosition = [220, 13];
+        expect(
+            annotatedText.getPositionOfAnnotation(includesDeletion)
         ).toEqual(expectedPosition);
 
         // TODO: write some more tests for multi-segment changes

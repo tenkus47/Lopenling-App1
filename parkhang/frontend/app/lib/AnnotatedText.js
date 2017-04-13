@@ -5,6 +5,7 @@ import TextSegment from './TextSegment'
 import _ from 'Lodash'
 
 export const BASE_ANNOTATION_ID = -1;
+export const WORKING_VERSION_ANNOTATION_ID = -2;
 
 const INSERTION_KEY = 'i';
 
@@ -96,7 +97,7 @@ export default class AnnotatedText {
         } else {
             const startSegment = this.segmentedText.segmentAtPosition(startPos);
             let endSegment = null;
-            if (isActive) {
+            if (isActive || annotation.id === WORKING_VERSION_ANNOTATION_ID) {
                 endSegment = this.segmentedText.segmentAtPosition(startPos + annotation.content.length - 1);
             } else {
                 endSegment = this.segmentedText.segmentAtPosition(startPos + annotation.length - 1);
