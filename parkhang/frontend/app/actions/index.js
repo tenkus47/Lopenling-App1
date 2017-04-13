@@ -44,6 +44,10 @@ export const CHANGED_ACTIVE_ANNOTATION = 'text/CHANGED_ACTIVE_ANNOTATION';
 
 export const CHANGED_TEXT_LIST_VISIBLE = 'textList/CHANGED_TEXT_LIST_VISIBLE';
 
+// User
+export const USER_LOGGED_IN = 'users/USER_LOGGED_IN';
+
+
 /** Action creators **/
 
 
@@ -181,7 +185,16 @@ export function loadedWitnessAnnotations(witness, annotations) {
     };
 }
 
-// ui
+/* USER */
+export function userLoggedIn(userId, userName) {
+    return {
+        type: USER_LOGGED_IN,
+        userId,
+        userName
+    }
+}
+
+/* UI */
 
 export function selectedText(text) {
     return {

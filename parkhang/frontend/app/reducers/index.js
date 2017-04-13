@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux'
 import dataReducers, * as data from './data'
 import uiReducers, * as ui from './ui'
+import userReducers, * as user from './user'
 //initialUIState, showPageImages as showPageImagesUI
+
 function createReducer(initialState, handlers) {
     return function reducer(state = initialState, action) {
         if (handlers.hasOwnProperty(action.type)) {
@@ -14,8 +16,15 @@ function createReducer(initialState, handlers) {
 
 export const dataReducer = createReducer(data.initialDataState, dataReducers);
 const uiReducer = createReducer(ui.initialUIState, uiReducers);
+const userReducer = createReducer(user.initialUserState, userReducers);
 
 /* Selectors */
+
+// user
+
+export const getUser = (state) => {
+    return user.getUser(state.user);
+};
 
 // ui
 
@@ -78,7 +87,8 @@ export const getAnnotationData = (state, witnessId, annotationId) => {
 
 const rootReducer = combineReducers({
     data: dataReducer,
-    ui: uiReducer
+    ui: uiReducer,
+    user: userReducer
 });
 
 export default rootReducer;
