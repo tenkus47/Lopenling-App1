@@ -17,10 +17,10 @@ const getAnnotationsData = (annotations) => {
             let annotation = annotations[i];
             const id = annotation.content + annotation.start;
             if (annotationsById[id]) {
-                let exisitngAnnotation = annotationsById[id];
-                exisitngAnnotation.name += ' ' + addTibetanShay(annotation.getSourceName());
-                if (annotation.id < exisitngAnnotation.id) {
-                    exisitngAnnotation.id = annotation.id;
+                let existingAnnotation = annotationsById[id];
+                existingAnnotation.name += ' ' + addTibetanShay(annotation.getSourceName());
+                if (annotation.id < existingAnnotation.id) {
+                    existingAnnotation.id = annotation.id;
                 }
             } else {
                 annotationsById[id] = {
