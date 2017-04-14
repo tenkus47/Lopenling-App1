@@ -29,20 +29,6 @@ export default class Text extends React.Component {
         return annotations;
     }
 
-    getAnnotation(id) {
-        let validAnnotation = null;
-        _.forOwn(this.props.annotationPositions, (annotations, position) => {
-            if (annotations) {
-                let validAnnotations = annotations.filter((annotation) => annotation.id == id);
-                    if (validAnnotations.length > 0) {
-                        validAnnotation = validAnnotations[0];
-                        return false;
-                    }
-            }
-        });
-        return validAnnotation;
-    }
-
     segmentsContainSegment(segments, segment) {
         for (let i=0; i < segments.length; i++) {
             let listSegment = segments[i];
@@ -66,24 +52,12 @@ export default class Text extends React.Component {
         return "i_" + annotation.id;
     }
 
-    clickedSegment(segment) {
-        if (segment.id.indexOf('i_') != -1) {
-            const annotationId = segment.id.substr(2);
-            const annotation = this.getAnnotation(annotationId);
-            this.props.didSelectAnnotation(annotation);
-        } else if (segment.id.indexOf('s_') === 0) {
-            let segmentPosition = segment.id.substr(2);
-            let textSegment = this.props.segmentedText.segmentAtPosition(segmentPosition);
-            if (textSegment) {
-                this.props.didSelectSegment(textSegment);
-            }
-        } else if (segment.id.indexOf('ds_') != -1) {
-            let segmentPosition = segment.id.substr(3);
-            let textSegment = this.props.segmentedText.segmentAtPosition(segmentPosition);
-            if (textSegment) {
-                this.props.didSelectSegment(textSegment);
-            }
+    selectedElement(element) {
+        const selection = document.getSelection();
+        if (selection && selection.type === "Range") {
+            return;
         }
+        this.props.selectedSegmentId(element.id);
     }
 
     generateHtml() {
@@ -174,7 +148,7 @@ export default class Text extends React.Component {
 
         return (
             <div className={styles.textContainer}>
-                <div className={classnames(...classes)} dangerouslySetInnerHTML={html}  onClick={(e) => this.clickedSegment(e.target)} />
+                <div className={classnames(...classes)} dangerouslySetInnerHTML={html}  onClick={(e) => this.selectedElement(e.target)} />
             </div>
         )
     }

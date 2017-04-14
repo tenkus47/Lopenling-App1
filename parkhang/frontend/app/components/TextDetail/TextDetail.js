@@ -25,14 +25,7 @@ const TextDetail = props => {
     if (props.text) {
         text = props.text;
     }
-
-    let segmentedText = null;
-    if (props.annotatedText != null) {
-        segmentedText = props.annotatedText.segmentedText;
-    } else {
-        segmentedText = new SegmentedText([]);
-    }
-
+    
     let textComponent = null;
     if (!props.text || props.loading) {
         textComponent = <div />
@@ -57,6 +50,8 @@ const TextDetail = props => {
             limitWidth={true}
             didSelectSegment={props.didSelectSegment}
             didSelectAnnotation={props.didSelectAnnotation}
+            didSelectSegmentIds={props.didSelectSegmentIds}
+            selectedSegmentId={props.selectedSegmentId}
             annotationPositions={props.annotationPositions}
             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
         />

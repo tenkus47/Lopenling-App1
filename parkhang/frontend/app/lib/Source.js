@@ -1,3 +1,6 @@
+
+export const WORKING_VERSION_SOURCE_NAME = 'Working Version';
+
 /**
  * A source of text witnesses.
  *

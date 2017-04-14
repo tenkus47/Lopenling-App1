@@ -1,8 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Annotation from 'lib/Annotation';
+import Source, { WORKING_VERSION_SOURCE_NAME } from 'lib/Source';
+import Witness from 'lib/Witness';
+import { WORKING_VERSION_ANNOTATION_ID } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
 import { changedSelectedSegment, changedActiveAnnotation } from 'actions'
-import { showPageImages, getSelectedSegment, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData } from 'reducers'
+import { showPageImages, getSelectedSegment, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
@@ -69,6 +73,7 @@ const getActiveAnnotations = (state, baseWitnessId) => {
 };
 
 const mapStateToProps = (state) => {
+    const user = getUser(state);
     const loading = state.data.loadingWitnesses || state.data.loadingAnnotations;
     if (loading) {
         return {
@@ -82,9 +87,11 @@ const mapStateToProps = (state) => {
             selectedAnnotatedSegments: null,
             annotationPositions: null,
             activeAnnotations: null,
-            activeAnnotation: null
+            activeAnnotation: null,
+            user: user
         };
     }
+
     const selectedText = getSelectedText(state);
     let witnesses = {};
     let baseWitness = getBaseWitness(state, selectedText.id);
@@ -129,7 +136,8 @@ const mapStateToProps = (state) => {
         selectedAnnotatedSegments: selectedAnnotatedSegments,
         annotationPositions: annotationPositions,
         activeAnnotations: activeAnnotations,
-        activeAnnotation: activeAnnotation
+        activeAnnotation: activeAnnotation,
+        user: user
     };
 };
 
@@ -137,42 +145,196 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
     const { annotatedText, annotationPositions } = stateProps;
 
+    const didSelectSegment = (segment) => {
+        let segmentAnnotations = annotationPositions[segment.start];
+        let activeAnnotations = _.intersectionWith(segmentAnnotations, annotatedText.annotations, (a, b) => a.toString() == b.toString());
+        let activeAnnotation = null;
+        if (activeAnnotations.length > 0) {
+            // get any active annotations
+            activeAnnotation = activeAnnotations[0];
+        } else if (segmentAnnotations && segmentAnnotations.length > 0) {
+            // get base text annotation for longest annotation highlighted in text
+            let longestAvailable = getLongestAnnotation(segmentAnnotations);
+            let [ start, length ] = annotatedText.getPositionOfAnnotation(longestAvailable);
+            activeAnnotation = annotatedText.getBaseAnnotation(start, length);
+        } else {
+            // get base annotation of just the segment
+            activeAnnotation = annotatedText.getBaseAnnotation(segment.start, segment.length);
+        }
+
+        dispatch(changedActiveAnnotation(activeAnnotation));
+    };
+
+    const getAnnotation = (id) => {
+        let validAnnotation = null;
+        id = Number(id);
+        _.forOwn(annotationPositions, (annotations, position) => {
+            if (annotations) {
+                let validAnnotations = annotations.filter((annotation) => Number(annotation.id) === id);
+                    if (validAnnotations.length > 0) {
+                        validAnnotation = validAnnotations[0];
+                        return false;
+                    }
+            }
+        });
+        return validAnnotation;
+    };
+
+    const didSelectAnnotation = (annotation) => {
+        let activeAnnotation = null;
+        if (_.some(annotatedText.annotations, (active) => annotation.id == active.id)) {
+            activeAnnotation = annotation;
+        } else {
+            let [ start, length ] = annotatedText.getPositionOfAnnotation(annotation);
+            // if it is an insertion, use 0 length
+            if (annotation.length == 0) {
+                length = 0;
+            }
+            activeAnnotation = annotatedText.getBaseAnnotation(start, length);
+        }
+        dispatch(changedActiveAnnotation(activeAnnotation));
+    };
+
+    const isInsertion = (id) => {
+        return id.indexOf('i_') !== -1;
+    };
+
+    const isDeletion = (id) => {
+        return id.indexOf('ds_') !== -1;
+    };
+
+    const idFromSegmentId = (id) => {
+        let start = 0;
+        if (isInsertion(id)) {
+            start = id.substr(2);
+        } else if (isDeletion(id)) {
+            start = id.substr(3);
+        } else {
+            start = id.substr(2);
+        }
+
+        return Number(start);
+    };
+
     return {
         ...stateProps,
         ...ownProps,
-        didSelectSegment: (segment) => {
-            let segmentAnnotations = annotationPositions[segment.start];
-            let activeAnnotations = _.intersectionWith(segmentAnnotations, annotatedText.annotations, (a, b) => a.toString() == b.toString());
-            let activeAnnotation = null;
-            if (activeAnnotations.length > 0) {
-                // get any active annotations
-                activeAnnotation = activeAnnotations[0];
-            } else if (segmentAnnotations && segmentAnnotations.length > 0) {
-                // get base text annotation for longest annotation highlighted in text
-                let longestAvailable = getLongestAnnotation(segmentAnnotations);
-                let [ start, length ] = annotatedText.getPositionOfAnnotation(longestAvailable);
-                activeAnnotation = annotatedText.getBaseAnnotation(start, length);
-            } else {
-                // get base annotation of just the segment
-                activeAnnotation = annotatedText.getBaseAnnotation(segment.start, segment.length);
-            }
+        didSelectSegment: didSelectSegment,
+        didSelectSegmentIds: (segmentIds) => {
+            let segmentAnnotations = [];
+            let segments = [];
+            for (let segmentId of segmentIds) {
+                if (isDeletion(segmentId) || isInsertion(segmentId)) {
+                    continue;
+                }
 
+                let segmentPosition = idFromSegmentId(segmentId);
+                let textSegment = annotatedText.segmentedText.segmentAtPosition(segmentPosition);
+                segments.push(textSegment);
+                const annotations = annotationPositions[textSegment.start];
+                if (annotations) {
+                    segmentAnnotations = segmentAnnotations.concat(annotations);
+                }
+            }
+            segmentAnnotations = _.uniqWith(segmentAnnotations, (a, b) => a.toString() == b.toString());
+
+            let activeAnnotations = _.intersectionWith(segmentAnnotations, annotatedText.annotations, (a, b) => a.toString() == b.toString());
+
+            const range = getSegmentsRange(segments, activeAnnotations, segmentAnnotations);
+            const baseAnnotation = annotatedText.getBaseAnnotation(range.start, range.length);
+            let activeAnnotation = null;
+            if (range.annotation) {
+                activeAnnotation = range.annotation;
+            } else if (activeAnnotations.length > 0) {
+                const content = segments.reduce((content, segment) => content + segment.text, "");
+                activeAnnotation = new Annotation(
+                    WORKING_VERSION_ANNOTATION_ID,
+                    getWorkingWitness(stateProps.text),
+                    baseAnnotation.start,
+                    baseAnnotation.length,
+                    content,
+                    stateProps.user
+                );
+            } else {
+                activeAnnotation = baseAnnotation;
+            }
             dispatch(changedActiveAnnotation(activeAnnotation));
         },
-        didSelectAnnotation: (annotation) => {
-            let activeAnnotation = null;
-            if (_.some(annotatedText.annotations, (active) => annotation.id == active.id)) {
-                activeAnnotation = annotation;
+        didSelectAnnotation: didSelectAnnotation,
+        selectedSegmentId: (segmentId) => {
+            if (isInsertion(segmentId)) {
+                const annotationId = idFromSegmentId(segmentId);
+                const annotation = getAnnotation(annotationId);
+                didSelectAnnotation(annotation);
             } else {
-                let [ start, length ] = annotatedText.getPositionOfAnnotation(annotation);
-                // if it is an insertion, use 0 length
-                if (annotation.length == 0) {
-                    length = 0;
+                let segmentPosition = idFromSegmentId(segmentId);
+                let textSegment = annotatedText.segmentedText.segmentAtPosition(segmentPosition);
+                if (textSegment) {
+                    didSelectSegment(textSegment);
                 }
-                activeAnnotation = annotatedText.getBaseAnnotation(start, length);
             }
-            dispatch(changedActiveAnnotation(activeAnnotation));
+        },
+        getAnnotation: getAnnotation
+    }
+};
+
+const getWorkingWitness = (selectedText) => {
+    const source = new Source(
+        WORKING_VERSION_ANNOTATION_ID,
+        WORKING_VERSION_SOURCE_NAME
+    );
+    const witness = new Witness(
+        WORKING_VERSION_ANNOTATION_ID,
+        selectedText,
+        source,
+        "",
+        false
+    );
+
+    return witness;
+};
+
+const getSegmentsRange = (segments, activeAnnotations, annotations) => {
+    if (segments.length === 0) {
+        return null;
+    }
+    let first = segments[0];
+    let last = segments[segments.length - 1];
+
+    let start = first.start;
+    let end = last.end;
+
+    let startAnnotation = null;
+    let endAnnotation = null;
+    for (let i=0; i < annotations.length; i++) {
+        const annotation = annotations[i];
+        if (annotation.start < start) {
+            start = annotation.start;
+            startAnnotation = annotation;
         }
+        let annotationEnd = null;
+        if (activeAnnotations.indexOf(annotation) !== -1) {
+            annotationEnd = annotation.start + annotation.content.length - 1;
+        } else {
+            annotationEnd = annotation.end;
+        }
+
+        if (annotationEnd > end) {
+            end = annotationEnd;
+            endAnnotation = annotationEnd;
+        }
+    }
+
+    // Set if the whole range is encompassed by a single annotation
+    let rangeAnnotation = null;
+    if (startAnnotation === endAnnotation) {
+        rangeAnnotation = startAnnotation;
+    }
+
+    return {
+        start: start,
+        length: end - start,
+        annotation: rangeAnnotation
     }
 };
 

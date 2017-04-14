@@ -2,10 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { batchActions } from 'redux-batched-actions';
 import AnnotationControls from './AnnotationControls'
-import { getWitness } from 'reducers'
 import addTibetanShay from 'lib/addTibetanShay'
 import { addedAnnotation, removedAnnotation, changedActiveAnnotation } from 'actions'
-import { getActiveAnnotation } from 'reducers'
 import { BASE_ANNOTATION_ID } from 'lib/AnnotatedText'
 import _ from 'lodash'
 
@@ -45,14 +43,26 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, annotationPosi
     let [ start, length ] = annotatedText.getPositionOfAnnotation(activeAnnotation);
     let end = start + length;
 
-    for (let i=start; i <= end; i++) {
-        let annotations = annotationPositions[i];
-        if (annotations) {
-            availableAnnotations = availableAnnotations.concat(annotations);
+    // Only include annotations if they encompass the whole annotation
+    // i.e. not if activeAnnotation is a user annotation and combines
+    // annotated text with normal text.
+    let startAnnotations = annotationPositions[start];
+    let endAnnotations = annotationPositions[end];
+    let possibleAnnotations = [];
+    if (startAnnotations) {
+        possibleAnnotations = startAnnotations;
+    }
+    if (endAnnotations) {
+        possibleAnnotations = possibleAnnotations.concat(endAnnotations);
+    }
+    for (let i=0; i < possibleAnnotations.length; i++) {
+        const annotation = possibleAnnotations[i];
+        if (annotation.start === activeAnnotation.start && annotation.length === activeAnnotation.length) {
+            availableAnnotations.push(annotation);
         }
     }
-    let uniqueAnnotations = _.uniqWith(availableAnnotations, (a,b) => a.toString() == b.toString());
-    return uniqueAnnotations;
+
+    return availableAnnotations;
 };
 
 const mapStateToProps = (state, ownProps) => {

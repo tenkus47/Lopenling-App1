@@ -14,6 +14,8 @@ export default class SplitText extends React.PureComponent {
             fixedWidth: true,
         });
         this.rowRenderer = this.rowRenderer.bind(this);
+        this.resizeHandler = null;
+        this.selectionHandler = null;
     }
 
     updateList() {
@@ -23,15 +25,85 @@ export default class SplitText extends React.PureComponent {
         }
     }
 
+    handleSelection(e) {
+        const selection = document.getSelection();
+        if (selection.rangeCount == 0 || selection.isCollapsed || selection.type == "Caret") {
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+        const start = range.startContainer;
+        const startSpan = this.getNodeSegmentSpan(start);
+        if (!startSpan) {
+            // If the selection is not a text segment, ignore.
+            // Assuming if the first node is a non-segment, they
+            // all are.
+            return;
+        }
+        let nodes = this.getRangeNodes(range, startSpan.parentNode);
+
+        const end = range.endContainer;
+        const endSpan = this.getNodeSegmentSpan(end);
+        if (endSpan && startSpan.parentNode !== endSpan.parentNode) {
+            // Selection is spanning Texts.
+            // We assume a selection can only run across a maximum
+            // of two Texts.
+            nodes = nodes.concat(this.getRangeNodes(range, endSpan.parentNode));
+        }
+
+        let segmentIds = [];
+        nodes.map((node) => segmentIds.push(node.id));
+
+        this.props.didSelectSegmentIds(segmentIds);
+    }
+
+    getNodeSegmentSpan(node) {
+        let currentNode = node;
+        let span = null;
+        while(!span && currentNode.parentNode) {
+            currentNode = currentNode.parentNode;
+            const test = /^(i|s|ds)_/;
+            if (currentNode.id && test.test(currentNode.id)) {
+                span = currentNode;
+            }
+        }
+
+        return span;
+    }
+
+    getRangeNodes(range, parentNode) {
+        let rangeSpans = [];
+        for (let i=0, len=parentNode.childNodes.length; i < len; i++) {
+            const node = parentNode.childNodes[i];
+            if (range.intersectsNode(node)) {
+                rangeSpans.push(node);
+            }
+        }
+        return rangeSpans;
+    }
+
     componentWillReceiveProps(props) {
         this.updateList();
     }
 
     componentDidMount() {
-        window.addEventListener("resize", _.throttle(() => {
+        this.resizeHandler = _.throttle(() => {
             this.cache.clearAll();
             this.updateList();
-        }, 500).bind(this));
+        }, 500).bind(this);
+
+        window.addEventListener("resize", this.resizeHandler);
+
+        this.selectionHandler = _.debounce((e) => {
+            this.handleSelection(e);
+        }, 200).bind(this);
+
+        document.addEventListener("selectionchange", this.selectionHandler);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resizeHandler);
+        document.removeEventListener("selectionchange", this.selectionHandler);
     }
 
     render() {
@@ -84,6 +156,7 @@ export default class SplitText extends React.PureComponent {
                         row={index}
                         didSelectSegment={props.didSelectSegment}
                         didSelectAnnotation={props.didSelectAnnotation}
+                        selectedSegmentId={props.selectedSegmentId}
                         annotationPositions={props.annotationPositions}
                         selectedAnnotatedSegments={props.selectedAnnotatedSegments}
                     />
