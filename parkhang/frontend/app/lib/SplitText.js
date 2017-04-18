@@ -6,6 +6,7 @@ export default class SplitText {
         this.annotatedText = annotatedText;
         this.splitter = splitter;
         this._texts = null;
+        this._textsFinalPositions = null;
     }
 
     get texts() {
@@ -13,10 +14,12 @@ export default class SplitText {
             if (!this.annotatedText) {
                 return [];
             }
+            this._textsFinalPositions = [];
             const segmentedText = this.annotatedText.segmentedText;
             const textString = segmentedText.getText();
             let splitPositions = this.splitter(textString);
             if (splitPositions.length == 0) {
+                this._textsFinalPositions.push(textString.length);
                 return [segmentedText];
             }
             let lastPosition = splitPositions[splitPositions.length - 1];
@@ -39,11 +42,41 @@ export default class SplitText {
                 const text = new SegmentedText(textSegments);
                 texts.push(text);
                 startIndex = endIndex;
+                if (endIndex >= 0) {
+                    const finalSegment = segments[endIndex];
+                    this._textsFinalPositions.push(finalSegment.end);
+                }
             }
 
             this._texts = texts;
         }
 
         return this._texts;
+    }
+
+    _getTextsFinalPositions() {
+        if (!this._textsFinalPositions) {
+            // ensure this._textsFinalPositions is generated
+            this.texts;
+        }
+        return this._textsFinalPositions;
+    }
+
+    getTextIndexOfPosition(position) {
+        const textsFinalPositions = this._getTextsFinalPositions();
+        let lastPosition = 0;
+        let textIndex = null;
+        for (let i=0; i < textsFinalPositions.length; i++) {
+            let endPosition = textsFinalPositions[i];
+            if (position >= lastPosition && position <= endPosition) {
+                textIndex = i;
+                break;
+            }
+            lastPosition = endPosition;
+        }
+        if (!textIndex) {
+            textIndex = 0;
+        }
+        return textIndex;
     }
 }

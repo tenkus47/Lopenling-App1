@@ -7,7 +7,6 @@
 }
 
 .splitTextRow {
-    overflow: hidden;
     display: flex;
 }
 

@@ -38,4 +38,11 @@ describe('SplitText', () => {
             texts[2].getText()
         ).toEqual(' བླ་མ་དང་དཔལ་རྡོ་རྗེ་མཁའ་འགྲོ་ལ་ཕྱག་འཚལ་ལོ། །འགྱེལ་བའི་རོ་ལ་ཞབས་མཆོག་མཉམ་པའི་སྟབས་ཀྱིས་བཞུགས་ཤིང་སྦོམ་ཐུང་དྲག་ལ་གསུས་ཁྱིམ་ཡངས།');
     });
+
+    test('Get correct text index for position', () => {
+        expect(
+            splitText.getTextIndexOfPosition(92)
+        ).toEqual(1);
+
+    });
 });

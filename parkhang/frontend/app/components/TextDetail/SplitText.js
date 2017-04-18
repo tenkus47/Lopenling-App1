@@ -2,6 +2,7 @@ import React from 'react'
 import {AutoSizer, List, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import 'react-virtualized/styles.css';
 import Text from './Text'
+import Popover from 'components/Popover'
 import styles from './SplitText.css'
 import _ from 'lodash'
 
@@ -9,6 +10,11 @@ export default class SplitText extends React.PureComponent {
     constructor(props) {
         super(props);
 
+        this.state = {
+            selectedTextIndex: null,
+            popoverVisible: false,
+            popoverPosition: {top: 0, center: 0}
+        };
         this.list = null;
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
@@ -84,6 +90,51 @@ export default class SplitText extends React.PureComponent {
 
     componentWillReceiveProps(props) {
         this.updateList();
+        this.setState((prevState, props) => {
+            let popoverVisible = prevState.popoverVisible;
+            let popoverPosition = prevState.popoverPosition;
+            let selectedTextIndex = prevState.selectedTextIndex;
+            if (props.selectedAnnotatedSegments) {
+                let maxTop = 100000;
+                let maxLeft = 100000;
+                let maxRight = 0;
+                let firstSegment = null;
+                for (let i=0; i < props.selectedAnnotatedSegments.length; i++) {
+                    let segment = props.selectedAnnotatedSegments[i];
+                    if (i === 0) {
+                        firstSegment = segment;
+                    }
+                    let id = 's_' + segment.start;
+                    let element = document.getElementById(id);
+                    if (element.offsetLeft < maxLeft) {
+                        maxLeft = element.offsetLeft
+                    }
+                    let right = element.offsetLeft + element.offsetWidth;
+                    if (right > maxRight) {
+                        maxRight = right;
+                    }
+                    if (element.offsetTop < maxTop) {
+                        maxTop = element.offsetTop;
+                    }
+                }
+                const width = maxRight - maxLeft;
+                selectedTextIndex = props.splitText.getTextIndexOfPosition(firstSegment.start);
+                popoverVisible = true;
+                popoverPosition = {
+                    top: maxTop,
+                    center: maxLeft + (width / 2),
+                    width: width
+                }
+            } else {
+                popoverVisible = false;
+            }
+            return {
+                ...prevState,
+                selectedTextIndex: selectedTextIndex,
+                popoverVisible: popoverVisible,
+                popoverPosition: popoverPosition
+            }
+        });
     }
 
     componentDidMount() {
@@ -160,6 +211,10 @@ export default class SplitText extends React.PureComponent {
                         annotationPositions={props.annotationPositions}
                         selectedAnnotatedSegments={props.selectedAnnotatedSegments}
                     />
+                    {this.state.selectedTextIndex === index &&
+                        <Popover isVisible={this.state.popoverVisible} position={this.state.popoverPosition} />
+                    }
+
                 </div>
             </CellMeasurer>
         );
