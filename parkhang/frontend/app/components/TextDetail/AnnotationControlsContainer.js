@@ -65,7 +65,7 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, annotationPosi
     return availableAnnotations;
 };
 
-const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = (state, ownProps) => {
     if (!ownProps.activeAnnotation) {
         return {
             annotationsData: null,
