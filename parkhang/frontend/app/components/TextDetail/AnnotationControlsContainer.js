@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { batchActions } from 'redux-batched-actions';
 import AnnotationControls from './AnnotationControls'
 import addTibetanShay from 'lib/addTibetanShay'
+import { getUser } from 'reducers'
 import { addedAnnotation, removedAnnotation, changedActiveAnnotation } from 'actions'
 import { BASE_ANNOTATION_ID } from 'lib/AnnotatedText'
 import _ from 'lodash'
@@ -66,12 +67,15 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, annotationPosi
 };
 
 export const mapStateToProps = (state, ownProps) => {
+    const user = getUser(state);
+
     if (!ownProps.activeAnnotation) {
         return {
             annotationsData: null,
             activeAnnotation: null,
             baseAnnotation: null,
-            availableAnnotations: null
+            availableAnnotations: null,
+            user: user
         }
     }
     let activeAnnotation = ownProps.activeAnnotation;
@@ -80,7 +84,9 @@ export const mapStateToProps = (state, ownProps) => {
         return {
             annotationsData: [],
             activeAnnotation: null,
-            baseAnnotation: null
+            baseAnnotation: null,
+            availableAnnotations: null,
+            user: user
         }
     }
     let annotationsData = getAnnotationsData(annotations);
@@ -103,7 +109,8 @@ export const mapStateToProps = (state, ownProps) => {
         annotationsData: annotationsData,
         activeAnnotation: activeAnnotation,
         baseAnnotation: baseAnnotation,
-        availableAnnotations: annotations
+        availableAnnotations: annotations,
+        user: user
     }
 };
 

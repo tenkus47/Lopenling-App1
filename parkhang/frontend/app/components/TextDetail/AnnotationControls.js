@@ -6,6 +6,7 @@ import styles from './AnnotationControls.css'
 const AnnotationControls = (props) => {
 
     let annotations = [];
+    let anonymousUserMessage = null;
     let variantsHeading = null;
     let nothingSelected = null;
     if (props.annotationsData) {
@@ -19,17 +20,31 @@ const AnnotationControls = (props) => {
                 key={annotationData.id}
                 isActive={isActive}
                 onClickHandler={() => {
-                    props.didSelectAnnotation(annotationData.id);
+                    if (props.user.isLoggedIn) {
+                        props.didSelectAnnotation(annotationData.id);
+                    }
                 }}/>;
             annotations.push(annotationDetail);
         }, this);
         variantsHeading = <h3>Variants</h3>;
+
+        if (!props.user.isLoggedIn) {
+            anonymousUserMessage = (
+                <div className={styles.anonymousMessage}>
+                    Please <a href="/accounts/login/">login</a> to make changes.
+                </div>
+            )
+        }
+
     } else {
         nothingSelected = <div className={styles.nothingSelected}>Nothing Selected</div>;
     }
 
+
+
     return (
         <div className={styles.annotationControls} >
+            {anonymousUserMessage}
             {nothingSelected}
             {variantsHeading}
             {annotations}
