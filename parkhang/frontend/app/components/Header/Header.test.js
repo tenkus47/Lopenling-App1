@@ -1,14 +1,13 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import Header, { LoginControls, LoggedInControls } from './Header'
-
-
+import { Header, LoginControls, LoggedInControls } from './Header'
+import User, { getAnonymousUser } from 'lib/User'
 
 test('Anonymous Header', () => {
-    global.USER_LOGGED_IN = false;
+    const anonymous = getAnonymousUser();
 
     const header = shallow(
-        <Header />
+        <Header user={anonymous} />
     );
 
     expect(
@@ -16,20 +15,21 @@ test('Anonymous Header', () => {
     ).toEqual(true);
 });
 
+const userName = 'Test User';
+
 test('Logged-in user Header', () => {
-    global.USER_LOGGED_IN = true;
-    global.USER_NAME = 'Test User';
+    const user = new User(1, userName);
 
     const header = shallow(
-        <Header />
+        <Header user={user} />
     );
 
     expect(
-        header.contains(<LoggedInControls/>)
+        header.contains(<LoggedInControls user={user} />)
     ).toEqual(true);
 
     const controls = shallow(
-        <LoggedInControls/>
+        <LoggedInControls user={user} />
     );
 
     expect(
@@ -37,6 +37,6 @@ test('Logged-in user Header', () => {
     ).toEqual(true);
 
     expect(
-        controls.contains('Test User')
+        controls.contains(userName)
     ).toEqual(true);
 });

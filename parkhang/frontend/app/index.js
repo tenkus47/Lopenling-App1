@@ -14,7 +14,7 @@ import { Provider, connect } from 'react-redux'
 import createSagaMiddleware from 'redux-saga'
 
 // Action
-import { loadInitialData } from 'actions'
+import { loadInitialData, userLoggedIn } from 'actions'
 import { enableBatching } from 'redux-batched-actions'
 
 // Reducers
@@ -54,4 +54,9 @@ ReactDOM.render(
     document.getElementById('app')
 );
 
+if (USER_LOGGED_IN) {
+    store.dispatch(userLoggedIn(USER_ID, USER_NAME));
+}
 store.dispatch(loadInitialData());
+
+

@@ -10,9 +10,11 @@
 {% if user.is_authenticated %}
 USER_LOGGED_IN = true;
 USER_NAME = "{{ user.username }}";
+USER_ID = "{{ user.id }}";
 {% else %}
 USER_LOGGED_IN = false;
 USER_NAME = "";
+USER_ID = null;
 {% endif %}
     </script>
 </head>

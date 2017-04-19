@@ -1,5 +1,7 @@
 import React from 'react';
-import classnames from 'classnames'
+import { connect } from 'react-redux';
+import classnames from 'classnames';
+import { getUser } from 'reducers';
 import styles from './Header.css';
 
 export const LoginControls = (props) => (
@@ -10,13 +12,13 @@ export const LoginControls = (props) => (
 );
 
 export const LoggedInControls = (props) => (
-    <div className={styles.controls}>{USER_NAME} |&nbsp;<a href="/accounts/logout/">Logout</a></div>
+    <div className={styles.controls}>{props.user.name} |&nbsp;<a href="/accounts/logout/">Logout</a></div>
 );
 
-const Header = (props) => {
+export const Header = (props) => {
     let controls = null;
-    if (USER_LOGGED_IN) {
-        controls = <LoggedInControls/>
+    if (props.user.isLoggedIn) {
+        controls = <LoggedInControls user={props.user} />
     } else {
         controls = <LoginControls/>
     }
@@ -29,4 +31,16 @@ const Header = (props) => {
     )
 };
 
-export default Header;
+const mapStateToProps = (state) => {
+    const user = getUser(state);
+
+    return {
+        user: user
+    }
+};
+
+const HeaderContainer = connect(
+    mapStateToProps
+)(Header);
+
+export default HeaderContainer;

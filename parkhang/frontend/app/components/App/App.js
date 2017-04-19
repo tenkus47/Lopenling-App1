@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
 
-import Header from 'components/Header'
+import HeaderContainer from 'components/Header'
 import TextsSearchContainer from 'components/TextsSearch/TextsSearchContainer'
 import TextListContainer from 'containers/TextListContainer'
 import TextDetailContainer from 'components/TextDetail/TextDetailContainer'
@@ -20,7 +20,7 @@ const App = props => {
     }
     return (
         <div className={classnames(styles.container, utilStyles.flex, utilStyles.flexColumn)}>
-            <Header/>
+            <HeaderContainer/>
             <div className={classnames(styles.interface, utilStyles.flex)}>
                 <div className={classnames(...textListClassnames)}>
                     <TextListTabContainer />
