@@ -12,22 +12,18 @@ export default class Annotation {
      * @param {number} start
      * @param {number} length
      * @param {string} content
-     * @param {boolean} isVariant
      * @param {Witness|User|null} creator
-     * @param {string} note
      * @param {string} type - one of ANNOTATION_TYPES
      */
     constructor(id, witness, start, length, content,
-                creator=null, isVariant=true, note=null, type=ANNOTATION_TYPES.variant)
+                creator=null, type=ANNOTATION_TYPES.variant)
     {
-        this.id = id;
+        this._id = id;
         this.witness = witness;
         this.start = start;
         this.length = length;
         this.content = content;
         this.creator = creator;
-        this._isVariant = isVariant;
-        this.note = note;
         this.type = type;
     }
 

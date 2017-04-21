@@ -267,9 +267,7 @@ export function annotationFromData(state, annotationData) {
         annotationData.start,
         annotationData.length,
         annotationData.content,
-        (creatorWitness) ? creatorWitness : creatorUser,
-        annotationData.is_variant,
-        annotationData.note
+        (creatorWitness) ? creatorWitness : creatorUser
     );
     return annotation;
 }
