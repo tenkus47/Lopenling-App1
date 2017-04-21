@@ -2,7 +2,7 @@ import Annotation from './Annotation'
 import { ANNOTATION_TYPES } from './Annotation'
 import SegmentedText from './SegmentedText'
 import TextSegment from './TextSegment'
-import _ from 'Lodash'
+import _ from 'lodash'
 
 export const BASE_ANNOTATION_ID = -1;
 export const WORKING_VERSION_ANNOTATION_ID = -2;

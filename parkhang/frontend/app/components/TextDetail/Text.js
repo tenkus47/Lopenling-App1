@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import styles from './Text.css'
-import _ from 'Lodash'
+import _ from 'lodash'
 
 export default class Text extends React.Component {
 
