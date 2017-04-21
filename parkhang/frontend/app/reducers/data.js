@@ -137,45 +137,44 @@ function addedAnnotation(state, action) {
     if (!state.witnessActiveAnnotationsById[witness.id]) {
         state.witnessActiveAnnotationsById[witness.id] = [];
     }
-    let userAnnotations = state.witnessActiveAnnotationsById[witness.id];
-    if (!userAnnotations) {
-        userAnnotations = []
+    let activeAnnotations = state.witnessActiveAnnotationsById[witness.id];
+    if (!activeAnnotations) {
+        activeAnnotations = []
     } else {
-        userAnnotations = [
-            ...userAnnotations
+        activeAnnotations = [
+            ...activeAnnotations
         ]
     }
-    if (userAnnotations.indexOf(annotation.id) == -1) {
-        userAnnotations.push(annotation.id);
-    }
-    let witnessUserAnnotationsById = {
-        ...state.witnessActiveAnnotationsById
-    };
-    witnessUserAnnotationsById[witness.id] = userAnnotations;
-
-    return {
-        ...state,
-        witnessActiveAnnotationsById: witnessUserAnnotationsById
-    }
-}
-
-function removedAnnotation(state, action) {
-    let annotation = action.annotation;
-    let witness = annotation.witness;
-    let userAnnotations = state.witnessActiveAnnotationsById[witness.id];
-    if (userAnnotations) {
-        userAnnotations = userAnnotations.filter(element => element != annotation.id);
+    if (activeAnnotations.indexOf(annotation.id) == -1) {
+        activeAnnotations.push(annotation.id);
     }
     let witnessActiveAnnotationsById = {
         ...state.witnessActiveAnnotationsById
     };
-    witnessActiveAnnotationsById[witness.id] = userAnnotations;
+    witnessActiveAnnotationsById[witness.id] = activeAnnotations;
+
     return {
         ...state,
         witnessActiveAnnotationsById: witnessActiveAnnotationsById
     }
 }
 
+function removedAnnotation(state, action) {
+    let annotation = action.annotation;
+    let witness = annotation.witness;
+    let activeAnnotations = state.witnessActiveAnnotationsById[witness.id];
+    if (activeAnnotations) {
+        activeAnnotations = activeAnnotations.filter(element => element != annotation.id);
+    }
+    let witnessActiveAnnotationsById = {
+        ...state.witnessActiveAnnotationsById
+    };
+    witnessActiveAnnotationsById[witness.id] = activeAnnotations;
+    return {
+        ...state,
+        witnessActiveAnnotationsById: witnessActiveAnnotationsById
+    }
+}
 
 const dataReducers = {};
 dataReducers[actions.LOADING_INITIAL_DATA] = loadingInitialData;
