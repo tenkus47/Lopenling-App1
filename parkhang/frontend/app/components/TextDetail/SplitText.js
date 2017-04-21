@@ -94,7 +94,7 @@ export default class SplitText extends React.PureComponent {
             let popoverVisible = prevState.popoverVisible;
             let popoverPosition = prevState.popoverPosition;
             let selectedTextIndex = prevState.selectedTextIndex;
-            if (props.selectedAnnotatedSegments) {
+            if (props.selectedAnnotatedSegments && props.selectedAnnotatedSegments.length > 0) {
                 let maxTop = 100000;
                 let maxLeft = 100000;
                 let maxRight = 0;
@@ -106,6 +106,9 @@ export default class SplitText extends React.PureComponent {
                     }
                     let id = 's_' + segment.start;
                     let element = document.getElementById(id);
+                    if (!element) {
+                        continue;
+                    }
                     if (element.offsetLeft < maxLeft) {
                         maxLeft = element.offsetLeft
                     }
