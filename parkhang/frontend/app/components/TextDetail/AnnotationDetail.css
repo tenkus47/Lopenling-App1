@@ -1,6 +1,15 @@
 @import 'css/type.css';
 @import 'css/colour.css';
 
+:root {
+    --button: {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+}
+
 .annotationDetail {
     display: flex;
     flex-direction: column;
@@ -8,6 +17,7 @@
     margin: 0 10px 30px 0;
     padding: 0 0 10px 0;
     background-color: #ddd;
+    position: relative;
 }
 
 .annotationDetail h3 {
@@ -40,3 +50,35 @@
     border-left: 5px solid #446b8c;
 }
 
+.editing {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 10px 10px;
+}
+
+.editing textarea {
+    font-size: 18px;
+    font-family: var(--tibetan-fonts);
+    flex-grow: 1;
+}
+
+.edit {
+    background-color: var(--yellow);
+    right: 10px;
+    top: 10px;
+    @apply --button;
+}
+
+.save {
+    background-color: var(--green);
+    right: 10px;
+    top: 10px;
+    @apply --button;
+}
+
+.cancel {
+    background-color: var(--red);
+    right: 50px;
+    top: 10px;
+    @apply --button;
+}

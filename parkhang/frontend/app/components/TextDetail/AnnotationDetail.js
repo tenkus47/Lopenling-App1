@@ -11,16 +11,21 @@ const AnnotationDetail = (props) => {
         desc = <p>{props.annotationData.content}</p>
     }
 
-    let className = styles.annotationDetail;
+    let classes = [styles.annotationDetail];
+
     if (props.isActive) {
-        className = classnames(className, styles.active);
+        classes.push(styles.active)
     }
 
-    let clickHandler = props.onClickHandler;
-
+    let className = classnames(...classes);
     return (
-        <div className={className} onClick={clickHandler}>
+        <div className={className} onClick={props.selectAnnotationHandler}>
             <h3>{props.annotationData.name}</h3>
+
+            { props.isActive &&
+                <div className={styles.edit} onClick={props.editAnnotationHandler}/>
+            }
+
             {desc}
         </div>
     )

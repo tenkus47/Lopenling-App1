@@ -1,5 +1,8 @@
 import rootReducer, { dataReducer } from 'reducers';
 import * as actions from 'actions';
+import User, { getAnonymousUser } from 'lib/User'
+
+const anonymousUser = getAnonymousUser();
 
 const initialState = {
     data: {
@@ -28,8 +31,13 @@ const initialState = {
         showPageImages: false,
         selectedSegments: {},
         activeAnnotations: {},
-        textListVisible: true
+        textListVisible: true,
+        temporaryAnnotations: {},
     },
+    user: {
+        userId: anonymousUser.id,
+        userName: anonymousUser.name
+    }
 };
 
 describe('Root reducer', () => {

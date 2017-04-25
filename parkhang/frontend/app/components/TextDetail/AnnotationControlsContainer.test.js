@@ -8,13 +8,21 @@ import Witness from 'lib/Witness'
 import Annotation from 'lib/Annotation'
 import { getAnonymousUser } from 'lib/User'
 
-
-// TODO: create test data
-
-test('mapStateToProps with no state', () => {
+test('mapStateToProps with no activeAnnotation', () => {
 
     const user = getAnonymousUser();
     const state = {
+        data: {
+            textsById: {
+                1: {
+                    id: 1,
+                    name: 'Test'
+                }
+            }
+        },
+        ui: {
+            selectedText: 1
+        },
         user: {
             userId: user.id,
             userName: user.name
@@ -28,7 +36,8 @@ test('mapStateToProps with no state', () => {
         activeAnnotation: null,
         baseAnnotation: null,
         availableAnnotations: null,
-        user: user
+        user: user,
+        temporaryAnnotation: null
     });
 });
 

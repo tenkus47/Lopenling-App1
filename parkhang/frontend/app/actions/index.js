@@ -27,6 +27,19 @@ export const LOADED_WITNESS_ANNOTATIONS = 'LOADED_WITNESS_ANNOTATIONS';
 
 export const LOADED_TEXT_DATA = 'LOADED_TEXT_DATA';
 
+// These are intended for when the data will be saved via the server API
+export const ADDED_ANNOTATION = 'text/ADDED_ANNOTATION';
+export const REMOVED_ANNOTATION = 'text/REMOVED_ANNOTATION';
+export const CREATED_ANNOTATION = 'text/CREATED_ANNOTATION';
+export const UPDATED_ANNOTATION = 'text/UPDATED_ANNOTATION';
+export const DELETED_ANNOTATION = 'text/DELETED_ANNOTATION';
+export const SAVED_ANNOTATION = 'text/SAVED_ANNOTATION';
+
+// These are for local UI changes
+export const ADDED_TEMPORARY_ANNOTATION = 'text/ADDED_TEMPORARY_ANNOTATION';
+export const UPDATED_TEMPORARY_ANNOTATION = 'text/UPDATED_TEMPORARY_ANNOTATION';
+export const REMOVED_TEMPORARY_ANNOTATION = 'text/REMOVED_TEMPORARY_ANNOTATION';
+
 // UI
 
 export const SELECTED_TEXT = 'textList/SELECTED_TEXT';
@@ -36,9 +49,6 @@ export const CHANGED_SHOW_PAGE_IMAGES = 'text/CHANGED_SHOW_PAGE_IMAGES';
 
 export const CHANGED_SELECTED_SEGMENT = 'text/CHANGED_SELECTED_SEGMENT';
 export const DESELECTED_SEGMENT = 'text/DESELECTED_SEGMENT';
-
-export const ADDED_ANNOTATION = 'text/ADDED_ANNOTATION';
-export const REMOVED_ANNOTATION = 'text/REMOVED_ANNOTATION';
 
 export const CHANGED_ACTIVE_ANNOTATION = 'text/CHANGED_ACTIVE_ANNOTATION';
 
@@ -185,6 +195,78 @@ export function loadedWitnessAnnotations(witness, annotations) {
     };
 }
 
+/**
+ *
+ * @param {Annotation} annotation
+ */
+export function addedAnnotation(annotation) {
+    // TODO: rename to addedActiveAnnotation
+    return {
+        type: ADDED_ANNOTATION,
+        annotation
+    }
+}
+
+export function removedAnnotation(annotation) {
+    // TODO: rename to removedActiveAnnotation
+    return {
+        type: REMOVED_ANNOTATION,
+        annotation
+    }
+}
+
+/**
+ * The given annotation has been created and applied.
+ * @param annotation
+ * @return {{type: string, annotation: *}}
+ */
+export function createdAnnotation(annotation) {
+    return {
+        type: CREATED_ANNOTATION,
+        annotation
+    }
+}
+
+/**
+ * The given annotation has been updated with new data.
+ *
+ * @param {TemporaryAnnotation} annotation
+ * @return {{type: string, annotation: *}}
+ */
+export function updatedAnnotation(annotation) {
+    return {
+        type: UPDATED_ANNOTATION,
+        annotation
+    }
+}
+
+/**
+ * The given annotation has been updated with new data.
+ *
+ * @param {Annotation} annotation
+ * @return {{type: string, annotation: *}}
+ */
+export function deletedAnnotation(annotation) {
+    return {
+        type: DELETED_ANNOTATION,
+        annotation
+    }
+}
+
+/**
+ * The annotation has been succesfully saved and given a
+ * valid id.
+ * @param annotation
+ * @return {{type: string, annotation: *}}
+ */
+export function savedAnnotation(annotation) {
+    return {
+        type: SAVED_ANNOTATION,
+        annotation
+    }
+}
+
+
 /* USER */
 export function userLoggedIn(userId, userName) {
     return {
@@ -232,17 +314,32 @@ export function changedSelectedSegment(segment) {
 /**
  *
  * @param {Annotation} annotation
+ * @param {boolean} isActive - whether the annotation is currently active
  */
-export function addedAnnotation(annotation) {
+export function addedTemporaryAnnotation(annotation, isActive) {
     return {
-        type: ADDED_ANNOTATION,
-        annotation
+        type: ADDED_TEMPORARY_ANNOTATION,
+        annotation,
+        isActive
     }
 }
 
-export function removedAnnotation(annotation) {
+/**
+ *
+ * @param {Annotation} annotation
+ * @param {boolean} isActive - whether the annotation is currently active
+ */
+export function updatedTemporaryAnnotation(annotation, isActive) {
     return {
-        type: REMOVED_ANNOTATION,
+        type: UPDATED_TEMPORARY_ANNOTATION,
+        annotation,
+        isActive
+    }
+}
+
+export function removedTemporaryAnnotation(annotation) {
+    return {
+        type: REMOVED_TEMPORARY_ANNOTATION,
         annotation
     }
 }

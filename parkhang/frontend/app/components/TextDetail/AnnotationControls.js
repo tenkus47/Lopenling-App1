@@ -1,30 +1,55 @@
 import React from 'react'
 import classnames from 'classnames'
 import AnnotationDetail from './AnnotationDetail'
+import AnnotationDetailEdit from './AnnotationDetailEdit'
 import styles from './AnnotationControls.css'
 
 const AnnotationControls = (props) => {
-
     let annotations = [];
+    let temporaryAnnotations = [];
     let anonymousUserMessage = null;
     let variantsHeading = null;
     let nothingSelected = null;
     if (props.annotationsData) {
         props.annotationsData.map((annotationData) => {
+            let isEditing = false;
             let isActive = false;
-            if (annotationData.id == props.activeAnnotation.id) {
+            if (annotationData.isTemporary) {
+                isEditing = true;
+                isActive = true
+            } else if (!props.temporaryAnnotation && annotationData.id == props.activeAnnotation.id) {
                 isActive = true;
             }
-            let annotationDetail = <AnnotationDetail
-                annotationData={annotationData}
-                key={annotationData.id}
-                isActive={isActive}
-                onClickHandler={() => {
-                    if (props.user.isLoggedIn) {
-                        props.didSelectAnnotation(annotationData.id);
-                    }
-                }}/>;
-            annotations.push(annotationDetail);
+
+            if (isEditing) {
+                let annotationDetail = <AnnotationDetailEdit
+                    annotationData={annotationData}
+                    key={annotationData.id}
+                    isActive={isActive}
+                    saveAnnotationHander={(content) => {
+                        props.saveAnnotation(annotationData.id, content);
+                    }}
+                />;
+                temporaryAnnotations.push(annotationDetail);
+            } else {
+                let annotationDetail = <AnnotationDetail
+                    annotationData={annotationData}
+                    key={annotationData.id}
+                    isActive={isActive}
+                    selectAnnotationHandler={() => {
+                        if (props.user.isLoggedIn && !isEditing) {
+                            props.didSelectAnnotation(annotationData.id);
+                        }
+                    }}
+                    editAnnotationHandler={() => {
+                        if (!isEditing) {
+                            props.editAnnotation(annotationData.id);
+                        }
+                    }}
+                />;
+                annotations.push(annotationDetail);
+            }
+
         }, this);
         variantsHeading = <h3>Variants</h3>;
 
@@ -47,6 +72,7 @@ const AnnotationControls = (props) => {
             {anonymousUserMessage}
             {nothingSelected}
             {variantsHeading}
+            {temporaryAnnotations}
             {annotations}
         </div>
     )

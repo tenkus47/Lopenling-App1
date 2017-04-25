@@ -22,6 +22,13 @@ const userReducer = createReducer(user.initialUserState, userReducers);
 
 // user
 
+/**
+ * Get the current user.
+ *
+ * If not logged in, it will be anonymousUser
+ * @param state
+ * @return {User}
+ */
 export const getUser = (state) => {
     return user.getUser(state.user);
 };
@@ -46,6 +53,10 @@ export const getActiveAnnotation = (state) => {
 
 export const getTextListVisible = (state) => {
     return ui.getTextListVisible(state.ui);
+};
+
+export const getTemporaryAnnotations = (state, textId) => {
+    return ui.getTemporaryAnnotations(state.ui, textId);
 };
 
 // data
@@ -75,7 +86,14 @@ export const getActiveAnnotationsForWitnessId = (state, witnessId) => {
 };
 
 export const annotationFromData = (state, annotationData) => {
-    return data.annotationFromData(state.data, annotationData);
+    let annotation = data.annotationFromData(state.data, annotationData);
+    if (annotation.userCreated) {
+        const user = getUser(state);
+        if (user.id === annotation.creator.id) {
+            annotation.creator = user;
+        }
+    }
+    return annotation;
 };
 
 export const getAnnotationData = (state, witnessId, annotationId) => {
