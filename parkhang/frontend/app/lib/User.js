@@ -9,7 +9,7 @@ const ANONYMOUS_USER_NAME = 'User';
  */
 export default class User {
     constructor(id, name) {
-        this.id = id;
+        this.id = Number(id);
         this.name = name;
     }
 
