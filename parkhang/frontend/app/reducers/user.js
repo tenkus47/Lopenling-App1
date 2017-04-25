@@ -21,6 +21,14 @@ userReducers[actions.USER_LOGGED_IN] = userLoggedIn;
 export default userReducers;
 
 let _user = null;
+
+/**
+ * Get the current user.
+ *
+ * If not logged in, it will be anonymousUser
+ * @param state
+ * @return {User}
+ */
 export function getUser(state) {
     if (state.userId === anonymousUser.id) {
         return anonymousUser;
