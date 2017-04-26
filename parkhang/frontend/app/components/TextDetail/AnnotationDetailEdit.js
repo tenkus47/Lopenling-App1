@@ -19,15 +19,19 @@ const AnnotationDetailEdit = (props) => {
             <h3>{props.annotationData.name}</h3>
 
             <div className={styles.editing}>
-            <div className={styles.save} onClick={() => {
-                props.saveAnnotationHander(textarea.value);
-            }}/>
-            <div className={styles.cancel}/>
+
                 <textarea
                     defaultValue={content}
                     autoFocus={true}
                     ref={(ta) => textarea = ta}
                 />
+                <div className={styles.actionButtons}>
+                    <div className={styles.save} onClick={() => {
+                        props.saveAnnotationHander(textarea.value);
+                    }}>Save</div>
+                    <div className={styles.cancel}>Cancel</div>
+                </div>
+
             </div>
         </div>
     )

@@ -23,7 +23,7 @@ const AnnotationDetail = (props) => {
             <h3>{props.annotationData.name}</h3>
 
             { props.isActive &&
-                <div className={styles.edit} onClick={props.editAnnotationHandler}/>
+            <div className={styles.edit} onClick={props.editAnnotationHandler}>EDIT</div>
             }
 
             {desc}
