@@ -24,7 +24,7 @@ export default class SplitText {
             }
             let lastPosition = splitPositions[splitPositions.length - 1];
             if (lastPosition < textString.length) {
-                splitPositions.push(textString.length);
+                splitPositions.push(textString.length - 1);
             }
             const segments = segmentedText.sortedSegments();
             let startIndex = 0;
@@ -34,6 +34,7 @@ export default class SplitText {
                 const endIndex = segmentedText.indexOfSortedSegmentAtPosition(position);
                 let textSegments;
                 if (i == splitPositions.length - 1) {
+                    // final position
                     textSegments = segments.slice(startIndex);
                 } else {
                     textSegments = segments.slice(startIndex, endIndex);

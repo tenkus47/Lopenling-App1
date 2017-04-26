@@ -44,5 +44,9 @@ describe('SplitText', () => {
             splitText.getTextIndexOfPosition(92)
         ).toEqual(1);
 
+        expect(
+            splitText.getTextIndexOfPosition(250)
+        ).toEqual(2);
+
     });
 });
