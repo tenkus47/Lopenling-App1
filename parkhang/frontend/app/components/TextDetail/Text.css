@@ -3,12 +3,19 @@
 
 :root {
     --fontSize: 24px;
+    --paddingSide: 20px;
+    --maxWidth: 600px;
+}
+
+:export {
+    paddingSide: var(--paddingSide);
+    maxWidth: var(--maxWidth);
 }
 
 .text {
     font-size: 24px;
     line-height: 2;
-    padding: 0px 20px;
+    padding: 0px var(--paddingSide);
     font-family: var(--tibetan-fonts);
     letter-spacing: 0.04em;
     background-color: white;
@@ -28,13 +35,13 @@
     overflow: auto;
     background-color: var(--text-bg);
     flex-grow: 1;
-    padding: 0 20px;
+    padding: 0 var(--paddingSide);
     min-width: 200px;
     display: flex;
 }
 
 .limitWidth {
-    max-width: 600px;
+    max-width: var(--maxWidth);
 }
 
 .annotation {

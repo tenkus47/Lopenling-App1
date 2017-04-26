@@ -96,6 +96,7 @@ export const mapStateToProps = (state, ownProps) => {
     const text = reducers.getSelectedText(state);
     const user = reducers.getUser(state);
     const activeAnnotation = ownProps.activeAnnotation;
+    const inline = ownProps.inline;
     if (!activeAnnotation) {
         return {
             annotationsData: null,
@@ -103,7 +104,8 @@ export const mapStateToProps = (state, ownProps) => {
             baseAnnotation: null,
             availableAnnotations: null,
             user: user,
-            temporaryAnnotation: null
+            temporaryAnnotation: null,
+            inline: inline
         }
     }
 
@@ -143,7 +145,8 @@ export const mapStateToProps = (state, ownProps) => {
         baseAnnotation: baseAnnotation,
         availableAnnotations: annotations,
         user: user,
-        temporaryAnnotation: temporaryAnnotation
+        temporaryAnnotation: temporaryAnnotation,
+        inline: inline
     }
 };
 

@@ -25,7 +25,8 @@ const TextDetail = props => {
     if (props.text) {
         text = props.text;
     }
-    
+
+    let inlineControls = false;
     let textComponent = null;
     if (!props.text || props.loading) {
         textComponent = <div />
@@ -43,10 +44,12 @@ const TextDetail = props => {
     } else {
         const splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
         const splitText = new SplitText(props.annotatedText, splitter);
+        inlineControls = true;
         textComponent = <SplitTextComponent
             splitText={splitText}
             annotations={props.annotations}
             activeAnnotations={props.activeAnnotations}
+            activeAnnotation={props.activeAnnotation}
             limitWidth={true}
             didSelectSegment={props.didSelectSegment}
             didSelectAnnotation={props.didSelectAnnotation}
@@ -54,6 +57,7 @@ const TextDetail = props => {
             selectedSegmentId={props.selectedSegmentId}
             annotationPositions={props.annotationPositions}
             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
+            textListVisible={props.textListVisible}
         />
     }
 
@@ -66,13 +70,18 @@ const TextDetail = props => {
                             />;
     }
 
+    let textComponents = [textComponent];
+    if (!inlineControls && annotationControls) {
+        textComponents.push(annotationControls);
+    }
+
     return (
         <div className={classnames(styles.textDetail, utilStyles.flex, utilStyles.flexColumn)}>
             <TextHeadingContainer text={text} />
             <Loader loaded={!props.loading} />
             <div className={classnames(styles.textContainer, utilStyles.flex)}>
                 {!props.loading ? (
-                    [textComponent, annotationControls]
+                    textComponents
                 ) : (<div/>)
                 }
             </div>

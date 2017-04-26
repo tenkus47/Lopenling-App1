@@ -145,10 +145,24 @@ export default class Text extends React.Component {
         // Generate HTML manually as it is much faster when
         // creating large numbers of elements, such as these spans.
         const html = this.generateHtml();
+        const containerStyle = {
+            paddingRight: this.props.paddingRight
+        };
+        const textStyle = {
+            width: this.props.textWidth,
+        };
 
         return (
-            <div className={styles.textContainer}>
-                <div className={classnames(...classes)} dangerouslySetInnerHTML={html}  onClick={(e) => this.selectedElement(e.target)} />
+            <div
+                className={styles.textContainer}
+                style={containerStyle}
+            >
+                <div
+                    className={classnames(...classes)}
+                    dangerouslySetInnerHTML={html}
+                    onClick={(e) => this.selectedElement(e.target)}
+                    style={textStyle}
+                />
             </div>
         )
     }

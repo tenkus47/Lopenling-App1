@@ -6,7 +6,7 @@ import Witness from 'lib/Witness';
 import { WORKING_VERSION_ANNOTATION_ID } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
 import { changedSelectedSegment, changedActiveAnnotation } from 'actions'
-import { showPageImages, getSelectedSegment, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser } from 'reducers'
+import { showPageImages, getSelectedSegment, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
@@ -75,6 +75,7 @@ const getActiveAnnotations = (state, baseWitnessId) => {
 const mapStateToProps = (state) => {
     const user = getUser(state);
     const loading = state.data.loadingWitnesses || state.data.loadingAnnotations;
+    const textListVisible = getTextListVisible(state);
     if (loading) {
         return {
             text: null,
@@ -88,7 +89,8 @@ const mapStateToProps = (state) => {
             annotationPositions: null,
             activeAnnotations: null,
             activeAnnotation: null,
-            user: user
+            user: user,
+            textListVisible
         };
     }
 
@@ -137,7 +139,8 @@ const mapStateToProps = (state) => {
         annotationPositions: annotationPositions,
         activeAnnotations: activeAnnotations,
         activeAnnotation: activeAnnotation,
-        user: user
+        user: user,
+        textListVisible
     };
 };
 
