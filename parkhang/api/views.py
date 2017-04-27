@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import ParseError, ValidationError, NotFound
+from rest_framework.exceptions import ParseError, ValidationError, NotFound, PermissionDenied
 
 from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer, AppliedUserAnnotationSerializer
 from texts.models import Text, Source, Witness, Annotation, AppliedUserAnnotation
@@ -76,20 +76,93 @@ class AnnotationList(APIView):
         If the user is logged in, also return any of that
         user's annotations for the text.
         """
-
         if request.user.is_authenticated:
-            annotation_list = Annotation.objects.filter(
+            annotation_list = Annotation.objects.active().filter(
                 Q(witness=witness_id),
                 Q(creator_user=request.user) | Q(creator_witness__isnull=False)
             )
         else:
-            annotation_list = Annotation.objects.filter(
+            annotation_list = Annotation.objects.active().filter(
                 witness=witness_id,
                 creator_user=None
             )
 
         serializer = AnnotationSerializer(annotation_list, many=True)
         return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Create a new Annotation
+        :param request: 
+        :return: JSON encoded data for the new annotation, including new id
+        """
+
+        serializer = AnnotationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AnnotationDetail(APIView):
+
+    def get_annotation(self, request, annotation_id):
+        try:
+            annotation = Annotation.objects.get_active(annotation_id)
+        except Annotation.DoesNotExist:
+            raise NotFound('An annotation with that ID does not exist.')
+
+        if annotation.creator_user:
+            if not request.user.is_authenticated or request.user != annotation.creator_user:
+                raise PermissionDenied(
+                    'You do not have permission to view this annotation')
+
+        return annotation
+
+    def get(self, request, annotation_id, *args, **kwargs):
+        """
+        Get the annotation with the specified id
+        
+        :param request: 
+        :param annotation_id: id of the annotation to return 
+        """
+
+        annotation = self.get_annotation(request, annotation_id)
+
+        serializer = AnnotationSerializer(annotation)
+        return Response(serializer.data)
+
+    def put(self, request, annotation_id, *args, **kwargs):
+        """
+        Update annotation with given id
+        
+        :param request: 
+        :param annotation_id: id of the annotation to update
+        :return: Empty string
+        """
+
+        annotation = self.get_annotation(request, annotation_id)
+        serializer = AnnotationSerializer(annotation, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response('', status=status.HTTP_204_NO_CONTENT)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, annotation_id):
+        """
+        Set given annotation's is_deleted to True.
+        This prevents it being returned elsewhere and is effectively deleted. 
+        :param request: 
+        :param annotation_id: id of the annotation to be deleted
+        :return: Empty string 
+        """
+
+        annotation = self.get_annotation(request, annotation_id)
+        annotation.delete()
+
+        return Response('', status=status.HTTP_204_NO_CONTENT)
 
 
 class AppliedUserAnnotations(APIView):

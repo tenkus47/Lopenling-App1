@@ -1,6 +1,7 @@
 from rest_framework import routers, serializers, viewsets
 
 from texts.models import Text, Source, Witness, Annotation, AppliedUserAnnotation
+from users.models import User
 
 
 class TextSerializer(serializers.ModelSerializer):
@@ -30,15 +31,21 @@ class WitnessSerializer(serializers.ModelSerializer):
 
 
 class AnnotationSerializer(serializers.ModelSerializer):
-    witness = serializers.PrimaryKeyRelatedField(read_only=True)
-    creator_witness = serializers.PrimaryKeyRelatedField(read_only=True)
-    creator_user = serializers.PrimaryKeyRelatedField(read_only=True)
+    witness = serializers.PrimaryKeyRelatedField(
+        queryset=Witness.objects
+    )
+    creator_witness = serializers.PrimaryKeyRelatedField(
+        allow_null=True,
+        queryset=Witness.objects
+    )
+    creator_user = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=User.objects
+    )
 
     class Meta:
         model = Annotation
-        fields = ('id', 'witness', 'start', 'length', 'content', 'note',
-                  'creator_witness', 'creator_user', 'is_variant',
-                  'is_deleted')
+        fields = ('id', 'witness', 'start', 'length', 'content',
+                  'creator_witness', 'creator_user', 'is_deleted')
 
 
 class AppliedUserAnnotationSerializer(serializers.ModelSerializer):

@@ -57,6 +57,14 @@ class Witness(models.Model):
     content = models.TextField(null=True, blank=True)
 
 
+class AnnotationQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(is_deleted=False)
+
+    def get_active(self, annotation_id):
+        return self.get(pk=annotation_id, is_deleted=False)
+
+
 class Annotation(models.Model):
     VARIANT = 'V'
     NOTE = 'N'
@@ -77,6 +85,9 @@ class Annotation(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
+
+    # see https://docs.djangoproject.com/en/1.11/topics/db/managers/#creating-a-manager-with-queryset-methods
+    objects = AnnotationQuerySet.as_manager()
 
     def creator(self):
         if self.creator_witness:

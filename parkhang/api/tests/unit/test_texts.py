@@ -1,8 +1,9 @@
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from rest_framework.exceptions import NotFound, PermissionDenied
 
 from users.models import User
-from api.views import TextList, SourceList, WitnessList, AnnotationList, AppliedUserAnnotations
+from api.views import TextList, SourceList, WitnessList, AnnotationList, AnnotationDetail, AppliedUserAnnotations
 from texts.models import Text, Source, Witness, Annotation, AppliedUserAnnotation
 
 class TextsTestCase(APITestCase):
@@ -65,8 +66,7 @@ class TextsTestCase(APITestCase):
             start=cls.annotation_start,
             length=cls.annotation_length,
             content=cls.annotation_content,
-            creator_witness=cls.witness_2,
-            is_variant=True
+            creator_witness=cls.witness_2
         )
 
         cls.user_annotation, created = Annotation.objects.get_or_create(
@@ -75,8 +75,7 @@ class TextsTestCase(APITestCase):
             length=cls.annotation_length,
             content=cls.annotation_content,
             creator_user=cls.user,
-            creator_witness=None,
-            is_variant=True
+            creator_witness=None
         )
 
     def test_get_texts(self):
@@ -126,13 +125,68 @@ class TextsTestCase(APITestCase):
         self.assertEqual(response.data[0]['length'], self.annotation_length)
         self.assertEqual(response.data[0]['content'], self.annotation_content)
         self.assertEqual(response.data[0]['creator_witness'], self.witness_2.pk)
-        self.assertEqual(response.data[0]['is_variant'], True)
 
         request = factory.get(url)
         force_authenticate(request, user=self.user)
         response = AnnotationList.as_view()(request, self.text.pk,  self.witness.pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
+
+    def test_get_annotation(self):
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/annotations/{self.annotation.pk}'
+        factory = APIRequestFactory()
+        request = factory.get(url)
+        force_authenticate(request, user=self.user)
+
+        response = AnnotationDetail.as_view()(request, self.annotation.pk)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue('id' in response.data)
+        self.assertEquals(response.data['id'], self.annotation.pk)
+
+    def test_create_annotation(self):
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/annotations/'
+        factory = APIRequestFactory()
+        request = factory.post(url, {
+            'witness': self.witness.pk,
+            'start': self.annotation_start,
+            'length': self.annotation_length,
+            'content': self.annotation_content,
+            'creator_user': self.user.pk,
+            'creator_witness': None
+        })
+        force_authenticate(request, user=self.user)
+
+        response = AnnotationList.as_view()(request)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue('id' in response.data)
+
+    def test_update_annotation(self):
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/annotations/{self.annotation.pk}'
+        factory = APIRequestFactory()
+        new_content = 'update_test'
+        request = factory.put(url, {
+            'witness': self.annotation.witness.pk,
+            'start': self.annotation.start,
+            'length': self.annotation.length,
+            'content': new_content,
+            'creator_user': None,
+            'creator_witness': self.annotation.creator_witness.pk
+        })
+        force_authenticate(request, user=self.user)
+
+        response = AnnotationDetail.as_view()(request, self.annotation.pk)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_annotation(self):
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/annotations/{self.annotation.pk}'
+        factory = APIRequestFactory()
+        request = factory.delete(url)
+        force_authenticate(request, user=self.user)
+
+        response = AnnotationDetail.as_view()(request, self.annotation.pk)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        with self.assertRaises(Annotation.DoesNotExist):
+            Annotation.objects.get(pk=self.annotation.pk)
 
     def test_apply_user_annotation(self):
         url = f'/api/texts/{self.text.pk}/{self.witness.pk}/applied_annotations/'
@@ -158,3 +212,4 @@ class TextsTestCase(APITestCase):
         response = AppliedUserAnnotations.as_view()(request)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(AppliedUserAnnotation.objects.count(), 0)
+
