@@ -58,17 +58,24 @@ class Witness(models.Model):
 
 
 class Annotation(models.Model):
+    VARIANT = 'V'
+    NOTE = 'N'
+    TYPE_CHOICES = (
+        (VARIANT, 'Variant'),
+        (NOTE, 'Note')
+    )
     witness = models.ForeignKey(Witness)
     start = models.IntegerField()
     length = models.IntegerField()
     content = models.CharField(max_length=DEFAULT_MAX_LENGTH, null=True, blank=True)
-    note = models.TextField(null=True, blank=True)
     """Set if added from another witness"""
     creator_witness = models.ForeignKey(Witness, null=True, blank=True, related_name="creator_witness")
     """Set if created by a user"""
     creator_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     """Set to False if annotation is simply a note"""
-    is_variant = models.BooleanField(default=True)
+    type = models.CharField(max_length=1, choices=TYPE_CHOICES, default=VARIANT)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
 
     def creator(self):
