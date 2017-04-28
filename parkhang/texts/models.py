@@ -77,14 +77,16 @@ class Annotation(models.Model):
     length = models.IntegerField()
     content = models.CharField(max_length=DEFAULT_MAX_LENGTH, null=True, blank=True)
     """Set if added from another witness"""
-    creator_witness = models.ForeignKey(Witness, null=True, blank=True, related_name="creator_witness")
+    creator_witness = models.ForeignKey(Witness, null=True, blank=True, related_name="creator_witness", on_delete=models.SET_NULL)
     """Set if created by a user"""
-    creator_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    creator_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
     """Set to False if annotation is simply a note"""
     type = models.CharField(max_length=1, choices=TYPE_CHOICES, default=VARIANT)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
+    """The annotation that has been changed to create this annotation"""
+    original = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
 
     # see https://docs.djangoproject.com/en/1.11/topics/db/managers/#creating-a-manager-with-queryset-methods
     objects = AnnotationQuerySet.as_manager()
