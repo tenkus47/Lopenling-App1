@@ -250,6 +250,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 content,
                 stateProps.user
             );
+            newAnnotation.basedOn = selectedAnnotation.basedOn;
             let actionsBatch = [];
             let action = null;
             if (newAnnotation.savedId) {
