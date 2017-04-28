@@ -217,7 +217,7 @@ export function removedAnnotation(annotation) {
 
 /**
  * The given annotation has been created and applied.
- * @param annotation
+ * @param {Annotation} annotation
  * @return {{type: string, annotation: *}}
  */
 export function createdAnnotation(annotation) {
@@ -230,7 +230,7 @@ export function createdAnnotation(annotation) {
 /**
  * The given annotation has been updated with new data.
  *
- * @param {TemporaryAnnotation} annotation
+ * @param {Annotation} annotation
  * @return {{type: string, annotation: *}}
  */
 export function updatedAnnotation(annotation) {
@@ -256,7 +256,7 @@ export function deletedAnnotation(annotation) {
 /**
  * The annotation has been succesfully saved and given a
  * valid id.
- * @param annotation
+ * @param {Annotation} annotation
  * @return {{type: string, annotation: *}}
  */
 export function savedAnnotation(annotation) {
