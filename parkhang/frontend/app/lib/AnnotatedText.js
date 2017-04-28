@@ -18,27 +18,47 @@ export default class AnnotatedText {
      */
     constructor(originalText, annotations=[], segmenter=null, baseWitness=null) {
         this.originalText = originalText;
-        this.annotations = annotations;
         this.segmenter = segmenter;
         this.baseWitness = baseWitness;
         /** @type {SegmentedText} */
         this._generatedText = null;
         this._orginalCurrentSegmentPositions = {};
         this._currentOriginalSegmentPositions = {};
+        this.annotations = [];
+        this._annotationsByType = {};
+        for (let i=0; i < annotations.length; i++) {
+            this.addAnnotation(annotations[i]);
+        }
     }
 
     addAnnotation(annotation) {
-        if (this.annotations.indexOf(annotation) == -1) {
+        if (this.annotations.indexOf(annotation) === -1) {
             this.annotations.push(annotation);
             this._generatedText = null;
             this._orginalCurrentSegmentPositions = {};
             this._currentOriginalSegmentPositions = {};
+            if (!this._annotationsByType.hasOwnProperty(annotation.type)) {
+                this._annotationsByType[annotation.type] = [];
+            }
+            this._annotationsByType[annotation.type].push(annotation);
         }
+    }
+
+    getAnnotationsOfType(type) {
+        return this._annotationsByType[type];
+    }
+
+    get variants() {
+        let variants = this.getAnnotationsOfType(ANNOTATION_TYPES.variant);
+        if (!variants) {
+            variants = [];
+        }
+        return variants;
     }
 
     get segmentedText() {
         if (!this._generatedText) {
-            this._generatedText = this.generateText(this.originalText, this.annotations);
+            this._generatedText = this.generateText(this.originalText, this.variants);
         }
 
         return this._generatedText;
@@ -49,7 +69,7 @@ export default class AnnotatedText {
     }
     
     annotationsForPosition(position) {
-        return this.annotations.filter((annotation) => {
+        return this.variants.filter((annotation) => {
             let start = annotation.start;
             let end = annotation.end;
             if (annotation.isInsertion) {
@@ -78,7 +98,7 @@ export default class AnnotatedText {
         this.segmentedText;
 
         let startKey = annotation.start;
-        let isActive = _.some(this.annotations, (a) => a.id == annotation.id);
+        let isActive = _.some(this.variants, (a) => a.id == annotation.id);
         if (annotation.isInsertion) {
             // only use insertion key if it is an active annotation
             if (isActive) {
@@ -189,7 +209,7 @@ export default class AnnotatedText {
     segmentsForAnnotation(annotation) {
         let segments = [];
         let isActive = false;
-        if (_.some(this.annotations, (active) => annotation.id == active.id)) {
+        if (_.some(this.variants, (active) => annotation.id == active.id)) {
             isActive = true;
         }
 
