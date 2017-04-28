@@ -1,21 +1,5 @@
 import { call, put, take, fork, takeEvery, takeLatest } from 'redux-saga/effects'
-import {
-    LOAD_INITIAL_DATA,
-    loadedTexts,
-    loadedSources,
-    loadingInitialData,
-    loadedInitialData,
-    LOAD_WITNESSES,
-    loadingWitnesses,
-    loadedWitnesses,
-    LOAD_WITNESS_ANNOTATIONS,
-    loadWitnessAnnotations,
-    loadingWitnessAnnotations,
-    loadedWitnessAnnotations,
-    SELECTED_TEXT,
-    ADDED_ANNOTATION,
-    REMOVED_ANNOTATION
-} from 'actions'
+import * as actions from 'actions'
 
 import * as api from 'api'
 import { BATCH } from 'redux-batched-actions'
@@ -25,7 +9,7 @@ import { BATCH } from 'redux-batched-actions'
 export function* loadTexts() {
     try {
         const texts = yield call(api.fetchTexts);
-        yield put(loadedTexts(texts))
+        yield put(actions.loadedTexts(texts))
     } catch(e) {
         console.log("FAILED loadTexts! %o", e);
     }
@@ -34,7 +18,7 @@ export function* loadTexts() {
 function* loadSources() {
     try {
         const sources = yield call(api.fetchSources);
-        yield put(loadedSources(sources));
+        yield put(actions.loadedSources(sources));
     } catch(e) {
         console.log("FAILED loadSources! %o", e);
     }
@@ -46,27 +30,26 @@ function* loadInitialData() {
         call(loadSources)
     ];
 
-    yield put(loadedInitialData());
+    yield put(actions.loadedInitialData());
 }
 
 export function* watchLoadInitialData() {
-    //yield takeLatest(LOAD_INITIAL_DATA, loadInitialData);
-    yield takeLatest(LOAD_INITIAL_DATA, typeCalls[LOAD_INITIAL_DATA]);
-    yield put(loadingInitialData())
+    yield takeLatest(actions.LOAD_INITIAL_DATA, typeCalls[actions.LOAD_INITIAL_DATA]);
+    yield put(actions.loadingInitialData())
 }
 
 
 // SELECTED TEXT
 
 function* selectedText(action) {
-    yield put(loadingWitnesses());
+    yield put(actions.loadingWitnesses());
     yield [
         call(loadWitnesses, action)
     ];
 }
 
 function* watchSelectedText() {
-    yield takeLatest(SELECTED_TEXT, selectedText)
+    yield takeLatest(actions.SELECTED_TEXT, selectedText)
 }
 
 
@@ -75,7 +58,7 @@ function* watchSelectedText() {
 function* loadWitnesses(action) {
     try {
         const witnesses = yield call(api.fetchTextWitnesses, action.text);
-        yield put(loadedWitnesses(action.text, witnesses));
+        yield put(actions.loadedWitnesses(action.text, witnesses));
         let baseWitness = null;
         for (const witness of witnesses) {
             if (witness.is_base) {
@@ -84,7 +67,7 @@ function* loadWitnesses(action) {
             }
         }
         if (baseWitness) {
-            yield put(loadWitnessAnnotations(baseWitness));
+            yield put(actions.loadWitnessAnnotations(baseWitness));
         }
     } catch(e) {
         console.log("FAILED loadWitnesses! %o", e);
@@ -95,13 +78,13 @@ function* loadWitnesses(action) {
 // ANNOTATIONS
 
 function *loadAnnotations(action) {
-    yield put(loadingWitnessAnnotations(action.witness));
+    yield put(actions.loadingWitnessAnnotations(action.witness));
     const annotations = yield call(api.fetchWitnessAnnotations, action.witness);
-    yield put(loadedWitnessAnnotations(action.witness, annotations));
+    yield put(actions.loadedWitnessAnnotations(action.witness, annotations));
 }
 
 function* watchLoadAnnotations() {
-    yield takeLatest(LOAD_WITNESS_ANNOTATIONS, loadAnnotations)
+    yield takeLatest(actions.LOAD_WITNESS_ANNOTATIONS, loadAnnotations)
 }
 
 function *applyAnnotation(action) {
@@ -113,7 +96,7 @@ function *applyAnnotation(action) {
 }
 
 function* watchAddedAnnotation() {
-    yield takeEvery(ADDED_ANNOTATION, typeCalls[ADDED_ANNOTATION])
+    yield takeEvery(actions.ADDED_ANNOTATION, typeCalls[actions.ADDED_ANNOTATION])
 }
 
 function *removedAnnotation(action) {
@@ -126,7 +109,7 @@ function *removedAnnotation(action) {
 }
 
 function* watchRemovedAnnotation() {
-    yield takeEvery(REMOVED_ANNOTATION, typeCalls[REMOVED_ANNOTATION])
+    yield takeEvery(actions.REMOVED_ANNOTATION, typeCalls[actions.REMOVED_ANNOTATION])
 }
 
 function *dispatchedBatch(action) {
@@ -152,9 +135,9 @@ function* watchBatchedActions() {
  * @type {Object.<string, function>}
  */
 const typeCalls = {
-    [LOAD_INITIAL_DATA]: loadInitialData,
-    [ADDED_ANNOTATION]: applyAnnotation,
-    [REMOVED_ANNOTATION]: removedAnnotation,
+    [actions.LOAD_INITIAL_DATA]: loadInitialData,
+    [actions.ADDED_ANNOTATION]: applyAnnotation,
+    [actions.REMOVED_ANNOTATION]: removedAnnotation,
 };
 
 
