@@ -6,7 +6,7 @@ import addTibetanShay from 'lib/addTibetanShay'
 import * as reducers from 'reducers'
 import * as actions from 'actions'
 import { BASE_ANNOTATION_ID } from 'lib/AnnotatedText'
-import Annotation, { ANNOTATION_TYPES, getTemporaryId, getNaturalId, TemporaryAnnotation } from 'lib/Annotation'
+import Annotation, { ANNOTATION_TYPES, getNaturalId, TemporaryAnnotation } from 'lib/Annotation'
 import _ from 'lodash'
 
 const TEMPORARY_ANNOTATION_ID = -3;
