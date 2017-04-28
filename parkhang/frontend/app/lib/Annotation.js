@@ -5,9 +5,15 @@ export const ANNOTATION_TYPES = {
     marker: 'M'
 };
 
-export function getTemporaryId(creator, text, start, length) {
+export const TEMPORARY_TYPE = 'T';
+
+export function getNaturalId(type, creator, text, start, length) {
     const creatorType = (creator.hasOwnProperty('content')) ? 'W' : 'U';
-    return [creatorType, creator.id, text.id, start, length].join('-');
+    return [type, creatorType, creator.id, text.id, start, length].join('-');
+}
+
+export function getTemporaryId(naturalId) {
+    return TEMPORARY_TYPE + naturalId;
 }
 
 export default class Annotation {
@@ -36,14 +42,22 @@ export default class Annotation {
 
     get id() {
         if (this._id === null) {
-            return this.temporaryId();
+            return this.naturalId;
         } else {
             return this._id;
         }
     }
 
+    set id(newId) {
+        this._id = newId;
+    }
+
+    get naturalId() {
+        return getNaturalId(this.type, this.creator, this.witness.text, this.start, this.length);
+    }
+
     temporaryId() {
-        return getTemporaryId(this.creator, this.witness.text, this.start, this.length);
+        return getTemporaryId(this.naturalId);
     }
 
     get isTemporary() {
