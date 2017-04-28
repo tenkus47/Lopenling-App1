@@ -100,9 +100,7 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnot
 
 const getTemporaryAnnotation = (state, type, user, text, start, length) => {
     const annotations = reducers.getTemporaryAnnotations(state, text.id);
-    console.log('getTemporaryAnnotation annotations: %o', annotations);
     const temporaryId = getNaturalId(type, user, text, start, length);
-    console.log('getTemporaryAnnotation temporaryId: %o', temporaryId);
     if (annotations && annotations[temporaryId]) {
         return annotations[temporaryId].annotation;
     } else {
@@ -129,9 +127,7 @@ export const mapStateToProps = (state, ownProps) => {
 
     const [start, length] = ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
     const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, text, start, activeAnnotation.length);
-    console.log('temporaryVariant: %o', temporaryVariant);
     const annotations = getAvailableAnnotations(ownProps.annotatedText, activeAnnotation, temporaryVariant, ownProps.annotationPositions);
-    console.log('annotations: %o', annotations);
     let annotationsData = getAnnotationsData(annotations);
 
     let baseAnnotation = null;
@@ -221,7 +217,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         editAnnotation: (annotationId) => {
             const selectedAnnotation = getAnnotation(annotationId, stateProps);
-            console.log('selectedAnnotation: %o', selectedAnnotation);
             const temporaryAnnotation = new TemporaryAnnotation(
                 selectedAnnotation,
                 selectedAnnotation.witness,
@@ -230,7 +225,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 selectedAnnotation.content,
                 stateProps.user
             );
-            console.log('temporaryAnnotation: %o', temporaryAnnotation);
             dispatch(
                 actions.addedTemporaryAnnotation(temporaryAnnotation, true)
             );
