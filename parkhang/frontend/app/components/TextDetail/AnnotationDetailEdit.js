@@ -1,6 +1,5 @@
 import React from 'react'
 import classnames from 'classnames'
-import { BASE_ANNOTATION_ID } from 'lib/AnnotatedText'
 import styles from './AnnotationDetail.css'
 
 const AnnotationDetailEdit = (props) => {
@@ -26,10 +25,20 @@ const AnnotationDetailEdit = (props) => {
                     ref={(ta) => textarea = ta}
                 />
                 <div className={styles.actionButtons}>
-                    <div className={styles.save} onClick={() => {
-                        props.saveAnnotationHander(textarea.value);
-                    }}>Save</div>
-                    <div className={styles.cancel}>Cancel</div>
+                    <div
+                        className={styles.save}
+                        onClick={() => {
+                            props.saveAnnotationHandler(textarea.value);
+                        }}
+                    >
+                        Save
+                    </div>
+                    <div
+                        className={styles.cancel}
+                        onClick={props.cancelAnnotationHandler}
+                    >
+                        Cancel
+                    </div>
                 </div>
 
             </div>

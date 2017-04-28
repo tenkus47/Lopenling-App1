@@ -260,6 +260,16 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             dispatch(
                 batchActions(actionsBatch)
             );
+        },
+        cancelEditAnnotation: (annotationId) => {
+            const selectedAnnotation = getAnnotation(annotationId, stateProps);
+            if (!selectedAnnotation.isTemporary) {
+                console.warn('Tried to save a non-temporary annotation: %o', selectedAnnotation);
+                return;
+            }
+
+            const cancelAction = actions.removedTemporaryAnnotation(selectedAnnotation);
+            dispatch(cancelAction);
         }
     }
 };

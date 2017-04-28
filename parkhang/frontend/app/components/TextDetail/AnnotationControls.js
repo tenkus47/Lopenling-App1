@@ -4,7 +4,6 @@ import AnnotationDetail from './AnnotationDetail'
 import AnnotationDetailEdit from './AnnotationDetailEdit'
 import styles from './AnnotationControls.css'
 
-// const AnnotationControls = (props) => {
 export default class AnnotationControls extends React.PureComponent {
 
     constructor(props) {
@@ -45,7 +44,6 @@ export default class AnnotationControls extends React.PureComponent {
     }
 
     render() {
-        console.log('rendering AnnotationControls');
         const props = this.props;
         let annotations = [];
         let temporaryAnnotations = [];
@@ -68,8 +66,11 @@ export default class AnnotationControls extends React.PureComponent {
                         annotationData={annotationData}
                         key={annotationData.id}
                         isActive={isActive}
-                        saveAnnotationHander={(content) => {
+                        saveAnnotationHandler={(content) => {
                             props.saveAnnotation(annotationData.id, content);
+                        }}
+                        cancelAnnotationHandler={() => {
+                            props.cancelEditAnnotation(annotationData.id);
                         }}
                     />;
                     temporaryAnnotations.push(annotationDetail);
@@ -129,5 +130,3 @@ export default class AnnotationControls extends React.PureComponent {
         )
     }
 };
-
-// export default AnnotationControls;
