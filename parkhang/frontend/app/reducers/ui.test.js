@@ -15,7 +15,7 @@ const state = initialUIState;
 
 test('addedTemporaryAnnotation', () => {
 
-    const annotation = new TemporaryAnnotation(baseWitness, 0, 27, "༄༅༅", user);
+    const annotation = new TemporaryAnnotation(null, baseWitness, 0, 27, "༄༅༅", user);
     const action = actions.addedTemporaryAnnotation(annotation, true);
 
     const expectedState = {
@@ -41,8 +41,8 @@ test('addedTemporaryAnnotation', () => {
 
 test('removedTemporaryAnnotation', () => {
 
-    const annotation = new TemporaryAnnotation(baseWitness, 0, 27, "༄༅༅", user);
-    const extraAnnotation = new TemporaryAnnotation(baseWitness, 28, 1, "ཀ", user);
+    const annotation = new TemporaryAnnotation(null, baseWitness, 0, 27, "༄༅༅", user);
+    const extraAnnotation = new TemporaryAnnotation(null, baseWitness, 28, 1, "ཀ", user);
     const addAction = actions.addedTemporaryAnnotation(annotation, true);
     let testState = uiReducers[addAction.type](state, addAction);
     const addAction2 = actions.addedTemporaryAnnotation(extraAnnotation, true);
