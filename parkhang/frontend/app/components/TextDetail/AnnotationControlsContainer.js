@@ -6,7 +6,7 @@ import addTibetanShay from 'lib/addTibetanShay'
 import * as reducers from 'reducers'
 import * as actions from 'actions'
 import { BASE_ANNOTATION_ID } from 'lib/AnnotatedText'
-import Annotation, { getTemporaryId, TemporaryAnnotation } from 'lib/Annotation'
+import Annotation, { ANNOTATION_TYPES, getTemporaryId, getNaturalId, TemporaryAnnotation } from 'lib/Annotation'
 import _ from 'lodash'
 
 const TEMPORARY_ANNOTATION_ID = -3;
@@ -51,7 +51,10 @@ const getAnnotationsData = (annotations) => {
 
 const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnotation, annotationPositions) => {
 
-    let availableAnnotations = [activeAnnotation];
+    let availableAnnotations = [];
+    if (!temporaryAnnotation || activeAnnotation.naturalId !== temporaryAnnotation.naturalId) {
+        availableAnnotations.push(activeAnnotation);
+    }
     if (temporaryAnnotation) {
         availableAnnotations.push(temporaryAnnotation);
     }
@@ -73,7 +76,20 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnot
     for (let i=0; i < possibleAnnotations.length; i++) {
         const annotation = possibleAnnotations[i];
         if (annotation.start === activeAnnotation.start && annotation.length === activeAnnotation.length) {
-            availableAnnotations.push(annotation);
+            // If an annotation is being edited, there will be a temporary annotation
+            // with the same natural id. If so, don't show the orignal version.
+            //
+            // We use natualId, as it normalises the id regardless of the original's
+            // save state. e.g. Upon editing a witness variant, a new annotation will be
+            // created. If the user is offline, that will not have been saved via the
+            // API yet. The user could then edit this new annotation, creating a temporary
+            // annotation based upon it. While this is being edited, the user could come
+            // back online and the save operation will succeed. This will mean the id of
+            // the temporary annotation will be different to the original edit, but naturalId
+            // will be the same.
+            if (!temporaryAnnotation || annotation.naturalId !== temporaryAnnotation.naturalId) {
+                availableAnnotations.push(annotation);
+            }
         }
     }
 
@@ -82,9 +98,11 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnot
     return availableAnnotations;
 };
 
-const getTemporaryAnnotation = (state, user, text, start, length) => {
+const getTemporaryAnnotation = (state, type, user, text, start, length) => {
     const annotations = reducers.getTemporaryAnnotations(state, text.id);
-    const temporaryId = getTemporaryId(user, text, start, length);
+    console.log('getTemporaryAnnotation annotations: %o', annotations);
+    const temporaryId = getNaturalId(type, user, text, start, length);
+    console.log('getTemporaryAnnotation temporaryId: %o', temporaryId);
     if (annotations && annotations[temporaryId]) {
         return annotations[temporaryId].annotation;
     } else {
@@ -110,8 +128,10 @@ export const mapStateToProps = (state, ownProps) => {
     }
 
     const [start, length] = ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
-    const temporaryAnnotation = getTemporaryAnnotation(state, user, text, start, length);
-    const annotations = getAvailableAnnotations(ownProps.annotatedText, activeAnnotation, temporaryAnnotation, ownProps.annotationPositions);
+    const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, text, start, activeAnnotation.length);
+    console.log('temporaryVariant: %o', temporaryVariant);
+    const annotations = getAvailableAnnotations(ownProps.annotatedText, activeAnnotation, temporaryVariant, ownProps.annotationPositions);
+    console.log('annotations: %o', annotations);
     let annotationsData = getAnnotationsData(annotations);
 
     let baseAnnotation = null;
@@ -145,7 +165,7 @@ export const mapStateToProps = (state, ownProps) => {
         baseAnnotation: baseAnnotation,
         availableAnnotations: annotations,
         user: user,
-        temporaryAnnotation: temporaryAnnotation,
+        temporaryAnnotation: temporaryVariant,
         inline: inline
     }
 };
@@ -201,6 +221,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         editAnnotation: (annotationId) => {
             const selectedAnnotation = getAnnotation(annotationId, stateProps);
+            console.log('selectedAnnotation: %o', selectedAnnotation);
             const temporaryAnnotation = new TemporaryAnnotation(
                 selectedAnnotation,
                 selectedAnnotation.witness,
@@ -209,6 +230,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 selectedAnnotation.content,
                 stateProps.user
             );
+            console.log('temporaryAnnotation: %o', temporaryAnnotation);
             dispatch(
                 actions.addedTemporaryAnnotation(temporaryAnnotation, true)
             );

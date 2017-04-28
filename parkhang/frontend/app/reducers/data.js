@@ -235,8 +235,8 @@ function savedAnnotation(state, action) {
         witnessAnnotations = {
             ...witnessAnnotations
         };
-        if (witnessAnnotations.hasOwnProperty(annotation.temporaryId())) {
-            delete witnessAnnotations[annotation.temporaryId()];
+        if (witnessAnnotations.hasOwnProperty(annotation.naturalId)) {
+            delete witnessAnnotations[annotation.naturalId];
         }
     } else {
         witnessAnnotations = {};
