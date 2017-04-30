@@ -211,6 +211,29 @@ function* loadWitnessAnnotations(action) {
 function* watchLoadAnnotations() {
     yield takeLatest(actions.LOAD_WITNESS_ANNOTATIONS, loadWitnessAnnotations)
 }
+
+function createAnnotation(action) {
+    return call(api.createAnnotation, action.annotation);
+}
+
+function* watchCreatedAnnotation() {
+    yield takeEvery(actions.CREATED_ANNOTATION, typeCalls[actions.CREATED_ANNOTATION]);
+}
+
+function updateAnnotation(action) {
+    return call(api.updateAnnotation, action.annotation);
+}
+
+function* watchUpdatedAnnotation() {
+    yield takeEvery(actions.UPDATED_ANNOTATION, typeCalls[actions.UPDATED_ANNOTATION]);
+}
+
+function deleteAnnotation(action) {
+    return call(api.deleteAnnotation, action.annotation);
+}
+
+function* watchDeletedAnnotation() {
+    yield takeEvery(actions.DELETED_ANNOTATION, typeCalls[actions.DELETED_ANNOTATION]);
 }
 
 
@@ -242,6 +265,9 @@ const typeCalls = {
     [actions.LOAD_INITIAL_DATA]: loadInitialData,
     [actions.APPLIED_ANNOTATION]: reqAction(applyAnnotation),
     [actions.REMOVED_APPLIED_ANNOTATION]: reqAction(removeAppliedAnnotation),
+    [actions.CREATED_ANNOTATION]: reqAction(createAnnotation),
+    [actions.UPDATED_ANNOTATION]: reqAction(updateAnnotation),
+    [actions.DELETED_ANNOTATION]: reqAction(deleteAnnotation),
 };
 
 
@@ -255,6 +281,9 @@ export default function* rootSaga() {
         watchBatchedActions(),
         watchAppliedAnnotation(),
         watchRemovedAppliedAnnotation(),
+        watchCreatedAnnotation(),
+        watchUpdatedAnnotation(),
+        watchDeletedAnnotation(),
         watchRequests(),
     ]
 }
