@@ -132,7 +132,6 @@ function loadedAnnotations(state, action) {
     };
 }
 
-// TODO: rename to addedActiveAnnotation
 function appliedAnnotation(state, action) {
     let annotation = action.annotation;
     let witness = annotation.witness;
