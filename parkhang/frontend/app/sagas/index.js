@@ -1,8 +1,117 @@
-import { call, put, take, fork, takeEvery, takeLatest } from 'redux-saga/effects'
+import { call, put, take, actionChannel, fork, takeEvery, takeLatest } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import * as actions from 'actions'
 
 import * as api from 'api'
 import { BATCH } from 'redux-batched-actions'
+
+/**
+ * Get the required delay for a failed request.
+ *
+ * @param {number} attempt - the number of attempts that have occurred so far
+ * @return {number} The length of delay in milliseconds
+ */
+function getDelay(attempt) {
+    let seconds = 0;
+    switch(attempt) {
+        case 1:
+            seconds = 5;
+            break;
+        case 2:
+            seconds = 10;
+            break;
+        case 3:
+            seconds = 15;
+            break;
+        case 4:
+            seconds = 30;
+            break;
+        case 5:
+            seconds = 60;
+            break;
+        default:
+            seconds = 120;
+    }
+
+    return seconds * 1000;
+}
+
+// Type of action used to add callbacks to the request queue.
+const SAGA_REQUEST = 'SAGE_REQUEST';
+
+/**
+ * Sets up a serial queue for requests using the API.
+ *
+ * Any actions of type SAGA_REQUEST will get processed.
+ *
+ * The actions needs the following properties:
+ * payload: a generator function to be called
+ * action: action to be given as an argument to the payload function
+ *
+ * Any requests failing due to a network error, e.g. the user is offline,
+ * will be retried indefinitely until the request is processed. This should
+ * make the app more robust in flaky network conditions.
+ */
+function* watchRequests() {
+    const requestChan = yield actionChannel(SAGA_REQUEST);
+    while (true) {
+        const { payload, action } = yield take(requestChan);
+        let complete = false;
+        let attempts = 0;
+        while (!complete) {
+            try {
+                yield payload(action);
+                complete = true;
+            } catch (e) {
+                if (e.response) {
+                    // if there was a valid HTTP error status code returned just fail now.
+                    // e.g. returning a 4xx, 5xx.
+                    console.warn('Queued request failed: %o', e);
+                    complete = true;
+                } else {
+                    // otherwise, assume network is down and user is offline.
+                    // Try again after reqDelay milliseconds.
+                    attempts++;
+                    const reqDelay = getDelay(attempts);
+                    yield delay(reqDelay);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Returns a generator function that adds callback to the SAGA_REQUEST queue.
+ * @param callback
+ * @return {Function}
+ */
+function reqAction(callback) {
+    return function* (action) {
+        yield put({
+            type: SAGA_REQUEST,
+            payload: callback,
+            action: action
+        });
+    }
+}
+
+
+function applyAnnotation(action) {
+    return call(api.applyAnnotation, action.annotation);
+}
+
+function* watchAppliedAnnotation() {
+    yield takeEvery(actions.APPLIED_ANNOTATION, typeCalls[actions.APPLIED_ANNOTATION]);
+}
+
+
+function removeAppliedAnnotation(action) {
+    return call(api.removeAppliedAnnotation, action.annotation);
+}
+
+function* watchRemovedAppliedAnnotation() {
+    yield takeEvery(actions.REMOVED_APPLIED_ANNOTATION, typeCalls[actions.REMOVED_APPLIED_ANNOTATION]);
+}
 
 // INITIAL DATA
 
@@ -77,7 +186,7 @@ function* loadWitnesses(action) {
 
 // ANNOTATIONS
 
-function *loadAnnotations(action) {
+function* loadAnnotations(action) {
     yield put(actions.loadingWitnessAnnotations(action.witness));
     const annotations = yield call(api.fetchWitnessAnnotations, action.witness);
     yield put(actions.loadedWitnessAnnotations(action.witness, annotations));
@@ -87,32 +196,10 @@ function* watchLoadAnnotations() {
     yield takeLatest(actions.LOAD_WITNESS_ANNOTATIONS, loadAnnotations)
 }
 
-function *applyAnnotation(action) {
-    try {
-        yield call(api.applyAnnotation, action.annotation);
-    } catch(e) {
-        console.log('applyAnnotation failed: %o, %o', e, action);
-    }
-}
 
-function* watchAddedAnnotation() {
-    yield takeEvery(actions.ADDED_ANNOTATION, typeCalls[actions.ADDED_ANNOTATION])
-}
+// BATCHED ACTIONS
 
-function *removedAnnotation(action) {
-    try {
-        yield call(api.removeAnnotation, action.annotation);
-    } catch(e) {
-        console.log('removedAnnotation failed: %o, %o', e, action);
-    }
-
-}
-
-function* watchRemovedAnnotation() {
-    yield takeEvery(actions.REMOVED_ANNOTATION, typeCalls[actions.REMOVED_ANNOTATION])
-}
-
-function *dispatchedBatch(action) {
+function* dispatchedBatch(action) {
     const actions = action.payload;
     for (let i=0; i < actions.length; i++) {
         const batchedAction = actions[i];
@@ -136,8 +223,8 @@ function* watchBatchedActions() {
  */
 const typeCalls = {
     [actions.LOAD_INITIAL_DATA]: loadInitialData,
-    [actions.ADDED_ANNOTATION]: applyAnnotation,
-    [actions.REMOVED_ANNOTATION]: removedAnnotation,
+    [actions.APPLIED_ANNOTATION]: reqAction(applyAnnotation),
+    [actions.REMOVED_APPLIED_ANNOTATION]: reqAction(removeAppliedAnnotation),
 };
 
 
@@ -148,8 +235,9 @@ export default function* rootSaga() {
         watchLoadInitialData(),
         watchSelectedText(),
         watchLoadAnnotations(),
-        watchAddedAnnotation(),
-        watchRemovedAnnotation(),
-        watchBatchedActions()
+        watchBatchedActions(),
+        watchAppliedAnnotation(),
+        watchRemovedAppliedAnnotation(),
+        watchRequests(),
     ]
 }
