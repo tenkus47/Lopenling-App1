@@ -137,3 +137,21 @@ class TextsTestCase(APITestCase):
         annotation = Annotation.objects.get_active(self.annotation.pk)
         self.assertEqual(annotation.content, new_content)
 
+    def test_apply_user_annotation(self):
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/applied_annotations/'
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.post(url, {
+            'annotation_id': self.annotation.pk
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_remove_user_annotation(self):
+
+        self.test_apply_user_annotation()
+
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/applied_annotations/{self.annotation.pk}'
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

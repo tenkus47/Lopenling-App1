@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 from rest_framework.exceptions import NotFound, PermissionDenied
 
 from users.models import User
-from api.views import TextList, SourceList, WitnessList, AnnotationList, AnnotationDetail, AppliedUserAnnotations
+from api.views import TextList, SourceList, WitnessList, AnnotationList, AnnotationDetail, AppliedUserAnnotations, AppliedUserAnnotationDetail
 from texts.models import Text, Source, Witness, Annotation, AppliedUserAnnotation
 
 class TextsTestCase(APITestCase):
@@ -28,7 +28,7 @@ class TextsTestCase(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user, created = User.objects.get_or_create(
+        cls.user = User.objects.create_user(
             username=cls.username,
             password=cls.password
         )
@@ -189,7 +189,7 @@ class TextsTestCase(APITestCase):
             Annotation.objects.get(pk=self.annotation.pk)
 
     def test_apply_user_annotation(self):
-        url = f'/api/texts/{self.text.pk}/{self.witness.pk}/applied_annotations/'
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/applied_annotations/'
         factory = APIRequestFactory()
 
         # add applied annotation
@@ -207,9 +207,10 @@ class TextsTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]['annotation'], self.annotation.pk)
 
-        request = factory.delete(url, {'annotation_id' : self.annotation.pk})
+        url = url + str(self.annotation.pk)
+        request = factory.delete(url)
         force_authenticate(request, user=self.user)
-        response = AppliedUserAnnotations.as_view()(request)
+        response = AppliedUserAnnotationDetail.as_view()(request, self.annotation.pk)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(AppliedUserAnnotation.objects.count(), 0)
 

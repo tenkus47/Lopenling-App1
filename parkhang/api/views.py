@@ -213,27 +213,23 @@ class AppliedUserAnnotations(APIView):
 
         return Response('', status=status.HTTP_204_NO_CONTENT)
 
-    def delete(self, request, *args, **kwargs):
-        """
-        Remove given annotation
 
-        :param request: django Request
-        :param annotation_id: id of the annotation to remove
-        :return: Empty string
-        """
+class AppliedUserAnnotationDetail(APIView):
+    permission_classes = (IsAuthenticated,)
 
-        annotation_id = request.data['annotation_id']
+    def delete(self, request, annotation_id, *args, **kwargs):
+        annotation = get_annotation(request, annotation_id)
 
         try:
-            annotation = Annotation.objects.get(id=annotation_id)
-        except Annotation.DoesNotExist:
-            raise NotFound('An annotation with that ID does not exist.')
-
-        try:
-            applied_user_annotation = AppliedUserAnnotation.objects.get(user=request.user, annotation=annotation)
+            applied_user_annotation = AppliedUserAnnotation.objects.get(
+                user=request.user,
+                annotation=annotation
+            )
         except AppliedUserAnnotation.DoesNotExist:
-            return Response('Annotation already removed')
+            raise NotFound('That annotation id is not applied to the given witness')
 
         applied_user_annotation.delete()
 
         return Response('', status=status.HTTP_204_NO_CONTENT)
+
+
