@@ -27,6 +27,7 @@ export const initialDataState = {
     loadedWitnesses: false,
     loadingAnnotations: false,
     loadedAnnotations: false,
+    loadedAppliedAnnotations: false
 };
 
 function loadingInitialData(state) {
@@ -127,9 +128,22 @@ function loadedAnnotations(state, action) {
     return {
         ...state,
         witnessAnnotationsById: witnessAnnotationsById,
-        loadingAnnotations: false,
+        loadingAnnotations: (!state.loadedAppliedAnnotations),
         loadedAnnotations: true
     };
+}
+
+function loadedAppliedAnnotations(state, action) {
+    const witnessActiveAnnotationsById = {
+        ...state.witnessActiveAnnotationsById,
+        [action.witness.id]: action.annotations
+    };
+    return {
+        ...state,
+        witnessActiveAnnotationsById: witnessActiveAnnotationsById,
+        loadingAnnotations: (!state.loadedAnnotations),
+        loadedAppliedAnnotations: true
+    }
 }
 
 function appliedAnnotation(state, action) {
@@ -263,6 +277,7 @@ dataReducers[actions.LOADING_WITNESSES] = loadingWitnesses;
 dataReducers[actions.LOADED_WITNESSES] = loadedWitnesses;
 dataReducers[actions.LOADING_WITNESS_ANNOTATIONS] = loadingAnnotations;
 dataReducers[actions.LOADED_WITNESS_ANNOTATIONS] = loadedAnnotations;
+dataReducers[actions.LOADED_WITNESS_APPLIED_ANNOTATIONS] = loadedAppliedAnnotations;
 dataReducers[actions.APPLIED_ANNOTATION] = appliedAnnotation;
 dataReducers[actions.REMOVED_APPLIED_ANNOTATION] = removedAppliedAnnotation;
 dataReducers[actions.CREATED_ANNOTATION] = createdAnnotation;

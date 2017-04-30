@@ -24,6 +24,7 @@ export const LOADED_WITNESSES = 'LOADED_WITNESSES';
 export const LOAD_WITNESS_ANNOTATIONS = 'LOAD_WITNESS_ANNOTATIONS';
 export const LOADING_WITNESS_ANNOTATIONS = 'LOADING_WITNESS_ANNOTATIONS';
 export const LOADED_WITNESS_ANNOTATIONS = 'LOADED_WITNESS_ANNOTATIONS';
+export const LOADED_WITNESS_APPLIED_ANNOTATIONS = 'LOADED_WITNESS_APPLIED_ANNOTATIONS';
 
 export const LOADED_TEXT_DATA = 'LOADED_TEXT_DATA';
 
@@ -194,6 +195,14 @@ export function loadedWitnessAnnotations(witness, annotations) {
         witness,
         annotations,
     };
+}
+
+export function loadedWitnessAppliedAnnotations(witness, annotations) {
+    return {
+        type: LOADED_WITNESS_APPLIED_ANNOTATIONS,
+        witness,
+        annotations
+    }
 }
 
 /**

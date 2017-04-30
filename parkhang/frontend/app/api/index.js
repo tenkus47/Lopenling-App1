@@ -56,7 +56,7 @@ export function fetchTextWitnesses(text) {
 }
 
 export function fetchWitnessAnnotations(witness) {
-    const url = '/api/texts/'+witness.text+'/witnesses/'+witness.id+'/annotations/';
+    const url = '/api/texts/'+witness.text.id+'/witnesses/'+witness.id+'/annotations/';
     return request(GET, url);
 }
 

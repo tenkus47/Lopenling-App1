@@ -1,6 +1,7 @@
-import { call, put, take, actionChannel, fork, takeEvery, takeLatest } from 'redux-saga/effects'
+import { call, put, take, actionChannel, fork, takeEvery, takeLatest, select } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import * as actions from 'actions'
+import * as reducers from 'reducers'
 
 import * as api from 'api'
 import { BATCH } from 'redux-batched-actions'
@@ -187,13 +188,29 @@ function* loadWitnesses(action) {
 // ANNOTATIONS
 
 function* loadAnnotations(action) {
-    yield put(actions.loadingWitnessAnnotations(action.witness));
-    const annotations = yield call(api.fetchWitnessAnnotations, action.witness);
+    const witness = yield select(reducers.getWitness, action.witness.id);
+    const annotations = yield call(api.fetchWitnessAnnotations, witness);
     yield put(actions.loadedWitnessAnnotations(action.witness, annotations));
 }
 
+function* loadAppliedAnnotations(action) {
+    const witness = yield select(reducers.getWitness, action.witness.id);
+    const annotations = yield call(api.fetchAppliedUserAnnotations, witness);
+    let annotationIds = annotations.map(a => a.annotation);
+    yield put(actions.loadedWitnessAppliedAnnotations(action.witness, annotationIds));
+}
+
+function* loadWitnessAnnotations(action) {
+    yield put(actions.loadingWitnessAnnotations(action.witness));
+    yield [
+        call(loadAnnotations, action),
+        call(loadAppliedAnnotations, action)
+    ];
+}
+
 function* watchLoadAnnotations() {
-    yield takeLatest(actions.LOAD_WITNESS_ANNOTATIONS, loadAnnotations)
+    yield takeLatest(actions.LOAD_WITNESS_ANNOTATIONS, loadWitnessAnnotations)
+}
 }
 
 
