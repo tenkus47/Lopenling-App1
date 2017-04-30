@@ -185,8 +185,8 @@ class TextsTestCase(APITestCase):
 
         response = AnnotationDetail.as_view()(request, self.annotation.pk)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        with self.assertRaises(Annotation.DoesNotExist):
-            Annotation.objects.get(pk=self.annotation.pk)
+        annotation = Annotation.objects.get(pk=self.annotation.pk)
+        self.assertTrue(annotation.is_deleted)
 
     def test_apply_user_annotation(self):
         url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/applied_annotations/'
