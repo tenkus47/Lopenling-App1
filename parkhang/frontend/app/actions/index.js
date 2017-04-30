@@ -201,7 +201,6 @@ export function loadedWitnessAnnotations(witness, annotations) {
  * @param {Annotation} annotation
  */
 export function appliedAnnotation(annotation) {
-    // TODO: rename to addedActiveAnnotation
     return {
         type: APPLIED_ANNOTATION,
         annotation
@@ -209,7 +208,6 @@ export function appliedAnnotation(annotation) {
 }
 
 export function removedAppliedAnnotation(annotation) {
-    // TODO: rename to removedActiveAnnotation
     return {
         type: REMOVED_APPLIED_ANNOTATION,
         annotation
