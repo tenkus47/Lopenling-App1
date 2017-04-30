@@ -29,7 +29,7 @@ class TextsTestCase(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user, created = User.objects.get_or_create(
+        cls.user = User.objects.create_user(
             username=cls.username,
             password=cls.password
         )
