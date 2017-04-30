@@ -133,7 +133,7 @@ function loadedAnnotations(state, action) {
 }
 
 // TODO: rename to addedActiveAnnotation
-function addedAnnotation(state, action) {
+function appliedAnnotation(state, action) {
     let annotation = action.annotation;
     let witness = annotation.witness;
     let witnessAnnotations = state.witnessActiveAnnotationsById[witness.id];
@@ -265,7 +265,7 @@ dataReducers[actions.LOADING_WITNESSES] = loadingWitnesses;
 dataReducers[actions.LOADED_WITNESSES] = loadedWitnesses;
 dataReducers[actions.LOADING_WITNESS_ANNOTATIONS] = loadingAnnotations;
 dataReducers[actions.LOADED_WITNESS_ANNOTATIONS] = loadedAnnotations;
-dataReducers[actions.ADDED_ANNOTATION] = addedAnnotation;
+dataReducers[actions.APPLIED_ANNOTATION] = appliedAnnotation;
 dataReducers[actions.REMOVED_ANNOTATION] = removedAnnotation;
 dataReducers[actions.CREATED_ANNOTATION] = createdAnnotation;
 dataReducers[actions.UPDATED_ANNOTATION] = updatedAnnotation;

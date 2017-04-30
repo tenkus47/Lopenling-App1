@@ -203,7 +203,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             let actionsBatch = [];
             if (annotationId != stateProps.activeAnnotation.id) {
                 if (annotationId != BASE_ANNOTATION_ID) {
-                    actionsBatch.push(actions.addedAnnotation(selectedAnnotation));
+                    actionsBatch.push(actions.appliedAnnotation(selectedAnnotation));
                 }
                 if (stateProps.activeAnnotation.id != BASE_ANNOTATION_ID) {
                     actionsBatch.push(actions.removedAnnotation(stateProps.activeAnnotation))
@@ -254,7 +254,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             actionsBatch.push(action(newAnnotation));
             actionsBatch.push(actions.removedTemporaryAnnotation(selectedAnnotation));
-            actionsBatch.push(actions.addedAnnotation(newAnnotation));
+            actionsBatch.push(actions.appliedAnnotation(newAnnotation));
             actionsBatch.push(actions.changedActiveAnnotation(newAnnotation));
 
             dispatch(

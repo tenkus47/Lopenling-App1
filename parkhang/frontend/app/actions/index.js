@@ -28,8 +28,9 @@ export const LOADED_WITNESS_ANNOTATIONS = 'LOADED_WITNESS_ANNOTATIONS';
 export const LOADED_TEXT_DATA = 'LOADED_TEXT_DATA';
 
 // These are intended for when the data will be saved via the server API
-export const ADDED_ANNOTATION = 'text/ADDED_ANNOTATION';
+export const APPLIED_ANNOTATION = 'text/APPLIED_ANNOTATION';
 export const REMOVED_ANNOTATION = 'text/REMOVED_ANNOTATION';
+
 export const CREATED_ANNOTATION = 'text/CREATED_ANNOTATION';
 export const UPDATED_ANNOTATION = 'text/UPDATED_ANNOTATION';
 export const DELETED_ANNOTATION = 'text/DELETED_ANNOTATION';
@@ -199,10 +200,10 @@ export function loadedWitnessAnnotations(witness, annotations) {
  *
  * @param {Annotation} annotation
  */
-export function addedAnnotation(annotation) {
+export function appliedAnnotation(annotation) {
     // TODO: rename to addedActiveAnnotation
     return {
-        type: ADDED_ANNOTATION,
+        type: APPLIED_ANNOTATION,
         annotation
     }
 }

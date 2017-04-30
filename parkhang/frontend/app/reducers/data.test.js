@@ -14,9 +14,9 @@ const baseWitness = new Witness(1, text, source1, "Test witness", true);
 const annotation = new Annotation(1, baseWitness, 0,  27, "༄༅༅", baseWitness);
 const user = new User(1, "Test User");
 
-describe('Adding and removing reducer', () => {
+describe('Applying and removing reducer', () => {
 
-    const addAction = actions.addedAnnotation(annotation);
+    const applyAction = actions.appliedAnnotation(annotation);
 
     let state = {...data.initialDataState};
     let witnessActiveAnnotations = {
@@ -27,20 +27,20 @@ describe('Adding and removing reducer', () => {
         witnessActiveAnnotationsById: witnessActiveAnnotations,
     };
 
-    test('Adding annotation', () => {
+    test('Applying annotation', () => {
         expect(
-            dataReducers[addAction.type](state, addAction)
+            dataReducers[applyAction.type](state, applyAction)
         ).toEqual(expectedState);
 
         expect(
-            dataReducers[addAction.type](state, addAction)
+            dataReducers[applyAction.type](state, applyAction)
         ).not.toBe(state);
     });
 
     const removeAction = actions.removedAnnotation(annotation);
 
     test('Removing annotation', () => {
-        const state = dataReducers[addAction.type]({...data.initialDataState}, addAction);
+        const state = dataReducers[applyAction.type]({...data.initialDataState}, applyAction);
         const witnessActiveAnnotations = {
             [baseWitness.id]: []
         };
