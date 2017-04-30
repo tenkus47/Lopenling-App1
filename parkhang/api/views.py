@@ -105,20 +105,20 @@ class AnnotationList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+def get_annotation(request, annotation_id):
+    try:
+        annotation = Annotation.objects.get_active(annotation_id)
+    except Annotation.DoesNotExist:
+        raise NotFound('An annotation with that ID does not exist.')
+
+    if annotation.creator_user:
+        if not request.user.is_authenticated or request.user != annotation.creator_user:
+            raise PermissionDenied(
+                'You do not have permission to view this annotation')
+
+    return annotation
+
 class AnnotationDetail(APIView):
-
-    def get_annotation(self, request, annotation_id):
-        try:
-            annotation = Annotation.objects.get_active(annotation_id)
-        except Annotation.DoesNotExist:
-            raise NotFound('An annotation with that ID does not exist.')
-
-        if annotation.creator_user:
-            if not request.user.is_authenticated or request.user != annotation.creator_user:
-                raise PermissionDenied(
-                    'You do not have permission to view this annotation')
-
-        return annotation
 
     def get(self, request, annotation_id, *args, **kwargs):
         """
@@ -128,7 +128,7 @@ class AnnotationDetail(APIView):
         :param annotation_id: id of the annotation to return 
         """
 
-        annotation = self.get_annotation(request, annotation_id)
+        annotation = get_annotation(request, annotation_id)
 
         serializer = AnnotationSerializer(annotation)
         return Response(serializer.data)
@@ -142,7 +142,7 @@ class AnnotationDetail(APIView):
         :return: Empty string
         """
 
-        annotation = self.get_annotation(request, annotation_id)
+        annotation = get_annotation(request, annotation_id)
         serializer = AnnotationSerializer(annotation, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -159,8 +159,9 @@ class AnnotationDetail(APIView):
         :return: Empty string 
         """
 
-        annotation = self.get_annotation(request, annotation_id)
-        annotation.delete()
+        annotation = get_annotation(request, annotation_id)
+        annotation.is_deleted = True
+        annotation.save()
 
         return Response('', status=status.HTTP_204_NO_CONTENT)
 
