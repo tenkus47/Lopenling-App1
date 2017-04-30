@@ -88,4 +88,45 @@ export function removeAppliedAnnotation(annotation) {
     return request(DELETE, url);
 }
 
+// CREATING ANNOTATIONS
+
+export function dataFromAnnotation(annotation) {
+    const creatorWitness = (annotation.userCreated) ? null : annotation.creator;
+    const creatorUser = (annotation.userCreated) ? annotation.creator : null;
+
+    return {
+        id: annotation.id,
+        witness: annotation.witness.id,
+        start: annotation.start,
+        length: annotation.length,
+        content: annotation.content,
+        creator_witness: creatorWitness,
+        creator_user: creatorUser
+    }
+}
+
+function getAnnotationUrl(witness, annotation=null) {
+    let url = '/api/texts/'+witness.text.id+'/witnesses/'+witness.id+'/annotations/';
+    if (annotation) {
+        url += annotation.id;
+    }
+    return url;
+}
+
+export function createAnnotation(annotation) {
+    const url = getAnnotationUrl(annotation.witness);
+    let data = dataFromAnnotation(annotation);
+    delete data.id;
+    return request(POST, url, data);
+}
+
+export function updateAnnotation(annotation) {
+    const url = getAnnotationUrl(annotation.witness, annotation);
+    const data = dataFromAnnotation(annotation);
+    return request(PUT, url, data);
+}
+
+export function deleteAnnotation(annotation) {
+    const url = getAnnotationUrl(annotation.witness, annotation);
+    return request(DELETE, url);
 }
