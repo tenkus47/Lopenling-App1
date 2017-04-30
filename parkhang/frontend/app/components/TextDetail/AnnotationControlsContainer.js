@@ -206,7 +206,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     actionsBatch.push(actions.appliedAnnotation(selectedAnnotation));
                 }
                 if (stateProps.activeAnnotation.id != BASE_ANNOTATION_ID) {
-                    actionsBatch.push(actions.removedAnnotation(stateProps.activeAnnotation))
+                    actionsBatch.push(actions.removedAppliedAnnotation(stateProps.activeAnnotation))
                 }
                 actionsBatch.push(actions.changedActiveAnnotation(selectedAnnotation));
 

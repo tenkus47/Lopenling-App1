@@ -156,8 +156,7 @@ function appliedAnnotation(state, action) {
     };
 }
 
-// TODO: rename to removedActiveAnnotation
-function removedAnnotation(state, action) {
+function removedAppliedAnnotation(state, action) {
     let annotation = action.annotation;
     let witness = annotation.witness;
     let activeAnnotations = state.witnessActiveAnnotationsById[witness.id];
@@ -266,7 +265,7 @@ dataReducers[actions.LOADED_WITNESSES] = loadedWitnesses;
 dataReducers[actions.LOADING_WITNESS_ANNOTATIONS] = loadingAnnotations;
 dataReducers[actions.LOADED_WITNESS_ANNOTATIONS] = loadedAnnotations;
 dataReducers[actions.APPLIED_ANNOTATION] = appliedAnnotation;
-dataReducers[actions.REMOVED_ANNOTATION] = removedAnnotation;
+dataReducers[actions.REMOVED_APPLIED_ANNOTATION] = removedAppliedAnnotation;
 dataReducers[actions.CREATED_ANNOTATION] = createdAnnotation;
 dataReducers[actions.UPDATED_ANNOTATION] = updatedAnnotation;
 dataReducers[actions.DELETED_ANNOTATION] = deletedAnnotation;

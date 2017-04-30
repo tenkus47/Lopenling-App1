@@ -29,7 +29,7 @@ export const LOADED_TEXT_DATA = 'LOADED_TEXT_DATA';
 
 // These are intended for when the data will be saved via the server API
 export const APPLIED_ANNOTATION = 'text/APPLIED_ANNOTATION';
-export const REMOVED_ANNOTATION = 'text/REMOVED_ANNOTATION';
+export const REMOVED_APPLIED_ANNOTATION = 'text/REMOVED_APPLIED_ANNOTATION';
 
 export const CREATED_ANNOTATION = 'text/CREATED_ANNOTATION';
 export const UPDATED_ANNOTATION = 'text/UPDATED_ANNOTATION';
@@ -208,10 +208,10 @@ export function appliedAnnotation(annotation) {
     }
 }
 
-export function removedAnnotation(annotation) {
+export function removedAppliedAnnotation(annotation) {
     // TODO: rename to removedActiveAnnotation
     return {
-        type: REMOVED_ANNOTATION,
+        type: REMOVED_APPLIED_ANNOTATION,
         annotation
     }
 }

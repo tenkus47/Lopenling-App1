@@ -37,7 +37,7 @@ describe('Applying and removing reducer', () => {
         ).not.toBe(state);
     });
 
-    const removeAction = actions.removedAnnotation(annotation);
+    const removeAction = actions.removedAppliedAnnotation(annotation);
 
     test('Removing annotation', () => {
         const state = dataReducers[applyAction.type]({...data.initialDataState}, applyAction);
