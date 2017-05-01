@@ -2,7 +2,6 @@ import React from 'react'
 import {AutoSizer, List, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import 'react-virtualized/styles.css';
 import Text from './Text'
-import Popover from 'components/Popover'
 import AnnotationControlsContainer from './AnnotationControlsContainer'
 import styles from './SplitText.css'
 import textStyles from './Text.css'
