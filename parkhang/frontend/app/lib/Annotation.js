@@ -146,6 +146,7 @@ export class TemporaryAnnotation extends Annotation {
                 creator=null, type=ANNOTATION_TYPES.variant)
     {
         super(null, witness, start, length, content, creator, type);
+        this.basedOn = basedOn;
     }
 
     get id() {
