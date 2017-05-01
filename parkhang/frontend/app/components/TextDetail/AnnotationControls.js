@@ -2,9 +2,10 @@ import React from 'react'
 import classnames from 'classnames'
 import AnnotationDetail from './AnnotationDetail'
 import AnnotationDetailEdit from './AnnotationDetailEdit'
-import { CONTROLS_MARGIN_LEFT } from './SplitText'
 import styles from './AnnotationControls.css'
 import textStyles from './Text.css'
+
+export const CONTROLS_MARGIN_LEFT = 10;
 
 export default class AnnotationControls extends React.PureComponent {
 

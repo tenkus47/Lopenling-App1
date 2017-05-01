@@ -2,13 +2,13 @@ import React from 'react'
 import {AutoSizer, List, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import 'react-virtualized/styles.css';
 import Text from './Text'
+import { CONTROLS_MARGIN_LEFT } from './AnnotationControls'
 import AnnotationControlsContainer from './AnnotationControlsContainer'
 import styles from './SplitText.css'
 import textStyles from './Text.css'
 import controlStyles from './AnnotationControls.css'
 import _ from 'lodash'
 
-export const CONTROLS_MARGIN_LEFT = 10;
 const MIN_SPACE_RIGHT = parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
 export default class SplitText extends React.PureComponent {
