@@ -125,11 +125,6 @@ export default class SplitText extends React.PureComponent {
         if (props.selectedAnnotatedSegments && props.selectedAnnotatedSegments.length > 0) {
             for (let i=0; i < props.selectedAnnotatedSegments.length; i++) {
                 let segment = props.selectedAnnotatedSegments[i];
-                let id = 's_' + segment.start;
-                let element = document.getElementById(id);
-                if (!element) {
-                    continue;
-                }
                 if (firstSelectedSegment === null) {
                     firstSelectedSegment = segment;
                     break;
