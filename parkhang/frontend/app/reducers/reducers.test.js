@@ -24,6 +24,7 @@ const initialState = {
         loadedWitnesses: false,
         loadingAnnotations: false,
         loadedAnnotations: false,
+        loadedAppliedAnnotations: false
     },
     ui: {
         selectedText: false,
