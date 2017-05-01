@@ -125,7 +125,7 @@ export default class AnnotatedText {
             if (isActive || annotation.id === WORKING_VERSION_ANNOTATION_ID) {
                 endSegment = this.segmentedText.segmentAtPosition(startPos + annotation.content.length - 1);
             } else {
-                endSegment = this.segmentedText.segmentAtPosition(startPos + annotation.length - 1);
+                endSegment = this.segmentAtOriginalPosition(annotation.end);
             }
             length = startSegment.length;
             if (startSegment.end < endSegment.end) {

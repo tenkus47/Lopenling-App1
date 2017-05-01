@@ -11,11 +11,13 @@ const baseTextContent = "༄༅། །སྒྲུབ་ཐབས་ཞེས་
 
 const source1 = new Source(1, "Derge");
 const source2 = new Source(2, "Narthang");
+const source3 = new Source(3, "Pecin");
 
 const text = new Text(1, "དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ");
 
 const baseWitness = new Witness(1, text, source1, baseTextContent, true);
 const otherWitness = new Witness(2, text, source2);
+const anotherWitness = new Witness(3, text, source3);
 
 const annotations = [
     new Annotation(1, baseWitness, 0,  27, "༄༅༅", otherWitness),
@@ -312,6 +314,13 @@ describe('AnnotatedText', () => {
         let expectedPosition = [0, 0];
         expect(
             newAnnotatedText.getPositionOfAnnotation(annotation)
+        ).toEqual(expectedPosition);
+
+        const annotationAtSamePosition = new Annotation(200, baseWitness, 0,  27, "༄༅༅", anotherWitness);
+        expectedPosition = [0,3];
+        // note: using annotatedText not newAnnotatedText
+        expect(
+            annotatedText.getPositionOfAnnotation(annotationAtSamePosition)
         ).toEqual(expectedPosition);
 
         expectedPosition = [230, 0];
