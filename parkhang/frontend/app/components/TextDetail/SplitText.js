@@ -32,7 +32,6 @@ export default class SplitText extends React.PureComponent {
         this.resizeHandler = null;
         this.selectionHandler = null;
         this.textListVisible = props.textListVisible;
-        this.annotationControlsContainer = null;
     }
 
     updateList() {
@@ -262,7 +261,6 @@ export default class SplitText extends React.PureComponent {
                     />
                     {this.state.selectedTextIndex === index &&
                         <AnnotationControlsContainer
-                                    ref={(container) => this.annotationControlsContainer = container}
                                     annotationPositions={props.annotationPositions}
                                     annotatedText={props.splitText.annotatedText}
                                     activeAnnotation={props.activeAnnotation}
