@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import dataReducers, * as data from 'reducers/data'
 import Text from 'lib/Text'
 import Source from 'lib/Source'
 import Witness from 'lib/Witness'
@@ -11,7 +10,6 @@ import User, { getAnonymousUser } from 'lib/User'
 import AnnotationControls from './AnnotationControls'
 import AnnotationDetail from './AnnotationDetail'
 import AnnotationDetailEdit from './AnnotationDetailEdit'
-import styles from './AnnotationDetail.css'
 
 const source1 = new Source(1, "Derge");
 const source2 = new Source(1, "Pecin");
