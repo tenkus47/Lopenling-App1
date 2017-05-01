@@ -37,7 +37,10 @@ test('mapStateToProps with no activeAnnotation', () => {
         baseAnnotation: null,
         availableAnnotations: null,
         user: user,
-        temporaryAnnotation: null
+        temporaryAnnotation: null,
+        inline: null,
+        firstSelectedSegment: null,
+        splitTextRect: null
     });
 });
 
