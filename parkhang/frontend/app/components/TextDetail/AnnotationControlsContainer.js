@@ -73,6 +73,7 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnot
     if (endAnnotations) {
         possibleAnnotations = possibleAnnotations.concat(endAnnotations);
     }
+
     for (let i=0; i < possibleAnnotations.length; i++) {
         const annotation = possibleAnnotations[i];
         if (annotation.start === activeAnnotation.start && annotation.length === activeAnnotation.length) {
@@ -121,7 +122,7 @@ export const mapStateToProps = (state, ownProps) => {
             availableAnnotations: null,
             user: user,
             temporaryAnnotation: null,
-            inline: inline,
+            inline: null,
             firstSelectedSegment: null,
             splitTextRect: null
         }
