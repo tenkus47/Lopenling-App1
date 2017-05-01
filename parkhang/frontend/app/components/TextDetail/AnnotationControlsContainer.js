@@ -125,8 +125,7 @@ export const mapStateToProps = (state, ownProps) => {
         }
     }
 
-    const [start, length] = ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
-    const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, text, start, activeAnnotation.length);
+    const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, text, activeAnnotation.start, activeAnnotation.length);
     const annotations = getAvailableAnnotations(ownProps.annotatedText, activeAnnotation, temporaryVariant, ownProps.annotationPositions);
     let annotationsData = getAnnotationsData(annotations);
 
@@ -134,6 +133,7 @@ export const mapStateToProps = (state, ownProps) => {
     if (activeAnnotation.id == BASE_ANNOTATION_ID) {
         baseAnnotation = activeAnnotation;
     } else {
+        const [start, length] = ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
         baseAnnotation = ownProps.annotatedText.getBaseAnnotation(start, length);
         const baseAnnotationData = getAnnotationsData([baseAnnotation]);
         annotationsData = baseAnnotationData.concat(annotationsData);
