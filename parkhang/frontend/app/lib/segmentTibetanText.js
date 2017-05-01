@@ -13,19 +13,14 @@ export default function segmentTibetanText(text) {
     let count = 0;
     for (let char of text) {
         if (breaks.includes(char)) {
-            if (inBreak) {
-                currentSegment += char;
-            } else {
-                if (count > 0) {
-                    const newSegment = new TextSegment(currentStart, currentSegment);
-                    segments.push(newSegment);
-                }
-
-                inBreak = true;
-                inSpace = false;
-                currentSegment = char;
-                currentStart = count;
+            if (count > 0) {
+                const newSegment = new TextSegment(currentStart, currentSegment);
+                segments.push(newSegment);
             }
+            inBreak = true;
+            inSpace = false;
+            currentSegment = char;
+            currentStart = count;
         } else if (spaces.includes(char)) {
             if (inSpace) {
                 currentSegment += char;

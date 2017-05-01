@@ -1,7 +1,7 @@
 import segmentTibetanText, { SegmentedText } from './segmentTibetanText'
 import TextSegment from './TextSegment'
 
-const text = "༄༅། །ཐེག་པ་ཆེན་པོ་ཉི་ཤུ་པ།༄༅༅། །རྒྱ་གར་སྐད་དུ།";
+const text = "༄༅། །ཐེག་པ་ཆེན་པོ་ཉི་ཤུ་པ།༄༅༅། །རྒྱ་གར་སྐད་དུ།།";
 
 const expectedSegments = [
     new TextSegment(0, "༄༅"),
@@ -33,7 +33,8 @@ const expectedSegments = [
     new TextSegment(39, "སྐད"),
     new TextSegment(42, "་"),
     new TextSegment(43, "དུ"),
-    new TextSegment(45, "།")
+    new TextSegment(45, "།"),
+    new TextSegment(46, "།")
 ];
 
 describe('tibetan text segmented', () => {
