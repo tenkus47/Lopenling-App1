@@ -9,7 +9,7 @@ import textStyles from './Text.css'
 import controlStyles from './AnnotationControls.css'
 import _ from 'lodash'
 
-const CONTROLS_MARGIN_LEFT = 10;
+export const CONTROLS_MARGIN_LEFT = 10;
 const MIN_SPACE_RIGHT = parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
 export default class SplitText extends React.PureComponent {
@@ -18,8 +18,10 @@ export default class SplitText extends React.PureComponent {
 
         this.state = {
             selectedTextIndex: null,
-            controlsVisible: false,
-            controlsPosition: {top: 0, center: 0, width: 0, textRight: 0}
+            textPaddingRight: null,
+            textWidth: null,
+            firstSelectedElement: null,
+            splitTextRect: null,
         };
         this.list = null;
         this.splitText = null;
@@ -30,11 +32,12 @@ export default class SplitText extends React.PureComponent {
         this.resizeHandler = null;
         this.selectionHandler = null;
         this.textListVisible = props.textListVisible;
+        this.annotationControlsContainer = null;
     }
 
     updateList() {
         if (this.list) {
-            this.cache.clearAll();
+            // this.cache.clearAll();
             this.list.recomputeRowHeights();
             this.list.forceUpdate();
         }
@@ -118,12 +121,10 @@ export default class SplitText extends React.PureComponent {
     }
 
     getControlsMeasurements(props) {
-        let controlsVisible = false;
-        let controlsPosition = null;
         let selectedTextIndex = null;
+        let firstSelectedSegment = null;
+        let splitTextRect = null;
         if (props.selectedAnnotatedSegments && props.selectedAnnotatedSegments.length > 0) {
-            let firstSegment = null;
-            let firstElement = null;
             for (let i=0; i < props.selectedAnnotatedSegments.length; i++) {
                 let segment = props.selectedAnnotatedSegments[i];
                 let id = 's_' + segment.start;
@@ -131,61 +132,32 @@ export default class SplitText extends React.PureComponent {
                 if (!element) {
                     continue;
                 }
-                if (firstSegment === null) {
-                    firstSegment = segment;
-                }
-                if (firstElement === null) {
-                    firstElement = element;
-                }
-                if (firstElement && firstSegment) {
+                if (firstSelectedSegment === null) {
+                    firstSelectedSegment = segment;
                     break;
                 }
             }
-            selectedTextIndex = props.splitText.getTextIndexOfPosition(firstSegment.start);
-            const firstText = document.getElementsByClassName(textStyles.text)[0];
-            const top = firstElement.offsetTop;
-            let viewPortTop = null;
-            let viewPortBottom = null;
-            let elViewPortTop = null;
-            let elViewPortBottom = null;
-            if (firstElement) {
-                const elRect = firstElement.getBoundingClientRect();
-                const splitTextRect = this.splitText.getBoundingClientRect();
-
-                elViewPortTop = elRect.top - splitTextRect.top;
-                elViewPortBottom = splitTextRect.height - elViewPortTop;
-                viewPortTop = firstElement.offsetTop - elViewPortTop;
-                viewPortBottom = firstElement.offsetTop + elViewPortBottom;
-            }
-            const textRight = firstText.offsetLeft + firstText.offsetWidth + CONTROLS_MARGIN_LEFT;
-            controlsVisible = true;
-            controlsPosition = {
-                top: top,
-                textRight: textRight,
-                viewPortTop: viewPortTop,
-                viewPortBottom: viewPortBottom,
-            }
-        } else {
-            controlsVisible = false;
+            selectedTextIndex = props.splitText.getTextIndexOfPosition(firstSelectedSegment.start);
+            splitTextRect = this.splitText.getBoundingClientRect();
         }
         return {
             selectedTextIndex: selectedTextIndex,
-            controlsVisible: controlsVisible,
-            controlsPosition: controlsPosition
+            firstSelectedSegment: firstSelectedSegment,
+            splitTextRect: splitTextRect
         }
     }
 
     updateState(props) {
-        const controlsMeasurements = this.getControlsMeasurements(props);
         const textMeasurements = this.getTextMeasurements();
+        const controlsMeasurements = this.getControlsMeasurements(props);
         this.setState((prevState, props) => {
             return {
                 ...prevState,
                 selectedTextIndex: controlsMeasurements.selectedTextIndex,
-                controlsVisible: controlsMeasurements.controlsVisible,
-                controlsPosition: controlsMeasurements.controlsPosition,
                 textPaddingRight: textMeasurements.paddingRight,
-                textWidth: textMeasurements.newTextWidth
+                textWidth: textMeasurements.newTextWidth,
+                firstSelectedSegment: controlsMeasurements.firstSelectedSegment,
+                splitTextRect: controlsMeasurements.splitTextRect
             };
         });
     }
@@ -197,9 +169,9 @@ export default class SplitText extends React.PureComponent {
         }
         if (props.textListVisible !== this.textListVisible) {
             setTimeout(() => {
-                console.log('in textListVisible timeout, this: %o', this);
                 this.textListVisible = props.textListVisible;
                 this.updateState(this.props);
+                this.cache.clearAll();
                 this.updateList();
             }, 500);
         }
@@ -207,8 +179,11 @@ export default class SplitText extends React.PureComponent {
 
     componentDidMount() {
         this.resizeHandler = _.throttle(() => {
-            // this.cache.clearAll();
+            this.cache.clearAll();
             this.updateList();
+            setTimeout(() => {
+                this.updateState(this.props);
+            }, 200);
         }, 500).bind(this);
 
         window.addEventListener("resize", this.resizeHandler);
@@ -287,11 +262,13 @@ export default class SplitText extends React.PureComponent {
                     />
                     {this.state.selectedTextIndex === index &&
                         <AnnotationControlsContainer
+                                    ref={(container) => this.annotationControlsContainer = container}
                                     annotationPositions={props.annotationPositions}
                                     annotatedText={props.splitText.annotatedText}
                                     activeAnnotation={props.activeAnnotation}
                                     inline={true}
-                                    position={this.state.controlsPosition}
+                                    firstSelectedSegment={this.state.firstSelectedSegment}
+                                    splitTextRect={this.state.splitTextRect}
                                 />
                     }
 

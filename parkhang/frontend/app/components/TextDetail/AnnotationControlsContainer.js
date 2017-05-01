@@ -121,7 +121,9 @@ export const mapStateToProps = (state, ownProps) => {
             availableAnnotations: null,
             user: user,
             temporaryAnnotation: null,
-            inline: inline
+            inline: inline,
+            firstSelectedSegment: null,
+            splitTextRect: null
         }
     }
 
@@ -162,7 +164,9 @@ export const mapStateToProps = (state, ownProps) => {
         availableAnnotations: annotations,
         user: user,
         temporaryAnnotation: temporaryVariant,
-        inline: inline
+        inline: inline,
+        firstSelectedSegment: ownProps.firstSelectedSegment,
+        splitTextRect: ownProps.splitTextRect
     }
 };
 

@@ -2,7 +2,9 @@ import React from 'react'
 import classnames from 'classnames'
 import AnnotationDetail from './AnnotationDetail'
 import AnnotationDetailEdit from './AnnotationDetailEdit'
+import { CONTROLS_MARGIN_LEFT } from './SplitText'
 import styles from './AnnotationControls.css'
+import textStyles from './Text.css'
 
 export default class AnnotationControls extends React.PureComponent {
 
@@ -26,21 +28,59 @@ export default class AnnotationControls extends React.PureComponent {
         if (!this.props.inline) {
             return;
         }
+        const measurements = this.getMeasurements();
         // TODO: update height when new data provided
         const height = this.controls.offsetHeight;
-        let top = this.props.position.top  - (height / 2);
-        if (top < this.props.position.viewPortTop) {
-            top = this.props.position.viewPortTop;
+        let top = measurements.top  - (height / 2);
+        if (top < measurements.viewPortTop) {
+            top = measurements.viewPortTop;
         }
-        if (top + height > this.props.position.viewPortBottom) {
-            top = this.props.position.viewPortBottom - height;
+        if (top + height > measurements.viewPortBottom) {
+            top = measurements.viewPortBottom - height;
         }
 
-        const left = this.props.position.textRight + 'px';
+        const left = measurements.textRight + 'px';
         this.controls.style.top = top + 'px';
         this.controls.style.left = left;
-        this.arrow.style.top = this.props.position.top - top + 'px';
-        this.arrowDs.style.top = this.props.position.top - top + 2 + 'px';
+        this.arrow.style.top = measurements.top - top + 'px';
+        this.arrowDs.style.top = measurements.top - top + 2 + 'px';
+    }
+
+    getMeasurements() {
+        const firstText = document.getElementsByClassName(textStyles.text)[0];
+        const splitTextRect = this.props.splitTextRect;
+        const firstSegment = this.props.firstSelectedSegment;
+        let elementId = 's_' + firstSegment.start;
+        const firstElement = document.getElementById(elementId);
+        if (!firstElement) {
+            console.warn('no valid element found in getMeasurements');
+            return {
+                top: 0,
+                textRight: 0,
+                viewPortTop: 0,
+                viewPortBottom: 0,
+            }
+        }
+        const top = firstElement.offsetTop;
+        let viewPortTop = null;
+        let viewPortBottom = null;
+        let elViewPortTop = null;
+        let elViewPortBottom = null;
+        if (firstElement) {
+            const elRect = firstElement.getBoundingClientRect();
+
+            elViewPortTop = elRect.top - splitTextRect.top;
+            elViewPortBottom = splitTextRect.height - elViewPortTop;
+            viewPortTop = firstElement.offsetTop - elViewPortTop;
+            viewPortBottom = firstElement.offsetTop + elViewPortBottom;
+        }
+        const textRight = firstText.offsetLeft + firstText.offsetWidth + CONTROLS_MARGIN_LEFT;
+        return {
+            top: top,
+            textRight: textRight,
+            viewPortTop: viewPortTop,
+            viewPortBottom: viewPortBottom,
+        };
     }
 
     render() {
