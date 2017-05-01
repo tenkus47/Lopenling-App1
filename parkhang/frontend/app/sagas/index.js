@@ -38,7 +38,7 @@ function getDelay(attempt) {
 }
 
 // Type of action used to add callbacks to the request queue.
-const SAGA_REQUEST = 'SAGE_REQUEST';
+const SAGA_REQUEST = 'SAGA_REQUEST';
 
 /**
  * Sets up a serial queue for requests using the API.
