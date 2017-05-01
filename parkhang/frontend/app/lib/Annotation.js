@@ -50,7 +50,7 @@ export default class Annotation {
     }
 
     set id(newId) {
-        this._id = newId;
+        this._id = Number(newId);
     }
 
     get naturalId() {
