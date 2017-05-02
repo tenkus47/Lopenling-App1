@@ -170,10 +170,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
     const getAnnotation = (id) => {
         let validAnnotation = null;
-        id = Number(id);
         _.forOwn(annotationPositions, (annotations, position) => {
             if (annotations) {
-                let validAnnotations = annotations.filter((annotation) => Number(annotation.id) === id);
+                let validAnnotations = annotations.filter((annotation) => annotation.uniqueId === id);
                     if (validAnnotations.length > 0) {
                         validAnnotation = validAnnotations[0];
                         return false;
@@ -185,7 +184,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
     const didSelectAnnotation = (annotation) => {
         let activeAnnotation = null;
-        if (_.some(annotatedText.annotations, (active) => annotation.id == active.id)) {
+        if (_.some(annotatedText.annotations, (active) => annotation.uniqueId == active.uniqueId)) {
             activeAnnotation = annotation;
         } else {
             let [ start, length ] = annotatedText.getPositionOfAnnotation(annotation);
@@ -216,7 +215,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             start = id.substr(2);
         }
 
-        return Number(start);
+        return start;
     };
 
     return {
@@ -270,7 +269,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 const annotation = getAnnotation(annotationId);
                 didSelectAnnotation(annotation);
             } else {
-                let segmentPosition = idFromSegmentId(segmentId);
+                let segmentPosition = Number(idFromSegmentId(segmentId));
                 let textSegment = annotatedText.segmentedText.segmentAtPosition(segmentPosition);
                 if (textSegment) {
                     didSelectSegment(textSegment);
