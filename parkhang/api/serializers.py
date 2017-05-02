@@ -41,11 +41,14 @@ class AnnotationSerializer(serializers.ModelSerializer):
     creator_user = serializers.PrimaryKeyRelatedField(
         allow_null=True, queryset=User.objects
     )
+    original = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=Annotation.objects
+    )
 
     class Meta:
         model = Annotation
-        fields = ('id', 'witness', 'start', 'length', 'content',
-                  'creator_witness', 'creator_user', 'is_deleted')
+        fields = ('id', 'type', 'witness', 'start', 'length', 'content',
+                  'creator_witness', 'creator_user', 'original', 'is_deleted')
 
 
 class AppliedUserAnnotationSerializer(serializers.ModelSerializer):
