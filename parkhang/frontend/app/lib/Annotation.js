@@ -121,9 +121,7 @@ export default class Annotation {
     }
 
     get isSaved() {
-        if (this._id === null) {
-            return false;
-        }
+        return this._id === null;
     }
 }
 
