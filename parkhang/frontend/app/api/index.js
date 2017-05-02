@@ -91,8 +91,8 @@ export function removeAppliedAnnotation(annotation) {
 // CREATING ANNOTATIONS
 
 export function dataFromAnnotation(annotation) {
-    const creatorWitness = (annotation.userCreated) ? null : annotation.creator;
-    const creatorUser = (annotation.userCreated) ? annotation.creator : null;
+    const creatorWitness = (annotation.userCreated) ? null : annotation.creator.id;
+    const creatorUser = (annotation.userCreated) ? annotation.creator.id : null;
 
     return {
         id: annotation.id,
