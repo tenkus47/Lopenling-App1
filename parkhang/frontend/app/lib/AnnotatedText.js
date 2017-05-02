@@ -98,7 +98,7 @@ export default class AnnotatedText {
         this.segmentedText;
 
         let startKey = annotation.start;
-        let isActive = _.some(this.variants, (a) => a.id == annotation.id);
+        let isActive = _.some(this.variants, (a) => a.uniqueId == annotation.uniqueId);
         if (annotation.isInsertion) {
             // only use insertion key if it is an active annotation
             if (isActive) {
@@ -209,7 +209,7 @@ export default class AnnotatedText {
     segmentsForAnnotation(annotation) {
         let segments = [];
         let isActive = false;
-        if (_.some(this.variants, (active) => annotation.id == active.id)) {
+        if (_.some(this.variants, (active) => annotation.uniqueId == active.uniqueId)) {
             isActive = true;
         }
 
@@ -297,7 +297,7 @@ export default class AnnotatedText {
 
                 // store replaced segments to use when setting position below
                 if (!annotation.isInsertion) {
-                    replacedSegments[annotation.id] = targets;
+                    replacedSegments[annotation.uniqueId] = targets;
                 }
             }
         }
@@ -308,13 +308,13 @@ export default class AnnotatedText {
         for (let i=0, len=newSegments.length; i < len; i++) {
             let segment = newSegments[i];
             if (segment._annotation
-                && processedSegmentAnnotations[segment._annotation.id] === undefined)
+                && processedSegmentAnnotations[segment._annotation.uniqueId] === undefined)
             {
                 const deleted = (segment.text.length == 0);
-                const replaced = replacedSegments[segment._annotation.id];
+                const replaced = replacedSegments[segment._annotation.uniqueId];
                 if (segment._annotation.isInsertion) {
                     this._orginalCurrentSegmentPositions[String(segment.start) + INSERTION_KEY] = [currentPosition, deleted];
-                    processedSegmentAnnotations[segment._annotation.id] = true;
+                    processedSegmentAnnotations[segment._annotation.uniqueId] = true;
                 } else if (replaced) {
                     for (let j=0; j < replaced.length; j++) {
                         let replacedSeg = replaced[j];
@@ -324,7 +324,7 @@ export default class AnnotatedText {
                         }
                     }
                 }
-                processedSegmentAnnotations[segment._annotation.id] = true;
+                processedSegmentAnnotations[segment._annotation.uniqueId] = true;
             } else {
                 const segmentPos = segment.start;
                 for (let j = 0; j < segment.text.length; j++) {

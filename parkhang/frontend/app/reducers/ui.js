@@ -75,7 +75,7 @@ function addedTemporaryAnnotation(state, action) {
             ...state.temporaryAnnotations,
             [textId]: {
                 ...state.temporaryAnnotations[textId],
-                [annotation.id]: {
+                [annotation.uniqueId]: {
                     annotation: annotation,
                     isActive: isActive
                 }
@@ -94,7 +94,7 @@ function removedTemporaryAnnotation(state, action) {
     let textAnnotations = {
         ...state.temporaryAnnotations[textId]
     };
-    delete textAnnotations[annotation.id];
+    delete textAnnotations[annotation.uniqueId];
     return {
         ...state,
         temporaryAnnotations: {

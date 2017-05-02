@@ -98,36 +98,36 @@ export default class AnnotationControls extends React.PureComponent {
                 if (annotationData.isTemporary) {
                     isEditing = true;
                     isActive = true
-                } else if (!props.temporaryAnnotation && annotationData.id == props.activeAnnotation.id) {
+                } else if (!props.temporaryAnnotation && annotationData.annotation.uniqueId == props.activeAnnotation.uniqueId) {
                     isActive = true;
                 }
 
                 if (isEditing) {
                     let annotationDetail = <AnnotationDetailEdit
                         annotationData={annotationData}
-                        key={annotationData.id}
+                        key={annotationData.annotation.uniqueId}
                         isActive={isActive}
                         saveAnnotationHandler={(content) => {
-                            props.saveAnnotation(annotationData.id, content);
+                            props.saveAnnotation(annotationData.annotation, content);
                         }}
                         cancelAnnotationHandler={() => {
-                            props.cancelEditAnnotation(annotationData.id);
+                            props.cancelEditAnnotation(annotationData.annotation);
                         }}
                     />;
                     temporaryAnnotations.push(annotationDetail);
                 } else {
                     let annotationDetail = <AnnotationDetail
                         annotationData={annotationData}
-                        key={annotationData.id}
+                        key={annotationData.annotation.uniqueId}
                         isActive={isActive}
                         selectAnnotationHandler={() => {
                             if (props.user.isLoggedIn && !isEditing) {
-                                props.didSelectAnnotation(annotationData.id);
+                                props.didSelectAnnotation(annotationData.annotation);
                             }
                         }}
                         editAnnotationHandler={() => {
                             if (!isEditing) {
-                                props.editAnnotation(annotationData.id);
+                                props.editAnnotation(annotationData.annotation);
                             }
                         }}
                     />;

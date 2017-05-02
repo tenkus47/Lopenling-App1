@@ -356,7 +356,7 @@ describe('AnnotatedText', () => {
             annotatedText.getPositionOfAnnotation(insertion)
         ).toEqual(expectedPosition);
 
-        let nonactiveInsertion = new Annotation(77, baseWitness, 268, 0,  "དང་",  otherWitness);
+        let nonactiveInsertion = new Annotation(77, baseWitness, 268, 0,  "དང་",  anotherWitness);
         expectedPosition = [241, 3];
         expect(
             annotatedText.getPositionOfAnnotation(nonactiveInsertion)

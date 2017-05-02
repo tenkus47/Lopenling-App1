@@ -46,11 +46,7 @@ export default class Annotation {
     }
 
     get id() {
-        if (this._id === null) {
-            return this.naturalId;
-        } else {
-            return this._id;
-        }
+        return this._id;
     }
 
     set id(newId) {

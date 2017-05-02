@@ -34,18 +34,21 @@ const extraName = [
 const baseAnnotationData = {
     id: baseAnnotation.id,
     name: addTibetanShay(baseAnnotation.getSourceName()),
-    content: baseAnnotation.content
+    content: baseAnnotation.content,
+    annotation: baseAnnotation
 };
 const annotation1Data = {
     id: annotation1.id,
     name: extraName,
-    content: annotation1.content
+    content: annotation1.content,
+    annotation: annotation1
 };
 const temporaryData = {
     id: temporaryAnnotation.id,
     name: temporaryAnnotation.getSourceName(),
     content: temporaryAnnotation.content,
-    isTemporary: true
+    isTemporary: true,
+    annotation: temporaryAnnotation
 };
 
 describe('AnnotationControls', () => {

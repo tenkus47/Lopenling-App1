@@ -49,7 +49,7 @@ export default class Text extends React.Component {
     }
 
     idForInsertion(annotation) {
-        return "i_" + annotation.id;
+        return "i_" + annotation.uniqueId;
     }
 
     selectedElement(element) {

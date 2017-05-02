@@ -22,21 +22,20 @@ const getAnnotationsData = (annotations) => {
                 annotationsById[TEMPORARY_ANNOTATION_ID] = {
                     name: annotation.getSourceName(),
                     content: annotation.content,
-                    id: annotation.id,
-                    isTemporary: true
+                    id: annotation.uniqueId,
+                    isTemporary: true,
+                    annotation: annotation
                 }
             } else if (annotationsById[id]) {
                 let existingAnnotation = annotationsById[id];
                 existingAnnotation.name += ' ' + addTibetanShay(annotation.getSourceName());
-                if (annotation.id < existingAnnotation.id) {
-                    existingAnnotation.id = annotation.id;
-                }
             } else {
                 annotationsById[id] = {
                     name: addTibetanShay(annotation.getSourceName()),
                     content: annotation.content,
-                    id: annotation.id,
-                    userCreated: annotation.userCreated
+                    id: annotation.uniqueId,
+                    userCreated: annotation.userCreated,
+                    annotation: annotation
                 };
             }
         }
@@ -99,9 +98,10 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnot
     return availableAnnotations;
 };
 
-const getTemporaryAnnotation = (state, type, user, text, start, length) => {
-    const annotations = reducers.getTemporaryAnnotations(state, text.id);
-    const temporaryId = getNaturalId(type, user, text, start, length);
+const getTemporaryAnnotation = (state, type, user, witness, start, length) => {
+    const annotations = reducers.getTemporaryAnnotations(state, witness.text.id);
+    const userCreated = true;
+    const temporaryId = getNaturalId(type, userCreated, user.id, witness.id, start, length);
     if (annotations && annotations[temporaryId]) {
         return annotations[temporaryId].annotation;
     } else {
@@ -110,10 +110,8 @@ const getTemporaryAnnotation = (state, type, user, text, start, length) => {
 };
 
 export const mapStateToProps = (state, ownProps) => {
-    const text = reducers.getSelectedText(state);
     const user = reducers.getUser(state);
     const activeAnnotation = ownProps.activeAnnotation;
-    const inline = ownProps.inline;
     if (!activeAnnotation) {
         return {
             annotationsData: null,
@@ -127,8 +125,10 @@ export const mapStateToProps = (state, ownProps) => {
             splitTextRect: null
         }
     }
+    const inline = ownProps.inline;
+    const witness = activeAnnotation.witness;
 
-    const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, text, activeAnnotation.start, activeAnnotation.length);
+    const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, witness, activeAnnotation.start, activeAnnotation.length);
     const annotations = getAvailableAnnotations(ownProps.annotatedText, activeAnnotation, temporaryVariant, ownProps.annotationPositions);
     let annotationsData = getAnnotationsData(annotations);
 
@@ -153,7 +153,7 @@ export const mapStateToProps = (state, ownProps) => {
         } else if (b.userCreated) {
             return 1;
         } else {
-            return a.id - b.id
+            return a.annotation.id - b.annotation.id
         }
     });
 
@@ -171,43 +171,24 @@ export const mapStateToProps = (state, ownProps) => {
     }
 };
 
-function getAnnotation(annotationId, stateProps) {
-    let selectedAnnotation = null;
-    if (annotationId == BASE_ANNOTATION_ID) {
-        selectedAnnotation = stateProps.baseAnnotation;
-    } else {
-        if (stateProps.temporaryAnnotation
-            && stateProps.temporaryAnnotation.id === annotationId)
-        {
-            selectedAnnotation = stateProps.temporaryAnnotation;
-        } else {
-            selectedAnnotation = _.find(
-                stateProps.availableAnnotations,
-                (value) => value.id == annotationId
-            );
-        }
-    }
-    return selectedAnnotation;
-}
-
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
     return {
         ...stateProps,
         ...ownProps,
-        didSelectAnnotation: (annotationId) => {
+        didSelectAnnotation: (annotation) => {
             let selectedAnnotation = null;
-            if (annotationId == BASE_ANNOTATION_ID) {
+            if (annotation.id == BASE_ANNOTATION_ID) {
                 selectedAnnotation = stateProps.baseAnnotation;
             } else {
                 selectedAnnotation = _.find(
                     stateProps.availableAnnotations,
-                    (value) => value.id == annotationId
+                    (value) => value.uniqueId == annotation.uniqueId
                 );
             }
             let actionsBatch = [];
-            if (annotationId != stateProps.activeAnnotation.id) {
-                if (annotationId != BASE_ANNOTATION_ID) {
+            if (annotation.uniqueId != stateProps.activeAnnotation.uniqueId) {
+                if (annotation.id != BASE_ANNOTATION_ID) {
                     actionsBatch.push(actions.appliedAnnotation(selectedAnnotation));
                 }
                 if (stateProps.activeAnnotation.id != BASE_ANNOTATION_ID) {
@@ -220,8 +201,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 )
             }
         },
-        editAnnotation: (annotationId) => {
-            const selectedAnnotation = getAnnotation(annotationId, stateProps);
+        editAnnotation: (selectedAnnotation) => {
             const temporaryAnnotation = new TemporaryAnnotation(
                 selectedAnnotation,
                 selectedAnnotation.witness,
@@ -234,8 +214,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 actions.addedTemporaryAnnotation(temporaryAnnotation, true)
             );
         },
-        saveAnnotation: (annotationId, content) => {
-            const selectedAnnotation = getAnnotation(annotationId, stateProps);
+        saveAnnotation: (selectedAnnotation, content) => {
 
             if (!selectedAnnotation.isTemporary) {
                 console.warn('Tried to save a non-temporary annotation: %o', selectedAnnotation);
@@ -266,8 +245,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 batchActions(actionsBatch)
             );
         },
-        cancelEditAnnotation: (annotationId) => {
-            const selectedAnnotation = getAnnotation(annotationId, stateProps);
+        cancelEditAnnotation: (selectedAnnotation) => {
             if (!selectedAnnotation.isTemporary) {
                 console.warn('Tried to save a non-temporary annotation: %o', selectedAnnotation);
                 return;
