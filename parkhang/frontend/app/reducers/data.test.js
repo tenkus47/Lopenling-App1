@@ -20,7 +20,7 @@ describe('Applying and removing reducer', () => {
 
     let state = {...data.initialDataState};
     let witnessActiveAnnotations = {
-        [baseWitness.id]: [annotation.id]
+        [baseWitness.id]: [annotation.uniqueId]
     };
     let expectedState = {
         ...state,
@@ -59,6 +59,71 @@ describe('Applying and removing reducer', () => {
     });
 });
 
+describe('Processing loaded data', () => {
+
+    test('loadedAnnotations', () => {
+        let state = {
+            ...data.initialDataState
+        };
+
+        const annotationsData = [
+            {
+                "id": 498,
+                "type": 'V',
+                "witness": 1,
+                "start": 0,
+                "length": 67,
+                "content": "",
+                "creator_witness": 152,
+                "creator_user": null,
+                "is_deleted": false
+            }
+        ];
+
+        let expectedState = {
+            ...state,
+            loadedAnnotations: true,
+            loadingAnnotations: true,
+            witnessAnnotationsById: {
+                1: {
+                    "V-W-152-1-0-67": {
+                        "id": 498,
+                        "type": 'V',
+                        "witness": 1,
+                        "start": 0,
+                        "length": 67,
+                        "content": "",
+                        "creator_witness": 152,
+                        "creator_user": null,
+                        "is_deleted": false
+                    }
+                }
+            }
+        };
+
+        const action = actions.loadedWitnessAnnotations(baseWitness, annotationsData);
+
+        expect(
+            dataReducers[action.type](state, action)
+        ).toEqual(expectedState);
+
+        state = {
+            ...state,
+            loadedAppliedAnnotations: true,
+        };
+
+        expectedState = {
+            ...expectedState,
+            loadedAppliedAnnotations: true,
+            loadingAnnotations: false
+        };
+
+        expect(
+            dataReducers[action.type](state, action)
+        ).toEqual(expectedState);
+    });
+});
+
 describe('CUD annotation', () => {
 
     const newAnnotation = new TemporaryAnnotation(null, baseWitness, 5, 7, "replacement", user);
@@ -71,7 +136,7 @@ describe('CUD annotation', () => {
             ...state,
             witnessAnnotationsById: {
                 [baseWitness.id]: {
-                    [newAnnotation.id]: data.dataFromAnnotation(newAnnotation)
+                    [newAnnotation.uniqueId]: data.dataFromAnnotation(newAnnotation)
                 }
             }
         };
@@ -89,7 +154,7 @@ describe('CUD annotation', () => {
             ...state,
             witnessAnnotationsById: {
                 [baseWitness.id]: {
-                    [updatedUnsavedAnnotation.id]: data.dataFromAnnotation(updatedUnsavedAnnotation)
+                    [updatedUnsavedAnnotation.uniqueId]: data.dataFromAnnotation(updatedUnsavedAnnotation)
                 }
             }
         };
@@ -109,7 +174,7 @@ describe('CUD annotation', () => {
             ...state,
             witnessAnnotationsById: {
                 [baseWitness.id]: {
-                    [savedAnnotation.id]: data.dataFromAnnotation(savedAnnotation)
+                    [savedAnnotation.uniqueId]: data.dataFromAnnotation(savedAnnotation)
                 }
             }
         };
@@ -129,7 +194,7 @@ describe('CUD annotation', () => {
             ...state,
             witnessAnnotationsById: {
                 [baseWitness.id]: {
-                    [savedAnnotation.id]: data.dataFromAnnotation(updatedSavedAnnotation)
+                    [savedAnnotation.uniqueId]: data.dataFromAnnotation(updatedSavedAnnotation)
                 }
             }
         };

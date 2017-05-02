@@ -1,9 +1,13 @@
 export default function arrayToObject(arr, key) {
+    const keyFunc = (typeof key === "function") ? key : null;
     return arr.reduce(function(result, item) {
-        if (item[key] != undefined) {
-            const objKey = item[key]
-            result[objKey] = item
-            return result
+        let objKey;
+        if (keyFunc) {
+            objKey = keyFunc(item);
+        } else {
+            objKey = item[key];
         }
+        result[objKey] = item;
+        return result;
     }, {});
 }
