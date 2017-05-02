@@ -7,9 +7,13 @@ export const ANNOTATION_TYPES = {
 
 export const TEMPORARY_TYPE = 'T';
 
-export function getNaturalId(type, creator, text, start, length) {
-    const creatorType = (creator.hasOwnProperty('content')) ? 'W' : 'U';
-    return [type, creatorType, creator.id, text.id, start, length].join('-');
+export function getNaturalId(type, userCreated, creatorId, witnessId, start, length) {
+    const creatorType = (userCreated) ? 'U' : 'W';
+    return [type, creatorType, creatorId, witnessId, start, length].join('-');
+}
+
+export function getUniqueId(type, userCreated, creatorId, witnessId, start, length) {
+    return getNaturalId(type, userCreated, creatorId, witnessId, start, length);
 }
 
 export function getTemporaryId(naturalId) {
@@ -54,11 +58,11 @@ export default class Annotation {
     }
 
     get naturalId() {
-        return getNaturalId(this.type, this.creator, this.witness.text, this.start, this.length);
+        return getNaturalId(this.type, this.userCreated, this.creator.id, this.witness.id, this.start, this.length);
     }
 
-    temporaryId() {
-        return getTemporaryId(this.naturalId);
+    get uniqueId() {
+        return this.naturalId;
     }
 
     get isTemporary() {
