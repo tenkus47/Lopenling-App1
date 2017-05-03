@@ -56,7 +56,8 @@ class AnnotationSerializer(serializers.ModelSerializer):
 
 class AppliedUserAnnotationSerializer(serializers.ModelSerializer):
     annotation = serializers.PrimaryKeyRelatedField(read_only=True)
+    annotation_unique_id = serializers.UUIDField(source='annotation.unique_id')
 
     class Meta:
         model = AppliedUserAnnotation
-        fields = ('id', 'annotation')
+        fields = ('id', 'annotation', 'annotation_unique_id')

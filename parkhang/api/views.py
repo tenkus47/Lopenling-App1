@@ -191,19 +191,22 @@ class AppliedUserAnnotations(APIView):
         Apply annotation to it's assigned witness
 
         :param request: Django Request
-        :param annotation_id: id of the annotation to apply
+        :param annotation_unique_id: unique_id of the annotation to apply
         :return: Empty string
         """
 
-        annotation_id = request.data['annotation_id']
+        unique_id = request.data['annotation_unique_id']
 
         try:
-            annotation = Annotation.objects.get(id=annotation_id)
+            annotation = Annotation.objects.get(unique_id=unique_id)
         except Annotation.DoesNotExist:
             raise NotFound('An annotation with that ID does not exist.')
 
         try:
-            applied_user_annotation = AppliedUserAnnotation.objects.get(user=request.user, annotation=annotation)
+            applied_user_annotation = AppliedUserAnnotation.objects.get(
+                user=request.user,
+                annotation=annotation
+            )
             return Response('Annotation already applied')
         except AppliedUserAnnotation.DoesNotExist:
             applied_user_annotation = AppliedUserAnnotation()
@@ -218,8 +221,8 @@ class AppliedUserAnnotations(APIView):
 class AppliedUserAnnotationDetail(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def delete(self, request, annotation_id, *args, **kwargs):
-        annotation = get_annotation(request, annotation_id)
+    def delete(self, request, annotation_unique_id, *args, **kwargs):
+        annotation = get_annotation(request, annotation_unique_id)
 
         try:
             applied_user_annotation = AppliedUserAnnotation.objects.get(
