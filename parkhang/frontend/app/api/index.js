@@ -51,7 +51,7 @@ export function fetchTexts() {
 }
 
 export function fetchTextWitnesses(text) {
-    const url = '/api/texts/'+String(text.id)+'/witnesses/'
+    const url = '/api/texts/'+String(text.id)+'/witnesses/';
     return request(GET, url);
 }
 
