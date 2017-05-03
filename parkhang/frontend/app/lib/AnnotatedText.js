@@ -192,7 +192,7 @@ export default class AnnotatedText {
             origLength,
             content,
             this.baseWitness,
-            false
+            ANNOTATION_TYPES.variant
         );
 
         return annotation;
