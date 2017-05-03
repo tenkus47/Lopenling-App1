@@ -62,10 +62,10 @@ export function fetchWitnessAnnotations(witness) {
 
 // APPLYING ANNOTATIONS
 
-function getApplyAnnotationUrl(witness, annotationId=null) {
+function getApplyAnnotationUrl(witness, annotationUniqueId=null) {
     let url = '/api/texts/'+witness.text.id+'/witnesses/'+witness.id+'/applied_annotations/';
-    if (annotationId) {
-        url += annotationId;
+    if (annotationUniqueId) {
+        url += annotationUniqueId;
     }
     return url;
 }
@@ -77,14 +77,14 @@ export function fetchAppliedUserAnnotations(witness) {
 
 export function applyAnnotation(annotation) {
     const url = getApplyAnnotationUrl(annotation.witness);
-
-    return request(POST, url, {
-        annotation_id: annotation.id
-    });
+    let data = {
+        annotation_unique_id: annotation.uniqueId
+    };
+    return request(POST, url, data);
 }
 
 export function removeAppliedAnnotation(annotation) {
-    const url = getApplyAnnotationUrl(annotation.witness, annotation.id);
+    const url = getApplyAnnotationUrl(annotation.witness, annotation.uniqueId);
     return request(DELETE, url);
 }
 
@@ -96,19 +96,21 @@ export function dataFromAnnotation(annotation) {
 
     return {
         id: annotation.id,
+        unique_id: annotation.uniqueId,
         witness: annotation.witness.id,
         start: annotation.start,
         length: annotation.length,
         content: annotation.content,
         creator_witness: creatorWitness,
-        creator_user: creatorUser
+        creator_user: creatorUser,
+        original: (annotation.basedOn) ? annotation.basedOn.uniqueId : null
     }
 }
 
 function getAnnotationUrl(witness, annotation=null) {
     let url = '/api/texts/'+witness.text.id+'/witnesses/'+witness.id+'/annotations/';
     if (annotation) {
-        url += annotation.id;
+        url += annotation.uniqueId;
     }
     return url;
 }

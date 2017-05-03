@@ -96,7 +96,6 @@ function reqAction(callback) {
     }
 }
 
-
 function applyAnnotation(action) {
     return call(api.applyAnnotation, action.annotation);
 }
@@ -194,10 +193,15 @@ function* loadAnnotations(action) {
 }
 
 function* loadAppliedAnnotations(action) {
-    const witness = yield select(reducers.getWitness, action.witness.id);
-    const annotations = yield call(api.fetchAppliedUserAnnotations, witness);
-    let annotationIds = annotations.map(a => a.annotation);
-    yield put(actions.loadedWitnessAppliedAnnotations(action.witness, annotationIds));
+    const user = yield select(reducers.getUser);
+    if (user.isLoggedIn) {
+        const witness = yield select(reducers.getWitness, action.witness.id);
+        const annotations = yield call(api.fetchAppliedUserAnnotations, witness);
+        let annotationIds = annotations.map(a => a.annotation_unique_id);
+        yield put(actions.loadedWitnessAppliedAnnotations(action.witness, annotationIds));
+    } else {
+        yield put(actions.loadedWitnessAppliedAnnotations(action.witness, []));
+    }
 }
 
 function* loadWitnessAnnotations(action) {
@@ -221,7 +225,8 @@ function* watchCreatedAnnotation() {
 }
 
 function updateAnnotation(action) {
-    return call(api.updateAnnotation, action.annotation);
+    const annotation = getUpdatedAnnotation(action.annotation);
+    return call(api.updateAnnotation, annotation);
 }
 
 function* watchUpdatedAnnotation() {
@@ -229,6 +234,7 @@ function* watchUpdatedAnnotation() {
 }
 
 function deleteAnnotation(action) {
+    const annotation = getUpdatedAnnotation(action.annotation);
     return call(api.deleteAnnotation, action.annotation);
 }
 

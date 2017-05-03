@@ -129,7 +129,7 @@ function uniqueIdFromAnnotationData(data) {
 function loadedAnnotations(state, action) {
     const annotationsById = arrayToObject(
         action.annotations,
-        uniqueIdFromAnnotationData
+        'unique_id'
     );
     const witnessAnnotationsById = {
         ...state.witnessAnnotationsById,
@@ -367,14 +367,22 @@ export function annotationFromData(state, annotationData) {
     } else {
         console.warn('No creator found in annotationData: %o', annotationData);
     }
+    let basedOn = null;
+    if (annotationData.basedOn) {
+        basedOn = getAnnotation(state, annotationData.witness, annotationData.unique_id);
+    }
     let annotation = new Annotation(
         annotationData.id,
         witness,
         annotationData.start,
         annotationData.length,
         annotationData.content,
-        (creatorWitness) ? creatorWitness : creatorUser
+        (creatorWitness) ? creatorWitness : creatorUser,
+        annotationData.type,
+        annotationData.unique_id,
+        basedOn
     );
+
     return annotation;
 }
 
@@ -387,12 +395,20 @@ export function dataFromAnnotation(annotation) {
         length: annotation.length,
         content: annotation.content,
         creator_witness: (annotation.userCreated) ? null : annotation.creator.id,
-        creator_user: (annotation.userCreated) ? annotation.creator.id : null
+        creator_user: (annotation.userCreated) ? annotation.creator.id : null,
+        unique_id: annotation.uniqueId,
+        original: (annotation.basedOn) ? annotation.basedOn.uniqueId : null
     }
 }
 
 export const getAnnotationsForWitnessId = (state, witnessId) => {
     return state.witnessAnnotationsById[witnessId];
+};
+
+export const getAnnotation = (state, witnessId, annotationUniqueId) => {
+    let annotation = null;
+    let annotations = state.witnessAnnotationsById[witnessId];
+    return annotations[annotationUniqueId];
 };
 
 export const getActiveAnnotationsForWitnessId = (state, witnessId) => {

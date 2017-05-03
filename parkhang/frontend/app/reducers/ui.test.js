@@ -22,10 +22,9 @@ test('addedTemporaryAnnotation', () => {
         ...state,
         temporaryAnnotations: {
             1 : {
-                [annotation.uniqueId]: {
-                    annotation: annotation,
-                    isActive: true
-                }
+                "0-27": [
+                    annotation
+                ]
             }
         }
     };
@@ -53,10 +52,10 @@ test('removedTemporaryAnnotation', () => {
         ...state,
         temporaryAnnotations: {
             1 : {
-                [extraAnnotation.uniqueId]: {
-                    annotation: extraAnnotation,
-                    isActive: true
-                }
+                "0-27": [],
+                "28-1": [
+                    extraAnnotation
+                ]
             }
         }
     };

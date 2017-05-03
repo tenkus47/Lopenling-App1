@@ -64,24 +64,31 @@ function textListVisibleChanged(state, action) {
     }
 }
 
+function getTemporaryAnnotationKey(start, length) {
+    return [start, length].join("-");
+}
+
 function addedTemporaryAnnotation(state, action) {
     const annotation = action.annotation;
-    const isActive = action.isActive;
-    const textId = action.annotation.witness.text.id;
+    const textId = annotation.witness.text.id;
+    const key = getTemporaryAnnotationKey(annotation.start, annotation.length);
+
+    let temporaryAnnotations = (state.temporaryAnnotations[textId]) ? state.temporaryAnnotations[textId] : {};
+    let textTemporaryAnnotations = (state.temporaryAnnotations[textId] && state.temporaryAnnotations[textId][key]) ? state.temporaryAnnotations[textId][key] : [];
 
     return {
         ...state,
         temporaryAnnotations: {
             ...state.temporaryAnnotations,
             [textId]: {
-                ...state.temporaryAnnotations[textId],
-                [annotation.uniqueId]: {
-                    annotation: annotation,
-                    isActive: isActive
-                }
+                ...temporaryAnnotations,
+                [key]: [
+                    ...textTemporaryAnnotations,
+                    annotation
+                ]
             }
         }
-    }
+    };
 }
 
 function updatedTemporaryAnnotation(state, action) {
@@ -91,15 +98,16 @@ function updatedTemporaryAnnotation(state, action) {
 function removedTemporaryAnnotation(state, action) {
     const annotation = action.annotation;
     const textId = annotation.witness.text.id;
-    let textAnnotations = {
-        ...state.temporaryAnnotations[textId]
-    };
-    delete textAnnotations[annotation.uniqueId];
+    const key = getTemporaryAnnotationKey(annotation.start, annotation.length);
+
     return {
         ...state,
         temporaryAnnotations: {
             ...state.temporaryAnnotations,
-            [textId]: textAnnotations
+            [textId]: {
+                ...state.temporaryAnnotations[textId],
+                [key]: state.temporaryAnnotations[textId][key].filter(a => a.uniqueId !== annotation.uniqueId)
+            }
         }
     }
 }
@@ -139,6 +147,11 @@ export const getTextListVisible = (state) => {
     return state.textListVisible;
 };
 
-export const getTemporaryAnnotations = (state, textId) => {
-    return state.temporaryAnnotations[textId];
+export const getTemporaryAnnotations = (state, textId, start, length, type) => {
+    let annotations = [];
+    const key = getTemporaryAnnotationKey(start, length);
+    if (type && state.temporaryAnnotations[textId] && state.temporaryAnnotations[textId][key]) {
+        annotations =  state.temporaryAnnotations[textId][key].filter(a => a.type === type);
+    }
+    return annotations;
 };

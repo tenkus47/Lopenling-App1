@@ -1,3 +1,4 @@
+import uuidV4 from 'uuid/v4'
 
 export const ANNOTATION_TYPES = {
     variant: 'V',
@@ -12,12 +13,8 @@ export function getNaturalId(type, userCreated, creatorId, witnessId, start, len
     return [type, creatorType, creatorId, witnessId, start, length].join('-');
 }
 
-export function getUniqueId(type, userCreated, creatorId, witnessId, start, length) {
-    return getNaturalId(type, userCreated, creatorId, witnessId, start, length);
-}
-
-export function getTemporaryId(naturalId) {
-    return TEMPORARY_TYPE + naturalId;
+export function getUniqueId() {
+    return uuidV4();
 }
 
 export default class Annotation {
@@ -30,10 +27,12 @@ export default class Annotation {
      * @param {number} length
      * @param {string} content
      * @param {Witness|User|null} creator
-     * @param {string} type - one of ANNOTATION_TYPES
+     * @param {string} [type=ANNOTATION_TYPES.variant] - one of ANNOTATION_TYPES
+     * @param {string} [uniqueId=null] - UUID4. Generates a new one if not provided.
+     * @param {Annotation} [basedOn=null] - The annotation this is based on (if any).
      */
     constructor(id, witness, start, length, content,
-                creator=null, type=ANNOTATION_TYPES.variant)
+                creator=null, type=ANNOTATION_TYPES.variant, uniqueId=null, basedOn=null)
     {
         this._id = id;
         this.witness = witness;
@@ -42,7 +41,8 @@ export default class Annotation {
         this.content = content;
         this.creator = creator;
         this.type = type;
-        this.basedOn = null;
+        this._uniqueId = uniqueId;
+        this.basedOn = basedOn;
     }
 
     get id() {
@@ -58,7 +58,10 @@ export default class Annotation {
     }
 
     get uniqueId() {
-        return this.naturalId;
+        if (this._uniqueId === null) {
+            this._uniqueId = getUniqueId();
+        }
+        return this._uniqueId;
     }
 
     get isTemporary() {
@@ -139,12 +142,16 @@ export class TemporaryAnnotation extends Annotation {
      * @param {string} content
      * @param {Witness|User|null} creator
      * @param {string} type - one of ANNOTATION_TYPES
+     * @param {string} uniqueId - UUID4
      */
     constructor(basedOn, witness, start, length, content,
-                creator=null, type=ANNOTATION_TYPES.variant)
+                creator, type=ANNOTATION_TYPES.variant, uniqueId=null)
     {
-        super(null, witness, start, length, content, creator, type);
+        super(null, witness, start, length, content, creator, type, uniqueId);
         this.basedOn = basedOn;
+        if (!uniqueId && basedOn) {
+            this._uniqueId = basedOn.uniqueId;
+        }
     }
 
     get id() {

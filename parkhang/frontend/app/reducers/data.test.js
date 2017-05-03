@@ -76,7 +76,8 @@ describe('Processing loaded data', () => {
                 "content": "",
                 "creator_witness": 152,
                 "creator_user": null,
-                "is_deleted": false
+                "is_deleted": false,
+                "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57"
             }
         ];
 
@@ -86,7 +87,7 @@ describe('Processing loaded data', () => {
             loadingAnnotations: true,
             witnessAnnotationsById: {
                 1: {
-                    "V-W-152-1-0-67": {
+                    "1e74ae00-7b15-4b30-95d6-2424cfa93f57": {
                         "id": 498,
                         "type": 'V',
                         "witness": 1,
@@ -95,7 +96,8 @@ describe('Processing loaded data', () => {
                         "content": "",
                         "creator_witness": 152,
                         "creator_user": null,
-                        "is_deleted": false
+                        "is_deleted": false,
+                        "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57"
                     }
                 }
             }
@@ -145,7 +147,7 @@ describe('CUD annotation', () => {
         ).toEqual(expectedState);
     });
 
-    const updatedUnsavedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", user);
+    const updatedUnsavedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", user, newAnnotation.type, newAnnotation.uniqueId);
     const updatedAction = actions.updatedAnnotation(updatedUnsavedAnnotation);
 
     test('Updated unsaved annotation', () => {
@@ -164,7 +166,7 @@ describe('CUD annotation', () => {
     });
 
 
-    const savedAnnotation = new Annotation(2, baseWitness, 5, 7, "replaced", user);
+    const savedAnnotation = new Annotation(2, baseWitness, 5, 7, "replaced", user, newAnnotation.type, newAnnotation.uniqueId);
     const savedAction = actions.savedAnnotation(savedAnnotation);
 
     test('Saved annotation', () => {
