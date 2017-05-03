@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -61,8 +62,8 @@ class AnnotationQuerySet(models.QuerySet):
     def active(self):
         return self.filter(is_deleted=False)
 
-    def get_active(self, annotation_id):
-        return self.get(pk=annotation_id, is_deleted=False)
+    def get_active(self, unique_id):
+        return self.get(unique_id=unique_id, is_deleted=False)
 
 
 class Annotation(models.Model):
@@ -72,6 +73,7 @@ class Annotation(models.Model):
         (VARIANT, 'Variant'),
         (NOTE, 'Note')
     )
+    unique_id = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
     witness = models.ForeignKey(Witness)
     start = models.IntegerField()
     length = models.IntegerField()

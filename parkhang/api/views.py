@@ -105,9 +105,9 @@ class AnnotationList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def get_annotation(request, annotation_id):
+def get_annotation(request, unique_id):
     try:
-        annotation = Annotation.objects.get_active(annotation_id)
+        annotation = Annotation.objects.get_active(unique_id)
     except Annotation.DoesNotExist:
         raise NotFound('An annotation with that ID does not exist.')
 
@@ -120,29 +120,29 @@ def get_annotation(request, annotation_id):
 
 class AnnotationDetail(APIView):
 
-    def get(self, request, annotation_id, *args, **kwargs):
+    def get(self, request, annotation_unique_id, *args, **kwargs):
         """
         Get the annotation with the specified id
         
         :param request: 
-        :param annotation_id: id of the annotation to return 
+        :param annotation_unique_id: unique_id of the annotation to return 
         """
 
-        annotation = get_annotation(request, annotation_id)
+        annotation = get_annotation(request, annotation_unique_id)
 
         serializer = AnnotationSerializer(annotation)
         return Response(serializer.data)
 
-    def put(self, request, annotation_id, *args, **kwargs):
+    def put(self, request, annotation_unique_id, *args, **kwargs):
         """
         Update annotation with given id
         
         :param request: 
-        :param annotation_id: id of the annotation to update
+        :param annotation_unique_id: unique_id of the annotation to update
         :return: Empty string
         """
 
-        annotation = get_annotation(request, annotation_id)
+        annotation = get_annotation(request, annotation_unique_id)
         serializer = AnnotationSerializer(annotation, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -150,16 +150,16 @@ class AnnotationDetail(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, annotation_id):
+    def delete(self, request, annotation_unique_id):
         """
         Set given annotation's is_deleted to True.
         This prevents it being returned elsewhere and is effectively deleted. 
         :param request: 
-        :param annotation_id: id of the annotation to be deleted
+        :param annotation_unique_id: unique_id of the annotation to be deleted
         :return: Empty string 
         """
 
-        annotation = get_annotation(request, annotation_id)
+        annotation = get_annotation(request, annotation_unique_id)
         annotation.is_deleted = True
         annotation.save()
 

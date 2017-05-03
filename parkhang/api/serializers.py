@@ -35,19 +35,22 @@ class AnnotationSerializer(serializers.ModelSerializer):
         queryset=Witness.objects
     )
     creator_witness = serializers.PrimaryKeyRelatedField(
-        allow_null=True,
-        queryset=Witness.objects
+        queryset=Witness.objects,
+        allow_null = True
     )
     creator_user = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=User.objects
+        queryset=User.objects,
+        allow_null=True
     )
-    original = serializers.PrimaryKeyRelatedField(
-        allow_null=True, queryset=Annotation.objects
+    original = serializers.SlugRelatedField(
+        slug_field='unique_id',
+        queryset=Annotation.objects,
+        allow_null=True
     )
 
     class Meta:
         model = Annotation
-        fields = ('id', 'type', 'witness', 'start', 'length', 'content',
+        fields = ('id', 'unique_id', 'type', 'witness', 'start', 'length', 'content',
                   'creator_witness', 'creator_user', 'original', 'is_deleted')
 
 
