@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Annotation from 'lib/Annotation';
+import Annotation, { ANNOTATION_TYPES } from 'lib/Annotation';
 import Source, { WORKING_VERSION_SOURCE_NAME } from 'lib/Source';
 import Witness from 'lib/Witness';
 import { WORKING_VERSION_ANNOTATION_ID } from 'lib/AnnotatedText';
@@ -255,7 +255,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     baseAnnotation.start,
                     baseAnnotation.length,
                     content,
-                    stateProps.user
+                    stateProps.user,
+                    ANNOTATION_TYPES.variant
                 );
             } else {
                 activeAnnotation = baseAnnotation;
