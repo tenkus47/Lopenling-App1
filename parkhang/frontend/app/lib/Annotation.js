@@ -124,7 +124,11 @@ export default class Annotation {
     }
 
     get isSaved() {
-        return this._id === null;
+        return this._id !== null;
+    }
+
+    get isBaseAnnotation() {
+        return (!this.userCreated && this.creator.isBase);
     }
 }
 

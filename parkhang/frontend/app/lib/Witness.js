@@ -25,5 +25,6 @@ export default class Witness {
         this.text = text;
         this.source = source;
         this.content = content;
+        this.isBase = isBase;
     }
 }
