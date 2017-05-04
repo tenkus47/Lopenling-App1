@@ -200,16 +200,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
         },
         editAnnotation: (selectedAnnotation) => {
+            const basedOn = (selectedAnnotation.isBaseAnnotation || selectedAnnotation.userCreated) ? null : selectedAnnotation;
             const temporaryAnnotation = new TemporaryAnnotation(
-                selectedAnnotation,
+                basedOn,
                 selectedAnnotation.witness,
                 selectedAnnotation.start,
                 selectedAnnotation.length,
                 selectedAnnotation.content,
                 stateProps.user,
-                selectedAnnotation.type,
-                selectedAnnotation.uniqueId
+                selectedAnnotation.type
             );
+            if (selectedAnnotation.userCreated) {
+                // user annotations are updated
+                temporaryAnnotation.uniqueId = selectedAnnotation.uniqueId;
+                temporaryAnnotation.isSaved = selectedAnnotation.isSaved;
+            }
+
             dispatch(
                 actions.addedTemporaryAnnotation(temporaryAnnotation, true)
             );
@@ -231,9 +237,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 selectedAnnotation.uniqueId,
                 selectedAnnotation.basedOn
             );
+            newAnnotation.isSaved = selectedAnnotation.isSaved;
             let actionsBatch = [];
             let action = null;
-            if (newAnnotation.savedId) {
+            if (newAnnotation.isSaved) {
                 action = actions.updatedAnnotation;
             } else {
                 action = actions.createdAnnotation;
