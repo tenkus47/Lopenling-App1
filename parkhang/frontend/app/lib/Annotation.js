@@ -28,7 +28,7 @@ export default class Annotation {
      * @param {string} content
      * @param {Witness|User|null} creator
      * @param {string} [type=ANNOTATION_TYPES.variant] - one of ANNOTATION_TYPES
-     * @param {string} [uniqueId=null] - UUID4. Generates a new one if not provided.
+     * @param {string|null} [uniqueId=null] - UUID4. Generates a new one if not provided.
      * @param {Annotation} [basedOn=null] - The annotation this is based on (if any).
      */
     constructor(id, witness, start, length, content,
