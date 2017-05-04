@@ -65,6 +65,10 @@ export default class Annotation {
         return this._uniqueId;
     }
 
+    set uniqueId(newUniqueId) {
+        this._uniqueId = newUniqueId;
+    }
+
     get isTemporary() {
         return false;
     }
