@@ -323,7 +323,7 @@ export const getSource = (state, sourceId) => {
     const sourceData = state.sourcesById[sourceId];
     let source = null;
     if (sourceData) {
-        source = new Source(sourceData.id, sourceData.name);
+        source = new Source(sourceData.id, sourceData.name, sourceData.is_default_base_text);
     }
     return source;
 };
