@@ -324,4 +324,13 @@ describe('Data selectors', () => {
 
 
     });
+
+    test('annotationFromData', () => {
+        const expectedAnnotationFromData = new Annotation(489, baseWitness, 0, 29, "Test", otherWitness, "V", "527713e8-b191-4b74-9f34-cd9f8d0e4318", expectedGetAnnotation);
+        expectedAnnotationFromData.save();
+        expect(
+            data.annotationFromData(state, state.witnessAnnotationsById[1][expectedAnnotationFromData.uniqueId])
+        ).toEqual(expectedAnnotationFromData);
+
+    });
 });

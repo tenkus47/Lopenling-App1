@@ -383,8 +383,8 @@ export function annotationFromData(state, annotationData) {
         console.warn('No creator found in annotationData: %o', annotationData);
     }
     let basedOn = null;
-    if (annotationData.basedOn) {
-        basedOn = getAnnotation(state, annotationData.witness, annotationData.unique_id);
+    if (annotationData.original) {
+        basedOn = getAnnotation(state, annotationData.witness, annotationData.original);
     }
     let annotation = new Annotation(
         annotationData.id,
