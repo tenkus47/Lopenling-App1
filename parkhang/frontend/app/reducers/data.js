@@ -126,7 +126,14 @@ function uniqueIdFromAnnotationData(data) {
     return getUniqueId(data.type, userCreated, creatorId, data.witness, data.start, data.length);
 }
 
+function markSaved(annotations) {
+    for (let i=0; i < annotations.length; i++) {
+        annotations[i].is_saved = true;
+    }
+}
+
 function loadedAnnotations(state, action) {
+    const annotations = markSaved(action.annotations);
     const annotationsById = arrayToObject(
         action.annotations,
         'unique_id'
@@ -198,6 +205,7 @@ function removedAppliedAnnotation(state, action) {
 
 function createdAnnotation(state, action) {
     const annotation = action.annotation;
+    annotation.save();
     const annotationData = dataFromAnnotation(annotation);
     const witness = annotation.witness;
 
@@ -214,11 +222,18 @@ function createdAnnotation(state, action) {
 }
 
 function updatedAnnotation(state, action) {
+    const annotation = action.annotation;
+    if (!annotation.isSaved) {
+        console.warn('Updating annotation which is not saved: %o', action);
+    }
     return createdAnnotation(state, action);
 }
 
 function deletedAnnotation(state, action) {
     const annotation = action.annotation;
+    if (!annotation.isSaved) {
+        console.warn('Deleting annotation which is not saved: %o', action);
+    }
     const witness = annotation.witness;
     let witnessAnnotations = state.witnessAnnotationsById[witness.id];
     if (witnessAnnotations) {
@@ -382,6 +397,9 @@ export function annotationFromData(state, annotationData) {
         annotationData.unique_id,
         basedOn
     );
+    if (annotationData.is_saved) {
+        annotation.save();
+    }
 
     return annotation;
 }
@@ -397,7 +415,8 @@ export function dataFromAnnotation(annotation) {
         creator_witness: (annotation.userCreated) ? null : annotation.creator.id,
         creator_user: (annotation.userCreated) ? annotation.creator.id : null,
         unique_id: annotation.uniqueId,
-        original: (annotation.basedOn) ? annotation.basedOn.uniqueId : null
+        original: (annotation.basedOn) ? annotation.basedOn.uniqueId : null,
+        is_saved: annotation.isSaved
     }
 }
 
