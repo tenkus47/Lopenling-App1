@@ -43,6 +43,7 @@ export default class Annotation {
         this.type = type;
         this._uniqueId = uniqueId;
         this.basedOn = basedOn;
+        this._isSaved = false;
     }
 
     get id() {
@@ -124,7 +125,15 @@ export default class Annotation {
     }
 
     get isSaved() {
-        return this._id !== null;
+        return this._isSaved;
+    }
+
+    set isSaved(newIsSaved) {
+        this._isSaved = newIsSaved;
+    }
+
+    save() {
+        this._isSaved = true;
     }
 
     get isBaseAnnotation() {
