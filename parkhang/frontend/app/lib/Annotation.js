@@ -159,36 +159,16 @@ export class TemporaryAnnotation extends Annotation {
      * @param {string} content
      * @param {Witness|User|null} creator
      * @param {string} type - one of ANNOTATION_TYPES
-     * @param {string} uniqueId - UUID4
+     * @param {string|null} uniqueId - UUID4
      */
     constructor(basedOn, witness, start, length, content,
                 creator, type=ANNOTATION_TYPES.variant, uniqueId=null)
     {
         super(null, witness, start, length, content, creator, type, uniqueId);
         this.basedOn = basedOn;
-        if (!uniqueId && basedOn) {
-            this._uniqueId = basedOn.uniqueId;
-        }
-    }
-
-    get id() {
-        const savedId = this.savedId;
-        if (savedId) {
-            return savedId;
-        } else {
-            return super.id;
-        }
     }
 
     get isTemporary() {
         return true;
-    }
-
-    get savedId() {
-        // user-created annotations can be updated/overwitten
-        if (this.basedOn && this.basedOn.userCreated) {
-            return this.basedOn.id;
-        }
-        return this._id;
     }
 }
