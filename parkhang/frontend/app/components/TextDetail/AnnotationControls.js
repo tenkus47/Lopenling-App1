@@ -30,14 +30,17 @@ export default class AnnotationControls extends React.PureComponent {
             return;
         }
         const measurements = this.getMeasurements();
-        // TODO: update height when new data provided
         const height = this.controls.offsetHeight;
         let top = measurements.top  - (height / 2);
-        if (top < measurements.viewPortTop) {
+        const isWithinViewport = (measurements.top >= measurements.viewPortTop && measurements.top <= measurements.viewPortBottom);
+        if (isWithinViewport && top < measurements.viewPortTop) {
             top = measurements.viewPortTop;
         }
-        if (top + height > measurements.viewPortBottom) {
+        if (isWithinViewport && top + height > measurements.viewPortBottom) {
             top = measurements.viewPortBottom - height;
+        }
+        if (top < 0) {
+            top = 0;
         }
 
         const left = measurements.textRight + 'px';
