@@ -47,6 +47,7 @@ class AnnotationSerializer(serializers.ModelSerializer):
         queryset=Annotation.objects,
         allow_null=True
     )
+    unique_id = serializers.UUIDField()
 
     class Meta:
         model = Annotation
