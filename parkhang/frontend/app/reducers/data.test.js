@@ -8,9 +8,11 @@ import dataReducers, * as data from 'reducers/data'
 // import dataReducers, { initialDataState, dataFromAnnotation } from 'reducers/data'
 import * as actions from 'actions';
 
-const source1 = new Source(1, "Derge");
+const source1 = new Source(1, "Derge", true);
+const source2 = new Source(2, "Narthang");
 const text = new Text(1, "དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ");
 const baseWitness = new Witness(1, text, source1, "Test witness", true);
+const otherWitness = new Witness(2, text, source2, "", false);
 const annotation = new Annotation(1, baseWitness, 0,  27, "༄༅༅", baseWitness);
 const user = new User(1, "Test User");
 
@@ -233,4 +235,93 @@ describe('CUD annotation', () => {
         ).toEqual(expectedState);
     });
 
+});
+
+describe('Data selectors', () => {
+
+    let state = data.initialDataState;
+    state = {
+        ...state,
+        textsById: {
+            1: {
+                id: text.id,
+                name: text.name,
+            }
+        },
+        sourcesById: {
+            [source1.id]: {
+                id: source1.id,
+                name: source1.name,
+                is_default_base_text: source1.isDefaultBaseText
+            },
+            [source2.id]: {
+                id: source2.id,
+                name: source2.name,
+                is_default_base_text: source2.isDefaultBaseText
+            }
+        },
+        witnessesById: {
+            [baseWitness.id]: {
+                id: baseWitness.id,
+                text: baseWitness.text.id,
+                source: baseWitness.source.id,
+                is_base: true,
+                revision: 1,
+                content: baseWitness.content
+            },
+            [otherWitness.id]: {
+                id: otherWitness.id,
+                text: otherWitness.text.id,
+                source: otherWitness.source.id,
+                is_base: false,
+                revision: 1,
+                content: otherWitness.content
+            }
+        },
+        witnessAnnotationsById: {
+            1: {
+                "52bab9be-a395-4c9c-b264-1d03a091cc4b": {
+                    id: 488,
+                    unique_id: "52bab9be-a395-4c9c-b264-1d03a091cc4b",
+                    type: "V",
+                    witness: 1,
+                    start: 0,
+                    length: 29,
+                    content: "",
+                    creator_witness: 2,
+                    creator_user: null,
+                    original: null,
+                    is_deleted: false,
+                    is_saved: true
+                },
+                "527713e8-b191-4b74-9f34-cd9f8d0e4318": {
+                    id: 489,
+                    unique_id: "527713e8-b191-4b74-9f34-cd9f8d0e4318",
+                    type: "V",
+                    witness: 1,
+                    start: 0,
+                    length: 29,
+                    content: "Test",
+                    creator_witness: 2,
+                    creator_user: 1,
+                    original: "52bab9be-a395-4c9c-b264-1d03a091cc4b",
+                    is_deleted: false,
+                    is_saved: true
+                }
+            }
+        }
+    };
+
+    const expectedGetAnnotation = new Annotation(488, baseWitness, 0, 29, "", otherWitness, "V", "52bab9be-a395-4c9c-b264-1d03a091cc4b");
+
+    test('getAnnotation', () => {
+
+        expectedGetAnnotation.save();
+
+        expect(
+            data.getAnnotation(state, baseWitness.id, expectedGetAnnotation.uniqueId)
+        ).toEqual(expectedGetAnnotation);
+
+
+    });
 });

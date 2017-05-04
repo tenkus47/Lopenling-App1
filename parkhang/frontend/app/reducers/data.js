@@ -425,9 +425,13 @@ export const getAnnotationsForWitnessId = (state, witnessId) => {
 };
 
 export const getAnnotation = (state, witnessId, annotationUniqueId) => {
-    let annotation = null;
-    let annotations = state.witnessAnnotationsById[witnessId];
-    return annotations[annotationUniqueId];
+    const annotations = state.witnessAnnotationsById[witnessId];
+    const data = annotations[annotationUniqueId];
+    if (data) {
+        return annotationFromData(state, data);
+    } else {
+        return null;
+    }
 };
 
 export const getActiveAnnotationsForWitnessId = (state, witnessId) => {
