@@ -9,3 +9,4 @@ webpack-stats-dev.json
 .vagrant
 ubuntu-xenial-16.04-cloudimg-console.log
 data/texts
+.venv
