@@ -225,8 +225,7 @@ function* watchCreatedAnnotation() {
 }
 
 function updateAnnotation(action) {
-    const annotation = getUpdatedAnnotation(action.annotation);
-    return call(api.updateAnnotation, annotation);
+    return call(api.updateAnnotation, action.annotation);
 }
 
 function* watchUpdatedAnnotation() {
@@ -234,7 +233,6 @@ function* watchUpdatedAnnotation() {
 }
 
 function deleteAnnotation(action) {
-    const annotation = getUpdatedAnnotation(action.annotation);
     return call(api.deleteAnnotation, action.annotation);
 }
 
