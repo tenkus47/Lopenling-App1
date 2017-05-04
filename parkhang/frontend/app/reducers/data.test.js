@@ -77,7 +77,8 @@ describe('Processing loaded data', () => {
                 "creator_witness": 152,
                 "creator_user": null,
                 "is_deleted": false,
-                "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57"
+                "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57",
+                "is_saved": true
             }
         ];
 
@@ -97,7 +98,8 @@ describe('Processing loaded data', () => {
                         "creator_witness": 152,
                         "creator_user": null,
                         "is_deleted": false,
-                        "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57"
+                        "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57",
+                        "is_saved": true
                     }
                 }
             }
@@ -134,11 +136,13 @@ describe('CUD annotation', () => {
     let state = {...data.initialDataState};
 
     test('Create annotation', () => {
+        let annotationData = data.dataFromAnnotation(newAnnotation);
+        annotationData.is_saved = true;
         const expectedState = {
             ...state,
             witnessAnnotationsById: {
                 [baseWitness.id]: {
-                    [newAnnotation.uniqueId]: data.dataFromAnnotation(newAnnotation)
+                    [newAnnotation.uniqueId]: annotationData
                 }
             }
         };
@@ -147,16 +151,20 @@ describe('CUD annotation', () => {
         ).toEqual(expectedState);
     });
 
-    const updatedUnsavedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", user, newAnnotation.type, newAnnotation.uniqueId);
-    const updatedAction = actions.updatedAnnotation(updatedUnsavedAnnotation);
+    const updatedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", user, newAnnotation.type, newAnnotation.uniqueId);
+    updatedAnnotation.save();
+    const updatedAction = actions.updatedAnnotation(updatedAnnotation);
 
     test('Updated unsaved annotation', () => {
         state = dataReducers[createAction.type](state, createAction);
+
+        let annotationData = data.dataFromAnnotation(updatedAnnotation);
+        annotationData.is_saved = true;
         const expectedState = {
             ...state,
             witnessAnnotationsById: {
                 [baseWitness.id]: {
-                    [updatedUnsavedAnnotation.uniqueId]: data.dataFromAnnotation(updatedUnsavedAnnotation)
+                    [updatedAnnotation.uniqueId]: annotationData
                 }
             }
         };
@@ -167,6 +175,7 @@ describe('CUD annotation', () => {
 
 
     const savedAnnotation = new Annotation(2, baseWitness, 5, 7, "replaced", user, newAnnotation.type, newAnnotation.uniqueId);
+    savedAnnotation.save();
     const savedAction = actions.savedAnnotation(savedAnnotation);
 
     test('Saved annotation', () => {
@@ -187,7 +196,8 @@ describe('CUD annotation', () => {
 
     });
 
-    const updatedSavedAnnotation = new TemporaryAnnotation(savedAnnotation, baseWitness, 5, 7, "update", user);
+    const updatedSavedAnnotation = new TemporaryAnnotation(savedAnnotation, baseWitness, 5, 7, "update", user, savedAnnotation.type, savedAnnotation.uniqueId);
+    updatedSavedAnnotation.isSaved = savedAnnotation.isSaved;
     const updateSavedAction = actions.updatedAnnotation(updatedSavedAnnotation);
 
     test('Updated saved annotation', () => {
