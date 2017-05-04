@@ -103,6 +103,7 @@ export function dataFromAnnotation(annotation) {
         content: annotation.content,
         creator_witness: creatorWitness,
         creator_user: creatorUser,
+        type: annotation.type,
         original: (annotation.basedOn) ? annotation.basedOn.uniqueId : null
     }
 }
