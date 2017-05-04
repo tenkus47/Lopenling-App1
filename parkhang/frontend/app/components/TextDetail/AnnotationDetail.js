@@ -22,7 +22,7 @@ const AnnotationDetail = (props) => {
         <div className={className} onClick={props.selectAnnotationHandler}>
             <h3>{props.annotationData.name}</h3>
 
-            { props.isActive &&
+            { props.isLoggedIn && props.isActive &&
             <div className={styles.edit} onClick={props.editAnnotationHandler}>EDIT</div>
             }
 

@@ -94,6 +94,7 @@ export default class AnnotationControls extends React.PureComponent {
         let anonymousUserMessage = null;
         let variantsHeading = null;
         let nothingSelected = null;
+        const isLoggedIn = props.user.isLoggedIn;
         if (props.annotationsData) {
             props.annotationsData.map((annotationData) => {
                 let isEditing = false;
@@ -124,15 +125,16 @@ export default class AnnotationControls extends React.PureComponent {
                         key={annotationData.annotation.uniqueId}
                         isActive={isActive}
                         selectAnnotationHandler={() => {
-                            if (props.user.isLoggedIn && !isEditing) {
+                            if (isLoggedIn && !isEditing) {
                                 props.didSelectAnnotation(annotationData.annotation);
                             }
                         }}
                         editAnnotationHandler={() => {
-                            if (!isEditing) {
+                            if (isLoggedIn && !isEditing) {
                                 props.editAnnotation(annotationData.annotation);
                             }
                         }}
+                        isLoggedIn={isLoggedIn}
                     />;
                     annotations.push(annotationDetail);
                 }
