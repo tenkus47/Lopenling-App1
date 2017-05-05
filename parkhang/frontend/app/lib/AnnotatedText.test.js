@@ -331,11 +331,13 @@ describe('AnnotatedText', () => {
         let annotation2 = new Annotation(6, baseWitness, 256, 2,  "",    otherWitness);
         let annotation3 = new Annotation(3, baseWitness, 57, 4,  "ཤྲི",    otherWitness);
         let annotation4 = new Annotation(5, baseWitness, 204, 1,  "ན་ལ",    otherWitness);
+        let annotation5 = new Annotation(6, baseWitness, 204, 0,  "དང་",    otherWitness);
         let newAnnotations = [
             annotation,
             annotation2,
             annotation3,
-            annotation4
+            annotation4,
+            annotation5
         ];
         const newAnnotatedText = new AnnotatedText(segmentedText, newAnnotations, segmenter, baseWitness);
 
@@ -351,7 +353,7 @@ describe('AnnotatedText', () => {
             annotatedText.getPositionOfAnnotation(annotationAtSamePosition)
         ).toEqual(expectedPosition);
 
-        expectedPosition = [230, 0];
+        expectedPosition = [233, 0];
         expect(
             newAnnotatedText.getPositionOfAnnotation(annotation2)
         ).toEqual(expectedPosition);
@@ -361,12 +363,12 @@ describe('AnnotatedText', () => {
             newAnnotatedText.getPositionOfAnnotation(annotation3)
         ).toEqual(expectedPosition);
 
-        expectedPosition = [176, 3];
+        expectedPosition = [179, 3];
         expect(
             newAnnotatedText.getPositionOfAnnotation(annotation4)
         ).toEqual(expectedPosition);
 
-        expectedPosition = [197, 15];
+        expectedPosition = [200, 15];
         let unchangedAnnotation = new Annotation(9, baseWitness, 223, 15, "", baseWitness);
         expect(
             newAnnotatedText.getPositionOfAnnotation(unchangedAnnotation)
@@ -389,6 +391,12 @@ describe('AnnotatedText', () => {
         expect(
             annotatedText.getPositionOfAnnotation(nonactiveInsertion)
         ).toEqual(expectedPosition);
+
+        let adjacentInsertion = annotation5;
+        expect(
+            newAnnotatedText.getPositionOfAnnotation(adjacentInsertion)
+        ).toEqual([176, 3]);
+
 
 
         let includesDeletion = new Annotation(

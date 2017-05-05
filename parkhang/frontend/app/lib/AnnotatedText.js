@@ -279,6 +279,13 @@ export default class AnnotatedText {
             if (targets.length > 0) {
                 let start = targets[0].start;
                 let firstIndex = newSegments.indexOf(targets[0]);
+                if (firstIndex === -1) {
+                    let found = newSegments.filter(seg => seg.start === targets[0].start);
+                    if (found) {
+                        firstIndex = newSegments.indexOf(found[0]);
+                    }
+                }
+
                 const deleted = (annotation.content.length == 0);
                 if (this.segmenter != null && !deleted) {
                     let annotationSegments = this.segmenter(annotation.content);
