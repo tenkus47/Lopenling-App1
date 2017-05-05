@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import {AutoSizer, List} from 'react-virtualized';
+import { AutoSizer } from 'react-virtualized/dist/es/AutoSizer';
+import { List } from 'react-virtualized/dist/es/List';
 import GraphemeSplitter from 'grapheme-splitter';
 import 'react-virtualized/styles.css'; // only needs to be imported once
 import addTibetanShay from 'lib/addTibetanShay'

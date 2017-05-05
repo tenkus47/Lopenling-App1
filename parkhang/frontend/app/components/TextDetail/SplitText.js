@@ -1,5 +1,8 @@
 import React from 'react'
-import {AutoSizer, List, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
+import { AutoSizer } from 'react-virtualized/dist/es/AutoSizer';
+import { List } from 'react-virtualized/dist/es/List';
+import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/es/CellMeasurer'
+
 import 'react-virtualized/styles.css';
 import Text from './Text'
 import { CONTROLS_MARGIN_LEFT } from './AnnotationControls'
