@@ -67,7 +67,7 @@ export default class AnnotatedText {
     getText() {
         return this.segmentedText.getText();
     }
-    
+
     annotationsForPosition(position) {
         return this.variants.filter((annotation) => {
             let start = annotation.start;
@@ -108,7 +108,7 @@ export default class AnnotatedText {
         if (this._orginalCurrentSegmentPositions[startKey] == undefined) {
             if (this.originalText.getText().length === annotation.start) {
                 // if the annotation is an insertion at the end of the text
-                return [annotation.start, 0];
+                return [this.getText().length, 0];
             } else {
                 console.warn('Invalid annotation passed to getPositionOfAnnotation: %o', annotation);
                 return [null, null];
@@ -118,6 +118,8 @@ export default class AnnotatedText {
 
         let length = null;
         if (startWasDeleted) {
+            length = 0;
+        } else if (annotation.isInsertion && !isActive) {
             length = 0;
         } else {
             const startSegment = this.segmentedText.segmentAtPosition(startPos);
@@ -149,15 +151,23 @@ export default class AnnotatedText {
         let startPos = start;
         let origLength = 0;
         if (length === 0) {
-            let annotations = this.annotationsForPosition(start).filter((annotation) => annotation.type === ANNOTATION_TYPES.variant);
+            let annotations = this.annotationsForPosition(start);
             if (annotations.length > 0) {
                 let annotation = annotations[0];
-                startPos = annotation.start;
-                origLength = annotation.length;
+                if (annotation.isDeletion) {
+                    startPos = annotation.start;
+                    origLength = annotation.length;
+                } else {
+                    // Assuming we are getting this for an insertion, so want to get
+                    // the original starting position.
+                    startPos = this._currentOriginalSegmentPositions[start];
+                }
+            } else {
+                startPos = this._currentOriginalSegmentPositions[start];
             }
         } else {
             for (let i=start; i < start+length; i++) {
-                let annotations = this.annotationsForPosition(i).filter((annotation) => annotation.type === ANNOTATION_TYPES.variant);
+                let annotations = this.annotationsForPosition(i);
                 if (annotations.length > 0) {
                     let annotation = annotations[0];
                     if (i === start) {
@@ -177,7 +187,6 @@ export default class AnnotatedText {
                 }
             }
         }
-
         let content = "";
         if (origLength > 0) {
             let segments = this.originalText.segmentsInRange(startPos, origLength);
@@ -320,7 +329,9 @@ export default class AnnotatedText {
                         let replacedSeg = replaced[j];
                         for (let k=0; k < replacedSeg.length; k++) {
                             this._orginalCurrentSegmentPositions[replacedSeg.start + k] = [currentPosition, deleted];
-                            this._currentOriginalSegmentPositions[currentPosition] = replacedSeg.start + k;
+                        }
+                        for (let k=0; k < segment._annotation.content.length; k++) {
+                            this._currentOriginalSegmentPositions[currentPosition + k] = replacedSeg.start;
                         }
                     }
                 }

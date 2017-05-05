@@ -169,7 +169,7 @@ describe('AnnotatedText', () => {
            3,
            "དཔལ",
            annotatedText.baseWitness,
-           false
+           ANNOTATION_TYPES.variant
        );
 
         expect(
@@ -183,7 +183,7 @@ describe('AnnotatedText', () => {
             27,
             "༄༅། །སྒྲུབ་ཐབས་ཞེས་བྱ་བ།༄༅༅",
             annotatedText.baseWitness,
-            false
+            ANNOTATION_TYPES.variant
         );
 
         expect(
@@ -197,12 +197,40 @@ describe('AnnotatedText', () => {
             0,
             "",
             annotatedText.baseWitness,
-            false
+            ANNOTATION_TYPES.variant
         );
 
         expect(
             annotatedText.getBaseAnnotation(238, 3)
         ).toEqual(expectedInsertion);
+
+        let expectedInactiveInsertion = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            99,
+            0,
+            "",
+            annotatedText.baseWitness,
+            ANNOTATION_TYPES.variant
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(69, 0)
+        ).toEqual(expectedInactiveInsertion);
+
+        let expectedInactiveInsertionBeforeAnnotation = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            57,
+            0,
+            "",
+            annotatedText.baseWitness,
+            ANNOTATION_TYPES.variant
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(29, 0)
+        ).toEqual(expectedInactiveInsertionBeforeAnnotation);
 
         let expectedDeletion = new Annotation(
             BASE_ANNOTATION_ID,
@@ -211,7 +239,7 @@ describe('AnnotatedText', () => {
             2,
             "ལ་",
             annotatedText.baseWitness,
-            false
+            ANNOTATION_TYPES.variant
         );
 
         expect(
@@ -225,7 +253,7 @@ describe('AnnotatedText', () => {
             10,
             "དུ། སྟྲཱི་",
             annotatedText.baseWitness,
-            false
+            ANNOTATION_TYPES.variant
         );
 
         expect(
@@ -239,7 +267,7 @@ describe('AnnotatedText', () => {
             17,
             "སྟྲཱི་པྲཛྙཱ་ཤྲཱི་",
             annotatedText.baseWitness,
-            false
+            ANNOTATION_TYPES.variant
         );
 
         expect(
@@ -253,7 +281,7 @@ describe('AnnotatedText', () => {
             15,
             "ཐུང་དྲག་ལ་གསུས་",
             annotatedText.baseWitness,
-            false
+            ANNOTATION_TYPES.variant
         );
 
         expect(
@@ -344,8 +372,8 @@ describe('AnnotatedText', () => {
             newAnnotatedText.getPositionOfAnnotation(unchangedAnnotation)
         ).toEqual(expectedPosition);
 
-        let endAdditionAnnotation = new Annotation(10, baseWitness, 272, 13, "མངྒཱ་ལཾམངྒཱལཾ", baseWitness);
-        expectedPosition = [272, 0];
+        let endAdditionAnnotation = new Annotation(10, baseWitness, 272, 0, "མངྒཱ་ལཾམངྒཱལཾ", baseWitness);
+        expectedPosition = [newAnnotatedText.getText().length, 0];
         expect(
             newAnnotatedText.getPositionOfAnnotation(endAdditionAnnotation)
         ).toEqual(expectedPosition);
@@ -357,7 +385,7 @@ describe('AnnotatedText', () => {
         ).toEqual(expectedPosition);
 
         let nonactiveInsertion = new Annotation(77, baseWitness, 268, 0,  "དང་",  anotherWitness);
-        expectedPosition = [241, 3];
+        expectedPosition = [241, 0];
         expect(
             annotatedText.getPositionOfAnnotation(nonactiveInsertion)
         ).toEqual(expectedPosition);
