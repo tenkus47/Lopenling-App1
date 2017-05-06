@@ -5,8 +5,8 @@ import Source, { WORKING_VERSION_SOURCE_NAME } from 'lib/Source';
 import Witness from 'lib/Witness';
 import { WORKING_VERSION_ANNOTATION_ID, INSERTION_KEY } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
-import { changedSelectedSegment, changedActiveAnnotation } from 'actions'
-import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible } from 'reducers'
+import { changedActiveAnnotation } from 'actions'
+import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
