@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import Annotation, { ANNOTATION_TYPES } from 'lib/Annotation';
 import Source, { WORKING_VERSION_SOURCE_NAME } from 'lib/Source';
 import Witness from 'lib/Witness';
-import { WORKING_VERSION_ANNOTATION_ID } from 'lib/AnnotatedText';
+import { WORKING_VERSION_ANNOTATION_ID, INSERTION_KEY } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
 import { changedSelectedSegment, changedActiveAnnotation } from 'actions'
-import { showPageImages, getSelectedSegment, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible } from 'reducers'
+import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getWitness, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
@@ -18,6 +18,9 @@ const getAnnotationPositions = (annotatedText, annotations) => {
         let annotation = annotations[i];
         let [ startPos, length ] = annotatedText.getPositionOfAnnotation(annotation);
         if (length === 0) {
+            if (annotation.isInsertion) {
+                startPos = INSERTION_KEY + startPos;
+            }
             if (positions[startPos] === undefined) {
                 positions[startPos] = [];
             }
@@ -148,8 +151,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
     const { annotatedText, annotationPositions } = stateProps;
 
-    const didSelectSegment = (segment) => {
-        let segmentAnnotations = annotationPositions[segment.start];
+    const didSelectSegmentPosition = (segmentPosition, start, length) => {
+        let segmentAnnotations = annotationPositions[segmentPosition];
         let activeAnnotations = _.intersectionWith(segmentAnnotations, annotatedText.annotations, (a, b) => a.toString() == b.toString());
         let activeAnnotation = null;
         if (activeAnnotations.length > 0) {
@@ -159,10 +162,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             // get base text annotation for longest annotation highlighted in text
             let longestAvailable = getLongestAnnotation(segmentAnnotations);
             let [ start, length ] = annotatedText.getPositionOfAnnotation(longestAvailable);
+            if (longestAvailable.isInsertion) {
+                length = 0;
+            }
             activeAnnotation = annotatedText.getBaseAnnotation(start, length);
         } else {
             // get base annotation of just the segment
-            activeAnnotation = annotatedText.getBaseAnnotation(segment.start, segment.length);
+            activeAnnotation = annotatedText.getBaseAnnotation(start, length);
         }
 
         dispatch(changedActiveAnnotation(activeAnnotation));
@@ -180,21 +186,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
         });
         return validAnnotation;
-    };
-
-    const didSelectAnnotation = (annotation) => {
-        let activeAnnotation = null;
-        if (_.some(annotatedText.annotations, (active) => annotation.uniqueId == active.uniqueId)) {
-            activeAnnotation = annotation;
-        } else {
-            let [ start, length ] = annotatedText.getPositionOfAnnotation(annotation);
-            // if it is an insertion, use 0 length
-            if (annotation.length == 0) {
-                length = 0;
-            }
-            activeAnnotation = annotatedText.getBaseAnnotation(start, length);
-        }
-        dispatch(changedActiveAnnotation(activeAnnotation));
     };
 
     const isInsertion = (id) => {
@@ -221,7 +212,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     return {
         ...stateProps,
         ...ownProps,
-        didSelectSegment: didSelectSegment,
         didSelectSegmentIds: (segmentIds) => {
             let segmentAnnotations = [];
             let segments = [];
@@ -263,17 +253,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             dispatch(changedActiveAnnotation(activeAnnotation));
         },
-        didSelectAnnotation: didSelectAnnotation,
         selectedSegmentId: (segmentId) => {
             if (isInsertion(segmentId)) {
-                const annotationId = idFromSegmentId(segmentId);
-                const annotation = getAnnotation(annotationId);
-                didSelectAnnotation(annotation);
+                const start = idFromSegmentId(segmentId);
+                const length = 0;
+                const positionKey = INSERTION_KEY + start;
+                didSelectSegmentPosition(positionKey, start, length);
             } else {
                 let segmentPosition = Number(idFromSegmentId(segmentId));
                 let textSegment = annotatedText.segmentedText.segmentAtPosition(segmentPosition);
                 if (textSegment) {
-                    didSelectSegment(textSegment);
+                    didSelectSegmentPosition(textSegment.start, textSegment.start, textSegment.length);
                 }
             }
         },

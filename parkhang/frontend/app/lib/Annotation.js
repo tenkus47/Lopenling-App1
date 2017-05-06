@@ -36,8 +36,8 @@ export default class Annotation {
     {
         this._id = id;
         this.witness = witness;
-        this.start = start;
-        this.length = length;
+        this.start = Number(start);
+        this.length = Number(length);
         this.content = content;
         this.creator = creator;
         this.type = type;
@@ -117,11 +117,11 @@ export default class Annotation {
     }
 
     get isInsertion() {
-        return this.length === 0;
+        return Number(this.length) === 0;
     }
 
     get isDeletion() {
-        return this.content.length === 0;
+        return !this.isInsertion && this.content.length === 0;
     }
 
     get userCreated() {

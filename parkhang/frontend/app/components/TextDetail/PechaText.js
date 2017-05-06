@@ -36,8 +36,6 @@ const PechaText = (props) => {
                             segmentedText={pages[index]}
                             annotations={props.annotations}
                             activeAnnotations={props.activeAnnotations}
-                            didSelectSegment={props.didSelectSegment}
-                            didSelectAnnotation={props.didSelectAnnotation}
                             annotationPositions={props.annotationPositions}
                             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
                         />

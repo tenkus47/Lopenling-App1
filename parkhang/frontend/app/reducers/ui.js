@@ -4,7 +4,6 @@ export const initialUIState = {
     selectedText: false,
     searchValue: "",
     showPageImages: false,
-    selectedSegments: {},
     activeAnnotations: {},
     textListVisible: true,
     temporaryAnnotations: {}
@@ -129,10 +128,6 @@ export const getSelectedText = (state) => {
 
 export const showPageImages = (state) => {
     return state.showPageImages;
-};
-
-export const selectedSegment = (state) => {
-    return state.selectedSegments[state.selectedText.id];
 };
 
 export const getActiveAnnotation = (state) => {

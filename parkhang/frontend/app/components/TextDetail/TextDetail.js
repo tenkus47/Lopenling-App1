@@ -52,7 +52,6 @@ const TextDetail = props => {
             activeAnnotation={props.activeAnnotation}
             limitWidth={true}
             didSelectSegment={props.didSelectSegment}
-            didSelectAnnotation={props.didSelectAnnotation}
             didSelectSegmentIds={props.didSelectSegmentIds}
             selectedSegmentId={props.selectedSegmentId}
             annotationPositions={props.annotationPositions}

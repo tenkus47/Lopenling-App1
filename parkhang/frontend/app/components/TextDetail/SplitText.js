@@ -2,9 +2,8 @@ import React from 'react'
 import { AutoSizer } from 'react-virtualized/dist/es/AutoSizer';
 import { List } from 'react-virtualized/dist/es/List';
 import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/es/CellMeasurer'
-
 import 'react-virtualized/styles.css';
-import Text from './Text'
+import Text, { idForSegment, idForDeletedSegment, idForInsertion } from './Text'
 import { CONTROLS_MARGIN_LEFT } from './AnnotationControls'
 import AnnotationControlsContainer from './AnnotationControlsContainer'
 import styles from './SplitText.css'
@@ -38,9 +37,8 @@ export default class SplitText extends React.PureComponent {
 
     updateList() {
         if (this.list) {
-            // this.cache.clearAll();
             this.list.recomputeRowHeights();
-            this.list.forceUpdate();
+            this.list.forceUpdateGrid();
         }
     }
 
@@ -124,7 +122,12 @@ export default class SplitText extends React.PureComponent {
     getControlsMeasurements(props) {
         let selectedTextIndex = null;
         let firstSelectedSegment = null;
+        let selectedElementId = null;
         let splitTextRect = null;
+        if (props.activeAnnotation) {
+            selectedTextIndex = props.splitText.getTextIndexOfPosition(props.activeAnnotation.start);
+            splitTextRect = this.splitText.getBoundingClientRect();
+        }
         if (props.selectedAnnotatedSegments && props.selectedAnnotatedSegments.length > 0) {
             for (let i=0; i < props.selectedAnnotatedSegments.length; i++) {
                 let segment = props.selectedAnnotatedSegments[i];
@@ -133,12 +136,19 @@ export default class SplitText extends React.PureComponent {
                     break;
                 }
             }
-            selectedTextIndex = props.splitText.getTextIndexOfPosition(firstSelectedSegment.start);
-            splitTextRect = this.splitText.getBoundingClientRect();
+            selectedElementId = idForSegment(firstSelectedSegment);
+        } else if (props.activeAnnotation) {
+            if (props.activeAnnotation.isDeletion) {
+                selectedElementId = idForDeletedSegment({start: props.activeAnnotation.start});
+            } else if (props.activeAnnotation.isInsertion) {
+                const [start, length] = props.splitText.annotatedText.getPositionOfAnnotation(props.activeAnnotation);
+                selectedElementId = idForInsertion({start: start});
+            }
         }
         return {
             selectedTextIndex: selectedTextIndex,
             firstSelectedSegment: firstSelectedSegment,
+            selectedElementId: selectedElementId,
             splitTextRect: splitTextRect
         }
     }
@@ -153,7 +163,8 @@ export default class SplitText extends React.PureComponent {
                 textPaddingRight: textMeasurements.paddingRight,
                 textWidth: textMeasurements.newTextWidth,
                 firstSelectedSegment: controlsMeasurements.firstSelectedSegment,
-                splitTextRect: controlsMeasurements.splitTextRect
+                splitTextRect: controlsMeasurements.splitTextRect,
+                selectedElementId: controlsMeasurements.selectedElementId
             };
         });
     }
@@ -218,6 +229,7 @@ export default class SplitText extends React.PureComponent {
                         width={width}
                         overscanRowCount={3}
                         deferredMeasurementCache={cache}
+                        measureAllRows={true}
                     />
                     )}
                 </AutoSizer>
@@ -248,8 +260,6 @@ export default class SplitText extends React.PureComponent {
                         activeAnnotations={props.activeAnnotations}
                         limitWidth={true}
                         row={index}
-                        didSelectSegment={props.didSelectSegment}
-                        didSelectAnnotation={props.didSelectAnnotation}
                         selectedSegmentId={props.selectedSegmentId}
                         annotationPositions={props.annotationPositions}
                         selectedAnnotatedSegments={props.selectedAnnotatedSegments}
@@ -264,6 +274,7 @@ export default class SplitText extends React.PureComponent {
                                     inline={true}
                                     firstSelectedSegment={this.state.firstSelectedSegment}
                                     splitTextRect={this.state.splitTextRect}
+                                    selectedElementId={this.state.selectedElementId}
                                 />
                     }
 

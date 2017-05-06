@@ -1,7 +1,20 @@
 import React from 'react'
 import classnames from 'classnames'
 import styles from './Text.css'
+import TextSegment from 'lib/TextSegment'
 import _ from 'lodash'
+
+export function idForSegment(segment) {
+    return "s_" + segment.start;
+}
+
+export function idForDeletedSegment(segment) {
+    return "ds_" + segment.start;
+}
+
+export function idForInsertion(segment) {
+    return "i_" + segment.start;
+}
 
 export default class Text extends React.Component {
 
@@ -26,6 +39,10 @@ export default class Text extends React.Component {
         if (foundAnnotations) {
             annotations = foundAnnotations;
         }
+        const insertions = this.props.annotationPositions['i'+segment.start];
+        if (insertions) {
+            annotations = annotations.concat(insertions);
+        }
         return annotations;
     }
 
@@ -38,18 +55,6 @@ export default class Text extends React.Component {
             }
         }
         return false;
-    }
-
-    idForSegment(segment) {
-        return "s_" + segment.start;
-    }
-
-    idForDeletedSegment(segment) {
-        return "ds_" + segment.start;
-    }
-
-    idForInsertion(annotation) {
-        return "i_" + annotation.uniqueId;
     }
 
     selectedElement(element) {
@@ -65,13 +70,18 @@ export default class Text extends React.Component {
         if (segments !== this._renderedSegments || this._renderedHtml === null) {
             let segmentHTML = '';
             const insertionClass = styles.insertion;
+            const endPosition = segments[segments.length - 1].end + 1;
+            if (this.props.annotationPositions["i" + endPosition]) {
+                const endSegment = new TextSegment(endPosition, "");
+                segments.push(endSegment);
+            }
             for (let i = 0; i < segments.length; i++) {
                 let segment = segments[i];
                 let classAttribute = "";
                 let classes = [];
                 let annotations = this.annotationsForSegment(segment);
                 if (annotations) {
-                    let insertions = annotations.filter((annotation) => annotation.length == 0);
+                    let insertions = annotations.filter((annotation) => annotation.isInsertion);
                     let activeInsertions = _.intersectionWith(
                         this.props.activeAnnotations,
                         insertions,
@@ -79,7 +89,7 @@ export default class Text extends React.Component {
                     let inactiveInsertions = _.differenceWith(insertions, activeInsertions, (a, b) => a.id == b.id);
                     if (inactiveInsertions.length > 0) {
                         const insertion = inactiveInsertions[0];
-                        const insertionId = this.idForInsertion(insertion);
+                        const insertionId = idForInsertion(segment);
 
                         segmentHTML += '<span id=' + insertionId + ' key=' + insertionId + ' class="' + insertionClass + '"></span>';
                     }
@@ -101,13 +111,18 @@ export default class Text extends React.Component {
                         classes.push(styles.annotation);
                     }
                 }
+                // It's an insertion at the end of the text, which should have just been added.
+                // So break as we don't want anymore segment html adding.
+                if (segment.start === endPosition) {
+                    break;
+                }
                 // deleted segments has empty text
                 let id = null;
                 if (segment.length == 0) {
-                    id = this.idForDeletedSegment(segment);
+                    id = idForDeletedSegment(segment);
                     classes.push(styles.removedByAnnotation);
                 } else {
-                    id = this.idForSegment(segment);
+                    id = idForSegment(segment);
                 }
 
                 if (this.segmentsContainSegment(this.props.selectedAnnotatedSegments, segment)) {
@@ -133,9 +148,7 @@ export default class Text extends React.Component {
 
     render() {
         let classes = [styles.text];
-        let extraClass = "";
         if (this.props.limitWidth) {
-            extraClass = styles.limitWidth;
             classes.push(styles.limitWidth);
         }
         if (this.props.row === 0) {

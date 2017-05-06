@@ -2,7 +2,6 @@ import { combineReducers } from 'redux'
 import dataReducers, * as data from './data'
 import uiReducers, * as ui from './ui'
 import userReducers, * as user from './user'
-//initialUIState, showPageImages as showPageImagesUI
 
 function createReducer(initialState, handlers) {
     return function reducer(state = initialState, action) {
@@ -41,10 +40,6 @@ export const getSelectedText = (state) => {
 
 export const showPageImages = (state) => {
     return ui.showPageImages(state.ui);
-};
-
-export const getSelectedSegment = (state) => {
-    return ui.selectedSegment(state.ui);
 };
 
 export const getActiveAnnotation = (state) => {

@@ -53,9 +53,7 @@ export default class AnnotationControls extends React.PureComponent {
     getMeasurements() {
         const firstText = document.getElementsByClassName(textStyles.text)[0];
         const splitTextRect = this.props.splitTextRect;
-        const firstSegment = this.props.firstSelectedSegment;
-        let elementId = 's_' + firstSegment.start;
-        const firstElement = document.getElementById(elementId);
+        const firstElement = document.getElementById(this.props.selectedElementId);
         if (!firstElement) {
             console.warn('no valid element found in getMeasurements');
             return {

@@ -7,7 +7,7 @@ import _ from 'lodash'
 export const BASE_ANNOTATION_ID = -1;
 export const WORKING_VERSION_ANNOTATION_ID = -2;
 
-const INSERTION_KEY = 'i';
+export const INSERTION_KEY = 'i';
 
 export default class AnnotatedText {
 
@@ -115,7 +115,6 @@ export default class AnnotatedText {
             }
         }
         const [ startPos, startWasDeleted ] = this._orginalCurrentSegmentPositions[startKey];
-
         let length = null;
         if (startWasDeleted) {
             length = 0;

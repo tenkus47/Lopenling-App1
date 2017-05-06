@@ -60,17 +60,26 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnot
     let [ start, length ] = annotatedText.getPositionOfAnnotation(activeAnnotation);
     let end = start + length;
 
-    // Only include annotations if they encompass the whole annotation
-    // i.e. not if activeAnnotation is a user annotation and combines
-    // annotated text with normal text.
-    let startAnnotations = annotationPositions[start];
-    let endAnnotations = annotationPositions[end];
     let possibleAnnotations = [];
-    if (startAnnotations) {
-        possibleAnnotations = startAnnotations;
-    }
-    if (endAnnotations) {
-        possibleAnnotations = possibleAnnotations.concat(endAnnotations);
+
+    if (activeAnnotation.isInsertion) {
+        const insertionAnnotations = annotationPositions['i'+start];
+        if (insertionAnnotations) {
+            possibleAnnotations = insertionAnnotations;
+        }
+    } else {
+        // Only include annotations if they encompass the whole annotation
+        // i.e. not if activeAnnotation is a user annotation and combines
+        // annotated text with normal text.
+        let startAnnotations = annotationPositions[start];
+        let endAnnotations = annotationPositions[end];
+
+        if (startAnnotations) {
+            possibleAnnotations = startAnnotations;
+        }
+        if (endAnnotations) {
+            possibleAnnotations = possibleAnnotations.concat(endAnnotations);
+        }
     }
 
     for (let i=0; i < possibleAnnotations.length; i++) {
