@@ -174,20 +174,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatch(changedActiveAnnotation(activeAnnotation));
     };
 
-    const getAnnotation = (id) => {
-        let validAnnotation = null;
-        _.forOwn(annotationPositions, (annotations, position) => {
-            if (annotations) {
-                let validAnnotations = annotations.filter((annotation) => annotation.uniqueId === id);
-                    if (validAnnotations.length > 0) {
-                        validAnnotation = validAnnotations[0];
-                        return false;
-                    }
-            }
-        });
-        return validAnnotation;
-    };
-
     const isInsertion = (id) => {
         return id.indexOf('i_') !== -1;
     };
@@ -266,8 +252,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     didSelectSegmentPosition(textSegment.start, textSegment.start, textSegment.length);
                 }
             }
-        },
-        getAnnotation: getAnnotation
+        }
     }
 };
 
