@@ -33,6 +33,8 @@ export default class SplitText extends React.PureComponent {
         this.resizeHandler = null;
         this.selectionHandler = null;
         this.textListVisible = props.textListVisible;
+        this.activeSelection = null;
+        this._mouseDown = false;
     }
 
     updateList() {
@@ -42,8 +44,31 @@ export default class SplitText extends React.PureComponent {
         }
     }
 
+    mouseDown() {
+        this._mouseDown = true;
+    }
+
+    mouseUp() {
+        this._mouseDown = false;
+        if (this.activeSelection) {
+            let segmentIds = this.processSelection(this.activeSelection);
+            if (!segmentIds) {
+                segmentIds = [];
+            }
+            this.props.didSelectSegmentIds(segmentIds);
+            this.activeSelection = null;
+        }
+    }
+
     handleSelection(e) {
-        const selection = document.getSelection();
+        this.activeSelection = document.getSelection();
+        if (!this._mouseDown) {
+            // sometimes, this gets called after the mouseDown event handler
+            this.mouseUp();
+        }
+    }
+
+    processSelection(selection) {
 
         if (selection.rangeCount == 0 || selection.isCollapsed || selection.type == "Caret") {
             return;
@@ -69,10 +94,7 @@ export default class SplitText extends React.PureComponent {
             nodes = nodes.concat(this.getRangeNodes(range, endSpan.parentNode));
         }
 
-        let segmentIds = [];
-        nodes.map((node) => segmentIds.push(node.id));
-
-        this.props.didSelectSegmentIds(segmentIds);
+        return nodes.map((node) => node.id);
     }
 
     getNodeSegmentSpan(node) {
@@ -200,6 +222,9 @@ export default class SplitText extends React.PureComponent {
         }, 200).bind(this);
 
         document.addEventListener("selectionchange", this.selectionHandler);
+
+        document.addEventListener("mousedown", this.mouseDown.bind(this));
+        document.addEventListener("mouseup", this.mouseUp.bind(this));
 
         if (this.splitText) {
             this.updateState(this.props);
