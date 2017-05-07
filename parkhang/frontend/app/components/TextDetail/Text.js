@@ -80,6 +80,7 @@ export default class Text extends React.Component {
                 let classAttribute = "";
                 let classes = [];
                 let annotations = this.annotationsForSegment(segment);
+                let deletionText = null;
                 if (annotations) {
                     let insertions = annotations.filter((annotation) => annotation.isInsertion);
                     let activeInsertions = _.intersectionWith(
@@ -91,7 +92,7 @@ export default class Text extends React.Component {
                         const insertion = inactiveInsertions[0];
                         const insertionId = idForInsertion(segment);
 
-                        segmentHTML += '<span id=' + insertionId + ' key=' + insertionId + ' class="' + insertionClass + '"></span>';
+                        segmentHTML += '<span id=' + insertionId + ' key=' + insertionId + ' class="' + insertionClass + '">'+insertion.content+'</span>';
                     }
 
                     let remainingAnnotations = _.differenceWith(annotations, insertions, (a, b) => a.id == b.id);
@@ -105,6 +106,8 @@ export default class Text extends React.Component {
                     if (activeDeletions.length > 0) {
                         // assume any other deletions are the same
                         remainingAnnotations = remainingAnnotations.filter((annotation) => !annotation.isDeletion);
+                        const baseAnnotation = this.props.getBaseAnnotation(activeDeletions[0]);
+                        deletionText = baseAnnotation.content;
                     }
 
                     if (remainingAnnotations.length > 0 || activeInsertions.length > 0) {
@@ -121,6 +124,9 @@ export default class Text extends React.Component {
                 if (segment.length == 0) {
                     id = idForDeletedSegment(segment);
                     classes.push(styles.removedByAnnotation);
+                    if (deletionText) {
+                        segment = new TextSegment(segment.start, deletionText);
+                    }
                 } else {
                     id = idForSegment(segment);
                 }

@@ -211,6 +211,10 @@ export default class SplitText extends React.PureComponent {
         document.removeEventListener("selectionchange", this.selectionHandler);
     }
 
+    getBaseAnnotation(annotation) {
+        return this.props.splitText.annotatedText.getBaseAnnotation(annotation.start, annotation.content.length);
+    }
+
     render() {
         const props = this.props;
         const rowRenderer = this.rowRenderer;
@@ -265,6 +269,7 @@ export default class SplitText extends React.PureComponent {
                         selectedAnnotatedSegments={props.selectedAnnotatedSegments}
                         textWidth={this.state.textWidth}
                         paddingRight={this.state.textPaddingRight}
+                        getBaseAnnotation={this.getBaseAnnotation.bind(this)}
                     />
                     {this.state.selectedTextIndex === index &&
                         <AnnotationControlsContainer

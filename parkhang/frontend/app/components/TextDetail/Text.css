@@ -5,6 +5,10 @@
     --fontSize: 24px;
     --paddingSide: 20px;
     --maxWidth: 600px;
+    --removedText: {
+        color: #ccc;
+        cursor: pointer;
+    }
 }
 
 :export {
@@ -53,22 +57,15 @@
     background-color: #ccc;
 }
 
+
+
 .removedByAnnotation {
-    background-color: red;
-    display: inline-block;
-    width: 10px;
-    height: var(--fontSize);
-    position: relative;
-    top: 10px;
-    cursor: pointer;
+    @apply --removedText;
+    text-decoration: line-through red;
+
 }
 
 .insertion {
-    background-color: #CDFFCF;
-    display: inline-block;
-    width: 10px;
-    height: var(--fontSize);
-    position: relative;
-    top: 10px;
-    cursor: pointer;
+    @apply --removedText;
+    text-decoration: line-through green;
 }
