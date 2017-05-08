@@ -55,7 +55,7 @@ export default class AnnotationControls extends React.PureComponent {
         const splitTextRect = this.props.splitTextRect;
         const firstElement = document.getElementById(this.props.selectedElementId);
         if (!firstElement) {
-            console.warn('no valid element found in getMeasurements');
+            console.warn('no valid element found in getMeasurements, elementId: %s', this.props.selectedElementId);
             return {
                 top: 0,
                 textRight: 0,
