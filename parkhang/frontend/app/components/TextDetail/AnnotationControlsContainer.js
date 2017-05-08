@@ -65,7 +65,11 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnot
     if (activeAnnotation.isInsertion) {
         const insertionAnnotations = annotationPositions['i'+start];
         if (insertionAnnotations) {
-            possibleAnnotations = insertionAnnotations;
+            possibleAnnotations = possibleAnnotations.concat(insertionAnnotations);
+        }
+        const activeInsertionAnnotations = annotationPositions[start];
+        if (activeInsertionAnnotations) {
+            possibleAnnotations = possibleAnnotations.concat(activeInsertionAnnotations);
         }
     } else {
         // Only include annotations if they encompass the whole annotation

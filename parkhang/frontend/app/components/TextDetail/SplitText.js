@@ -147,7 +147,8 @@ export default class SplitText extends React.PureComponent {
         let selectedElementId = null;
         let splitTextRect = null;
         if (props.activeAnnotation) {
-            selectedTextIndex = props.splitText.getTextIndexOfPosition(props.activeAnnotation.start);
+            const [startPos] = props.splitText.annotatedText.getPositionOfAnnotation(props.activeAnnotation);
+            selectedTextIndex = props.splitText.getTextIndexOfPosition(startPos);
             splitTextRect = this.splitText.getBoundingClientRect();
         }
         if (props.selectedAnnotatedSegments && props.selectedAnnotatedSegments.length > 0) {
@@ -163,7 +164,7 @@ export default class SplitText extends React.PureComponent {
             if (props.activeAnnotation.isDeletion) {
                 selectedElementId = idForDeletedSegment({start: props.activeAnnotation.start});
             } else if (props.activeAnnotation.isInsertion) {
-                const [start, length] = props.splitText.annotatedText.getPositionOfAnnotation(props.activeAnnotation);
+                const [start] = props.splitText.annotatedText.getPositionOfAnnotation(props.activeAnnotation);
                 selectedElementId = idForInsertion({start: start});
             }
         }
@@ -287,6 +288,7 @@ export default class SplitText extends React.PureComponent {
                         segmentedText={props.splitText.texts[index]}
                         annotations={props.annotations}
                         activeAnnotations={props.activeAnnotations}
+                        activeAnnotation={props.activeAnnotation}
                         limitWidth={true}
                         row={index}
                         selectedSegmentId={props.selectedSegmentId}

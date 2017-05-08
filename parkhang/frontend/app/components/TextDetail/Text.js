@@ -2,6 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import styles from './Text.css'
 import TextSegment from 'lib/TextSegment'
+import { INSERTION_KEY, DELETION_KEY } from 'lib/AnnotatedText'
 import _ from 'lodash'
 
 export function idForSegment(segment) {
@@ -39,9 +40,13 @@ export default class Text extends React.Component {
         if (foundAnnotations) {
             annotations = foundAnnotations;
         }
-        const insertions = this.props.annotationPositions['i'+segment.start];
+        const insertions = this.props.annotationPositions[INSERTION_KEY+segment.start];
         if (insertions) {
             annotations = annotations.concat(insertions);
+        }
+        const deletions = this.props.annotationPositions[DELETION_KEY+segment.start];
+        if (deletions) {
+            annotations = annotations.concat(deletions);
         }
         return annotations;
     }
@@ -49,7 +54,7 @@ export default class Text extends React.Component {
     segmentsContainSegment(segments, segment) {
         for (let i=0; i < segments.length; i++) {
             let listSegment = segments[i];
-            if (listSegment.start === segment.start)
+            if (listSegment.start === segment.start && listSegment.text === segment.text)
             {
                 return true;
             }
@@ -71,7 +76,7 @@ export default class Text extends React.Component {
             let segmentHTML = '';
             const insertionClass = styles.insertion;
             const endPosition = segments[segments.length - 1].end + 1;
-            if (this.props.annotationPositions["i" + endPosition]) {
+            if (this.props.annotationPositions[INSERTION_KEY + endPosition]) {
                 const endSegment = new TextSegment(endPosition, "");
                 segments.push(endSegment);
             }
@@ -81,13 +86,14 @@ export default class Text extends React.Component {
                 let classes = [];
                 let annotations = this.annotationsForSegment(segment);
                 let deletionText = null;
+                let selectedCurrentDeletion = false;
                 if (annotations) {
                     let insertions = annotations.filter((annotation) => annotation.isInsertion);
                     let activeInsertions = _.intersectionWith(
                         this.props.activeAnnotations,
                         insertions,
-                        (a, b) => a.id == b.id);
-                    let inactiveInsertions = _.differenceWith(insertions, activeInsertions, (a, b) => a.id == b.id);
+                        (a, b) => a.uniqueId === b.uniqueId);
+                    let inactiveInsertions = _.differenceWith(insertions, activeInsertions, (a, b) => a.start === b.start);
                     if (inactiveInsertions.length > 0) {
                         const insertion = inactiveInsertions[0];
                         const insertionId = idForInsertion(segment);
@@ -106,20 +112,29 @@ export default class Text extends React.Component {
                     if (activeDeletions.length > 0) {
                         // assume any other deletions are the same
                         remainingAnnotations = remainingAnnotations.filter((annotation) => !annotation.isDeletion);
-                        const baseAnnotation = this.props.getBaseAnnotation(activeDeletions[0]);
+                        const activeDeletion = activeDeletions[0];
+                        const baseAnnotation = this.props.getBaseAnnotation(activeDeletion);
                         deletionText = baseAnnotation.content;
+                        if (
+                            this.props.activeAnnotation
+                            && this.props.activeAnnotation.isDeletion
+                            && this.props.activeAnnotation.start == activeDeletion.start
+                            && this.props.activeAnnotation.length == activeDeletion.length
+                            && segment.length === 0
+                        ) {
+                            selectedCurrentDeletion = true;
+                        }
                     }
 
                     if (remainingAnnotations.length > 0 || activeInsertions.length > 0) {
                         classes.push(styles.annotation);
                     }
                 }
-                // It's an insertion at the end of the text, which should have just been added.
+                // It's an insertion at the end of the text, which should have just been added to the html.
                 // So break as we don't want anymore segment html adding.
                 if (segment.start === endPosition) {
                     break;
                 }
-                // deleted segments has empty text
                 let id = null;
                 if (segment.length == 0) {
                     id = idForDeletedSegment(segment);
@@ -131,7 +146,7 @@ export default class Text extends React.Component {
                     id = idForSegment(segment);
                 }
 
-                if (this.segmentsContainSegment(this.props.selectedAnnotatedSegments, segment)) {
+                if (this.segmentsContainSegment(this.props.selectedAnnotatedSegments, segment) || selectedCurrentDeletion) {
                     classes.push(styles.selectedAnnotation);
                 }
 

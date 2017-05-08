@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Annotation, { ANNOTATION_TYPES } from 'lib/Annotation';
 import Source, { WORKING_VERSION_SOURCE_NAME } from 'lib/Source';
 import Witness from 'lib/Witness';
-import { WORKING_VERSION_ANNOTATION_ID, INSERTION_KEY } from 'lib/AnnotatedText';
+import { WORKING_VERSION_ANNOTATION_ID, INSERTION_KEY, DELETION_KEY } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
 import { changedActiveAnnotation } from 'actions'
 import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible } from 'reducers'
@@ -12,14 +12,31 @@ import _ from 'lodash'
 import AnnotatedText from 'lib/AnnotatedText'
 import segmentTibetanText from 'lib/segmentTibetanText'
 
+function getInsertionKey(annotation) {
+    return [annotation.start, annotation.length].join('-');
+}
+
 const getAnnotationPositions = (annotatedText, annotations) => {
     let positions = {};
+    let activeInsertions = {};
+
     for (let i=0; i < annotations.length; i++) {
         let annotation = annotations[i];
         let [ startPos, length ] = annotatedText.getPositionOfAnnotation(annotation);
         if (length === 0) {
             if (annotation.isInsertion) {
+                // group with any active insertions at the same position
+                const activeKey = getInsertionKey(annotation);
+                const activeInsertionPositions = activeInsertions[activeKey];
+                if (activeInsertionPositions) {
+                    activeInsertionPositions.map(pos => positions[pos].push(annotation));
+                    continue;
+                }
                 startPos = INSERTION_KEY + startPos;
+            }
+            if (annotation.isDeletion && annotation.length > 0) {
+                // active deletion
+                startPos = DELETION_KEY + startPos;
             }
             if (positions[startPos] === undefined) {
                 positions[startPos] = [];
@@ -28,6 +45,7 @@ const getAnnotationPositions = (annotatedText, annotations) => {
                 positions[startPos].push(annotation);
             }
         } else {
+            let annotationPositions = [];
             for (let j = startPos; j < startPos + length; j++) {
                 if (positions[j] === undefined) {
                     positions[j] = [];
@@ -35,6 +53,13 @@ const getAnnotationPositions = (annotatedText, annotations) => {
                 if (positions[j].indexOf(annotation) === -1) {
                     positions[j].push(annotation);
                 }
+                annotationPositions.push(j);
+            }
+            // Store the positions this annotation is displayed at.
+            // This can then be used later to group with inactive insertions
+            if (annotation.isInsertion) {
+                const key = getInsertionKey(annotation);
+                activeInsertions[key] = annotationPositions;
             }
         }
     }
@@ -199,6 +224,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...stateProps,
         ...ownProps,
         didSelectSegmentIds: (segmentIds) => {
+            if (segmentIds.length === 0) {
+                return;
+            }
             let segmentAnnotations = [];
             let segments = [];
             for (let segmentId of segmentIds) {
@@ -244,6 +272,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 const start = idFromSegmentId(segmentId);
                 const length = 0;
                 const positionKey = INSERTION_KEY + start;
+                didSelectSegmentPosition(positionKey, start, length);
+            } else if (isDeletion(segmentId)) {
+                const start = idFromSegmentId(segmentId);
+                const length = 0;
+                const positionKey = DELETION_KEY + start;
                 didSelectSegmentPosition(positionKey, start, length);
             } else {
                 let segmentPosition = Number(idFromSegmentId(segmentId));
@@ -311,7 +344,7 @@ const getSegmentsRange = (segments, activeAnnotations, annotations) => {
 
     return {
         start: start,
-        length: end - start,
+        length: end - start + 1,
         annotation: rangeAnnotation
     }
 };
