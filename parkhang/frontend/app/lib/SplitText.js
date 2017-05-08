@@ -10,56 +10,49 @@ export default class SplitText {
     }
 
     get texts() {
-        if (!this._texts) {
-            if (!this.annotatedText) {
-                return [];
-            }
-            this._textsFinalPositions = [];
-            const segmentedText = this.annotatedText.segmentedText;
-            const textString = segmentedText.getText();
-            let splitPositions = this.splitter(textString);
-            if (splitPositions.length == 0) {
-                this._textsFinalPositions.push(textString.length);
-                return [segmentedText];
-            }
-            let lastPosition = splitPositions[splitPositions.length - 1];
-            if (lastPosition < textString.length) {
-                splitPositions.push(textString.length - 1);
-            }
-            const segments = segmentedText.sortedSegments();
-            let startIndex = 0;
-            let texts = [];
-            for (let i=0; i < splitPositions.length; i++) {
-                const position = splitPositions[i];
-                const endIndex = segmentedText.indexOfSortedSegmentAtPosition(position);
-                let textSegments;
-                if (i == splitPositions.length - 1) {
-                    // final position
-                    textSegments = segments.slice(startIndex);
-                } else {
-                    textSegments = segments.slice(startIndex, endIndex);
-                }
-
-                const text = new SegmentedText(textSegments);
-                texts.push(text);
-                startIndex = endIndex;
-                if (endIndex >= 0) {
-                    const finalSegment = segments[endIndex];
-                    this._textsFinalPositions.push(finalSegment.end);
-                }
+        if (!this.annotatedText) {
+            return [];
+        }
+        this._textsFinalPositions = [];
+        const segmentedText = this.annotatedText.segmentedText;
+        const textString = segmentedText.getText();
+        let splitPositions = this.splitter(textString);
+        if (splitPositions.length == 0) {
+            this._textsFinalPositions.push(textString.length);
+            return [segmentedText];
+        }
+        let lastPosition = splitPositions[splitPositions.length - 1];
+        if (lastPosition < textString.length) {
+            splitPositions.push(textString.length - 1);
+        }
+        const segments = segmentedText.sortedSegments();
+        let startIndex = 0;
+        let texts = [];
+        for (let i=0; i < splitPositions.length; i++) {
+            const position = splitPositions[i];
+            const endIndex = segmentedText.indexOfSortedSegmentAtPosition(position);
+            let textSegments;
+            if (i == splitPositions.length - 1) {
+                // final position
+                textSegments = segments.slice(startIndex);
+            } else {
+                textSegments = segments.slice(startIndex, endIndex);
             }
 
-            this._texts = texts;
+            const text = new SegmentedText(textSegments);
+            texts.push(text);
+            startIndex = endIndex;
+            if (endIndex >= 0) {
+                const finalSegment = segments[endIndex];
+                this._textsFinalPositions.push(finalSegment.end);
+            }
         }
 
-        return this._texts;
+        return texts;
     }
 
     _getTextsFinalPositions() {
-        if (!this._textsFinalPositions) {
-            // ensure this._textsFinalPositions is generated
-            this.texts;
-        }
+        this.texts;
         return this._textsFinalPositions;
     }
 
