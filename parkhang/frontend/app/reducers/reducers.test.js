@@ -30,7 +30,6 @@ const initialState = {
         selectedText: false,
         searchValue: "",
         showPageImages: false,
-        selectedSegments: {},
         activeAnnotations: {},
         textListVisible: true,
         temporaryAnnotations: {},
