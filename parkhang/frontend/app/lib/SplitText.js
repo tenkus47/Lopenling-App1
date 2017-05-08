@@ -75,8 +75,9 @@ export default class SplitText {
             }
             lastPosition = endPosition;
         }
-        if (!textIndex) {
-            textIndex = 0;
+        if (textIndex === null) {
+            console.warn('no index for position %d', position);
+            textIndex = textsFinalPositions.length - 1;
         }
         return textIndex;
     }
