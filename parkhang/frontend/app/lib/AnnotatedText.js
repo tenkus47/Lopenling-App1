@@ -8,6 +8,7 @@ export const BASE_ANNOTATION_ID = -1;
 export const WORKING_VERSION_ANNOTATION_ID = -2;
 
 export const INSERTION_KEY = 'i';
+export const DELETION_KEY = 'd';
 
 export default class AnnotatedText {
 
@@ -69,12 +70,18 @@ export default class AnnotatedText {
     }
 
     annotationsForPosition(position) {
+        this.segmentedText;
         return this.variants.filter((annotation) => {
             let start = annotation.start;
             let end = annotation.end;
             if (annotation.isInsertion) {
                 start = String(start) + INSERTION_KEY;
                 end = start;
+            }
+            if (!this._orginalCurrentSegmentPositions[start]
+                || !this._orginalCurrentSegmentPositions[end]
+            ) {
+                return false;
             }
             let [currentStart] = this._orginalCurrentSegmentPositions[start];
             let [currentEnd] = this._orginalCurrentSegmentPositions[end];
@@ -147,9 +154,14 @@ export default class AnnotatedText {
      * @return {Annotation}
      */
     getBaseAnnotation(start, length) {
-        let startPos = start;
+        this.segmentedText;
+        let startPos = this._currentOriginalSegmentPositions[start];
         let origLength = 0;
-        if (length === 0) {
+        if (startPos === undefined) {
+            // end of text insertion
+            startPos = this.originalText.getText().length;
+            origLength = 0;
+        } else if (length === 0) {
             let annotations = this.annotationsForPosition(start);
             if (annotations.length > 0) {
                 let annotation = annotations[0];
@@ -170,12 +182,23 @@ export default class AnnotatedText {
                 if (annotations.length > 0) {
                     let annotation = annotations[0];
                     if (i === start) {
-                        startPos = annotation.start;
+                        if (annotation.isDeletion) {
+                            startPos = annotation.start + annotation.length;
+                        } else {
+                            startPos = annotation.start;
+                        }
+                    } else {
+                        // Only add deletion length if not at the start.
+                        // Otherwise, it is assumed to be immediately before
+                        // the requested position.
+                        if (annotation.isDeletion) {
+                            origLength += annotation.length;
+                        }
                     }
-                    origLength += annotation.length;
                     if (annotation.isDeletion) {
                         origLength++;
                     } else {
+                        origLength += annotation.length;
                         i += annotation.content.length - 1;
                     }
                 } else {
@@ -192,6 +215,9 @@ export default class AnnotatedText {
             content = segments.reduce((content, segment) => {
                 return content + segment.text;
             }, "");
+        }
+        if (origLength !== content.length) {
+            console.warn('Base annotations has different content length to length');
         }
         let annotation = new Annotation(
             BASE_ANNOTATION_ID,
@@ -272,6 +298,29 @@ export default class AnnotatedText {
         const segments = text.sortedSegments();
         let newSegments = segments.slice();
         let replacedSegments = {};
+
+        // create new segments for annotation
+        const createSegments = (annotation, start) => {
+            const deleted = (annotation.content.length === 0);
+            let segments = [];
+            if (this.segmenter !== null && !deleted) {
+                let annotationSegments = this.segmenter(annotation.content);
+                let annoSegStart = start;
+                for (let j=0; j < annotationSegments.length; j++) {
+                    let annotationSegment = annotationSegments[j];
+                    annotationSegment.start = annoSegStart;
+                    annotationSegment._annotation = annotation;
+                    annoSegStart += annotationSegment.text.length;
+                }
+                segments = annotationSegments;
+            } else {
+                let annotationSegment = new TextSegment(start, annotation.content);
+                annotationSegment._annotation = annotation;
+                segments = [annotationSegment];
+            }
+            return segments;
+        };
+
         for (let i=0, len=annotations.length; i < len; i++) {
             let annotation = annotations[i];
             let targets = text.segmentsInRange(annotation.start, annotation.length);
@@ -285,34 +334,23 @@ export default class AnnotatedText {
                     }
                 }
 
-                const deleted = (annotation.content.length == 0);
-                if (this.segmenter != null && !deleted) {
-                    let annotationSegments = this.segmenter(annotation.content);
-                    let annoSegStart = start;
-                    for (let j=0; j < annotationSegments.length; j++) {
-                        let annotationSegment = annotationSegments[j];
-                        annotationSegment.start = annoSegStart;
-                        annotationSegment._annotation = annotation;
-                        annoSegStart += annotationSegment.text.length;
-                    }
-                    if (annotation.isInsertion) {
-                        newSegments.splice(firstIndex, 0, ...annotationSegments);
-                    } else {
-                        newSegments.splice(firstIndex, targets.length, ...annotationSegments);
-                    }
+                const segments = createSegments(annotation, start);
+                if (annotation.isInsertion) {
+                    newSegments.splice(firstIndex, 0, ...segments);
                 } else {
-                    let annotationSegment = new TextSegment(start, annotation.content);
-                    annotationSegment._annotation = annotation;
-                    if (annotation.isInsertion) {
-                        newSegments.splice(firstIndex, 0, annotationSegment);
-                    } else {
-                        newSegments.splice(firstIndex, targets.length, annotationSegment);
-                    }
+                    newSegments.splice(firstIndex, targets.length, ...segments);
                 }
 
                 // store replaced segments to use when setting position below
                 if (!annotation.isInsertion) {
                     replacedSegments[annotation.uniqueId] = targets;
+                }
+            } else {
+                // Assume insertion at end of text, otherwise a target segment would exist
+                const segments = createSegments(annotation, annotation.start);
+                newSegments = newSegments.concat(segments);
+                if (!annotation.isInsertion) {
+                    console.warn('Annotation with missing text segments that is not an insertion: %o', annotation);
                 }
             }
         }
@@ -329,6 +367,9 @@ export default class AnnotatedText {
                 const replaced = replacedSegments[segment._annotation.uniqueId];
                 if (segment._annotation.isInsertion) {
                     this._orginalCurrentSegmentPositions[String(segment.start) + INSERTION_KEY] = [currentPosition, deleted];
+                    for (let j=0; j < segment._annotation.content.length; j++) {
+                        this._currentOriginalSegmentPositions[currentPosition + j] = segment.start;
+                    }
                     processedSegmentAnnotations[segment._annotation.uniqueId] = true;
                 } else if (replaced) {
                     for (let j=0; j < replaced.length; j++) {

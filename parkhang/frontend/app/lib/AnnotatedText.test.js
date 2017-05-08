@@ -288,8 +288,57 @@ describe('AnnotatedText', () => {
             annotatedText.getBaseAnnotation(220, 13)
         ).toEqual(includesDeletion);
 
-        // TODO: add test for annotation immediately after deletion
+        const startDeletion = new Annotation(1, baseWitness, 0, 24, "", otherWitness);
+        const testAnnotatedText = new AnnotatedText(segmentedText, [startDeletion], segmenter, baseWitness);
 
+        let startDeletionBase = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            24,
+            3,
+            "༄༅༅",
+            annotatedText.baseWitness,
+            ANNOTATION_TYPES.variant
+        );
+
+        expect(
+            testAnnotatedText.getBaseAnnotation(0,3)
+        ).toEqual(startDeletionBase);
+
+        let currentEndPos = annotatedText.getText().length;
+        let originalEndPos = annotatedText.originalText.getText().length;
+        const afterEndBase = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            originalEndPos,
+            0,
+            "",
+            annotatedText.baseWitness,
+            ANNOTATION_TYPES.variant
+        );
+
+        expect(
+            annotatedText.getBaseAnnotation(currentEndPos, 0)
+        ).toEqual(afterEndBase);
+
+        const afterEndInsertion = new Annotation(10, baseWitness, testAnnotatedText.originalText.getText().length, 0, "Test", otherWitness);
+        testAnnotatedText.addAnnotation(afterEndInsertion);
+        currentEndPos = testAnnotatedText.getText().length;
+        originalEndPos = testAnnotatedText.originalText.getText().length;
+
+        const afterEndInsertionBase = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            originalEndPos,
+            0,
+            "",
+            annotatedText.baseWitness,
+            ANNOTATION_TYPES.variant
+        );
+
+        expect(
+            testAnnotatedText.getBaseAnnotation(currentEndPos, 0)
+        ).toEqual(afterEndInsertionBase);
     });
 
 
