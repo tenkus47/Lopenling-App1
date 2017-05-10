@@ -10,3 +10,6 @@ webpack-stats-dev.json
 ubuntu-xenial-16.04-cloudimg-console.log
 data/texts
 .venv
+parkhang/frontend/static/bundles/parkhang-dev.js.map
+parkhang/frontend/static/bundles/styles-dev.css.map
+parkhang/frontend/coverage
