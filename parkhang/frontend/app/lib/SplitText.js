@@ -22,7 +22,7 @@ export default class SplitText {
             return [segmentedText];
         }
         let lastPosition = splitPositions[splitPositions.length - 1];
-        if (lastPosition < textString.length) {
+        if (lastPosition + 1 < textString.length) {
             splitPositions.push(textString.length - 1);
         }
         const segments = segmentedText.sortedSegments();

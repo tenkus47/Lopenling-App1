@@ -6,6 +6,7 @@ import Text from './Text'
 import Witness from './Witness'
 import segmentTibetanText from './segmentTibetanText'
 import stringSplitter from './text_splitters/stringSplitter'
+import positionSplitter from './text_splitters/positionSplitter'
 
 function segmenter(text) {
     return segmentTibetanText(text).sortedSegments();
@@ -73,4 +74,15 @@ describe('SplitText', () => {
             splitText.getTextIndexOfPosition(29)
         ).toEqual(1);
     });
+
+    const posSplitter = positionSplitter([0, 149, 249]);
+    const posSplitText = new SplitText(annotatedText, posSplitter);
+
+    test('Get the correct number of texts', () => {
+        expect(
+            posSplitText.texts.length
+        ).toEqual(2);
+    });
+
+
 });
