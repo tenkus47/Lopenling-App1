@@ -6,8 +6,9 @@
  * @return {function({string} string): number[]}
  */
 export default function positionSplitter(positions) {
-    if (positions[0] === 0) {
-        positions.shift();
+    const newPositions = [...positions];
+    if (newPositions[0] === 0) {
+        newPositions.shift();
     }
-    return (string) => positions;
+    return (string) => newPositions;
 }
