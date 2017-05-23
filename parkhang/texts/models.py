@@ -1,4 +1,6 @@
 import uuid
+from enum import Enum
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -66,12 +68,17 @@ class AnnotationQuerySet(models.QuerySet):
         return self.get(unique_id=unique_id, is_deleted=False)
 
 
+class AnnotationType(Enum):
+    variant = 'V'
+    note = 'N'
+    page_break = 'P'
+
+
 class Annotation(models.Model):
-    VARIANT = 'V'
-    NOTE = 'N'
     TYPE_CHOICES = (
-        (VARIANT, 'Variant'),
-        (NOTE, 'Note')
+        (AnnotationType.variant.value, 'Variant'),
+        (AnnotationType.note.value, 'Note'),
+        (AnnotationType.page_break.value, 'Page Break')
     )
     unique_id = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
     witness = models.ForeignKey(Witness)
@@ -83,7 +90,7 @@ class Annotation(models.Model):
     """Set if created by a user"""
     creator_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
     """Set to False if annotation is simply a note"""
-    type = models.CharField(max_length=1, choices=TYPE_CHOICES, default=VARIANT)
+    type = models.CharField(max_length=1, choices=TYPE_CHOICES, default=AnnotationType.variant.value)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)

@@ -1,6 +1,7 @@
+import _ from 'lodash'
 import arrayToObject from 'lib/arrayToObject'
 import * as actions from 'actions'
-import Annotation from 'lib/Annotation'
+import Annotation, { ANNOTATION_TYPES } from 'lib/Annotation'
 import Witness from 'lib/Witness'
 import Source from 'lib/Source'
 import Text from 'lib/Text'
@@ -420,8 +421,9 @@ export function dataFromAnnotation(annotation) {
     }
 }
 
-export const getAnnotationsForWitnessId = (state, witnessId) => {
-    return state.witnessAnnotationsById[witnessId];
+export const getAnnotationsForWitnessId = (state, witnessId, annotationType=ANNOTATION_TYPES.variant) => {
+    let annotations = state.witnessAnnotationsById[witnessId];
+    return _.pickBy(annotations, (annotation, key) => annotation.type === annotationType);
 };
 
 export const getAnnotation = (state, witnessId, annotationUniqueId) => {

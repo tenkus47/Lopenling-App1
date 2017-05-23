@@ -14,6 +14,7 @@ import SplitText from 'lib/SplitText'
 import PaginatedTibetanText from 'lib/PaginatedTibetanText'
 import segmentTibetanText from 'lib/segmentTibetanText'
 import lengthSplitter from 'lib/text_splitters/lengthSplitter'
+import positionSplitter from 'lib/text_splitters/positionSplitter'
 
 import styles from './TextDetail.css'
 import utilStyles from 'css/util.css'
@@ -28,35 +29,35 @@ const TextDetail = props => {
 
     let inlineControls = false;
     let textComponent = null;
+
     if (!props.text || props.loading) {
         textComponent = <div />
-    } else if (props.paginated && props.baseWitness != null) {
-        const paginatedText = new PaginatedTibetanText(props.baseWitness.content, null, 500);
-        textComponent = <PechaText
-            paginatedText={paginatedText}
-            annotations={props.annotations}
-            activeAnnotations={props.activeAnnotations}
-            didSelectSegment={props.didSelectSegment}
-            didSelectAnnotation={props.didSelectAnnotation}
-            annotationPositions={props.annotationPositions}
-            selectedAnnotatedSegments={props.selectedAnnotatedSegments}
-        />
     } else {
-        const splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
-        const splitText = new SplitText(props.annotatedText, splitter);
+        let limitWidth;
+        let splitter;
+        if (props.paginated) {
+            limitWidth = false;
+            splitter = positionSplitter(props.pageBreaks);
+        } else {
+            limitWidth = true;
+            splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
+        }
+
+        let splitText = new SplitText(props.annotatedText, splitter);
         inlineControls = true;
         textComponent = <SplitTextComponent
             splitText={splitText}
             annotations={props.annotations}
             activeAnnotations={props.activeAnnotations}
             activeAnnotation={props.activeAnnotation}
-            limitWidth={true}
+            limitWidth={limitWidth}
             didSelectSegment={props.didSelectSegment}
             didSelectSegmentIds={props.didSelectSegmentIds}
             selectedSegmentId={props.selectedSegmentId}
             annotationPositions={props.annotationPositions}
             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
             textListVisible={props.textListVisible}
+            showImages={props.paginated}
         />
     }
 

@@ -132,6 +132,8 @@ const mapStateToProps = (state) => {
     let activeAnnotation = getActiveAnnotation(state);
     let selectedAnnotatedSegments = [];
     let activeAnnotations = [];
+    let pageBreaks = [];
+    let imagesBaseUrl = '';
     if (baseWitness && selectedText
         && state.data.witnessAnnotationsById.hasOwnProperty(baseWitness.id))
     {
@@ -153,6 +155,14 @@ const mapStateToProps = (state) => {
         if (activeAnnotation) {
             selectedAnnotatedSegments = annotatedText.segmentsForAnnotation(activeAnnotation);
         }
+
+        if (true || showPageImages(state)) {
+            pageBreaks = getAnnotationsForWitnessId(state, baseWitness.id, ANNOTATION_TYPES.pageBreak);
+            let starts = [];
+            _.forIn(pageBreaks, o => starts.push(o.start));
+            pageBreaks = starts.sort((a, b) => a-b);
+            imagesBaseUrl = '/media/texts/' + selectedText.id + '/';
+        }
     }
 
     return {
@@ -167,6 +177,8 @@ const mapStateToProps = (state) => {
         annotationPositions: annotationPositions,
         activeAnnotations: activeAnnotations,
         activeAnnotation: activeAnnotation,
+        pageBreaks: pageBreaks,
+        imagesBaseUrl: imagesBaseUrl,
         user: user,
         textListVisible
     };

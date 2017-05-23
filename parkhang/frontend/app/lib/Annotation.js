@@ -3,7 +3,8 @@ import uuidV4 from 'uuid/v4'
 export const ANNOTATION_TYPES = {
     variant: 'V',
     note: 'N',
-    marker: 'M'
+    marker: 'M',
+    pageBreak: 'P'
 };
 
 export const TEMPORARY_TYPE = 'T';

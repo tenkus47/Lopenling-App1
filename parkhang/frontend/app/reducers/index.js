@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import dataReducers, * as data from './data'
 import uiReducers, * as ui from './ui'
 import userReducers, * as user from './user'
+import Annotation, { ANNOTATION_TYPES } from 'lib/Annotation'
 
 function createReducer(initialState, handlers) {
     return function reducer(state = initialState, action) {
@@ -72,8 +73,8 @@ export const getBaseWitness = (state, textId) => {
     return data.getBaseWitness(state.data, textId);
 };
 
-export const getAnnotationsForWitnessId = (state, witnessId) => {
-    return data.getAnnotationsForWitnessId(state.data, witnessId);
+export const getAnnotationsForWitnessId = (state, witnessId, annotationType=ANNOTATION_TYPES.variant) => {
+    return data.getAnnotationsForWitnessId(state.data, witnessId, annotationType);
 };
 
 export const getActiveAnnotationsForWitnessId = (state, witnessId) => {

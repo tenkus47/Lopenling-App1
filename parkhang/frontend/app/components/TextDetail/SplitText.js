@@ -125,7 +125,12 @@ export default class SplitText extends React.PureComponent {
     getTextMeasurements() {
         const paddingSide = parseInt(textStyles.paddingSide, 10);
         const containerWidth = this.splitText.offsetWidth;
-        const textMaxWidth = parseInt(textStyles.maxWidth, 10);
+        let textMaxWidth;
+        if (this.props.limitWidth) {
+            textMaxWidth = parseInt(textStyles.maxWidth, 10);
+        } else {
+            textMaxWidth = containerWidth;
+        }
         const extraSpace = containerWidth - (textMaxWidth + paddingSide + paddingSide);
 
         let paddingRight = paddingSide + 'px';
@@ -284,12 +289,17 @@ export default class SplitText extends React.PureComponent {
                     style={style}
                     className={styles.splitTextRow}
                 >
+                    {props.showImages &&
+                        <div className={styles.pechaImage}>
+                            <div className={styles.pechaContent}><p>Page {index + 1} image</p></div>
+                        </div>
+                    }
                     <Text
                         segmentedText={props.splitText.texts[index]}
                         annotations={props.annotations}
                         activeAnnotations={props.activeAnnotations}
                         activeAnnotation={props.activeAnnotation}
-                        limitWidth={true}
+                        limitWidth={props.limitWidth}
                         row={index}
                         selectedSegmentId={props.selectedSegmentId}
                         annotationPositions={props.annotationPositions}

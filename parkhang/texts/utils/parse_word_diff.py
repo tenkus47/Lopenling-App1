@@ -6,7 +6,7 @@ def fix_diff(diff):
     return diff
 
 
-def parse_word_diff(diff):
+def parse_word_diff(diff, filename):
     diff = fix_diff(diff)
 
     annotations = []
