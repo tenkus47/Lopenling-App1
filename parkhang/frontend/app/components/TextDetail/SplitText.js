@@ -264,7 +264,6 @@ export default class SplitText extends React.PureComponent {
                         width={width}
                         overscanRowCount={3}
                         deferredMeasurementCache={cache}
-                        measureAllRows={true}
                     />
                     )}
                 </AutoSizer>
