@@ -34,6 +34,7 @@ export default class SplitText extends React.PureComponent {
         this.selectionHandler = null;
         this.textListVisible = props.textListVisible;
         this.activeSelection = null;
+        this.selectedNodes = null;
         this._mouseDown = false;
     }
 
@@ -71,6 +72,7 @@ export default class SplitText extends React.PureComponent {
     processSelection(selection) {
 
         if (selection.rangeCount == 0 || selection.isCollapsed || selection.type == "Caret") {
+            this.selectedNodes = null;
             return;
         }
 
@@ -93,7 +95,7 @@ export default class SplitText extends React.PureComponent {
             // of two Texts.
             nodes = nodes.concat(this.getRangeNodes(range, endSpan.parentNode));
         }
-
+        this.selectedNodes = nodes;
         return nodes.map((node) => node.id);
     }
 
@@ -234,6 +236,24 @@ export default class SplitText extends React.PureComponent {
 
         if (this.splitText) {
             this.updateState(this.props);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.selectedNodes) {
+            setTimeout(() => {
+                let selRange = document.createRange();
+                let startNode = this.selectedNodes[0];
+                startNode = document.getElementById(startNode.id);
+                selRange.setStart(startNode, 0);
+                let endNode = this.selectedNodes[this.selectedNodes.length - 1];
+                endNode = document.getElementById(endNode.id);
+                selRange.setEnd(endNode, endNode.childNodes.length);
+                let sel = document.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(selRange);
+                this.selectedNodes = null;
+            }, 0);
         }
     }
 
