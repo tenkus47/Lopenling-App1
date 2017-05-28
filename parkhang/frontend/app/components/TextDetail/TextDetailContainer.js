@@ -16,7 +16,14 @@ function getInsertionKey(annotation) {
     return [annotation.start, annotation.length].join('-');
 }
 
+let _posAnnotatedText;
+let _posAnnotations;
+let _positions;
 const getAnnotationPositions = (annotatedText, annotations) => {
+    if (annotatedText === _posAnnotatedText && annotations === _posAnnotations) {
+        return _positions;
+    }
+
     let positions = {};
     let activeInsertions = {};
 
@@ -64,9 +71,13 @@ const getAnnotationPositions = (annotatedText, annotations) => {
         }
     }
 
+    _posAnnotatedText = annotatedText;
+    _posAnnotations = annotations;
+    _positions = positions;
     return positions;
 };
 
+let _annotationsFromData = null;
 const annotationsFromData = (state, annotationList) => {
     let annotations = [];
     if (annotationList) {
@@ -82,10 +93,18 @@ const annotationsFromData = (state, annotationList) => {
     return annotations;
 };
 
+let _activeAnnotationsList;
+let _activeAnnotations;
 const getActiveAnnotations = (state, baseWitnessId) => {
     const activeAnnotationList = getActiveAnnotationsForWitnessId(state, baseWitnessId);
     if (!activeAnnotationList) {
         return [];
+    }
+    if (activeAnnotationList === _activeAnnotationsList) {
+        return _activeAnnotations;
+    } else {
+        _activeAnnotationsList = activeAnnotationList;
+        _annotatedText = null;
     }
 
     let activeAnnotationDataList = [];
@@ -97,9 +116,11 @@ const getActiveAnnotations = (state, baseWitnessId) => {
         }
     }
 
-    return annotationsFromData(state, activeAnnotationDataList);
+    _activeAnnotations =  annotationsFromData(state, activeAnnotationDataList);
+    return _activeAnnotations;
 };
 
+let _annotatedText;
 const mapStateToProps = (state) => {
     const user = getUser(state);
     const loading = state.data.loadingWitnesses || state.data.loadingAnnotations;
@@ -140,14 +161,20 @@ const mapStateToProps = (state) => {
         let annotationList = getAnnotationsForWitnessId(state, baseWitness.id);
         annotations = annotationsFromData(state, annotationList);
         activeAnnotations = getActiveAnnotations(state, baseWitness.id);
-        annotatedText = new AnnotatedText(
-            segmentTibetanText(baseWitness.content),
-            activeAnnotations,
-            (text) => {
-                return segmentTibetanText(text).sortedSegments();
-            },
-            baseWitness
-        );
+        if (_annotatedText) {
+            annotatedText = _annotatedText;
+        } else {
+            annotatedText = new AnnotatedText(
+                segmentTibetanText(baseWitness.content),
+                activeAnnotations,
+                (text) => {
+                    return segmentTibetanText(text).sortedSegments();
+                },
+                baseWitness
+            );
+            _annotatedText = annotatedText;
+        }
+
         annotationPositions = getAnnotationPositions(annotatedText, annotations);
 
         // Get the segments that are part of the current active annotation.
