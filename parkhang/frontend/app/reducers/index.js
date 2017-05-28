@@ -61,6 +61,10 @@ export const getText = (state, textId) => {
     return data.getText(state.data, textId);
 };
 
+export const getSources = (state) => {
+    return data.getSources(state.data);
+};
+
 export const getSource = (state, sourceId) => {
     return data.getSource(state.data, sourceId);
 };

@@ -6,18 +6,20 @@ import addTibetanShay from 'lib/addTibetanShay'
 import * as reducers from 'reducers'
 import * as actions from 'actions'
 import { BASE_ANNOTATION_ID } from 'lib/AnnotatedText'
-import Annotation, { ANNOTATION_TYPES, getNaturalId, TemporaryAnnotation } from 'lib/Annotation'
+import Annotation, { ANNOTATION_TYPES, TemporaryAnnotation } from 'lib/Annotation'
 import _ from 'lodash'
 
 const TEMPORARY_ANNOTATION_ID = -3;
+const BASE_NAME = 'Working';
 
-const getAnnotationsData = (annotations) => {
+const getAnnotationsData = (annotations, sources) => {
     let annotationsData = [];
+    let baseSources = sources.map(source => source.name);
     if (annotations) {
         let annotationsById = {};
         for (let i=0; i < annotations.length; i++) {
             let annotation = annotations[i];
-            const id = annotation.content + annotation.start;
+            let id = annotation.content + annotation.start;
             if (annotation.isTemporary) {
                 annotationsById[TEMPORARY_ANNOTATION_ID] = {
                     name: annotation.getSourceName(),
@@ -25,10 +27,13 @@ const getAnnotationsData = (annotations) => {
                     id: annotation.uniqueId,
                     isTemporary: true,
                     annotation: annotation
-                }
+                };
+                baseSources = baseSources.filter(a => a !== annotation.getSourceName());
+                id = TEMPORARY_ANNOTATION_ID;
             } else if (annotationsById[id]) {
                 let existingAnnotation = annotationsById[id];
                 existingAnnotation.name += ' ' + addTibetanShay(annotation.getSourceName());
+                baseSources = baseSources.filter(a => a !== annotation.getSourceName());
             } else {
                 annotationsById[id] = {
                     name: addTibetanShay(annotation.getSourceName()),
@@ -37,10 +42,21 @@ const getAnnotationsData = (annotations) => {
                     userCreated: annotation.userCreated,
                     annotation: annotation
                 };
+                baseSources = baseSources.filter(a => a !== annotation.getSourceName());
+            }
+            if (!annotation.userCreated && annotation.creator.isBase) {
+                annotationsById[id].isBase = true;
+            } else {
+                annotationsById[id].isBase = false;
             }
         }
+        baseSources.unshift(BASE_NAME);
         annotationsData = Object.keys(annotationsById).reduce((arr, key) => {
-            arr.push(annotationsById[key]);
+            const annotationData = annotationsById[key];
+            if (annotationData.isBase) {
+                annotationData.name = baseSources.reduce((prev, cur) => prev += " " + addTibetanShay(cur, ";"), '');
+            }
+            arr.push(annotationData);
             return arr;
         }, []);
     }
@@ -141,7 +157,8 @@ export const mapStateToProps = (state, ownProps) => {
 
     const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, witness, activeAnnotation.start, activeAnnotation.length);
     const annotations = getAvailableAnnotations(ownProps.annotatedText, activeAnnotation, temporaryVariant, ownProps.annotationPositions);
-    let annotationsData = getAnnotationsData(annotations);
+    const sources = reducers.getSources(state);
+    let annotationsData = getAnnotationsData(annotations, sources);
 
     let baseAnnotation = null;
     if (activeAnnotation.id == BASE_ANNOTATION_ID) {

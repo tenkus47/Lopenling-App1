@@ -322,6 +322,15 @@ export const getText = (state, textId) => {
     return text;
 };
 
+export const getSources = (state) => {
+    let sources = [];
+    for (let sourceData of state.sources) {
+        const source = getSource(state, sourceData.id);
+        sources.push(source);
+    }
+    return sources;
+};
+
 export const getSource = (state, sourceId) => {
     const sourceData = state.sourcesById[sourceId];
     let source = null;
