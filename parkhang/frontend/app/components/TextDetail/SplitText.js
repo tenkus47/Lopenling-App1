@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { AutoSizer } from 'react-virtualized/dist/es/AutoSizer';
 import { List } from 'react-virtualized/dist/es/List';
 import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/es/CellMeasurer'
@@ -38,10 +39,26 @@ export default class SplitText extends React.PureComponent {
         this._mouseDown = false;
     }
 
-    updateList() {
+    updateList(resetCache=true, resetRow=null) {
         if (this.list) {
+            let node;
+            let currentScrollTop;
+            if (resetCache) {
+                node = ReactDOM.findDOMNode(this.list);
+                currentScrollTop = node.scrollTop;
+                if (resetRow) {
+                    this.cache.clear(resetRow);
+                } else {
+                    this.cache.clearAll();
+                }
+                this.list.measureAllRows();
+            }
             this.list.recomputeRowHeights();
-            this.list.forceUpdateGrid();
+            if (currentScrollTop) {
+                setTimeout(() => {
+                    this.list.scrollToPosition(currentScrollTop);
+                }, 0);
+            }
         }
     }
 
@@ -199,24 +216,41 @@ export default class SplitText extends React.PureComponent {
         });
     }
 
-    componentWillReceiveProps(props) {
-        this.updateList();
-        if (this.splitText) {
-            this.updateState(props);
+    shouldResetListCache(oldProps, newProps) {
+        return (
+            oldProps.showImages !== newProps.showImages
+        )
+    }
+
+    selectedListRow() {
+        let row = null;
+        if (this.props.activeAnnotation) {
+            row = this.props.splitText.getTextIndexOfPosition(this.props.activeAnnotation.start);
         }
+        return row;
+    }
+
+    componentWillReceiveProps(props) {
         if (props.textListVisible !== this.textListVisible) {
             setTimeout(() => {
                 this.textListVisible = props.textListVisible;
                 this.updateState(this.props);
-                this.cache.clearAll();
-                this.updateList();
+                this.updateList(true);
             }, 500);
+        } else {
+            if (this.splitText) {
+                this.updateState(props);
+            }
+            if (this.props.splitText.annotatedText !== props.splitText.annotatedText) {
+                this.updateList(true, this.selectedListRow());
+            } else {
+                this.updateList(this.shouldResetListCache(this.props, props));
+            }
         }
     }
 
     componentDidMount() {
         this.resizeHandler = _.throttle(() => {
-            this.cache.clearAll();
             this.updateList();
             setTimeout(() => {
                 this.updateState(this.props);
