@@ -26,6 +26,10 @@ describe('addTibetanShay', () => {
         expect(
             addTibetanShay("Test")
         ).toEqual("Test");
+
+        expect(
+            addTibetanShay("Test", ";")
+        ).toEqual("Test;");
     });
 
 });

@@ -15,12 +15,15 @@ function isTibetanCharacter(char) {
  * @param {string} str
  * @returns {string}
  */
-export default function addTibetanShay(str) {
+export default function addTibetanShay(str, alternateEnd=null) {
     const lastChar = str.slice(-1);
     let newStr = "";
 
     if (!isTibetanCharacter(lastChar)) {
         newStr = str;
+        if (alternateEnd) {
+            newStr += alternateEnd;
+        }
     } else if (lastChar === "ང") {
         newStr += str + NON_BREAKING_TSHEG+"།";
     } else if (shaySwallowers.indexOf(lastChar) !== -1) {
