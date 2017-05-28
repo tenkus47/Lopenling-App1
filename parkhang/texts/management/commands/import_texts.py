@@ -9,6 +9,10 @@ from texts.utils.parse_word_diff import parse_word_diff
 from texts.utils.normalise_string import normalise_string
 from texts.utils.parse_layout_data import parse_layout_data
 
+
+BASE_SOURCE_NAME = 'Base'
+
+
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
@@ -23,6 +27,12 @@ class Command(BaseCommand):
         base_texts = {} #filepaths to base texts
         base_witnesses = {} # witnesses that are classes as a base text
         sources = {}
+
+        # create base source and witness
+        base_source = Source()
+        base_source.name = BASE_SOURCE_NAME
+        base_source.is_default_base_text = True
+        base_source.save()
 
         # make sure base text is the first witness processed
         sorted_dir_list = []
@@ -42,14 +52,18 @@ class Command(BaseCommand):
             if dir not in sources:
                 source = Source()
                 source.name = dir
-                if is_base:
-                    source.is_default_base_text = True
-                else:
-                    source.is_default_base_text = False
+                # if is_base:
+                #     source.is_default_base_text = True
+                # else:
+                #     source.is_default_base_text = False
+                source.is_default_base_text = False
                 source.save()
                 sources[dir] = source
             else:
                 source = sources[dir]
+
+            if is_base:
+                source = base_source
 
             files = next(os.walk(full_dir))[2]
 
