@@ -10,6 +10,7 @@ import { getUniqueId } from 'lib/Annotation'
 
 // Data
 
+let _annotationCache = {};
 export const initialDataState = {
     texts: [],
     textsById: {},
@@ -134,6 +135,7 @@ function markSaved(annotations) {
 }
 
 function loadedAnnotations(state, action) {
+    _annotationCache = {};
     const annotations = markSaved(action.annotations);
     const annotationsById = arrayToObject(
         action.annotations,
@@ -422,8 +424,14 @@ export function dataFromAnnotation(annotation) {
 }
 
 export const getAnnotationsForWitnessId = (state, witnessId, annotationType=ANNOTATION_TYPES.variant) => {
-    let annotations = state.witnessAnnotationsById[witnessId];
-    return _.pickBy(annotations, (annotation, key) => annotation.type === annotationType);
+    if (!_annotationCache[witnessId]) {
+        _annotationCache[witnessId] = {};
+    }
+    if (!_annotationCache[witnessId][annotationType]) {
+        let annotations = state.witnessAnnotationsById[witnessId];
+        _annotationCache[witnessId][annotationType] = _.pickBy(annotations, (annotation, key) => annotation.type === annotationType);
+    }
+    return _annotationCache[witnessId][annotationType];
 };
 
 export const getAnnotation = (state, witnessId, annotationUniqueId) => {
