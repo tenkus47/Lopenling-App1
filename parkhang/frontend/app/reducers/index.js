@@ -39,6 +39,10 @@ export const getSelectedText = (state) => {
     return ui.getSelectedText(state.ui);
 };
 
+export const getSelectedTextWitnessId = (state, textId) => {
+    return ui.getSelectedTextWitnessId(state.ui, textId);
+};
+
 export const showPageImages = (state) => {
     return ui.showPageImages(state.ui);
 };
@@ -71,6 +75,10 @@ export const getSource = (state, sourceId) => {
 
 export const getWitness = (state, witnessId) => {
     return data.getWitness(state.data, witnessId);
+};
+
+export const getTextWitnesses = (state, witnessId) => {
+    return data.getTextWitnesses(state.data, witnessId);
 };
 
 export const getBaseWitness = (state, textId) => {

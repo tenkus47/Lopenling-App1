@@ -1,23 +1,19 @@
 import React from 'react'
 import addTibetanShay from 'lib/addTibetanShay'
 import styles from './TextHeading.css'
+import TabBar from './TabBar'
 
 const TextHeading = props => {
-    let name = ""
-    if (props.text.name) {
-        name = addTibetanShay(props.text.name);
+    let name = "";
+    if (props.selectedText && props.selectedText.name) {
+        name = addTibetanShay(props.selectedText.name);
     }
     return (
         <div className={styles.headingContainer}>
             <h2 className={styles.textHeading}>
                 {name}
             </h2>
-            <div className={styles.controls}>
-                <label>
-                    <input type="checkbox" checked={props.showPageImages} onChange={props.changedShowPageImages} />
-                    Show page images
-                </label>
-            </div>
+            <TabBar witnesses={props.witnesses} activeWitness={props.selectedWitness} onSelectedWitness={props.onSelectedWitness} />
         </div>
     );
 };

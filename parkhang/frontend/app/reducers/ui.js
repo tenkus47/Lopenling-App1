@@ -2,6 +2,7 @@ import * as actions from 'actions'
 
 export const initialUIState = {
     selectedText: false,
+    selectedTextWitness: {},
     searchValue: "",
     showPageImages: false,
     activeAnnotations: {},
@@ -15,6 +16,16 @@ function selectedText(state, action) {
         selectedText: action.text
     };
 }
+
+function selectedTextWitness(state, action) {
+    return {
+        ...state,
+        selectedTextWitness: {
+            ...selectedTextWitness,
+            [action.text.id]: action.witness.id
+        }
+    }
+};
 
 function changedSearchValue(state, action) {
     let searchValue = action.searchValue;
@@ -113,6 +124,7 @@ function removedTemporaryAnnotation(state, action) {
 
 const uiReducers = {};
 uiReducers[actions.SELECTED_TEXT] = selectedText;
+uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
 uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
 uiReducers[actions.CHANGED_SELECTED_SEGMENT] = changedSelectedSegment;
@@ -124,6 +136,10 @@ export default uiReducers;
 
 export const getSelectedText = (state) => {
     return state.selectedText;
+};
+
+export const getSelectedTextWitnessId = (state, textId) => {
+    return state.selectedTextWitness[textId];
 };
 
 export const showPageImages = (state) => {

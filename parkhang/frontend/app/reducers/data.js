@@ -383,6 +383,17 @@ export const getBaseWitness = (state, textId) => {
     return baseWitness;
 };
 
+export const getTextWitnesses = (state, textId) => {
+    let witnesses = [];
+    if (state.textWitnessesById.hasOwnProperty(textId)) {
+        const witnessesById = state.textWitnessesById[textId];
+        for (let witnessId in witnessesById) {
+            witnesses.push(getWitness(state, witnessId));
+        }
+    }
+    return witnesses;
+};
+
 export function annotationFromData(state, annotationData) {
     let witness = getWitness(state, annotationData.witness);
     let creatorWitness = null;

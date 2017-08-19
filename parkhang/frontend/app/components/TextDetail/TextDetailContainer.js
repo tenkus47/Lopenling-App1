@@ -6,7 +6,7 @@ import Witness from 'lib/Witness';
 import { WORKING_VERSION_ANNOTATION_ID, INSERTION_KEY, DELETION_KEY } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
 import { changedActiveAnnotation } from 'actions'
-import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible } from 'reducers'
+import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible, getSelectedTextWitnessId, getTextWitnesses, getWitness } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
@@ -121,6 +121,7 @@ const getActiveAnnotations = (state, baseWitnessId) => {
 };
 
 let _annotatedText;
+let _selectedWitness;
 const mapStateToProps = (state) => {
     const user = getUser(state);
     const loading = state.data.loadingWitnesses || state.data.loadingAnnotations;
@@ -155,12 +156,36 @@ const mapStateToProps = (state) => {
     let activeAnnotations = [];
     let pageBreaks = [];
     let imagesBaseUrl = '';
+    let selectedWitness = baseWitness;
     if (baseWitness && selectedText
         && state.data.witnessAnnotationsById.hasOwnProperty(baseWitness.id))
     {
+        witnesses = getTextWitnesses(state, selectedText.id);
+        const selectedWitnessId = getSelectedTextWitnessId(state, selectedText.id);
+        if (selectedWitnessId) {
+            selectedWitness = getWitness(state, selectedWitnessId);
+        }
+
+        if (_selectedWitness && selectedWitnessId !== _selectedWitness.id) {
+            _annotatedText = null;
+        }
+        _selectedWitness = selectedWitness;
+
         let annotationList = getAnnotationsForWitnessId(state, baseWitness.id);
+        activeAnnotations = getActiveAnnotations(state, selectedWitness.id);
+
+        if (selectedWitness.id !== baseWitness.id) {
+            for (let key of Object.keys(annotationList)) {
+                if (annotationList[key].creator_witness === selectedWitness.id) {
+                    activeAnnotations.push(annotationList[key]);
+                }
+            }
+            annotationList = _.pickBy(annotationList, anno => anno.creator_witness === selectedWitness.id);
+        }
+
         annotations = annotationsFromData(state, annotationList);
-        activeAnnotations = getActiveAnnotations(state, baseWitness.id);
+        activeAnnotations = annotationsFromData(state, activeAnnotations);
+
         if (_annotatedText) {
             annotatedText = _annotatedText;
         } else {
@@ -207,7 +232,8 @@ const mapStateToProps = (state) => {
         pageBreaks: pageBreaks,
         imagesBaseUrl: imagesBaseUrl,
         user: user,
-        textListVisible
+        textListVisible,
+        selectedWitness
     };
 };
 

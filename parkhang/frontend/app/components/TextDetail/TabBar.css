@@ -1,0 +1,16 @@
+.tabBar {
+    height: 30px;
+    display: flex;
+}
+
+.tab {
+    width: 200px;
+    font-size: 14px;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.selected {
+    border-bottom: 3px solid blue;
+}

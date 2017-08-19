@@ -47,6 +47,7 @@ export const REMOVED_TEMPORARY_ANNOTATION = 'text/REMOVED_TEMPORARY_ANNOTATION';
 export const SELECTED_TEXT = 'textList/SELECTED_TEXT';
 export const CHANGED_SEARCH_VALUE = 'textList/CHANGED_SEARCH_VALUE';
 
+export const SELECTED_WITNESS = 'text/SELECTED_WITNESS';
 export const CHANGED_SHOW_PAGE_IMAGES = 'text/CHANGED_SHOW_PAGE_IMAGES';
 
 export const CHANGED_SELECTED_SEGMENT = 'text/CHANGED_SELECTED_SEGMENT';
@@ -304,6 +305,14 @@ export function changedShowPageImages(showPageImages) {
     return {
         type: CHANGED_SHOW_PAGE_IMAGES,
         showPageImages,
+    }
+}
+
+export function selectedTextWitness(text, witness) {
+    return {
+        type: SELECTED_WITNESS,
+        text,
+        witness
     }
 }
 
