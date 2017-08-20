@@ -157,6 +157,8 @@ const mapStateToProps = (state) => {
     let pageBreaks = [];
     let imagesBaseUrl = '';
     let selectedWitness = baseWitness;
+    // Whether to show the text's page images
+    let paginated = false;
     if (baseWitness && selectedText
         && state.data.witnessAnnotationsById.hasOwnProperty(baseWitness.id))
     {
@@ -181,6 +183,10 @@ const mapStateToProps = (state) => {
                 }
             }
             annotationList = _.pickBy(annotationList, anno => anno.creator_witness === selectedWitness.id);
+
+            // always show images if we are viewing a specific edition
+            // i.e. not the working edition.
+            paginated = true;
         }
 
         annotations = annotationsFromData(state, annotationList);
@@ -208,13 +214,12 @@ const mapStateToProps = (state) => {
             selectedAnnotatedSegments = annotatedText.segmentsForAnnotation(activeAnnotation);
         }
 
-        if (true || showPageImages(state)) {
-            pageBreaks = getAnnotationsForWitnessId(state, baseWitness.id, ANNOTATION_TYPES.pageBreak);
-            let starts = [];
-            _.forIn(pageBreaks, o => starts.push(o.start));
-            pageBreaks = starts.sort((a, b) => a-b);
-            imagesBaseUrl = '/media/texts/' + selectedText.id + '/';
-        }
+
+        pageBreaks = getAnnotationsForWitnessId(state, baseWitness.id, ANNOTATION_TYPES.pageBreak);
+        let starts = [];
+        _.forIn(pageBreaks, o => starts.push(o.start));
+        pageBreaks = starts.sort((a, b) => a-b);
+        imagesBaseUrl = '/media/texts/' + selectedText.id + '/';
     }
 
     return {
@@ -223,7 +228,7 @@ const mapStateToProps = (state) => {
         baseWitness: baseWitness,
         annotations: annotations,
         loading: loading,
-        paginated: showPageImages(state),
+        paginated: paginated,
         annotatedText: annotatedText,
         selectedAnnotatedSegments: selectedAnnotatedSegments,
         annotationPositions: annotationPositions,
