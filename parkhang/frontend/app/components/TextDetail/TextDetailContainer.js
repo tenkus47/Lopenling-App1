@@ -168,9 +168,11 @@ const mapStateToProps = (state) => {
             selectedWitness = getWitness(state, selectedWitnessId);
         }
 
+        // reset cache if we're viewing a new witness
         if (_selectedWitness && selectedWitnessId !== _selectedWitness.id) {
             _annotatedText = null;
         }
+        // set cached witness
         _selectedWitness = selectedWitness;
 
         let annotationList = getAnnotationsForWitnessId(state, baseWitness.id);
