@@ -6,7 +6,7 @@ import Witness from 'lib/Witness';
 import { WORKING_VERSION_ANNOTATION_ID, INSERTION_KEY, DELETION_KEY } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
 import { changedActiveAnnotation } from 'actions'
-import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible, getSelectedTextWitnessId, getTextWitnesses, getWitness } from 'reducers'
+import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getWorkingWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible, getSelectedTextWitnessId, getTextWitnesses, getWitness } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
@@ -146,6 +146,7 @@ const mapStateToProps = (state) => {
 
     const selectedText = getSelectedText(state);
     let witnesses = {};
+    let workingWitness = getWorkingWitness(state, selectedText.id);
     let baseWitness = getBaseWitness(state, selectedText.id);
 
     let annotationPositions = {};
@@ -156,11 +157,11 @@ const mapStateToProps = (state) => {
     let activeAnnotations = [];
     let pageBreaks = [];
     let imagesBaseUrl = '';
-    let selectedWitness = baseWitness;
+    let selectedWitness = workingWitness;
     // Whether to show the text's page images
     let paginated = false;
-    if (baseWitness && selectedText
-        && state.data.witnessAnnotationsById.hasOwnProperty(baseWitness.id))
+    if (workingWitness && selectedText
+        && state.data.witnessAnnotationsById.hasOwnProperty(workingWitness.id))
     {
         witnesses = getTextWitnesses(state, selectedText.id);
         const selectedWitnessId = getSelectedTextWitnessId(state, selectedText.id);
@@ -175,10 +176,10 @@ const mapStateToProps = (state) => {
         // set cached witness
         _selectedWitness = selectedWitness;
 
-        let annotationList = getAnnotationsForWitnessId(state, baseWitness.id);
+        let annotationList = getAnnotationsForWitnessId(state, workingWitness.id);
         activeAnnotations = getActiveAnnotations(state, selectedWitness.id);
 
-        if (selectedWitness.id !== baseWitness.id) {
+        if (selectedWitness.id !== workingWitness.id) {
             for (let key of Object.keys(annotationList)) {
                 if (annotationList[key].creator_witness === selectedWitness.id) {
                     activeAnnotations.push(annotationList[key]);
@@ -198,12 +199,12 @@ const mapStateToProps = (state) => {
             annotatedText = _annotatedText;
         } else {
             annotatedText = new AnnotatedText(
-                segmentTibetanText(baseWitness.content),
+                segmentTibetanText(workingWitness.content),
                 activeAnnotations,
                 (text) => {
                     return segmentTibetanText(text).sortedSegments();
                 },
-                baseWitness
+                workingWitness
             );
             _annotatedText = annotatedText;
         }
@@ -227,6 +228,7 @@ const mapStateToProps = (state) => {
     return {
         text: selectedText,
         witnesses: witnesses,
+        workingWitness: workingWitness,
         baseWitness: baseWitness,
         annotations: annotations,
         loading: loading,
@@ -327,7 +329,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 const content = segments.reduce((content, segment) => content + segment.text, "");
                 activeAnnotation = new Annotation(
                     WORKING_VERSION_ANNOTATION_ID,
-                    getWorkingWitness(stateProps.text),
+                    getActiveWitness(stateProps.text),
                     baseAnnotation.start,
                     baseAnnotation.length,
                     content,
@@ -361,7 +363,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     }
 };
 
-const getWorkingWitness = (selectedText) => {
+const getActiveWitness = (selectedText) => {
     const source = new Source(
         WORKING_VERSION_ANNOTATION_ID,
         WORKING_VERSION_SOURCE_NAME

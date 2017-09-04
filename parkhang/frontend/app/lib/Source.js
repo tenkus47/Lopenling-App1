@@ -13,9 +13,10 @@ export default class Source {
      * @param {number} id - id from API
      * @param {string} name - name of the source
      */
-    constructor(id, name, isDefaultBaseText=false) {
+    constructor(id, name, isBase=false, isWorking=false) {
         this.id = id;
         this.name = name;
-        this.isDefaultBaseText = isDefaultBaseText;
+        this.isBase = isBase;
+        this.isWorking = isWorking;
     }
 }

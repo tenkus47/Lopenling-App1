@@ -144,6 +144,10 @@ export default class Annotation {
     get isBaseAnnotation() {
         return (!this.userCreated && this.creator.isBase);
     }
+
+    get isWorkingAnnotation() {
+        return (!this.userCreated && this.creator.isWorking);
+    }
 }
 
 

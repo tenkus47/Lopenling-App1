@@ -85,6 +85,10 @@ export const getBaseWitness = (state, textId) => {
     return data.getBaseWitness(state.data, textId);
 };
 
+export const getWorkingWitness = (state, textId) => {
+    return data.getWorkingWitness(state.data, textId);
+};
+
 export const getAnnotationsForWitnessId = (state, witnessId, annotationType=ANNOTATION_TYPES.variant) => {
     return data.getAnnotationsForWitnessId(state.data, witnessId, annotationType);
 };

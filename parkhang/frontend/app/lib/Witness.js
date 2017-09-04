@@ -19,12 +19,14 @@ export default class Witness {
      * @param {Source} source - The source of this witness
      * @param {string|null} content - The content of the witness
      * @param {boolean} isBase - Whether this is the base witness for this text
+     * @param {boolean} isWorking - Whether this is the working edition
      */
-    constructor(id, text, source, content=null, isBase=false) {
+    constructor(id, text, source, content=null, isBase=false, isWorking=false) {
         this.id = id;
         this.text = text;
         this.source = source;
         this.content = content;
         this.isBase = isBase;
+        this.isWorking = isWorking;
     }
 }

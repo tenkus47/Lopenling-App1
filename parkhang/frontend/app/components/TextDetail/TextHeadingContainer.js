@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
         if (selectedWitnessId) {
             selectedWitness = reducers.getWitness(state, selectedWitnessId);
         } else {
-            selectedWitness = reducers.getBaseWitness(state, selectedText.id);
+            selectedWitness = reducers.getWorkingWitness(state, selectedText.id);
         }
     }
 

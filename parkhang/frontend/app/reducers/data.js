@@ -335,7 +335,7 @@ export const getSource = (state, sourceId) => {
     const sourceData = state.sourcesById[sourceId];
     let source = null;
     if (sourceData) {
-        source = new Source(sourceData.id, sourceData.name, sourceData.is_default_base_text);
+        source = new Source(sourceData.id, sourceData.name, sourceData.is_base, sourceData.is_working);
     }
     return source;
 };
@@ -359,7 +359,8 @@ export const getWitness = (state, witnessId) => {
             text,
             source,
             witnessData.content,
-            witnessData.is_base
+            witnessData.is_base,
+            witnessData.is_working
         );
     }
     cachedWitnesses[witnessData.id] = witness;
@@ -381,6 +382,23 @@ export const getBaseWitness = (state, textId) => {
         }
     }
     return baseWitness;
+};
+
+export const getWorkingWitness = (state, textId) => {
+    let workingWitness = null;
+    if (state.textWitnessesById.hasOwnProperty(textId)) {
+        const witnesses = state.textWitnessesById[textId];
+        for (let witnessId of Object.keys(witnesses)) {
+            const witness = witnesses[witnessId];
+            if (!workingWitness || witness.is_working) {
+                workingWitness = witness;
+            }
+        }
+        if (workingWitness) {
+            workingWitness = getWitness(state, workingWitness.id);
+        }
+    }
+    return workingWitness;
 };
 
 export const getTextWitnesses = (state, textId) => {

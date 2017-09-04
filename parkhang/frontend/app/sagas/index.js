@@ -168,15 +168,15 @@ function* loadWitnesses(action) {
     try {
         const witnesses = yield call(api.fetchTextWitnesses, action.text);
         yield put(actions.loadedWitnesses(action.text, witnesses));
-        let baseWitness = null;
+        let workingWitness = null;
         for (const witness of witnesses) {
-            if (witness.is_base) {
-                baseWitness = witness;
+            if (witness.is_working) {
+                workingWitness = witness;
                 break;
             }
         }
-        if (baseWitness) {
-            yield put(actions.loadWitnessAnnotations(baseWitness));
+        if (workingWitness) {
+            yield put(actions.loadWitnessAnnotations(workingWitness));
         }
     } catch(e) {
         console.log("FAILED loadWitnesses! %o", e);

@@ -44,16 +44,16 @@ const getAnnotationsData = (annotations, sources) => {
                 };
                 baseSources = baseSources.filter(a => a !== annotation.getSourceName());
             }
-            if (!annotation.userCreated && annotation.creator.isBase) {
-                annotationsById[id].isBase = true;
+            if (!annotation.userCreated && annotation.creator.isWorking) {
+                annotationsById[id].isWorking = true;
             } else {
-                annotationsById[id].isBase = false;
+                annotationsById[id].isWorking = false;
             }
         }
         baseSources.unshift(BASE_NAME);
         annotationsData = Object.keys(annotationsById).reduce((arr, key) => {
             const annotationData = annotationsById[key];
-            if (annotationData.isBase) {
+            if (annotationData.isWorking) {
                 annotationData.name = baseSources.reduce((prev, cur) => prev += " " + addTibetanShay(cur, ";"), '');
             }
             arr.push(annotationData);
@@ -230,7 +230,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
         },
         editAnnotation: (selectedAnnotation) => {
-            const basedOn = (selectedAnnotation.isBaseAnnotation || selectedAnnotation.userCreated) ? null : selectedAnnotation;
+            const basedOn = (selectedAnnotation.isWorkingAnnotation || selectedAnnotation.userCreated) ? null : selectedAnnotation;
             const temporaryAnnotation = new TemporaryAnnotation(
                 basedOn,
                 selectedAnnotation.witness,
