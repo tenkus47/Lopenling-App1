@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { batchActions } from 'redux-batched-actions'
 import TextHeading from './TextHeading'
-import { selectedTextWitness } from 'actions'
+import { selectedTextWitness, changedActiveAnnotation } from 'actions'
 import * as reducers from 'reducers'
 
 const mapStateToProps = (state) => {
@@ -33,7 +34,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...stateProps,
         ...ownProps,
         onSelectedWitness: (witness) => {
-            dispatch(selectedTextWitness(selectedText, witness))
+            dispatch(
+                batchActions([
+                    changedActiveAnnotation(null),
+                    selectedTextWitness(selectedText, witness)
+                ])
+            );
+
         }
     }
 };

@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux';
+import { batchActions } from 'redux-batched-actions';
 
 import { getTextListVisible } from 'reducers'
-import { changedTextListVisible } from 'actions'
+import { changedTextListVisible, changedActiveAnnotation } from 'actions'
 
 import TextListTab from 'components/TextList/TextListTab'
 
@@ -16,7 +17,12 @@ const mapStateToDispatch = (dispatch) => {
     return {
         tabClicked: (e) => {
             const textListIsVisible = true;
-            dispatch(changedTextListVisible(textListIsVisible));
+            dispatch(
+                batchActions([
+                    changedActiveAnnotation(null),
+                    changedTextListVisible(textListIsVisible)
+                ])
+            );
         }
     }
 };
