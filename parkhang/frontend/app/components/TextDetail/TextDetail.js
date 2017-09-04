@@ -58,6 +58,7 @@ const TextDetail = props => {
             selectedAnnotatedSegments={props.selectedAnnotatedSegments}
             textListVisible={props.textListVisible}
             showImages={props.paginated}
+            imagesBaseUrl={props.imagesBaseUrl}
         />
     }
 

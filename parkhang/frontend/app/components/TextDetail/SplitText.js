@@ -344,7 +344,7 @@ export default class SplitText extends React.PureComponent {
                 >
                     {props.showImages &&
                         <div className={styles.pechaImage}>
-                            <div className={styles.pechaContent}><p>Page {index + 1} image</p></div>
+                            <div className={styles.pechaContent}><img src={props.imagesBaseUrl + (index + 1) + '.png'} width="100%"/></div>
                         </div>
                     }
                     <Text
