@@ -166,7 +166,7 @@ export const mapStateToProps = (state, ownProps) => {
     } else {
         const [start, length] = ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
         baseAnnotation = ownProps.annotatedText.getBaseAnnotation(start, length);
-        const baseAnnotationData = getAnnotationsData([baseAnnotation]);
+        const baseAnnotationData = getAnnotationsData([baseAnnotation], sources);
         annotationsData = baseAnnotationData.concat(annotationsData);
     }
 
