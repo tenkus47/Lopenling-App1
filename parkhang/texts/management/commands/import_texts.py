@@ -10,7 +10,7 @@ from texts.utils.normalise_string import normalise_string
 from texts.utils.parse_layout_data import parse_layout_data
 
 
-BASE_SOURCE_NAME = 'Base'
+WORKING_SOURCE_NAME = 'Working'
 
 
 class Command(BaseCommand):
@@ -25,14 +25,15 @@ class Command(BaseCommand):
         base = options['base_texts']
         texts = {}
         base_texts = {} #filepaths to base texts
-        base_witnesses = {} # witnesses that are classes as a base text
+        working_witnesses = {} # witnesses that are classes as a base text
+        base_witnesses = {} # witnesses that the base was copied from
         sources = {}
 
         # create base source and witness
-        base_source = Source()
-        base_source.name = BASE_SOURCE_NAME
-        base_source.is_default_base_text = True
-        base_source.save()
+        working_source = Source()
+        working_source.name = WORKING_SOURCE_NAME
+        working_source.is_working = True
+        working_source.save()
 
         # make sure base text is the first witness processed
         sorted_dir_list = []
@@ -56,14 +57,14 @@ class Command(BaseCommand):
                 #     source.is_default_base_text = True
                 # else:
                 #     source.is_default_base_text = False
-                source.is_default_base_text = False
+                source.is_base = is_base
                 source.save()
                 sources[dir] = source
             else:
                 source = sources[dir]
 
-            if is_base:
-                source = base_source
+            # if is_base:
+            #     source = base_source
 
             files = next(os.walk(full_dir))[2]
 
@@ -85,22 +86,34 @@ class Command(BaseCommand):
                     witness = Witness()
                     witness.text = text
                     witness.source = source
-
-                    if is_base:
-                        with open(filepath, 'r') as file:
-                            content = file.read()
-                            witness.content = content
-
-                        base_texts[text_name] = filepath
-                    else:
-                        base_path = base_texts[text_name]
                     witness.save()
 
                     if is_base:
-                        base_witnesses[text_name] = witness
-                        continue
+                        working_witness = Witness()
+                        working_witness.text = text
+                        working_witness.source = working_source
 
-                    base_witness = base_witnesses[text_name]
+                        with open(filepath, 'r') as file:
+                            content = file.read()
+                            working_witness.content = content
+                        working_witness.save()
+
+                        base_texts[text_name] = filepath
+                        # base_path = filepath
+                        working_witnesses[text_name] = working_witness
+                        base_witnesses[text_name] = witness
+
+                        # there won't be any annotations for the base witness clone
+                        # or the base witness itself
+                        continue
+                    else:
+                        base_path = base_texts[text_name]
+
+                    # if is_base:
+                    #     base_witnesses[text_name] = base_witness
+                    #     continue
+
+                    working_witness = working_witnesses[text_name]
 
                     command_args = f'--start-delete="|-" --stop-delete="-/" --aggregate-changes -d "ཿ།།༌་ \n" "{base_path}" "{filepath}"'
                     command = f"dwdiff {command_args}"
@@ -118,7 +131,7 @@ class Command(BaseCommand):
 
                     for annotation_data in annotations:
                         annotation = Annotation()
-                        annotation.witness = base_witness
+                        annotation.witness = working_witness
                         annotation.start = annotation_data['start']
                         annotation.length = annotation_data['length']
                         annotation.content = annotation_data['replacement']
@@ -133,7 +146,8 @@ class Command(BaseCommand):
 
                 text_name = os.path.splitext(filename)[0].replace('_layout', '')
                 # for now, assume page breaks are only for the base witness
-                base_witness = base_witnesses[text_name]
+                # base_witness = base_witnesses[text_name]
+                base_origin_witness = base_witnesses[text_name]
                 with open(filepath, 'r') as file:
                     content = file.read()
 
@@ -142,11 +156,11 @@ class Command(BaseCommand):
                 for page_break in page_breaks:
                     pb_count += 1
                     annotation = Annotation()
-                    annotation.witness = base_witness
+                    annotation.witness = base_origin_witness
                     annotation.start = page_break
                     annotation.length = 0
                     annotation.content = pb_count
-                    annotation.creator_witness = base_witness
+                    annotation.creator_witness = base_origin_witness
                     annotation.type = AnnotationType.page_break.value
                     annotation.save()
 

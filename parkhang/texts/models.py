@@ -39,7 +39,9 @@ class Source(models.Model):
     e.g. སྡེ་དགེ. This should be localised"""
     name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     """True if this source will be the default base text."""
-    is_default_base_text = models.BooleanField(default=False)
+    is_base = models.BooleanField(default=False)
+    """True if this source represents the working edition"""
+    is_working = models.BooleanField(default=False)
 
 
 class Witness(models.Model):

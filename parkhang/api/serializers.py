@@ -13,7 +13,7 @@ class TextSerializer(serializers.ModelSerializer):
 class SourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Source
-        fields = ('id', 'name', 'is_default_base_text')
+        fields = ('id', 'name', 'is_base', 'is_working')
 
 
 class WitnessSerializer(serializers.ModelSerializer):
@@ -21,13 +21,18 @@ class WitnessSerializer(serializers.ModelSerializer):
     source = serializers.PrimaryKeyRelatedField(read_only=True)
     is_base = serializers.SlugRelatedField(
         source='source',
-        slug_field='is_default_base_text',
+        slug_field='is_base',
+        read_only=True
+    )
+    is_working = serializers.SlugRelatedField(
+        source='source',
+        slug_field='is_working',
         read_only=True
     )
 
     class Meta:
         model = Witness
-        fields = ('id', 'text', 'source', 'is_base', 'revision', 'content')
+        fields = ('id', 'text', 'source', 'is_base', 'is_working', 'revision', 'content')
 
 
 class AnnotationSerializer(serializers.ModelSerializer):
