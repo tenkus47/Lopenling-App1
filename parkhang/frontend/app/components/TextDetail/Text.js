@@ -197,6 +197,7 @@ export default class Text extends React.Component {
                     onClick={(e) => this.selectedElement(e.target)}
                     style={textStyle}
                 />
+                <div className={styles.pageNumber}>{this.props.row + 1}</div>
             </div>
         )
     }
