@@ -23,29 +23,39 @@
     font-family: var(--tibetan-fonts);
     letter-spacing: 0.04em;
     background-color: white;
-    margin: 0px auto;
+    margin: 0px;
     min-width: 0;
     width: 100%;
 }
 
 .textFirstRow {
-    margin-top: 20px;
+    margin-top: 0px;
     border-top: 15px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+}
+
+.limitWidth.textFirstRow {
+    margin-top: 20px;
 }
 
 .textContainer {
     overflow: auto;
     background-color: var(--text-bg);
     flex-grow: 1;
-    padding: 0 var(--paddingSide);
+    padding-left: 0;
     min-width: 200px;
     display: flex;
+    position: relative;
 }
 
 .limitWidth {
     max-width: var(--maxWidth);
+}
+
+.limitWidth.text {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .annotation {
@@ -56,8 +66,6 @@
 .selectedAnnotation {
     background-color: #ccc;
 }
-
-
 
 .removedByAnnotation {
     @apply --removedText;
