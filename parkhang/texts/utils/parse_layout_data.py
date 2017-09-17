@@ -19,6 +19,7 @@ def parse_layout_data(layout_data: str) -> List[int]:
     current_pos = 0
     breaks = []
     line_breaks = ['\n', '\r']
+    current_string = ''
 
     normalised = normalise_string(layout_data)
     for char in normalised:
@@ -30,7 +31,7 @@ def parse_layout_data(layout_data: str) -> List[int]:
             in_break = False
             current_string = ''
             continue
-        elif char == front_char or char == back_char:
+        elif in_break and (char == front_char or char == back_char):
             continue
 
         if not in_break:
