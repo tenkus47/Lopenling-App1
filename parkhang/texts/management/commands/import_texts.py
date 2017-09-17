@@ -69,6 +69,8 @@ class Command(BaseCommand):
             files = next(os.walk(full_dir))[2]
 
             for filename in files:
+                if filename[0] == '.':
+                    continue
                 filepath = os.path.join(full_dir, filename)
 
                 if 'layout' in filename:
@@ -92,7 +94,6 @@ class Command(BaseCommand):
                         working_witness = Witness()
                         working_witness.text = text
                         working_witness.source = working_source
-
                         with open(filepath, 'r') as file:
                             content = file.read()
                             working_witness.content = content
