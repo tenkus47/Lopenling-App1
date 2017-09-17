@@ -127,6 +127,7 @@ export function* loadTexts() {
 function* loadSources() {
     try {
         const sources = yield call(api.fetchSources);
+        console.log('sources: %o', sources);
         yield put(actions.loadedSources(sources));
     } catch(e) {
         console.log("FAILED loadSources! %o", e);
@@ -153,7 +154,7 @@ export function* watchLoadInitialData() {
 function* selectedText(action) {
     yield put(actions.loadingWitnesses());
     yield [
-        call(loadWitnesses, action)
+        call(loadInitialTextData, action)
     ];
 }
 
@@ -164,51 +165,57 @@ function* watchSelectedText() {
 
 // WITNESSES
 
-function* loadWitnesses(action) {
+function* loadInitialTextData(action) {
     try {
         const witnesses = yield call(api.fetchTextWitnesses, action.text);
         yield put(actions.loadedWitnesses(action.text, witnesses));
         let workingWitness = null;
+        let baseWitness = null;
         for (const witness of witnesses) {
             if (witness.is_working) {
                 workingWitness = witness;
-                break;
+            }
+            if (witness.is_base) {
+                baseWitness = witness;
             }
         }
-        if (workingWitness) {
-            yield put(actions.loadWitnessAnnotations(workingWitness));
-        }
+        yield put(actions.loadingWitnessAnnotations(workingWitness));
+        yield [
+            call(loadAnnotations, workingWitness),
+            call(loadAppliedAnnotations, workingWitness)
+        ];
+        yield call(loadAnnotations, baseWitness);
     } catch(e) {
-        console.log("FAILED loadWitnesses! %o", e);
+        console.log("FAILED loadInitialTextData %o", e);
     }
 }
 
 
 // ANNOTATIONS
 
-function* loadAnnotations(action) {
-    const witness = yield select(reducers.getWitness, action.witness.id);
+function* loadAnnotations(witnessData) {
+    const witness = yield select(reducers.getWitness, witnessData.id);
     const annotations = yield call(api.fetchWitnessAnnotations, witness);
-    yield put(actions.loadedWitnessAnnotations(action.witness, annotations));
+    yield put(actions.loadedWitnessAnnotations(witnessData, annotations));
 }
 
-function* loadAppliedAnnotations(action) {
+function* loadAppliedAnnotations(witnessData) {
     const user = yield select(reducers.getUser);
     if (user.isLoggedIn) {
-        const witness = yield select(reducers.getWitness, action.witness.id);
+        const witness = yield select(reducers.getWitness, witnessData.id);
         const annotations = yield call(api.fetchAppliedUserAnnotations, witness);
         let annotationIds = annotations.map(a => a.annotation_unique_id);
-        yield put(actions.loadedWitnessAppliedAnnotations(action.witness, annotationIds));
+        yield put(actions.loadedWitnessAppliedAnnotations(witnessData, annotationIds));
     } else {
-        yield put(actions.loadedWitnessAppliedAnnotations(action.witness, []));
+        yield put(actions.loadedWitnessAppliedAnnotations(witnessData, []));
     }
 }
 
 function* loadWitnessAnnotations(action) {
     yield put(actions.loadingWitnessAnnotations(action.witness));
     yield [
-        call(loadAnnotations, action),
-        call(loadAppliedAnnotations, action)
+        call(loadAnnotations, action.witness),
+        call(loadAppliedAnnotations, action.witness)
     ];
 }
 
@@ -267,6 +274,7 @@ function* watchBatchedActions() {
  */
 const typeCalls = {
     [actions.LOAD_INITIAL_DATA]: loadInitialData,
+    [actions.LOAD_WITNESS_ANNOTATIONS]: loadWitnessAnnotations,
     [actions.APPLIED_ANNOTATION]: reqAction(applyAnnotation),
     [actions.REMOVED_APPLIED_ANNOTATION]: reqAction(removeAppliedAnnotation),
     [actions.CREATED_ANNOTATION]: reqAction(createAnnotation),
