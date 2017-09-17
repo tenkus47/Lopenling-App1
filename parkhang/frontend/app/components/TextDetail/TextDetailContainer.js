@@ -222,7 +222,6 @@ const mapStateToProps = (state) => {
         let starts = [];
         _.forIn(pageBreaks, o => starts.push(o.start));
         pageBreaks = starts.sort((a, b) => a-b);
-        imagesBaseUrl = '/media/texts/' + selectedText.id + '/';
         if (paginated) {
             imagesBaseUrl = '/static/images/texts/' + selectedText.name + '/' + selectedWitness.source.name + '/';
         }
