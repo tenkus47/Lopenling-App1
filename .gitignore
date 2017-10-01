@@ -13,6 +13,6 @@ data/texts
 parkhang/frontend/static/bundles/parkhang-dev.js.map
 parkhang/frontend/static/bundles/styles-dev.css.map
 parkhang/frontend/coverage
-data/texts-orig
-data
+/data/texts-orig
+/data
 parkhang/static/images/texts
