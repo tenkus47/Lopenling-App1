@@ -1,0 +1,18 @@
+---
+- name: Create static images directory in project
+  file:
+    path: "{{django.root}}static/images/texts"
+    state: directory
+  tags:
+    - images
+
+- name: Upload images to django static dir
+  synchronize:
+    src: ../{{project.name}}/static/images/texts
+    dest: "{{django.root}}static/images"
+    archive: yes
+    rsync_opts:
+      - "--exclude='.DS_Store'"
+  become: yes
+  tags:
+    - images
