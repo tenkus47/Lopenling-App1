@@ -37,6 +37,7 @@ export default class SplitText extends React.PureComponent {
         this.activeSelection = null;
         this.selectedNodes = null;
         this._mouseDown = false;
+        this._activeWitness = null;
     }
 
     updateList(resetCache=true, resetRow=null) {
@@ -231,6 +232,12 @@ export default class SplitText extends React.PureComponent {
     }
 
     componentWillReceiveProps(props) {
+        const activeWitness = this.props.splitText.annotatedText.activeWitness;
+        let changedWitness = false;
+        if (activeWitness !== this._activeWitness) {
+            this._activeWitness = activeWitness;
+            changedWitness = true;
+        }
         if (props.textListVisible !== this.textListVisible) {
             setTimeout(() => {
                 this.textListVisible = props.textListVisible;
@@ -360,6 +367,7 @@ export default class SplitText extends React.PureComponent {
                         textWidth={this.state.textWidth}
                         paddingRight={this.state.textPaddingRight}
                         getBaseAnnotation={this.getBaseAnnotation.bind(this)}
+                        activeWitness={this.props.splitText.annotatedText.activeWitness}
                     />
                     {this.state.selectedTextIndex === index &&
                         <AnnotationControlsContainer

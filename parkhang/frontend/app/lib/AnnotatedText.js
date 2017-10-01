@@ -13,14 +13,24 @@ export const DELETION_KEY = 'd';
 export default class AnnotatedText {
 
     /**
+     * @callback segmenter
+     * @param {string} content
+     * @returns {TextSegment[]|null}
+     */
+
+    /**
      *
      * @param {SegmentedText} originalText
      * @param {Annotation[]} [annotations]
+     * @param {segmenter} [segmenter] - segments strings into TextSegments
+     * @param {Witness} [baseWitness] - witness this text is originally based on
+     * @param {Witness} [activeWitness] - witness this text is representing
      */
-    constructor(originalText, annotations=[], segmenter=null, baseWitness=null) {
+    constructor(originalText, annotations=[], segmenter=null, baseWitness=null, activeWitness=null) {
         this.originalText = originalText;
         this.segmenter = segmenter;
         this.baseWitness = baseWitness;
+        this.activeWitness = (activeWitness) ? activeWitness : baseWitness;
         /** @type {SegmentedText} */
         this._generatedText = null;
         this._orginalCurrentSegmentPositions = {};
@@ -225,7 +235,7 @@ export default class AnnotatedText {
             startPos,
             origLength,
             content,
-            this.baseWitness,
+            this.activeWitness,
             ANNOTATION_TYPES.variant
         );
 

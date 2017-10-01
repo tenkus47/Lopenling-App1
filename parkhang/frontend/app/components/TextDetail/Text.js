@@ -72,6 +72,7 @@ export default class Text extends React.Component {
 
     generateHtml() {
         let segments = this.state.segmentedText.sortedSegments();
+        let activeWitness = this.props.activeWitness;
         if (segments !== this._renderedSegments || this._renderedHtml === null) {
             let segmentHTML = '';
             const insertionClass = styles.insertion;
