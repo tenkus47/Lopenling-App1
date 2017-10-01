@@ -21,7 +21,7 @@
 
 .pechaImage {
     background-color: #eee;
-    height: 200px;
+    min-height: 200px;
     text-align: center;
     display: flex;
     align-items: center;
