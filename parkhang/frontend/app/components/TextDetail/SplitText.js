@@ -248,7 +248,9 @@ export default class SplitText extends React.PureComponent {
             if (this.splitText) {
                 this.updateState(props);
             }
-            if (this.props.splitText.annotatedText !== props.splitText.annotatedText) {
+            if (changedWitness) {
+                this.updateList(true);
+            } else if (this.props.splitText.annotatedText !== props.splitText.annotatedText) {
                 this.updateList(true, this.selectedListRow());
             } else {
                 this.updateList(this.shouldResetListCache(this.props, props));
