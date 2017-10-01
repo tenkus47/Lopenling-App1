@@ -28,19 +28,3 @@
     flex-grow: 0;
     flex-shrink: 0;
 }
-
-.pechaContent {
-    margin: 20px auto;
-    border-style: double;
-    border-width: 10px;
-    border-color: #666;
-    width: 90%;
-    height: 90%;
-    display: flex;
-    align-items: center;
-    text-align: center;
-}
-
-.pechaContent p {
-    margin: 0 auto;
-}
