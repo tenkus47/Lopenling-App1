@@ -2,3 +2,4 @@
 - include: packages.yml
 - include: texts.yml
 - include: import.yml
+- include: images.yml
