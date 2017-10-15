@@ -337,6 +337,7 @@ export default class SplitText extends React.PureComponent {
     rowRenderer({key, index, parent, style}) {
         const props = this.props;
         const cache = this.cache;
+        const pechaImageClass = (props.showImages) ? styles.pechaImage : null;
 
         return (
             <CellMeasurer
@@ -352,7 +353,7 @@ export default class SplitText extends React.PureComponent {
                     className={styles.splitTextRow}
                 >
                     {props.showImages &&
-                        <div className={styles.pechaImage}>
+                        <div className={pechaImageClass}>
                             <div className={styles.pechaContent}><img src={props.imagesBaseUrl + (index + 1) + '.png'} width="100%"/></div>
                         </div>
                     }
@@ -380,6 +381,7 @@ export default class SplitText extends React.PureComponent {
                                     firstSelectedSegment={this.state.firstSelectedSegment}
                                     splitTextRect={this.state.splitTextRect}
                                     selectedElementId={this.state.selectedElementId}
+                                    pechaImageClass={pechaImageClass}
                                 />
                     }
 

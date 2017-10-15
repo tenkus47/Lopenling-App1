@@ -54,6 +54,11 @@ export default class AnnotationControls extends React.PureComponent {
         const firstText = document.getElementsByClassName(textStyles.text)[0];
         const splitTextRect = this.props.splitTextRect;
         const firstElement = document.getElementById(this.props.selectedElementId);
+        let extraTop = 0;
+        if (this.props.pechaImageClass) {
+            const pechaImage = document.getElementsByClassName(this.props.pechaImageClass)[0];
+            extraTop = pechaImage.offsetHeight;
+        }
         if (!firstElement) {
             console.warn('no valid element found in getMeasurements, elementId: %s', this.props.selectedElementId);
             return {
@@ -63,7 +68,7 @@ export default class AnnotationControls extends React.PureComponent {
                 viewPortBottom: 0,
             }
         }
-        const top = firstElement.offsetTop;
+        const top = firstElement.offsetTop + extraTop;
         let viewPortTop = null;
         let viewPortBottom = null;
         let elViewPortTop = null;
