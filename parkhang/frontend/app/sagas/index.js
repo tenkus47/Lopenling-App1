@@ -5,6 +5,8 @@ import * as reducers from 'reducers'
 
 import * as api from 'api'
 import { BATCH } from 'redux-batched-actions'
+import {hasLoadedWitnessAnnotations} from "../reducers";
+import {SELECTED_WITNESS} from "../actions";
 
 /**
  * Get the required delay for a failed request.
@@ -190,6 +192,19 @@ function* loadInitialTextData(action) {
     }
 }
 
+function *selectedWitness(action) {
+    const witnessId = action.witness.id;
+    const hasLoadedAnnotations = yield select(reducers.hasLoadedWitnessAnnotations, witnessId);
+    if (!hasLoadedAnnotations) {
+        yield put(actions.loadingWitnessAnnotations(action.witness));
+        yield call(loadAnnotations, action.witness);
+    }
+}
+
+function *watchSelectedTextWitness() {
+    yield takeLatest(actions.SELECTED_WITNESS, selectedWitness);
+}
+
 
 // ANNOTATIONS
 
@@ -280,6 +295,7 @@ const typeCalls = {
     [actions.CREATED_ANNOTATION]: reqAction(createAnnotation),
     [actions.UPDATED_ANNOTATION]: reqAction(updateAnnotation),
     [actions.DELETED_ANNOTATION]: reqAction(deleteAnnotation),
+    [actions.SELECTED_WITNESS]: reqAction(selectedWitness),
 };
 
 
@@ -297,5 +313,6 @@ export default function* rootSaga() {
         watchUpdatedAnnotation(),
         watchDeletedAnnotation(),
         watchRequests(),
-    ]
+        watchSelectedTextWitness(),
+    ])
 }

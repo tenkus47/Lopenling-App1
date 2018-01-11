@@ -43,6 +43,12 @@ export const getSelectedTextWitnessId = (state, textId) => {
     return ui.getSelectedTextWitnessId(state.ui, textId);
 };
 
+export const getSelectedTextWitness = (state) => {
+    const text = getSelectedText(state);
+    const selectedWitnessId = getSelectedTextWitnessId(state, text.id);
+    return getWitness(state, selectedWitnessId);
+};
+
 export const showPageImages = (state) => {
     return ui.showPageImages(state.ui);
 };
@@ -87,6 +93,10 @@ export const getBaseWitness = (state, textId) => {
 
 export const getWorkingWitness = (state, textId) => {
     return data.getWorkingWitness(state.data, textId);
+};
+
+export const hasLoadedWitnessAnnotations = (state, witnessId) => {
+    return (state.data['witnessAnnotationsById'].hasOwnProperty(witnessId));
 };
 
 export const getAnnotationsForWitnessId = (state, witnessId, annotationType=ANNOTATION_TYPES.variant) => {
