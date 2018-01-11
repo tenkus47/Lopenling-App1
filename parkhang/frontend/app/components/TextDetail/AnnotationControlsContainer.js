@@ -185,6 +185,7 @@ export const mapStateToProps = (state, ownProps) => {
         }
     });
 
+    const selectedWitness = reducers.getSelectedTextWitness(state);
 
     return {
         annotationsData: annotationsData,
@@ -195,7 +196,8 @@ export const mapStateToProps = (state, ownProps) => {
         temporaryAnnotation: temporaryVariant,
         inline: inline,
         firstSelectedSegment: ownProps.firstSelectedSegment,
-        splitTextRect: ownProps.splitTextRect
+        splitTextRect: ownProps.splitTextRect,
+        selectedWitness: selectedWitness
     }
 };
 
@@ -233,7 +235,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             const basedOn = (selectedAnnotation.isWorkingAnnotation || selectedAnnotation.userCreated || selectedAnnotation.id === BASE_ANNOTATION_ID) ? null : selectedAnnotation;
             const temporaryAnnotation = new TemporaryAnnotation(
                 basedOn,
-                selectedAnnotation.witness,
+                stateProps.selectedWitness,
                 selectedAnnotation.start,
                 selectedAnnotation.length,
                 selectedAnnotation.content,
