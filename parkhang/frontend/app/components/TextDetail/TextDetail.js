@@ -33,13 +33,11 @@ const TextDetail = props => {
     if (!props.text || props.loading) {
         textComponent = <div />
     } else {
-        let limitWidth;
+        let limitWidth = false;
         let splitter;
         if (props.paginated) {
-            limitWidth = false;
             splitter = positionSplitter(props.pageBreaks);
         } else {
-            limitWidth = true;
             splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
         }
 
