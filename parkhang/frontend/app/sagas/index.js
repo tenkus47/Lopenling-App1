@@ -1,4 +1,4 @@
-import { call, put, take, actionChannel, fork, takeEvery, takeLatest, select } from 'redux-saga/effects'
+import { call, put, take, actionChannel, fork, takeEvery, takeLatest, select, all } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import * as actions from 'actions'
 import * as reducers from 'reducers'
@@ -137,10 +137,10 @@ function* loadSources() {
 }
 
 function* loadInitialData() {
-    yield [
+    yield all([
         call(loadTexts),
         call(loadSources)
-    ];
+    ]);
 
     yield put(actions.loadedInitialData());
 }
@@ -155,9 +155,9 @@ export function* watchLoadInitialData() {
 
 function* selectedText(action) {
     yield put(actions.loadingWitnesses());
-    yield [
+    yield all([
         call(loadInitialTextData, action)
-    ];
+    ]);
 }
 
 function* watchSelectedText() {
@@ -182,10 +182,10 @@ function* loadInitialTextData(action) {
             }
         }
         yield put(actions.loadingWitnessAnnotations(workingWitness));
-        yield [
+        yield all([
             call(loadAnnotations, workingWitness),
             call(loadAppliedAnnotations, workingWitness)
-        ];
+        ]);
         yield call(loadAnnotations, baseWitness);
     } catch(e) {
         console.log("FAILED loadInitialTextData %o", e);
@@ -228,10 +228,10 @@ function* loadAppliedAnnotations(witnessData) {
 
 function* loadWitnessAnnotations(action) {
     yield put(actions.loadingWitnessAnnotations(action.witness));
-    yield [
+    yield all([
         call(loadAnnotations, action.witness),
         call(loadAppliedAnnotations, action.witness)
-    ];
+    ]);
 }
 
 function* watchLoadAnnotations() {
@@ -302,7 +302,7 @@ const typeCalls = {
 /** Root **/
 
 export default function* rootSaga() {
-    yield [
+    yield all([
         watchLoadInitialData(),
         watchSelectedText(),
         watchLoadAnnotations(),
