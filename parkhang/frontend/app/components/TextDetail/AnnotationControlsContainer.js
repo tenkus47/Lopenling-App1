@@ -230,7 +230,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
         },
         editAnnotation: (selectedAnnotation) => {
-            const basedOn = (selectedAnnotation.isWorkingAnnotation || selectedAnnotation.userCreated) ? null : selectedAnnotation;
+            const basedOn = (selectedAnnotation.isWorkingAnnotation || selectedAnnotation.userCreated || selectedAnnotation.id === BASE_ANNOTATION_ID) ? null : selectedAnnotation;
             const temporaryAnnotation = new TemporaryAnnotation(
                 basedOn,
                 selectedAnnotation.witness,
