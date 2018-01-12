@@ -5,7 +5,6 @@ import * as reducers from 'reducers'
 
 import * as api from 'api'
 import { BATCH } from 'redux-batched-actions'
-import {hasLoadedWitnessAnnotations} from "../reducers";
 import {SELECTED_WITNESS} from "../actions";
 
 /**
