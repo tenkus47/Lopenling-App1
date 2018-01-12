@@ -94,17 +94,23 @@ The following components make up the data:
 
     The texts we are creating critical editions of. Basically consists of metadata, such as the name of the text.
 
+* Base Witness
+
+    This is a version of the text referred to by other versions. It is the only version that actually contains content. These can only be created when at least 90% of the content is available. Once created, this content cannot be changed - any changes, such as spelling corrections, will be applied via Annotations (see below).
+
 * Witnesses
 
-    Versions of a text, such as those part of a regional collection like Derge or Narthang. One of these is declared the base version, and changes are made to it as required.
-    
+    Versions of a text, such as those part of a regional collection like Derge or Narthang. They are used only to store metadata, such as the collection it belongs to, and as a reference when creating annotations.
+
 * Annotations
 
     Required changes are packaged in Annotations. These point to a specific location in the base witness, and the length of affected text. They also contain the content that should replace the current content at that location. This is very similar to a [web annotation](https://www.w3.org/TR/annotation-model/#annotations), and could be either converted seamlessly to RDF by an API, or exported. 
     
     These annotations **always** point to a position in the base witness, no matter how many annotations have been applied. This means annotations can keep the same positioning data so long as the base text is not changed. The structure of the content is generated automatically in code to display to the user and/or export to a file.
     
-    Changes are called *Variants*. There is also the possibility for non-destructive annotations, such as locations of page breaks, or notes, but they have not yet been implemented in the UI.
+    Annotations that change the text are called *Variants*.
+    
+    There is also the possibility for non-mutating annotations, such as locations of page breaks, or notes, but they have not yet been implemented in the UI.
     
 Differences between the versions are highlighted and a user can select which one they think is correct. A user's selections are associated only with that user, enabling multiple users to work on the same text concurrently.
 
