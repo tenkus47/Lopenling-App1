@@ -6,7 +6,7 @@ import Witness from 'lib/Witness';
 import { WORKING_VERSION_ANNOTATION_ID, INSERTION_KEY, DELETION_KEY } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
 import { changedActiveAnnotation } from 'actions'
-import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getWorkingWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible, getSelectedTextWitnessId, getTextWitnesses, getWitness } from 'reducers'
+import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getWorkingWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible, getSelectedTextWitnessId, getTextWitnesses, getWitness, hasLoadedWitnessAnnotations } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
@@ -154,7 +154,7 @@ const mapStateToProps = (state) => {
     let annotatedText = null;
     let activeAnnotation = getActiveAnnotation(state);
     let selectedAnnotatedSegments = [];
-    let activeAnnotations = [];
+    let appliedAnnotations = [];
     let pageBreaks = [];
     let imagesBaseUrl = '';
     let selectedWitness = workingWitness;
@@ -176,38 +176,53 @@ const mapStateToProps = (state) => {
         // set cached witness
         _selectedWitness = selectedWitness;
 
-        let annotationList = getAnnotationsForWitnessId(state, workingWitness.id);
-        activeAnnotations = getActiveAnnotations(state, selectedWitness.id);
+        let workingAnnotationList = getAnnotationsForWitnessId(state, workingWitness.id);
+        appliedAnnotations = getActiveAnnotations(state, selectedWitness.id);
 
         if (selectedWitness.id !== workingWitness.id) {
-            for (let key of Object.keys(annotationList)) {
-                if (annotationList[key].creator_witness === selectedWitness.id) {
-                    activeAnnotations.push(annotationList[key]);
+            // If we are not viewing the working version,
+            // get all the annotations created by the selected witness
+            // to apply to the base text.
+            let selectedWitnessAnnotations = getAnnotationsForWitnessId(state, selectedWitness.id);
+            Object.keys(selectedWitnessAnnotations).map(key => {
+                appliedAnnotations.push(selectedWitnessAnnotations[key]);
+            });
+
+            for (let key of Object.keys(workingAnnotationList)) {
+                if (workingAnnotationList[key].creator_witness === selectedWitness.id) {
+                    appliedAnnotations.push(workingAnnotationList[key]);
                 }
             }
-            annotationList = _.pickBy(annotationList, anno => anno.creator_witness === selectedWitness.id);
+
+            workingAnnotationList = _.pickBy(workingAnnotationList, anno => {
+                return anno.creator_witness === selectedWitness.id
+            });
 
             // always show images if we are viewing a specific edition
             // i.e. not the working edition.
             paginated = true;
         }
 
-        annotations = annotationsFromData(state, annotationList);
-        activeAnnotations = annotationsFromData(state, activeAnnotations);
+        annotations = annotationsFromData(state, workingAnnotationList);
+        appliedAnnotations = annotationsFromData(state, appliedAnnotations);
 
         if (_annotatedText) {
             annotatedText = _annotatedText;
         } else {
             annotatedText = new AnnotatedText(
                 segmentTibetanText(workingWitness.content),
-                activeAnnotations,
+                appliedAnnotations,
                 (text) => {
                     return segmentTibetanText(text).sortedSegments();
                 },
                 baseWitness,
                 selectedWitness
             );
-            _annotatedText = annotatedText;
+            // Only cache the annotated text if we've loaded
+            // all the selected witnesses annotations.
+            if (hasLoadedWitnessAnnotations(state, selectedWitness.id)) {
+                _annotatedText = annotatedText;
+            }
         }
 
         annotationPositions = getAnnotationPositions(annotatedText, annotations);
@@ -217,7 +232,6 @@ const mapStateToProps = (state) => {
         if (activeAnnotation) {
             selectedAnnotatedSegments = annotatedText.segmentsForAnnotation(activeAnnotation);
         }
-
 
         pageBreaks = getAnnotationsForWitnessId(state, baseWitness.id, ANNOTATION_TYPES.pageBreak);
         let starts = [];
@@ -239,7 +253,7 @@ const mapStateToProps = (state) => {
         annotatedText: annotatedText,
         selectedAnnotatedSegments: selectedAnnotatedSegments,
         annotationPositions: annotationPositions,
-        activeAnnotations: activeAnnotations,
+        activeAnnotations: appliedAnnotations,
         activeAnnotation: activeAnnotation,
         pageBreaks: pageBreaks,
         imagesBaseUrl: imagesBaseUrl,
