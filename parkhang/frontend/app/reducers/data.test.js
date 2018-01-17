@@ -252,12 +252,12 @@ describe('Data selectors', () => {
             [source1.id]: {
                 id: source1.id,
                 name: source1.name,
-                is_default_base_text: source1.isDefaultBaseText
+                is_base: source1.isBase
             },
             [source2.id]: {
                 id: source2.id,
                 name: source2.name,
-                is_default_base_text: source2.isDefaultBaseText
+                is_base: source2.isBase
             }
         },
         witnessesById: {
