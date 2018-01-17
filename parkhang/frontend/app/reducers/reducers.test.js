@@ -28,6 +28,7 @@ const initialState = {
     },
     ui: {
         selectedText: false,
+        selectedTextWitness: {},
         searchValue: "",
         showPageImages: false,
         activeAnnotations: {},
