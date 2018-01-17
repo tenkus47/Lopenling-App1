@@ -1,5 +1,6 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, configure } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
 import Text from 'lib/Text'
 import Source from 'lib/Source'
 import Witness from 'lib/Witness'
@@ -10,6 +11,8 @@ import User, { getAnonymousUser } from 'lib/User'
 import AnnotationControls from './AnnotationControls'
 import AnnotationDetail from './AnnotationDetail'
 import AnnotationDetailEdit from './AnnotationDetailEdit'
+
+configure({ adapter: new Adapter() });
 
 const source1 = new Source(1, "Derge");
 const source2 = new Source(1, "Pecin");
