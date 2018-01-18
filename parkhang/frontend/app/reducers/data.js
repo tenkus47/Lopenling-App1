@@ -418,9 +418,11 @@ export function annotationFromData(state, annotationData) {
     let creatorUser = null;
     if (annotationData.creator_witness) {
         creatorWitness = getWitness(state, annotationData.creator_witness);
-    } else if (annotationData.creator_user) {
+    }
+    if (annotationData.creator_user) {
         creatorUser = new User(annotationData.creator_user, "");
-    } else {
+    }
+    if (!annotationData.creator_witness && !annotationData.creator_user) {
         console.warn('No creator found in annotationData: %o', annotationData);
     }
     let basedOn = null;
@@ -433,8 +435,9 @@ export function annotationFromData(state, annotationData) {
         annotationData.start,
         annotationData.length,
         annotationData.content,
-        (creatorWitness) ? creatorWitness : creatorUser,
         annotationData.type,
+        creatorWitness,
+        creatorUser,
         annotationData.unique_id,
         basedOn
     );
@@ -453,8 +456,8 @@ export function dataFromAnnotation(annotation) {
         start: annotation.start,
         length: annotation.length,
         content: annotation.content,
-        creator_witness: (annotation.userCreated) ? null : annotation.creator.id,
-        creator_user: (annotation.userCreated) ? annotation.creator.id : null,
+        creator_witness: (annotation.creatorWitness) ? annotation.creatorWitness.id : null,
+        creator_user: (annotation.creatorUser) ? annotation.creatorUser.id : null,
         unique_id: annotation.uniqueId,
         original: (annotation.basedOn) ? annotation.basedOn.uniqueId : null,
         is_saved: annotation.isSaved

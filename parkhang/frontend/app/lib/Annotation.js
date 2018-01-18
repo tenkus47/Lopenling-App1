@@ -23,24 +23,26 @@ export default class Annotation {
     /**
      * Text annotation
      * @param {number} id
-     * @param {Witness} witness
+     * @param {Witness} baseWitness
      * @param {number} start
      * @param {number} length
      * @param {string} content
-     * @param {Witness|User|null} creator
      * @param {string} [type=ANNOTATION_TYPES.variant] - one of ANNOTATION_TYPES
+     * @param {Witness} creatorWitness
+     * @param {User} creatorUser
      * @param {string|null} [uniqueId=null] - UUID4. Generates a new one if not provided.
      * @param {Annotation} [basedOn=null] - The annotation this is based on (if any).
      */
-    constructor(id, witness, start, length, content,
-                creator=null, type=ANNOTATION_TYPES.variant, uniqueId=null, basedOn=null)
+    constructor(id, baseWitness, start, length, content,
+                type = ANNOTATION_TYPES.variant, creatorWitness = null, creatorUser = null, uniqueId = null, basedOn = null)
     {
         this._id = id;
-        this.witness = witness;
+        this.witness = baseWitness;
         this.start = Number(start);
         this.length = Number(length);
         this.content = content;
-        this.creator = creator;
+        this.creatorWitness = creatorWitness;
+        this.creatorUser = creatorUser;
         this.type = type;
         this._uniqueId = uniqueId;
         this.basedOn = basedOn;
@@ -78,12 +80,20 @@ export default class Annotation {
         return [this.id, this.start, this.length, this.content].join("_");
     }
 
-    getSourceName() {
-        if (this.creator.hasOwnProperty('content')) {
-            // is witness
-            return this.creator.source.name;
+    get creator() {
+        if (this.userCreated) {
+            return this.creatorUser;
         } else {
-            return this.creator.name;
+            return this.creatorWitness;
+        }
+    }
+
+    getSourceName() {
+        if (this.userCreated) {
+            return this.creatorUser.name;
+        } else {
+            // is witness
+            return this.creatorWitness.source.name;
         }
     }
 
@@ -126,7 +136,7 @@ export default class Annotation {
     }
 
     get userCreated() {
-        return !this.creator.hasOwnProperty('content');
+        return !(this.creatorUser === null);
     }
 
     get isSaved() {
@@ -142,11 +152,11 @@ export default class Annotation {
     }
 
     get isBaseAnnotation() {
-        return (!this.userCreated && this.creator.isBase);
+        return (!this.userCreated && this.creatorWitness.isBase);
     }
 
     get isWorkingAnnotation() {
-        return (!this.userCreated && this.creator.isWorking);
+        return (!this.userCreated && this.creatorWitness.isWorking);
     }
 }
 
@@ -162,14 +172,14 @@ export class TemporaryAnnotation extends Annotation {
      * @param {number} start
      * @param {number} length
      * @param {string} content
-     * @param {Witness|User|null} creator
      * @param {string} type - one of ANNOTATION_TYPES
+     * @param {Witness|User|null} creatorWitness
      * @param {string|null} uniqueId - UUID4
      */
     constructor(basedOn, witness, start, length, content,
-                creator, type=ANNOTATION_TYPES.variant, uniqueId=null)
+                type = ANNOTATION_TYPES.variant, creatorWitness = null, creatorUser = null, uniqueId = null)
     {
-        super(null, witness, start, length, content, creator, type, uniqueId);
+        super(null, witness, start, length, content, type, creatorWitness, creatorUser, uniqueId);
         this.basedOn = basedOn;
     }
 

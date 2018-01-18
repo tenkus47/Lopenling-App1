@@ -1,6 +1,6 @@
 import SplitText from './SplitText'
 import AnnotatedText, { BASE_ANNOTATION_ID } from './AnnotatedText'
-import Annotation from 'lib/Annotation'
+import Annotation, { ANNOTATION_TYPES } from 'lib/Annotation'
 import Source from './Source'
 import Text from './Text'
 import Witness from './Witness'
@@ -67,7 +67,7 @@ describe('SplitText', () => {
 
     test('Get correct text index for position after changing annotated text', () => {
 
-        const annotation = new Annotation(1, baseWitness, 0, 24, "", otherWitness);
+        const annotation = new Annotation(1, baseWitness, 0, 24, "", ANNOTATION_TYPES.variant, otherWitness);
         annotatedText.addAnnotation(annotation);
 
         expect(

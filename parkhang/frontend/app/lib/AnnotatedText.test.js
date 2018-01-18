@@ -20,14 +20,14 @@ const otherWitness = new Witness(2, text, source2);
 const anotherWitness = new Witness(3, text, source3);
 
 const annotations = [
-    new Annotation(1, baseWitness, 0,  27, "༄༅༅", otherWitness),
-    new Annotation(2, baseWitness, 45, 5,  "ས",    otherWitness),
-    new Annotation(3, baseWitness, 57, 4,  "ཤྲི",    otherWitness),
-    new Annotation(4, baseWitness, 78, 2,  "ན",    otherWitness),
+    new Annotation(1, baseWitness, 0, 27, "༄༅༅", ANNOTATION_TYPES.variant, otherWitness),
+    new Annotation(2, baseWitness, 45, 5, "ས", ANNOTATION_TYPES.variant, otherWitness),
+    new Annotation(3, baseWitness, 57, 4, "ཤྲི", ANNOTATION_TYPES.variant, otherWitness),
+    new Annotation(4, baseWitness, 78, 2, "ན", ANNOTATION_TYPES.variant, otherWitness),
     // below is gramatically incorrect but useful for testing a single char syllable replacement
-    new Annotation(5, baseWitness, 204, 1,  "ན་ལ",  otherWitness),
-    new Annotation(6, baseWitness, 256, 2,  "",    otherWitness),
-    new Annotation(7, baseWitness, 268, 0,  "དང་",  otherWitness)
+    new Annotation(5, baseWitness, 204, 1, "ན་ལ", ANNOTATION_TYPES.variant, otherWitness),
+    new Annotation(6, baseWitness, 256, 2, "", ANNOTATION_TYPES.variant, otherWitness),
+    new Annotation(7, baseWitness, 268, 0, "དང་", ANNOTATION_TYPES.variant, otherWitness)
 ];
 
 function segmenter(text) {
@@ -88,9 +88,9 @@ describe('AnnotatedText', () => {
     });
 
     test('Get correct segments for annotation', () => {
-        let testAnnotation = new Annotation(4, baseWitness, 78, 2,  "ན", otherWitness, ANNOTATION_TYPES.variant, annotations[3].uniqueId);
-        let testMissingAnnotation = new Annotation(27, baseWitness, 256, 7,  "ལ་གསུས་",    otherWitness);
-        let testMissingAnnotationSingle = new Annotation(8, baseWitness, 256, 1,  "ལ",    otherWitness);
+        let testAnnotation = new Annotation(4, baseWitness, 78, 2, "ན", ANNOTATION_TYPES.variant, otherWitness, null, annotations[3].uniqueId);
+        let testMissingAnnotation = new Annotation(27, baseWitness, 256, 7, "ལ་གསུས་", ANNOTATION_TYPES.variant, otherWitness);
+        let testMissingAnnotationSingle = new Annotation(8, baseWitness, 256, 1, "ལ", ANNOTATION_TYPES.variant, otherWitness);
         let expectedSegment = new TextSegment(49, "ན");
 
         expect(
@@ -112,7 +112,7 @@ describe('AnnotatedText', () => {
             annotatedText.segmentedText.sortedSegments()
         ).toContainEqual(deletedSegment);
 
-        let unchangedAnnotation = new Annotation(17, baseWitness, 223, 15, "", baseWitness);
+        let unchangedAnnotation = new Annotation(17, baseWitness, 223, 15, "", ANNOTATION_TYPES.variant, baseWitness);
         let unchangedSegments = [
             new TextSegment(195, "སྟབས"),
             new TextSegment(199, "་"),
@@ -124,7 +124,7 @@ describe('AnnotatedText', () => {
             annotatedText.segmentsForAnnotation(unchangedAnnotation)
         ).toEqual(unchangedSegments);
 
-        let multipleAdded = new Annotation(5, baseWitness, 204, 1,  "ན་ལ",    otherWitness, ANNOTATION_TYPES.variant, annotations[4].uniqueId);
+        let multipleAdded = new Annotation(5, baseWitness, 204, 1, "ན་ལ", ANNOTATION_TYPES.variant, otherWitness, null, annotations[4].uniqueId);
         let addedSegments = [
             new TextSegment(174, "ན"),
             new TextSegment(175, "་"),
@@ -134,7 +134,7 @@ describe('AnnotatedText', () => {
             annotatedText.segmentsForAnnotation(multipleAdded)
         ).toEqual(addedSegments);
 
-        let insertion = new Annotation(7, baseWitness, 268, 0,  "དང་",  otherWitness, ANNOTATION_TYPES.variant, annotations[6].uniqueId);
+        let insertion = new Annotation(7, baseWitness, 268, 0, "དང་", ANNOTATION_TYPES.variant, otherWitness, null, annotations[6].uniqueId);
         let insertionSegment = new TextSegment(238, "དང");
         let insertionSegment2 = new TextSegment(240, "་");
         expect(
@@ -162,144 +162,64 @@ describe('AnnotatedText', () => {
 
 
     test('Get base annotation', () => {
-       let expectedAnnotation = new Annotation(
-           BASE_ANNOTATION_ID,
-           annotatedText.baseWitness,
-           99,
-           3,
-           "དཔལ",
-           annotatedText.baseWitness,
-           ANNOTATION_TYPES.variant
-       );
+       let expectedAnnotation = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 99, 3, "དཔལ", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(69, 3)
         ).toEqual(expectedAnnotation);
 
-        let expectedAdditionAnnotation = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            0,
-            27,
-            "༄༅། །སྒྲུབ་ཐབས་ཞེས་བྱ་བ།༄༅༅",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let expectedAdditionAnnotation = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 0, 27, "༄༅། །སྒྲུབ་ཐབས་ཞེས་བྱ་བ།༄༅༅", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
           annotatedText.getBaseAnnotation(0, 3)
         ).toEqual(expectedAdditionAnnotation);
 
-        let expectedInsertion = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            268,
-            0,
-            "",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let expectedInsertion = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 268, 0, "", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(238, 3)
         ).toEqual(expectedInsertion);
 
-        let expectedInactiveInsertion = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            99,
-            0,
-            "",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let expectedInactiveInsertion = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 99, 0, "", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(69, 0)
         ).toEqual(expectedInactiveInsertion);
 
-        let expectedInactiveInsertionBeforeAnnotation = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            57,
-            0,
-            "",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let expectedInactiveInsertionBeforeAnnotation = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 57, 0, "", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(29, 0)
         ).toEqual(expectedInactiveInsertionBeforeAnnotation);
 
-        let expectedDeletion = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            256,
-            2,
-            "ལ་",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let expectedDeletion = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 256, 2, "ལ་", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(228, 0)
         ).toEqual(expectedDeletion);
 
-        let crossBoundaryAnnotation = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            41,
-            10,
-            "དུ། སྟྲཱི་",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let crossBoundaryAnnotation = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 41, 10, "དུ། སྟྲཱི་", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(17, 6)
         ).toEqual(crossBoundaryAnnotation);
 
-        let crossBoundaryAnnotationStart = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            45,
-            17,
-            "སྟྲཱི་པྲཛྙཱ་ཤྲཱི་",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let crossBoundaryAnnotationStart = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 45, 17, "སྟྲཱི་པྲཛྙཱ་ཤྲཱི་", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(21, 12)
         ).toEqual(crossBoundaryAnnotationStart);
 
-        let includesDeletion = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            248,
-            15,
-            "ཐུང་དྲག་ལ་གསུས་",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let includesDeletion = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 248, 15, "ཐུང་དྲག་ལ་གསུས་", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(220, 13)
         ).toEqual(includesDeletion);
 
-        const startDeletion = new Annotation(1, baseWitness, 0, 24, "", otherWitness);
+        const startDeletion = new Annotation(1, baseWitness, 0, 24, "", ANNOTATION_TYPES.variant, otherWitness);
         const testAnnotatedText = new AnnotatedText(segmentedText, [startDeletion], segmenter, baseWitness);
 
-        let startDeletionBase = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            24,
-            3,
-            "༄༅༅",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        let startDeletionBase = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, 24, 3, "༄༅༅", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             testAnnotatedText.getBaseAnnotation(0,3)
@@ -307,34 +227,18 @@ describe('AnnotatedText', () => {
 
         let currentEndPos = annotatedText.getText().length;
         let originalEndPos = annotatedText.originalText.getText().length;
-        const afterEndBase = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            originalEndPos,
-            0,
-            "",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        const afterEndBase = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, originalEndPos, 0, "", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             annotatedText.getBaseAnnotation(currentEndPos, 0)
         ).toEqual(afterEndBase);
 
-        const afterEndInsertion = new Annotation(10, baseWitness, testAnnotatedText.originalText.getText().length, 0, "Test", otherWitness);
+        const afterEndInsertion = new Annotation(10, baseWitness, testAnnotatedText.originalText.getText().length, 0, "Test", ANNOTATION_TYPES.variant, otherWitness);
         testAnnotatedText.addAnnotation(afterEndInsertion);
         currentEndPos = testAnnotatedText.getText().length;
         originalEndPos = testAnnotatedText.originalText.getText().length;
 
-        const afterEndInsertionBase = new Annotation(
-            BASE_ANNOTATION_ID,
-            annotatedText.baseWitness,
-            originalEndPos,
-            0,
-            "",
-            annotatedText.baseWitness,
-            ANNOTATION_TYPES.variant
-        );
+        const afterEndInsertionBase = new Annotation(BASE_ANNOTATION_ID, annotatedText.baseWitness, originalEndPos, 0, "", ANNOTATION_TYPES.variant, annotatedText.baseWitness);
 
         expect(
             testAnnotatedText.getBaseAnnotation(currentEndPos, 0)
@@ -343,9 +247,9 @@ describe('AnnotatedText', () => {
 
 
     test('Annotations for position', () => {
-        let expectedAnnotation1 = new Annotation(1, baseWitness, 0,  27, "༄༅༅", otherWitness, ANNOTATION_TYPES.variant, annotations[0].uniqueId);
-        let expectedAnnotation3 = new Annotation(3, baseWitness, 57, 4,  "ཤྲི",    otherWitness, ANNOTATION_TYPES.variant, annotations[2].uniqueId);
-        let expectedAnnotation5 = new Annotation(5, baseWitness, 204, 1,  "ན་ལ",    otherWitness, ANNOTATION_TYPES.variant, annotations[4].uniqueId);
+        let expectedAnnotation1 = new Annotation(1, baseWitness, 0, 27, "༄༅༅", ANNOTATION_TYPES.variant, otherWitness, null, annotations[0].uniqueId);
+        let expectedAnnotation3 = new Annotation(3, baseWitness, 57, 4, "ཤྲི", ANNOTATION_TYPES.variant, otherWitness, null, annotations[2].uniqueId);
+        let expectedAnnotation5 = new Annotation(5, baseWitness, 204, 1, "ན་ལ", ANNOTATION_TYPES.variant, otherWitness, null, annotations[4].uniqueId);
         //let expectedAnnotation7 = new Annotation(7, baseWitness, 261, 1, "", otherWitness);
 
         expect(
@@ -364,23 +268,23 @@ describe('AnnotatedText', () => {
             annotatedText.annotationsForPosition(229)
         ).toEqual([]);
 
-        let deletedAnnotation = new Annotation(6, baseWitness, 256, 2,  "",    otherWitness, ANNOTATION_TYPES.variant, annotations[5].uniqueId);
+        let deletedAnnotation = new Annotation(6, baseWitness, 256, 2, "", ANNOTATION_TYPES.variant, otherWitness, null, annotations[5].uniqueId);
         expect(
             annotatedText.annotationsForPosition(228)
         ).toEqual([deletedAnnotation]);
 
-        let expectedInsertion= new Annotation(7, baseWitness, 268, 0,  "དང་",  otherWitness, ANNOTATION_TYPES.variant, annotations[6].uniqueId);
+        let expectedInsertion= new Annotation(7, baseWitness, 268, 0, "དང་", ANNOTATION_TYPES.variant, otherWitness, null, annotations[6].uniqueId);
         expect(
             annotatedText.annotationsForPosition(238)
         ).toEqual([expectedInsertion]);
     });
 
     test('Get current position of annotation', () => {
-        let annotation = new Annotation(1, baseWitness, 0,  27, "", otherWitness);
-        let annotation2 = new Annotation(6, baseWitness, 256, 2,  "",    otherWitness);
-        let annotation3 = new Annotation(3, baseWitness, 57, 4,  "ཤྲི",    otherWitness);
-        let annotation4 = new Annotation(5, baseWitness, 204, 1,  "ན་ལ",    otherWitness);
-        let annotation5 = new Annotation(6, baseWitness, 204, 0,  "དང་",    otherWitness);
+        let annotation = new Annotation(1, baseWitness, 0, 27, "", ANNOTATION_TYPES.variant, otherWitness);
+        let annotation2 = new Annotation(6, baseWitness, 256, 2, "", ANNOTATION_TYPES.variant, otherWitness);
+        let annotation3 = new Annotation(3, baseWitness, 57, 4, "ཤྲི", ANNOTATION_TYPES.variant, otherWitness);
+        let annotation4 = new Annotation(5, baseWitness, 204, 1, "ན་ལ", ANNOTATION_TYPES.variant, otherWitness);
+        let annotation5 = new Annotation(6, baseWitness, 204, 0, "དང་", ANNOTATION_TYPES.variant, otherWitness);
         let newAnnotations = [
             annotation,
             annotation2,
@@ -395,7 +299,7 @@ describe('AnnotatedText', () => {
             newAnnotatedText.getPositionOfAnnotation(annotation)
         ).toEqual(expectedPosition);
 
-        const annotationAtSamePosition = new Annotation(200, baseWitness, 0,  27, "༄༅༅", anotherWitness);
+        const annotationAtSamePosition = new Annotation(200, baseWitness, 0, 27, "༄༅༅", ANNOTATION_TYPES.variant, anotherWitness);
         expectedPosition = [0,3];
         // note: using annotatedText not newAnnotatedText
         expect(
@@ -418,24 +322,24 @@ describe('AnnotatedText', () => {
         ).toEqual(expectedPosition);
 
         expectedPosition = [200, 15];
-        let unchangedAnnotation = new Annotation(9, baseWitness, 223, 15, "", baseWitness);
+        let unchangedAnnotation = new Annotation(9, baseWitness, 223, 15, "", ANNOTATION_TYPES.variant, baseWitness);
         expect(
             newAnnotatedText.getPositionOfAnnotation(unchangedAnnotation)
         ).toEqual(expectedPosition);
 
-        let endAdditionAnnotation = new Annotation(10, baseWitness, 272, 0, "མངྒཱ་ལཾམངྒཱལཾ", baseWitness);
+        let endAdditionAnnotation = new Annotation(10, baseWitness, 272, 0, "མངྒཱ་ལཾམངྒཱལཾ", ANNOTATION_TYPES.variant, baseWitness);
         expectedPosition = [newAnnotatedText.getText().length, 0];
         expect(
             newAnnotatedText.getPositionOfAnnotation(endAdditionAnnotation)
         ).toEqual(expectedPosition);
 
-        let insertion = new Annotation(7, baseWitness, 268, 0,  "དང་",  otherWitness, ANNOTATION_TYPES.variant, annotations[6].uniqueId);
+        let insertion = new Annotation(7, baseWitness, 268, 0, "དང་", ANNOTATION_TYPES.variant, otherWitness, null, annotations[6].uniqueId);
         expectedPosition = [238, 3];
         expect(
             annotatedText.getPositionOfAnnotation(insertion)
         ).toEqual(expectedPosition);
 
-        let nonactiveInsertion = new Annotation(77, baseWitness, 268, 0,  "དང་",  anotherWitness);
+        let nonactiveInsertion = new Annotation(77, baseWitness, 268, 0, "དང་", ANNOTATION_TYPES.variant, anotherWitness);
         expectedPosition = [241, 0];
         expect(
             annotatedText.getPositionOfAnnotation(nonactiveInsertion)
@@ -448,14 +352,7 @@ describe('AnnotatedText', () => {
 
 
 
-        let includesDeletion = new Annotation(
-            WORKING_VERSION_ANNOTATION_ID,
-            baseWitness,
-            248,
-            15,
-            "ཐུང་དྲག་གསུས་",
-            getAnonymousUser()
-        );
+        let includesDeletion = new Annotation(WORKING_VERSION_ANNOTATION_ID, baseWitness, 248, 15, "ཐུང་དྲག་གསུས་", ANNOTATION_TYPES.variant, null, getAnonymousUser());
         expectedPosition = [220, 13];
         expect(
             annotatedText.getPositionOfAnnotation(includesDeletion)

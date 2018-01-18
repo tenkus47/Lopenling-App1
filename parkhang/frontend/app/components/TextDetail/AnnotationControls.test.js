@@ -4,7 +4,7 @@ import Adapter from 'enzyme-adapter-react-16'
 import Text from 'lib/Text'
 import Source from 'lib/Source'
 import Witness from 'lib/Witness'
-import Annotation, { TemporaryAnnotation } from 'lib/Annotation'
+import Annotation, { TemporaryAnnotation, ANNOTATION_TYPES } from 'lib/Annotation'
 import { BASE_ANNOTATION_ID } from 'lib/AnnotatedText'
 import addTibetanShay from 'lib/addTibetanShay'
 import User, { getAnonymousUser } from 'lib/User'
@@ -25,10 +25,10 @@ const otherWitness2 = new Witness(3, text, source3, null, false);
 const anonymousUser = getAnonymousUser();
 const user = new User(1, "Test User");
 
-const baseAnnotation = new Annotation(BASE_ANNOTATION_ID, baseWitness, 0, 4, "Test", baseWitness);
-const annotation1 = new Annotation(1, baseWitness, 0, 4, "New", otherWitness1);
-const annotation2 = new Annotation(2, baseWitness, 0, 4, "New", otherWitness2);
-const temporaryAnnotation = new TemporaryAnnotation(baseAnnotation, baseWitness, 0, 4, "Newer", user);
+const baseAnnotation = new Annotation(BASE_ANNOTATION_ID, baseWitness, 0, 4, "Test", ANNOTATION_TYPES.variant, baseWitness);
+const annotation1 = new Annotation(1, baseWitness, 0, 4, "New", ANNOTATION_TYPES.variant, otherWitness1);
+const annotation2 = new Annotation(2, baseWitness, 0, 4, "New", ANNOTATION_TYPES.variant, otherWitness2);
+const temporaryAnnotation = new TemporaryAnnotation(baseAnnotation, baseWitness, 0, 4, "Newer", ANNOTATION_TYPES.variant, null, user);
 
 const extraName = [
             addTibetanShay(annotation1.getSourceName()),

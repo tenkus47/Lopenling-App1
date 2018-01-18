@@ -346,12 +346,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 const content = segments.reduce((content, segment) => content + segment.text, "");
                 activeAnnotation = new Annotation(
                     WORKING_VERSION_ANNOTATION_ID,
-                    getActiveWitness(stateProps.text),
+                    getTextWorkingWitness(stateProps.text),
                     baseAnnotation.start,
                     baseAnnotation.length,
                     content,
-                    stateProps.user,
-                    ANNOTATION_TYPES.variant
+                    ANNOTATION_TYPES.variant,
+                    stateProps.selectedWitness,
+                    stateProps.user
                 );
             } else {
                 activeAnnotation = baseAnnotation;
@@ -380,7 +381,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     }
 };
 
-const getActiveWitness = (selectedText) => {
+const getTextWorkingWitness = (selectedText) => {
     const source = new Source(
         WORKING_VERSION_ANNOTATION_ID,
         WORKING_VERSION_SOURCE_NAME

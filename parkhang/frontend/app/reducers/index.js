@@ -109,10 +109,10 @@ export const getActiveAnnotationsForWitnessId = (state, witnessId) => {
 
 export const annotationFromData = (state, annotationData) => {
     let annotation = data.annotationFromData(state.data, annotationData);
-    if (annotation.userCreated) {
+    if (annotation.creatorUser) {
         const user = getUser(state);
-        if (user.id === annotation.creator.id) {
-            annotation.creator = user;
+        if (user.id === annotation.creatorUser.id) {
+            annotation.creatorUser = user;
         }
     }
     return annotation;

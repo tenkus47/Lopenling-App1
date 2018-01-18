@@ -3,7 +3,7 @@ import * as actions from 'actions'
 import Text from 'lib/Text'
 import Source from 'lib/Source'
 import Witness from 'lib/Witness'
-import { TemporaryAnnotation } from 'lib/Annotation'
+import { TemporaryAnnotation, ANNOTATION_TYPES } from 'lib/Annotation'
 import User from 'lib/User'
 
 const source1 = new Source(1, "Derge");
@@ -15,7 +15,7 @@ const state = initialUIState;
 
 test('addedTemporaryAnnotation', () => {
 
-    const annotation = new TemporaryAnnotation(null, baseWitness, 0, 27, "༄༅༅", user);
+    const annotation = new TemporaryAnnotation(null, baseWitness, 0, 27, "༄༅༅", ANNOTATION_TYPES.variant, null, user);
     const action = actions.addedTemporaryAnnotation(annotation, true);
 
     const expectedState = {
@@ -40,8 +40,8 @@ test('addedTemporaryAnnotation', () => {
 
 test('removedTemporaryAnnotation', () => {
 
-    const annotation = new TemporaryAnnotation(null, baseWitness, 0, 27, "༄༅༅", user);
-    const extraAnnotation = new TemporaryAnnotation(null, baseWitness, 28, 1, "ཀ", user);
+    const annotation = new TemporaryAnnotation(null, baseWitness, 0, 27, "༄༅༅", ANNOTATION_TYPES.variant, null, user);
+    const extraAnnotation = new TemporaryAnnotation(null, baseWitness, 28, 1, "ཀ", ANNOTATION_TYPES.variant, null, user);
     const addAction = actions.addedTemporaryAnnotation(annotation, true);
     let testState = uiReducers[addAction.type](state, addAction);
     const addAction2 = actions.addedTemporaryAnnotation(extraAnnotation, true);

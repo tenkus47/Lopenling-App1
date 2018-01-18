@@ -239,8 +239,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 selectedAnnotation.start,
                 selectedAnnotation.length,
                 selectedAnnotation.content,
-                stateProps.user,
-                selectedAnnotation.type
+                selectedAnnotation.type,
+                selectedAnnotation.creatorWitness,
+                stateProps.user
             );
             if (selectedAnnotation.userCreated) {
                 // user annotations are updated
@@ -253,19 +254,20 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             );
         },
         saveAnnotation: (selectedAnnotation, content) => {
-
             if (!selectedAnnotation.isTemporary) {
                 console.warn('Tried to save a non-temporary annotation: %o', selectedAnnotation);
                 return;
             }
+
             const newAnnotation = new Annotation(
                 selectedAnnotation.id,
                 selectedAnnotation.witness,
                 selectedAnnotation.start,
                 selectedAnnotation.length,
                 content,
-                stateProps.user,
                 selectedAnnotation.type,
+                selectedAnnotation.creatorWitness,
+                stateProps.user,
                 selectedAnnotation.uniqueId,
                 selectedAnnotation.basedOn
             );
@@ -288,7 +290,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         cancelEditAnnotation: (selectedAnnotation) => {
             if (!selectedAnnotation.isTemporary) {
-                console.warn('Tried to save a non-temporary annotation: %o', selectedAnnotation);
+                console.warn('Tried to call cancelEditAnnotation on a non-temporary annotation: %o', selectedAnnotation);
                 return;
             }
 

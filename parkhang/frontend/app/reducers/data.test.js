@@ -2,7 +2,7 @@ import { dataReducer } from 'reducers';
 import Text from 'lib/Text'
 import Source from 'lib/Source'
 import Witness from 'lib/Witness'
-import Annotation, { TemporaryAnnotation } from 'lib/Annotation'
+import Annotation, { TemporaryAnnotation, ANNOTATION_TYPES } from 'lib/Annotation'
 import User from 'lib/User'
 import dataReducers, * as data from 'reducers/data'
 // import dataReducers, { initialDataState, dataFromAnnotation } from 'reducers/data'
@@ -13,8 +13,8 @@ const source2 = new Source(2, "Narthang");
 const text = new Text(1, "དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ");
 const baseWitness = new Witness(1, text, source1, "Test witness", true);
 const otherWitness = new Witness(2, text, source2, "", false);
-const annotation = new Annotation(1, baseWitness, 0,  27, "༄༅༅", baseWitness);
-const user = new User(1, "Test User");
+const annotation = new Annotation(1, baseWitness, 0, 27, "༄༅༅", ANNOTATION_TYPES.variant, baseWitness);
+const user = new User(1, "");
 
 describe('Applying and removing reducer', () => {
 
@@ -132,7 +132,7 @@ describe('Processing loaded data', () => {
 
 describe('CUD annotation', () => {
 
-    const newAnnotation = new TemporaryAnnotation(null, baseWitness, 5, 7, "replacement", user);
+    const newAnnotation = new TemporaryAnnotation(null, baseWitness, 5, 7, "replacement", ANNOTATION_TYPES.variant, null, user);
     const createAction = actions.createdAnnotation(newAnnotation);
 
     let state = {...data.initialDataState};
@@ -153,7 +153,7 @@ describe('CUD annotation', () => {
         ).toEqual(expectedState);
     });
 
-    const updatedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", user, newAnnotation.type, newAnnotation.uniqueId);
+    const updatedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", newAnnotation.type, null, user, newAnnotation.uniqueId);
     updatedAnnotation.save();
     const updatedAction = actions.updatedAnnotation(updatedAnnotation);
 
@@ -176,7 +176,7 @@ describe('CUD annotation', () => {
     });
 
 
-    const savedAnnotation = new Annotation(2, baseWitness, 5, 7, "replaced", user, newAnnotation.type, newAnnotation.uniqueId);
+    const savedAnnotation = new Annotation(2, baseWitness, 5, 7, "replaced", newAnnotation.type, null, user, newAnnotation.uniqueId);
     savedAnnotation.save();
     const savedAction = actions.savedAnnotation(savedAnnotation);
 
@@ -198,7 +198,7 @@ describe('CUD annotation', () => {
 
     });
 
-    const updatedSavedAnnotation = new TemporaryAnnotation(savedAnnotation, baseWitness, 5, 7, "update", user, savedAnnotation.type, savedAnnotation.uniqueId);
+    const updatedSavedAnnotation = new TemporaryAnnotation(savedAnnotation, baseWitness, 5, 7, "update", savedAnnotation.type, null, user, savedAnnotation.uniqueId);
     updatedSavedAnnotation.isSaved = savedAnnotation.isSaved;
     const updateSavedAction = actions.updatedAnnotation(updatedSavedAnnotation);
 
@@ -312,7 +312,7 @@ describe('Data selectors', () => {
         }
     };
 
-    const expectedGetAnnotation = new Annotation(488, baseWitness, 0, 29, "", otherWitness, "V", "52bab9be-a395-4c9c-b264-1d03a091cc4b");
+    const expectedGetAnnotation = new Annotation(488, baseWitness, 0, 29, "", "V", otherWitness, null, "52bab9be-a395-4c9c-b264-1d03a091cc4b");
 
     test('getAnnotation', () => {
 
@@ -326,7 +326,7 @@ describe('Data selectors', () => {
     });
 
     test('annotationFromData', () => {
-        const expectedAnnotationFromData = new Annotation(489, baseWitness, 0, 29, "Test", otherWitness, "V", "527713e8-b191-4b74-9f34-cd9f8d0e4318", expectedGetAnnotation);
+        const expectedAnnotationFromData = new Annotation(489, baseWitness, 0, 29, "Test", "V", otherWitness, user, "527713e8-b191-4b74-9f34-cd9f8d0e4318", expectedGetAnnotation);
         expectedAnnotationFromData.save();
         expect(
             data.annotationFromData(state, state.witnessAnnotationsById[1][expectedAnnotationFromData.uniqueId])
