@@ -362,8 +362,9 @@ export const getWitness = (state, witnessId) => {
             witnessData.is_base,
             witnessData.is_working
         );
+        cachedWitnesses[witnessData.id] = witness;
     }
-    cachedWitnesses[witnessData.id] = witness;
+
     return witness;
 };
 
