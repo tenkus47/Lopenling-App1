@@ -57,6 +57,7 @@ const TextDetail = props => {
             textListVisible={props.textListVisible}
             showImages={props.paginated}
             imagesBaseUrl={props.imagesBaseUrl}
+            selectedWitness={props.selectedWitness}
         />
     }
 
