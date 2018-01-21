@@ -1,17 +1,21 @@
+// @flow
 import uuidV4 from 'uuid/v4'
+import Witness from 'lib/Witness';
+import User from 'lib/User';
 
-export const ANNOTATION_TYPES = {
+
+export const ANNOTATION_TYPES: {[string]: string} = {
     variant: 'V',
     note: 'N',
     marker: 'M',
     pageBreak: 'P'
 };
 
-export const TEMPORARY_TYPE = 'T';
+export const TEMPORARY_TYPE: string = 'T';
 
-export function getNaturalId(type, userCreated, creatorId, witnessId, start, length) {
-    const creatorType = (userCreated) ? 'U' : 'W';
-    return [type, creatorType, creatorId, witnessId, start, length].join('-');
+export function getNaturalId(type: string, creatorUserId: number|null, creatorWitnessId: number, workingWitnessId: number, start: number, length: number) {
+    //const creatorType = (userCreated) ? 'U' : 'W';
+    return [type, creatorUserId, creatorWitnessId, workingWitnessId, start, length].join('-');
 }
 
 export function getUniqueId() {
@@ -19,25 +23,39 @@ export function getUniqueId() {
 }
 
 export default class Annotation {
+    _id: number|null;
+    witness: Witness;
+    start: number;
+    length: number;
+    content: string | null;
+    creatorWitness: Witness;
+    creatorUser: User | null;
+    type: string;
+    _uniqueId: string | null;
+    basedOn: Annotation | null;
+    _isSaved: boolean;
 
     /**
      * Text annotation
-     * @param {number} id
-     * @param {Witness} baseWitness
+     * @param {number|null} id
+     * @param {Witness} workingWitness
      * @param {number} start
      * @param {number} length
      * @param {string} content
      * @param {string} [type=ANNOTATION_TYPES.variant] - one of ANNOTATION_TYPES
      * @param {Witness} creatorWitness
-     * @param {User} creatorUser
+     * @param {User|null} creatorUser
      * @param {string|null} [uniqueId=null] - UUID4. Generates a new one if not provided.
-     * @param {Annotation} [basedOn=null] - The annotation this is based on (if any).
+     * @param {Annotation|null} [basedOn=null] - The annotation this is based on (if any).
      */
-    constructor(id, baseWitness, start, length, content,
-                type = ANNOTATION_TYPES.variant, creatorWitness = null, creatorUser = null, uniqueId = null, basedOn = null)
+    constructor(id: number|null, workingWitness: Witness, start: number, length: number, content: string|null,
+                type: string = ANNOTATION_TYPES.variant, creatorWitness: Witness, creatorUser: User|null = null, uniqueId: string|null = null, basedOn: Annotation|null = null)
     {
         this._id = id;
-        this.witness = baseWitness;
+        this.witness = workingWitness;
+        if (!workingWitness.isWorking) {
+            console.warn("Set workingWitness that is not a working witness: %o, %o", this, workingWitness);
+        }
         this.start = Number(start);
         this.length = Number(length);
         this.content = content;
@@ -49,38 +67,40 @@ export default class Annotation {
         this._isSaved = false;
     }
 
-    get id() {
+    get id(): number|null {
         return this._id;
     }
 
-    set id(newId) {
+    set id(newId: string|number) {
         this._id = Number(newId);
     }
 
-    get naturalId() {
-        return getNaturalId(this.type, this.userCreated, this.creator.id, this.witness.id, this.start, this.length);
+    get naturalId(): string {
+        const creatorWitnessId = (this.creatorWitness) ? this.creatorWitness.id : 0;
+        const creatorUserId = (this.creatorUser) ? this.creatorUser.id : 0;
+        return getNaturalId(this.type, creatorUserId, creatorWitnessId, this.witness.id, this.start, this.length);
     }
 
-    get uniqueId() {
+    get uniqueId(): string {
         if (this._uniqueId === null) {
             this._uniqueId = getUniqueId();
         }
         return this._uniqueId;
     }
 
-    set uniqueId(newUniqueId) {
+    set uniqueId(newUniqueId: string) {
         this._uniqueId = newUniqueId;
     }
 
-    get isTemporary() {
+    get isTemporary(): boolean {
         return false;
     }
 
-    toString() {
+    toString(): string {
         return [this.id, this.start, this.length, this.content].join("_");
     }
 
-    get creator() {
+    get creator(): Witness|User {
         if (this.userCreated) {
             return this.creatorUser;
         } else {
@@ -88,8 +108,8 @@ export default class Annotation {
         }
     }
 
-    getSourceName() {
-        if (this.userCreated) {
+    getSourceName(): string {
+        if (this.creatorUser) {
             return this.creatorUser.name;
         } else {
             // is witness
@@ -97,11 +117,11 @@ export default class Annotation {
         }
     }
 
-    get end() {
+    get end(): number {
         return this.start + this.length - 1;
     }
 
-    isWithinRange(start, length) {
+    isWithinRange(start: number, length: number): boolean {
         const rangeEnd = start + length - 1;
         if (
                 (this.start <= start
@@ -123,27 +143,27 @@ export default class Annotation {
         }
     }
 
-    get isVariant() {
-        return this._isVariant;
+    get isVariant(): boolean {
+        return this.type === ANNOTATION_TYPES.variant;
     }
 
-    get isInsertion() {
+    get isInsertion(): boolean {
         return Number(this.length) === 0;
     }
 
-    get isDeletion() {
-        return !this.isInsertion && this.content.length === 0;
+    get isDeletion(): boolean {
+        return !this.isInsertion && (!this.content || this.content.length === 0);
     }
 
-    get userCreated() {
+    get userCreated(): boolean {
         return !(this.creatorUser === null);
     }
 
-    get isSaved() {
+    get isSaved(): boolean {
         return this._isSaved;
     }
 
-    set isSaved(newIsSaved) {
+    set isSaved(newIsSaved: boolean) {
         this._isSaved = newIsSaved;
     }
 
@@ -151,11 +171,11 @@ export default class Annotation {
         this._isSaved = true;
     }
 
-    get isBaseAnnotation() {
+    get isBaseAnnotation(): boolean {
         return (!this.userCreated && this.creatorWitness.isBase);
     }
 
-    get isWorkingAnnotation() {
+    get isWorkingAnnotation(): boolean {
         return (!this.userCreated && this.creatorWitness.isWorking);
     }
 }
@@ -176,14 +196,14 @@ export class TemporaryAnnotation extends Annotation {
      * @param {Witness|User|null} creatorWitness
      * @param {string|null} uniqueId - UUID4
      */
-    constructor(basedOn, witness, start, length, content,
-                type = ANNOTATION_TYPES.variant, creatorWitness = null, creatorUser = null, uniqueId = null)
+    constructor(basedOn: Annotation|null, witness: Witness, start: number, length: number, content: string|null,
+                type: string = ANNOTATION_TYPES.variant, creatorWitness: Witness, creatorUser: User|null = null, uniqueId: string|null = null)
     {
         super(null, witness, start, length, content, type, creatorWitness, creatorUser, uniqueId);
         this.basedOn = basedOn;
     }
 
-    get isTemporary() {
+    get isTemporary(): boolean {
         return true;
     }
 }

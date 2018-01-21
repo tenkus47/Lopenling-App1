@@ -1,8 +1,17 @@
+// @flow
+import Source from 'lib/Source';
+import Text from 'lib/Text';
 
 /**
  * Represents a printed version of a text.
  */
 export default class Witness {
+    id: number;
+    text: Text;
+    source: Source;
+    content: string | null;
+    isBase: boolean;
+    isWorking: boolean;
 
     /**
      * Create new Witness instance.
@@ -10,8 +19,8 @@ export default class Witness {
      * Witnesses will usually belong to a collection, which
      * is represented by `source`. e.g. Derge.
      *
-     * Only the base witness should be expected to have content. Other
-     * witnesses are represented by annotations to the base text that
+     * Only the working witness should be expected to have content. Other
+     * witnesses are represented by annotations to the working text that
      * contain any differences.
      *
      * @param {number} id - The id of the witness returned from the API
@@ -21,7 +30,7 @@ export default class Witness {
      * @param {boolean} isBase - Whether this is the base witness for this text
      * @param {boolean} isWorking - Whether this is the working edition
      */
-    constructor(id, text, source, content=null, isBase=false, isWorking=false) {
+    constructor(id: number, text: Text, source: Source, content: string|null=null, isBase: boolean=false, isWorking:boolean=false) {
         this.id = id;
         this.text = text;
         this.source = source;
