@@ -183,16 +183,21 @@ const mapStateToProps = (state) => {
             // If we are not viewing the working version,
             // get all the annotations created by the selected witness
             // to apply to the base text.
-            let selectedWitnessAnnotations = getAnnotationsForWitnessId(state, selectedWitness.id);
-            Object.keys(selectedWitnessAnnotations).map(key => {
-                appliedAnnotations.push(selectedWitnessAnnotations[key]);
+            let selectedWitnessAnnotations = [];
+            let selectedWitnessAnnotationData = getAnnotationsForWitnessId(state, selectedWitness.id);
+            Object.keys(selectedWitnessAnnotationData).map(key => {
+                selectedWitnessAnnotations.push(selectedWitnessAnnotationData[key]);
             });
 
             for (let key of Object.keys(workingAnnotationList)) {
                 if (workingAnnotationList[key].creator_witness === selectedWitness.id) {
-                    appliedAnnotations.push(workingAnnotationList[key]);
+                    selectedWitnessAnnotations.push(workingAnnotationList[key]);
                 }
             }
+
+            selectedWitnessAnnotations = annotationsFromData(state, selectedWitnessAnnotations);
+
+            appliedAnnotations = appliedAnnotations.concat(selectedWitnessAnnotations);
 
             workingAnnotationList = _.pickBy(workingAnnotationList, anno => {
                 return anno.creator_witness === selectedWitness.id
@@ -204,7 +209,6 @@ const mapStateToProps = (state) => {
         }
 
         annotations = annotationsFromData(state, workingAnnotationList);
-        appliedAnnotations = annotationsFromData(state, appliedAnnotations);
 
         if (_annotatedText) {
             annotatedText = _annotatedText;
