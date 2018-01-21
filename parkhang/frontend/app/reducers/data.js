@@ -168,7 +168,7 @@ function loadedAppliedAnnotations(state, action) {
 
 function appliedAnnotation(state, action) {
     let annotation = action.annotation;
-    let witness = annotation.witness;
+    let witness = action.witness;
     let witnessAnnotations = state.witnessActiveAnnotationsById[witness.id];
     if (witnessAnnotations && witnessAnnotations.indexOf(annotation.uniqueId) !== -1) {
         return state;
@@ -191,7 +191,7 @@ function appliedAnnotation(state, action) {
 
 function removedAppliedAnnotation(state, action) {
     let annotation = action.annotation;
-    let witness = annotation.witness;
+    let witness = action.witness;
     let activeAnnotations = state.witnessActiveAnnotationsById[witness.id];
     if (activeAnnotations) {
         activeAnnotations = activeAnnotations.filter(element => element != annotation.uniqueId);
@@ -210,7 +210,7 @@ function createdAnnotation(state, action) {
     const annotation = action.annotation;
     annotation.save();
     const annotationData = dataFromAnnotation(annotation);
-    const witness = annotation.witness;
+    const witness = action.witness;
 
     return {
         ...state,

@@ -18,7 +18,7 @@ const user = new User(1, "");
 
 describe('Applying and removing reducer', () => {
 
-    const applyAction = actions.appliedAnnotation(annotation);
+    const applyAction = actions.appliedAnnotation(annotation, baseWitness);
 
     let state = {...data.initialDataState};
     let witnessActiveAnnotations = {
@@ -39,7 +39,7 @@ describe('Applying and removing reducer', () => {
         ).not.toBe(state);
     });
 
-    const removeAction = actions.removedAppliedAnnotation(annotation);
+    const removeAction = actions.removedAppliedAnnotation(annotation, baseWitness);
 
     test('Removing annotation', () => {
         const state = dataReducers[applyAction.type]({...data.initialDataState}, applyAction);
@@ -132,8 +132,8 @@ describe('Processing loaded data', () => {
 
 describe('CUD annotation', () => {
 
-    const newAnnotation = new TemporaryAnnotation(null, baseWitness, 5, 7, "replacement", ANNOTATION_TYPES.variant, null, user);
-    const createAction = actions.createdAnnotation(newAnnotation);
+    const newAnnotation = new TemporaryAnnotation(null, baseWitness, 5, 7, "replacement", ANNOTATION_TYPES.variant, baseWitness, user);
+    const createAction = actions.createdAnnotation(newAnnotation, baseWitness);
 
     let state = {...data.initialDataState};
 

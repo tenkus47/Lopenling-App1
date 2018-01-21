@@ -210,17 +210,19 @@ export function loadedWitnessAppliedAnnotations(witness, annotations) {
  *
  * @param {Annotation} annotation
  */
-export function appliedAnnotation(annotation) {
+export function appliedAnnotation(annotation, witness) {
     return {
         type: APPLIED_ANNOTATION,
-        annotation
+        annotation,
+        witness
     }
 }
 
-export function removedAppliedAnnotation(annotation) {
+export function removedAppliedAnnotation(annotation, witness) {
     return {
         type: REMOVED_APPLIED_ANNOTATION,
-        annotation
+        annotation,
+        witness
     }
 }
 
@@ -229,10 +231,11 @@ export function removedAppliedAnnotation(annotation) {
  * @param {Annotation} annotation
  * @return {{type: string, annotation: *}}
  */
-export function createdAnnotation(annotation) {
+export function createdAnnotation(annotation, witness) {
     return {
         type: CREATED_ANNOTATION,
-        annotation
+        annotation,
+        witness
     }
 }
 
