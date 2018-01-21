@@ -57,13 +57,13 @@ function changedSelectedSegment(state, action) {
 }
 
 function changedActiveAnnotation(state, action) {
-    let activeAnnotations = {
-        ...state.activeAnnotations
-    };
-    activeAnnotations[state.selectedText.id] = action.annotation;
+    const activeWitnessId = state.selectedTextWitness[state.selectedText.id];
     return {
         ...state,
-        activeAnnotations: activeAnnotations
+        activeAnnotations: {
+            ...state.activeAnnotations,
+            [activeWitnessId]: action.annotation
+        }
     }
 }
 
@@ -81,16 +81,17 @@ function getTemporaryAnnotationKey(start, length) {
 function addedTemporaryAnnotation(state, action) {
     const annotation = action.annotation;
     const textId = annotation.witness.text.id;
+    const activeWitnessId = state.selectedTextWitness[state.selectedText.id];
     const key = getTemporaryAnnotationKey(annotation.start, annotation.length);
 
-    let temporaryAnnotations = (state.temporaryAnnotations[textId]) ? state.temporaryAnnotations[textId] : {};
-    let textTemporaryAnnotations = (state.temporaryAnnotations[textId] && state.temporaryAnnotations[textId][key]) ? state.temporaryAnnotations[textId][key] : [];
+    let temporaryAnnotations = (state.temporaryAnnotations[activeWitnessId]) ? state.temporaryAnnotations[activeWitnessId] : {};
+    let textTemporaryAnnotations = (state.temporaryAnnotations[activeWitnessId] && state.temporaryAnnotations[activeWitnessId][key]) ? state.temporaryAnnotations[activeWitnessId][key] : [];
 
     return {
         ...state,
         temporaryAnnotations: {
             ...state.temporaryAnnotations,
-            [textId]: {
+            [activeWitnessId]: {
                 ...temporaryAnnotations,
                 [key]: [
                     ...textTemporaryAnnotations,
@@ -108,15 +109,16 @@ function updatedTemporaryAnnotation(state, action) {
 function removedTemporaryAnnotation(state, action) {
     const annotation = action.annotation;
     const textId = annotation.witness.text.id;
+    const activeWitnessId = state.selectedTextWitness[state.selectedText.id];
     const key = getTemporaryAnnotationKey(annotation.start, annotation.length);
 
     return {
         ...state,
         temporaryAnnotations: {
             ...state.temporaryAnnotations,
-            [textId]: {
-                ...state.temporaryAnnotations[textId],
-                [key]: state.temporaryAnnotations[textId][key].filter(a => a.uniqueId !== annotation.uniqueId)
+            [activeWitnessId]: {
+                ...state.temporaryAnnotations[activeWitnessId],
+                [key]: state.temporaryAnnotations[activeWitnessId][key].filter(a => a.uniqueId !== annotation.uniqueId)
             }
         }
     }
@@ -148,7 +150,8 @@ export const showPageImages = (state) => {
 
 export const getActiveAnnotation = (state) => {
     if (state.selectedText) {
-        return state.activeAnnotations[state.selectedText.id];
+        const activeWitnessId = state.selectedTextWitness[state.selectedText.id];
+        return state.activeAnnotations[activeWitnessId];
     } else {
         return null;
     }
@@ -158,11 +161,11 @@ export const getTextListVisible = (state) => {
     return state.textListVisible;
 };
 
-export const getTemporaryAnnotations = (state, textId, start, length, type) => {
+export const getTemporaryAnnotations = (state, witnessId, start, length, type) => {
     let annotations = [];
     const key = getTemporaryAnnotationKey(start, length);
-    if (type && state.temporaryAnnotations[textId] && state.temporaryAnnotations[textId][key]) {
-        annotations =  state.temporaryAnnotations[textId][key].filter(a => a.type === type);
+    if (type && state.temporaryAnnotations[witnessId] && state.temporaryAnnotations[witnessId][key]) {
+        annotations =  state.temporaryAnnotations[witnessId][key].filter(a => a.type === type);
     }
     return annotations;
 };
