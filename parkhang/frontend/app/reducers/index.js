@@ -61,8 +61,8 @@ export const getTextListVisible = (state) => {
     return ui.getTextListVisible(state.ui);
 };
 
-export const getTemporaryAnnotations = (state, textId, start, length, type=null) => {
-    return ui.getTemporaryAnnotations(state.ui, textId, start, length, type);
+export const getTemporaryAnnotations = (state, witnessId, start, length, type=null) => {
+    return ui.getTemporaryAnnotations(state.ui, witnessId, start, length, type);
 };
 
 // data
