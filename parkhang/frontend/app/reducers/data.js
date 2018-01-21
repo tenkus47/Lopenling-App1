@@ -391,7 +391,7 @@ export const getWorkingWitness = (state, textId) => {
         const witnesses = state.textWitnessesById[textId];
         for (let witnessId of Object.keys(witnesses)) {
             const witness = witnesses[witnessId];
-            if (!workingWitness || witness.is_working) {
+            if (witness.is_working) {
                 workingWitness = witness;
             }
         }
