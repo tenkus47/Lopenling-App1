@@ -210,7 +210,9 @@ const mapStateToProps = (state) => {
         }
 
         annotations = annotationsFromData(state, workingAnnotationList);
-
+        annotations = _.unionWith(appliedAnnotations, annotations, (first, second) => {
+            return first.uniqueId == second.uniqueId;
+        });
 
         annotatedText = new AnnotatedText(
             segmentTibetanText(workingWitness.content),
