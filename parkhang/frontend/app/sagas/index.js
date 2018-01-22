@@ -195,8 +195,7 @@ function *selectedWitness(action) {
     const witnessId = action.witness.id;
     const hasLoadedAnnotations = yield select(reducers.hasLoadedWitnessAnnotations, witnessId);
     if (!hasLoadedAnnotations) {
-        yield put(actions.loadingWitnessAnnotations(action.witness));
-        yield call(loadAnnotations, action.witness);
+        yield call(loadWitnessAnnotations, action);
     }
 }
 
