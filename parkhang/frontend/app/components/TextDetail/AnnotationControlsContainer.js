@@ -44,7 +44,7 @@ const getAnnotationsData = (annotations, sources) => {
                 };
                 baseSources = baseSources.filter(a => a !== annotation.getSourceName());
             }
-            if (!annotation.userCreated && annotation.creator.isWorking) {
+            if (!annotation.userCreated && annotation.creatorWitness.isWorking) {
                 annotationsById[id].isWorking = true;
             } else {
                 annotationsById[id].isWorking = false;
