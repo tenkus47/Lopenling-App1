@@ -114,7 +114,6 @@ The following components make up the data:
     
 Differences between the versions are highlighted and a user can select which one they think is correct. A user's selections are associated only with that user, enabling multiple users to work on the same text concurrently.
 
-At regular periods, some of these selections will be chosen to be applied by default, at which point the text will be updated. Any changes to the base text will require the annotations poitning to the old version to be updated, which can be automated.
     
 #### Differences between witnesses
 
