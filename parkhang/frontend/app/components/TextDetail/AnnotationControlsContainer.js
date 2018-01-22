@@ -282,7 +282,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             } else {
                 action = actions.createdAnnotation;
             }
-            actionsBatch.push(action(newAnnotation, stateProps.selectedWitness));
+            actionsBatch.push(action(newAnnotation, selectedAnnotation.witness));
             actionsBatch.push(actions.removedTemporaryAnnotation(selectedAnnotation));
             actionsBatch.push(actions.appliedAnnotation(newAnnotation, stateProps.selectedWitness));
             actionsBatch.push(actions.changedActiveAnnotation(newAnnotation));
