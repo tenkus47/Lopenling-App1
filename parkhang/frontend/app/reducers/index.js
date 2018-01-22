@@ -99,6 +99,10 @@ export const hasLoadedWitnessAnnotations = (state, witnessId) => {
     return (state.data['witnessAnnotationsById'].hasOwnProperty(witnessId));
 };
 
+export const hasLoadedWitnessAppliedAnnotations = (state, witnessId) => {
+    return (state.data['witnessActiveAnnotationsById'].hasOwnProperty(witnessId));
+};
+
 export const getAnnotationsForWitnessId = (state, witnessId, annotationType=ANNOTATION_TYPES.variant) => {
     return data.getAnnotationsForWitnessId(state.data, witnessId, annotationType);
 };

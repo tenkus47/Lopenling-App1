@@ -6,7 +6,7 @@ import Witness from 'lib/Witness';
 import { WORKING_VERSION_ANNOTATION_ID, INSERTION_KEY, DELETION_KEY } from 'lib/AnnotatedText';
 import TextDetail from 'components/TextDetail';
 import { changedActiveAnnotation } from 'actions'
-import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getWorkingWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible, getSelectedTextWitnessId, getTextWitnesses, getWitness, hasLoadedWitnessAnnotations } from 'reducers'
+import { showPageImages, getAnnotationsForWitnessId, getActiveAnnotationsForWitnessId, getActiveAnnotation, getBaseWitness, getWorkingWitness, getSelectedText, annotationFromData, getAnnotationData, getUser, getTextListVisible, getSelectedTextWitnessId, getTextWitnesses, getWitness, hasLoadedWitnessAnnotations, hasLoadedWitnessAppliedAnnotations } from 'reducers'
 import _ from 'lodash'
 
 import AnnotatedText from 'lib/AnnotatedText'
@@ -95,8 +95,12 @@ const annotationsFromData = (state, annotationList) => {
 
 let _activeAnnotationsList;
 let _activeAnnotations;
-const getActiveAnnotations = (state, baseWitnessId) => {
-    const activeAnnotationList = getActiveAnnotationsForWitnessId(state, baseWitnessId);
+const getActiveAnnotations = (state, witnessId, baseWitnessId) => {
+    const loadedAppliedAnnotations = hasLoadedWitnessAppliedAnnotations(state, witnessId);
+    if (!loadedAppliedAnnotations) {
+        return [];
+    }
+    const activeAnnotationList = getActiveAnnotationsForWitnessId(state, witnessId);
     if (!activeAnnotationList) {
         return [];
     }
@@ -177,7 +181,7 @@ const mapStateToProps = (state) => {
         _selectedWitness = selectedWitness;
 
         let workingAnnotationList = getAnnotationsForWitnessId(state, workingWitness.id);
-        appliedAnnotations = getActiveAnnotations(state, selectedWitness.id);
+        appliedAnnotations = getActiveAnnotations(state, selectedWitness.id, workingWitness.id);
 
         if (selectedWitness.id !== workingWitness.id) {
             // If we are not viewing the working version,
