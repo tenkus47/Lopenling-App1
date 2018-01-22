@@ -75,16 +75,16 @@ export function fetchAppliedUserAnnotations(witness) {
     return request(GET, url);
 }
 
-export function applyAnnotation(annotation) {
-    const url = getApplyAnnotationUrl(annotation.witness);
+export function applyAnnotation(annotation, witness) {
+    const url = getApplyAnnotationUrl(witness);
     let data = {
         annotation_unique_id: annotation.uniqueId
     };
     return request(POST, url, data);
 }
 
-export function removeAppliedAnnotation(annotation) {
-    const url = getApplyAnnotationUrl(annotation.witness, annotation.uniqueId);
+export function removeAppliedAnnotation(annotation, witness) {
+    const url = getApplyAnnotationUrl(witness, annotation.uniqueId);
     return request(DELETE, url);
 }
 

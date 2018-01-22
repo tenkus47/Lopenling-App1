@@ -98,7 +98,7 @@ function reqAction(callback) {
 }
 
 function applyAnnotation(action) {
-    return call(api.applyAnnotation, action.annotation);
+    return call(api.applyAnnotation, action.annotation, action.witness);
 }
 
 function* watchAppliedAnnotation() {
@@ -107,7 +107,7 @@ function* watchAppliedAnnotation() {
 
 
 function removeAppliedAnnotation(action) {
-    return call(api.removeAppliedAnnotation, action.annotation);
+    return call(api.removeAppliedAnnotation, action.annotation, action.witness);
 }
 
 function* watchRemovedAppliedAnnotation() {
