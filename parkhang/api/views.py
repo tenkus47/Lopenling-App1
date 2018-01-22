@@ -180,13 +180,13 @@ class AppliedUserAnnotations(APIView):
 
         annotations = AppliedUserAnnotation.objects.filter(
             user=request.user,
-            annotation__witness__pk=witness_id
+            witness=witness_id
         )
 
         serializer = AppliedUserAnnotationSerializer(annotations, many=True)
         return Response(serializer.data)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, witness_id, *args, **kwargs):
         """
         Apply annotation to it's assigned witness
 
@@ -203,9 +203,15 @@ class AppliedUserAnnotations(APIView):
             raise NotFound('An annotation with that ID does not exist.')
 
         try:
+            witness = Witness.objects.get(pk=witness_id)
+        except Witness.DoesNotExist:
+            raise NotFound('An witness with that ID does not exist.')
+
+        try:
             applied_user_annotation = AppliedUserAnnotation.objects.get(
                 user=request.user,
-                annotation=annotation
+                annotation=annotation,
+                witness=witness
             )
             return Response('Annotation already applied')
         except AppliedUserAnnotation.DoesNotExist:
@@ -213,6 +219,7 @@ class AppliedUserAnnotations(APIView):
 
         applied_user_annotation.user = request.user
         applied_user_annotation.annotation = annotation
+        applied_user_annotation.witness = witness
         applied_user_annotation.save()
 
         return Response('', status=status.HTTP_204_NO_CONTENT)
@@ -221,12 +228,19 @@ class AppliedUserAnnotations(APIView):
 class AppliedUserAnnotationDetail(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def delete(self, request, annotation_unique_id, *args, **kwargs):
+    def delete(self, request, witness_id, annotation_unique_id, *args, **kwargs):
+
         annotation = get_annotation(request, annotation_unique_id)
+
+        try:
+            witness = Witness.objects.get(pk=witness_id)
+        except Witness.DoesNotExist:
+            raise NotFound('An witness with that ID does not exist.')
 
         try:
             applied_user_annotation = AppliedUserAnnotation.objects.get(
                 user=request.user,
+                witness=witness,
                 annotation=annotation
             )
         except AppliedUserAnnotation.DoesNotExist:
