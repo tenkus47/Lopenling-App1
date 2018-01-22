@@ -186,15 +186,18 @@ const mapStateToProps = (state) => {
         if (selectedWitness.id !== workingWitness.id) {
             // If we are not viewing the working version,
             // get all the annotations created by the selected witness
-            // to apply to the base text.
+            // BUT NOT BY A USER to apply to the base text.
+            // User-created annotations need to be in appliedAnnotations.
             let selectedWitnessAnnotations = [];
             let selectedWitnessAnnotationData = getAnnotationsForWitnessId(state, selectedWitness.id);
             Object.keys(selectedWitnessAnnotationData).map(key => {
-                selectedWitnessAnnotations.push(selectedWitnessAnnotationData[key]);
+                if (!selectedWitnessAnnotationData[key].creator_user) {
+                    selectedWitnessAnnotations.push(selectedWitnessAnnotationData[key]);
+                }
             });
 
             for (let key of Object.keys(workingAnnotationList)) {
-                if (workingAnnotationList[key].creator_witness === selectedWitness.id) {
+                if (workingAnnotationList[key].creator_witness === selectedWitness.id && !workingAnnotationList[key].creator_user) {
                     selectedWitnessAnnotations.push(workingAnnotationList[key]);
                 }
             }
