@@ -128,7 +128,7 @@ const getAvailableAnnotations = (annotatedText, activeAnnotation, temporaryAnnot
 };
 
 const getTemporaryAnnotation = (state, type, user, witness, start, length) => {
-    const annotations = reducers.getTemporaryAnnotations(state, witness.text.id, start, length, type);
+    const annotations = reducers.getTemporaryAnnotations(state, witness.id, start, length, type);
     if (annotations.length > 0) {
         return annotations[0];
     } else {
