@@ -136,6 +136,7 @@ class AppliedUserAnnotation(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     annotation = models.ForeignKey(Annotation)
+    witness = models.ForeignKey(Witness)
     """Intended to allow a user to say why they applied this annotation"""
     note = models.TextField(null=True, blank=True)
 
