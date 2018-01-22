@@ -466,14 +466,8 @@ export function dataFromAnnotation(annotation) {
 }
 
 export const getAnnotationsForWitnessId = (state, witnessId, annotationType=ANNOTATION_TYPES.variant) => {
-    if (!_annotationCache[witnessId]) {
-        _annotationCache[witnessId] = {};
-    }
-    if (!_annotationCache[witnessId][annotationType]) {
-        let annotations = state.witnessAnnotationsById[witnessId];
-        _annotationCache[witnessId][annotationType] = _.pickBy(annotations, (annotation, key) => annotation.type === annotationType);
-    }
-    return _annotationCache[witnessId][annotationType];
+    let annotations = state.witnessAnnotationsById[witnessId];
+    return _.pickBy(annotations, (annotation, key) => annotation.type === annotationType);
 };
 
 export const getAnnotation = (state, witnessId, annotationUniqueId) => {
