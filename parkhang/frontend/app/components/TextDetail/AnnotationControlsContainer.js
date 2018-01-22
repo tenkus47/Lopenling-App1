@@ -149,13 +149,18 @@ export const mapStateToProps = (state, ownProps) => {
             temporaryAnnotation: null,
             inline: null,
             firstSelectedSegment: null,
-            splitTextRect: null
+            splitTextRect: null,
+            selectedWitness: null
         }
     }
     const inline = ownProps.inline;
-    const witness = activeAnnotation.witness;
+    let selectedWitness = reducers.getSelectedTextWitness(state);
+    if (!selectedWitness) {
+        const selectedText = reducers.getSelectedText(state);
+        selectedWitness = reducers.getWorkingWitness(state, selectedText.id);
+    }
 
-    const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, witness, activeAnnotation.start, activeAnnotation.length);
+    const temporaryVariant = getTemporaryAnnotation(state, ANNOTATION_TYPES.variant, user, selectedWitness, activeAnnotation.start, activeAnnotation.length);
     const annotations = getAvailableAnnotations(ownProps.annotatedText, activeAnnotation, temporaryVariant, ownProps.annotationPositions);
     const sources = reducers.getSources(state);
     let annotationsData = getAnnotationsData(annotations, sources);
@@ -184,8 +189,6 @@ export const mapStateToProps = (state, ownProps) => {
             return a.annotation.id - b.annotation.id
         }
     });
-
-    const selectedWitness = reducers.getSelectedTextWitness(state);
 
     return {
         annotationsData: annotationsData,
@@ -235,12 +238,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             const basedOn = (selectedAnnotation.isWorkingAnnotation || selectedAnnotation.userCreated || selectedAnnotation.id === BASE_ANNOTATION_ID) ? null : selectedAnnotation;
             const temporaryAnnotation = new TemporaryAnnotation(
                 basedOn,
-                stateProps.selectedWitness,
+                selectedAnnotation.witness,
                 selectedAnnotation.start,
                 selectedAnnotation.length,
                 selectedAnnotation.content,
                 selectedAnnotation.type,
-                selectedAnnotation.creatorWitness,
+                stateProps.selectedWitness,
                 stateProps.user
             );
             if (selectedAnnotation.userCreated) {
