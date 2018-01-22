@@ -108,7 +108,6 @@ const getActiveAnnotations = (state, witnessId, baseWitnessId) => {
         return _activeAnnotations;
     } else {
         _activeAnnotationsList = activeAnnotationList;
-        _annotatedText = null;
     }
 
     let activeAnnotationDataList = [];
@@ -124,7 +123,6 @@ const getActiveAnnotations = (state, witnessId, baseWitnessId) => {
     return _activeAnnotations;
 };
 
-let _annotatedText;
 let _selectedWitness;
 const mapStateToProps = (state) => {
     const user = getUser(state);
@@ -173,10 +171,6 @@ const mapStateToProps = (state) => {
             selectedWitness = getWitness(state, selectedWitnessId);
         }
 
-        // reset cache if we're viewing a new witness
-        if (_selectedWitness && selectedWitnessId !== _selectedWitness.id) {
-            _annotatedText = null;
-        }
         // set cached witness
         _selectedWitness = selectedWitness;
 
@@ -217,24 +211,16 @@ const mapStateToProps = (state) => {
 
         annotations = annotationsFromData(state, workingAnnotationList);
 
-        if (_annotatedText) {
-            annotatedText = _annotatedText;
-        } else {
-            annotatedText = new AnnotatedText(
-                segmentTibetanText(workingWitness.content),
-                appliedAnnotations,
-                (text) => {
-                    return segmentTibetanText(text).sortedSegments();
-                },
-                baseWitness,
-                selectedWitness
-            );
-            // Only cache the annotated text if we've loaded
-            // all the selected witnesses annotations.
-            if (hasLoadedWitnessAnnotations(state, selectedWitness.id)) {
-                _annotatedText = annotatedText;
-            }
-        }
+
+        annotatedText = new AnnotatedText(
+            segmentTibetanText(workingWitness.content),
+            appliedAnnotations,
+            (text) => {
+                return segmentTibetanText(text).sortedSegments();
+            },
+            workingWitness,
+            selectedWitness
+        );
 
         annotationPositions = getAnnotationPositions(annotatedText, annotations);
 
