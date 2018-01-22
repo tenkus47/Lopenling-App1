@@ -19,74 +19,78 @@ import positionSplitter from 'lib/text_splitters/positionSplitter'
 import styles from './TextDetail.css'
 import utilStyles from 'css/util.css'
 
-const TextDetail = props => {
-    let text = {
-        name: ''
-    };
-    if (props.text) {
-        text = props.text;
-    }
+class TextDetail extends React.Component {
 
-    let inlineControls = false;
-    let textComponent = null;
-
-    if (!props.text || props.loading) {
-        textComponent = <div />
-    } else {
-        let limitWidth = false;
-        let splitter;
-        if (props.paginated) {
-            splitter = positionSplitter(props.pageBreaks);
-        } else {
-            splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
+    render() {
+        let text = {
+            name: ''
+        };
+        if (this.props.text) {
+            text = this.props.text;
         }
 
-        let splitText = new SplitText(props.annotatedText, splitter);
-        inlineControls = true;
-        textComponent = <SplitTextComponent
-            splitText={splitText}
-            annotations={props.annotations}
-            activeAnnotations={props.activeAnnotations}
-            activeAnnotation={props.activeAnnotation}
-            limitWidth={limitWidth}
-            didSelectSegment={props.didSelectSegment}
-            didSelectSegmentIds={props.didSelectSegmentIds}
-            selectedSegmentId={props.selectedSegmentId}
-            annotationPositions={props.annotationPositions}
-            selectedAnnotatedSegments={props.selectedAnnotatedSegments}
-            textListVisible={props.textListVisible}
-            showImages={props.paginated}
-            imagesBaseUrl={props.imagesBaseUrl}
-            selectedWitness={props.selectedWitness}
-        />
-    }
+        let inlineControls = false;
+        let textComponent = null;
 
-    let annotationControls = null;
-    if (props.text) {
-        annotationControls = <AnnotationControlsContainer
-                                annotationPositions={props.annotationPositions}
-                                annotatedText={props.annotatedText}
-                                activeAnnotation={props.activeAnnotation}
-                            />;
-    }
+        if (!this.props.text || this.props.loading) {
+            textComponent = <div/>
+        } else {
+            let limitWidth = false;
+            let splitter;
+            if (this.props.paginated) {
+                splitter = positionSplitter(this.props.pageBreaks);
+            } else {
+                splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
+            }
 
-    let textComponents = [textComponent];
-    if (!inlineControls && annotationControls) {
-        textComponents.push(annotationControls);
-    }
+            let splitText = new SplitText(this.props.annotatedText, splitter);
+            inlineControls = true;
+            textComponent = <SplitTextComponent
+                splitText={splitText}
+                annotations={this.props.annotations}
+                activeAnnotations={this.props.activeAnnotations}
+                activeAnnotation={this.props.activeAnnotation}
+                limitWidth={limitWidth}
+                didSelectSegment={this.props.didSelectSegment}
+                didSelectSegmentIds={this.props.didSelectSegmentIds}
+                selectedSegmentId={this.props.selectedSegmentId}
+                annotationPositions={this.props.annotationPositions}
+                selectedAnnotatedSegments={this.props.selectedAnnotatedSegments}
+                textListVisible={this.props.textListVisible}
+                showImages={this.props.paginated}
+                imagesBaseUrl={this.props.imagesBaseUrl}
+                selectedWitness={this.props.selectedWitness}
+            />
+        }
 
-    return (
-        <div className={classnames(styles.textDetail, utilStyles.flex, utilStyles.flexColumn)}>
-            <TextHeadingContainer text={text} />
-            <Loader loaded={!props.loading} />
-            <div className={classnames(styles.textContainer, utilStyles.flex)}>
-                {!props.loading ? (
-                    textComponents
-                ) : (<div/>)
-                }
+        let annotationControls = null;
+        if (this.props.text) {
+            annotationControls = <AnnotationControlsContainer
+                annotationPositions={this.props.annotationPositions}
+                annotatedText={this.props.annotatedText}
+                activeAnnotation={this.props.activeAnnotation}
+            />;
+        }
+
+        let textComponents = [textComponent];
+        if (!inlineControls && annotationControls) {
+            textComponents.push(annotationControls);
+        }
+
+        return (
+            <div
+                className={classnames(styles.textDetail, utilStyles.flex, utilStyles.flexColumn)}>
+                <TextHeadingContainer text={text}/>
+                <Loader loaded={!this.props.loading}/>
+                <div className={classnames(styles.textContainer, utilStyles.flex)}>
+                    {!this.props.loading ? (
+                        textComponents
+                    ) : (<div/>)
+                    }
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 };
 
 export default TextDetail;
