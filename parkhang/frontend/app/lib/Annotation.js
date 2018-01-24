@@ -27,7 +27,7 @@ export default class Annotation {
     witness: Witness;
     start: number;
     length: number;
-    content: string | null;
+    content: string;
     creatorWitness: Witness;
     creatorUser: User | null;
     type: string;
@@ -58,6 +58,7 @@ export default class Annotation {
         }
         this.start = Number(start);
         this.length = Number(length);
+        if (!content) content = "";
         this.content = content;
         this.creatorWitness = creatorWitness;
         this.creatorUser = creatorUser;
