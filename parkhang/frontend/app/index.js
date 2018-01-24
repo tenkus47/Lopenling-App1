@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import AppContainer from 'components/App/AppContainer'
 
 // For dev only
-import Perf from 'react-addons-perf'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 // Redux
@@ -32,11 +31,6 @@ let store = createStore(
     applyMiddleware(...middlewares)
 );
 if (process.env.NODE_ENV === 'development') {
-    const createLogger = require(`redux-logger`);
-    const logger = createLogger();
-    // middlewares.push(logger);
-    window.perf = Perf;
-
     store = createStore(
         enableBatching(rootReducer),
         composeWithDevTools(
