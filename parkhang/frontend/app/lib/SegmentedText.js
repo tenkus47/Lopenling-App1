@@ -1,23 +1,21 @@
+// @flow
 import TextSegment from './TextSegment'
 
 export default class SegmentedText {
+    segments: TextSegment[];
+    _sortedSegments: TextSegment[];
+    _sortedText: string | null;
 
-    /**
-     *
-     * @param {TextSegment[]} segments - Array of TextSegments
-     */
-    constructor(segments) {
+    constructor(segments: TextSegment[]) {
         this.segments = segments;
-        this._sortedSegments = null;
+        // this._sortedSegments = null;
         this._sortedText = null;
     }
 
     /**
      * Combine all the text's segments into a string.
-     *
-     * @returns {string}
      */
-    getText() {
+    getText(): string {
         if (this._sortedText == null) {
             let sorted = this.sortedSegments();
             let text = "";
@@ -31,12 +29,10 @@ export default class SegmentedText {
 
     /**
      * Get the texts segments sorted by start position.
-     *
-     * @returns {TextSegment[]|null}
      */
-    sortedSegments() {
+    sortedSegments(): TextSegment[] {
         if (!this._sortedSegments) {
-            this._sortedSegments = Object.assign([], this.segments);
+            this._sortedSegments = [...this.segments];
             this._sortedSegments.sort((a, b) => {
                 let res = a.start - b.start;
                 if (res == 0) {
@@ -56,10 +52,9 @@ export default class SegmentedText {
      *
      * Intended to be used privately by internal methods.
      *
-     * @param {number} position
-     * @return {number} 0 or greater if a segment is found; -1 if not found.
+     * @return 0 or greater if a segment is found; -1 if not found.
      */
-    indexOfSortedSegmentAtPosition(position) {
+    indexOfSortedSegmentAtPosition(position: number): number {
         let foundSegmentIndex = -1;
 
         const segments = this.sortedSegments();
@@ -86,11 +81,8 @@ export default class SegmentedText {
 
     /**
      * Get the TextSegment at the given position in the text.
-     *
-     * @param {number} position
-     * @returns {TextSegment|null}
      */
-    segmentAtPosition(position) {
+    segmentAtPosition(position: number): TextSegment | null {
         let foundSegment = null;
         let segmentIndex = this.indexOfSortedSegmentAtPosition(position);
         if (segmentIndex > -1) {
@@ -101,12 +93,8 @@ export default class SegmentedText {
 
     /**
      * Get TextSegments within the given range of characters in the text.
-     *
-     * @param {number} start
-     * @param {number} length
-     * @returns {TextSegment[]}
      */
-    segmentsInRange(start, length) {
+    segmentsInRange(start: number, length: number): TextSegment[] {
         let segments = [];
         let rangeEnd;
         if (length == 0) {

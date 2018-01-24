@@ -1,3 +1,6 @@
+// @flow
+import Annotation from 'lib/Annotation';
+
 /**
  * Partial segment of a larger text.
  *
@@ -5,33 +8,36 @@
  * otherwise it can be contiguous 'punctuation' characters.
  */
 export default class TextSegment {
+    _start: number;
+    _text: string;
+    _annotation: ?Annotation;
 
-    constructor(start, text) {
+    constructor(start: number, text: string) {
         this._start = start;
         this._text = text;
     }
 
-    get start() {
+    get start(): number {
         return this._start;
     }
 
-    set start(value) {
+    set start(value: number) {
         this._start = value;
     }
 
-    get end() {
+    get end(): number {
         return this._start + this._text.length - 1;
     }
 
-    get text() {
+    get text(): string {
         return this._text;
     }
 
-    set text(value) {
+    set text(value: string) {
         this._text = value;
     }
 
-    get length() {
+    get length(): number {
         return this._text.length;
     }
 

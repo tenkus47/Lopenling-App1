@@ -1,15 +1,23 @@
+// @flow
 import SegmentedText from './SegmentedText'
+import AnnotatedText from "./AnnotatedText";
+
+export type Splitter = (string) => number[];
 
 export default class SplitText {
+    annotatedText: AnnotatedText;
+    splitter: Splitter;
+    _texts: SegmentedText[];
+    _textsFinalPositions: number[];
 
-    constructor(annotatedText, splitter) {
+    constructor(annotatedText: AnnotatedText, splitter: Splitter) {
         this.annotatedText = annotatedText;
         this.splitter = splitter;
-        this._texts = null;
-        this._textsFinalPositions = null;
+        this._texts = [];
+        this._textsFinalPositions = [];
     }
 
-    get texts() {
+    get texts(): SegmentedText[] {
         if (!this.annotatedText) {
             return [];
         }
@@ -51,12 +59,12 @@ export default class SplitText {
         return texts;
     }
 
-    _getTextsFinalPositions() {
+    _getTextsFinalPositions(): number[] {
         this.texts;
         return this._textsFinalPositions;
     }
 
-    getTextIndexOfPosition(position) {
+    getTextIndexOfPosition(position: number) {
         const textsFinalPositions = this._getTextsFinalPositions();
         let lastPosition = 0;
         let textIndex = null;

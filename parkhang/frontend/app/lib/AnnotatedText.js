@@ -1,7 +1,8 @@
-import Annotation from './Annotation'
-import { ANNOTATION_TYPES } from './Annotation'
-import SegmentedText from './SegmentedText'
-import TextSegment from './TextSegment'
+// @flow
+import Annotation, { ANNOTATION_TYPES } from 'lib/Annotation'
+import SegmentedText from 'lib/SegmentedText'
+import TextSegment from 'lib/TextSegment'
+import Witness from 'lib/Witness'
 import _ from 'lodash'
 
 export const BASE_ANNOTATION_ID = -1;
@@ -10,23 +11,28 @@ export const WORKING_VERSION_ANNOTATION_ID = -2;
 export const INSERTION_KEY = 'i';
 export const DELETION_KEY = 'd';
 
-export default class AnnotatedText {
+type Segmenter = (content: string) => TextSegment[];
 
-    /**
-     * @callback segmenter
-     * @param {string} content
-     * @returns {TextSegment[]|null}
-     */
+export default class AnnotatedText {
+    originalText: SegmentedText;
+    segmenter: Segmenter | null;
+    baseWitness: Witness;
+    activeWitness: Witness | null;
+    _generatedText: SegmentedText | null;
+    _orginalCurrentSegmentPositions: {[position: string]: [number, boolean]};
+    _currentOriginalSegmentPositions: {[position: number]: number};
+    annotations: Annotation[];
+    _annotationsByType: {[string]: Annotation[]};
 
     /**
      *
-     * @param {SegmentedText} originalText
-     * @param {Annotation[]} [annotations]
+     * @param originalText -
+     * @param [annotations]
      * @param {segmenter} [segmenter] - segments strings into TextSegments
      * @param {Witness} [baseWitness] - witness this text is originally based on
      * @param {Witness} [activeWitness] - witness this text is representing
      */
-    constructor(originalText, annotations=[], segmenter=null, baseWitness=null, activeWitness=null) {
+    constructor(originalText: SegmentedText, annotations: Annotation[]=[], segmenter: Segmenter|null=null, baseWitness: Witness, activeWitness: Witness|null=null) {
         this.originalText = originalText;
         this.segmenter = segmenter;
         this.baseWitness = baseWitness;
@@ -42,7 +48,7 @@ export default class AnnotatedText {
         }
     }
 
-    addAnnotation(annotation) {
+    addAnnotation(annotation: Annotation) {
         if (this.annotations.indexOf(annotation) === -1) {
             this.annotations.push(annotation);
             this._generatedText = null;
@@ -55,11 +61,11 @@ export default class AnnotatedText {
         }
     }
 
-    getAnnotationsOfType(type) {
+    getAnnotationsOfType(type: string): Annotation[] | null {
         return this._annotationsByType[type];
     }
 
-    get variants() {
+    get variants(): Annotation[] {
         let variants = this.getAnnotationsOfType(ANNOTATION_TYPES.variant);
         if (!variants) {
             variants = [];
@@ -67,7 +73,7 @@ export default class AnnotatedText {
         return variants;
     }
 
-    get segmentedText() {
+    get segmentedText(): SegmentedText {
         if (!this._generatedText) {
             this._generatedText = this.generateText(this.originalText, this.variants);
         }
@@ -75,11 +81,11 @@ export default class AnnotatedText {
         return this._generatedText;
     }
 
-    getText() {
+    getText(): string {
         return this.segmentedText.getText();
     }
 
-    annotationsForPosition(position) {
+    annotationsForPosition(position: number): Annotation[] {
         this.segmentedText;
         return this.variants.filter((annotation) => {
             let start = annotation.start;
@@ -88,13 +94,13 @@ export default class AnnotatedText {
                 start = String(start) + INSERTION_KEY;
                 end = start;
             }
-            if (!this._orginalCurrentSegmentPositions[start]
-                || !this._orginalCurrentSegmentPositions[end]
+            if (!this._orginalCurrentSegmentPositions[String(start)]
+                || !this._orginalCurrentSegmentPositions[String(end)]
             ) {
                 return false;
             }
-            let [currentStart] = this._orginalCurrentSegmentPositions[start];
-            let [currentEnd] = this._orginalCurrentSegmentPositions[end];
+            let [currentStart] = this._orginalCurrentSegmentPositions[String(start)];
+            let [currentEnd] = this._orginalCurrentSegmentPositions[String(end)];
 
             return (
                 currentStart <= position && currentEnd >= position
@@ -106,10 +112,9 @@ export default class AnnotatedText {
      * Return the starting position and length of the text segment that
      * this annotation would be contained in in the generated text.
      *
-     * @param annotation
-     * @return {[number, number]} Array, first element is start, second is length
+     * @return Array, first element is start, second is length
      */
-    getPositionOfAnnotation(annotation) {
+    getPositionOfAnnotation(annotation: Annotation): [number|null, number|null] {
         // Make sure generateText has been called.
         // This ensures this._orginalCurrentSegmentPositions has been updated.
         this.segmentedText;
@@ -122,7 +127,7 @@ export default class AnnotatedText {
                 startKey = String(annotation.start) + INSERTION_KEY;
             }
         }
-        if (this._orginalCurrentSegmentPositions[startKey] == undefined) {
+        if (this._orginalCurrentSegmentPositions[String(startKey)] == undefined) {
             if (this.originalText.getText().length === annotation.start) {
                 // if the annotation is an insertion at the end of the text
                 return [this.getText().length, 0];
@@ -131,7 +136,7 @@ export default class AnnotatedText {
                 return [null, null];
             }
         }
-        const [ startPos, startWasDeleted ] = this._orginalCurrentSegmentPositions[startKey];
+        const [ startPos, startWasDeleted ] = this._orginalCurrentSegmentPositions[String(startKey)];
         let length = null;
         if (startWasDeleted) {
             length = 0;
@@ -139,15 +144,17 @@ export default class AnnotatedText {
             length = 0;
         } else {
             const startSegment = this.segmentedText.segmentAtPosition(startPos);
-            let endSegment = null;
+            let endSegment;
             if (isActive || annotation.id === WORKING_VERSION_ANNOTATION_ID) {
                 endSegment = this.segmentedText.segmentAtPosition(startPos + annotation.content.length - 1);
             } else {
                 endSegment = this.segmentAtOriginalPosition(annotation.end);
             }
-            length = startSegment.length;
-            if (startSegment.end < endSegment.end) {
-                length = endSegment.start + endSegment.length - startSegment.start;
+            if (startSegment && endSegment && endSegment instanceof TextSegment) {
+                length = startSegment.length;
+                if (startSegment.end < endSegment.end) {
+                    length = endSegment.start + endSegment.length - startSegment.start;
+                }
             }
 
         }
@@ -158,12 +165,8 @@ export default class AnnotatedText {
     /**
      * Get an annotation pointing to the original content that
      * the given positions refer to.
-     *
-     * @param {number} start
-     * @param {number} length
-     * @return {Annotation}
      */
-    getBaseAnnotation(start, length) {
+    getBaseAnnotation(start: number, length: number): Annotation {
         this.segmentedText;
         let startPos = this._currentOriginalSegmentPositions[start];
         let origLength = 0;
@@ -250,7 +253,7 @@ export default class AnnotatedText {
      * @param {Annotation} annotation
      * @return {TextSegment|number[]}
      */
-    segmentsForAnnotation(annotation) {
+    segmentsForAnnotation(annotation: Annotation): Array<TextSegment|number> {
         let segments = [];
         let isActive = false;
         if (_.some(this.variants, (active) => annotation.uniqueId == active.uniqueId)) {
@@ -262,11 +265,11 @@ export default class AnnotatedText {
             if (annotation.isInsertion) {
                 key += INSERTION_KEY;
             }
-            let [ start, deleted ] = this._orginalCurrentSegmentPositions[key];
+            let [ start, deleted ] = this._orginalCurrentSegmentPositions[String(key)];
             let end = start + annotation.content.length;
             for (let i=start; i < end; i++) {
                 let segment = this.segmentedText.segmentAtPosition(i);
-                if (segments.indexOf(segment) == -1) {
+                if (segment && segments.indexOf(segment) == -1) {
                     segments.push(segment);
                 }
             }
@@ -276,7 +279,7 @@ export default class AnnotatedText {
 
             for (let i=start; i <= end; i++) {
                 let segment = null;
-                let [ pos, deleted ] = this._orginalCurrentSegmentPositions[i];
+                let [ pos, deleted ] = this._orginalCurrentSegmentPositions[String(i)];
 
                 if (deleted) {
                     segment = pos;
@@ -284,7 +287,7 @@ export default class AnnotatedText {
                     segment = this.segmentedText.segmentAtPosition(pos);
                 }
 
-                if (segments.indexOf(segment) == -1) {
+                if (segment && segments.indexOf(segment) == -1) {
                     segments.push(segment);
                 }
             }
@@ -293,18 +296,14 @@ export default class AnnotatedText {
         return segments;
     }
 
-    originalSegmentsForAnnotation(annotation) {
+    originalSegmentsForAnnotation(annotation: Annotation): TextSegment[] {
         return this.originalText.segmentsInRange(annotation.start, annotation.length);
     }
 
     /**
      * Generate a new SegmentedText with the given annotations.
-     *
-     * @param {SegmentedText} text
-     * @param {Annotation[]} annotations
-     * @return {SegmentedText}
      */
-    generateText(text, annotations) {
+    generateText(text: SegmentedText, annotations: Annotation[]): SegmentedText {
         const segments = text.sortedSegments();
         let newSegments = segments.slice();
         let replacedSegments = {};
@@ -365,7 +364,7 @@ export default class AnnotatedText {
             }
         }
 
-        let processedSegmentAnnotations = [];
+        let processedSegmentAnnotations = {};
         let currentPosition = 0;
         let updatedSegments = [];
         for (let i=0, len=newSegments.length; i < len; i++) {
@@ -373,14 +372,15 @@ export default class AnnotatedText {
             if (segment._annotation
                 && processedSegmentAnnotations[segment._annotation.uniqueId] === undefined)
             {
+                const annotation = segment._annotation;
                 const deleted = (segment.text.length == 0);
-                const replaced = replacedSegments[segment._annotation.uniqueId];
-                if (segment._annotation.isInsertion) {
+                const replaced = replacedSegments[annotation.uniqueId];
+                if (annotation.isInsertion) {
                     this._orginalCurrentSegmentPositions[String(segment.start) + INSERTION_KEY] = [currentPosition, deleted];
-                    for (let j=0; j < segment._annotation.content.length; j++) {
+                    for (let j=0; j < annotation.content.length; j++) {
                         this._currentOriginalSegmentPositions[currentPosition + j] = segment.start;
                     }
-                    processedSegmentAnnotations[segment._annotation.uniqueId] = true;
+                    processedSegmentAnnotations[annotation.uniqueId] = true;
                 } else if (replaced) {
                     for (let j=0; j < replaced.length; j++) {
                         let replacedSeg = replaced[j];
@@ -392,11 +392,11 @@ export default class AnnotatedText {
                         }
                     }
                 }
-                processedSegmentAnnotations[segment._annotation.uniqueId] = true;
+                processedSegmentAnnotations[annotation.uniqueId] = true;
             } else {
                 const segmentPos = segment.start;
                 for (let j = 0; j < segment.text.length; j++) {
-                    this._orginalCurrentSegmentPositions[segmentPos + j] = [currentPosition + j, false];
+                    this._orginalCurrentSegmentPositions[String(segmentPos + j)] = [currentPosition + j, false];
                     this._currentOriginalSegmentPositions[currentPosition + j] = segmentPos + j;
                 }
             }
@@ -416,13 +416,18 @@ export default class AnnotatedText {
      * If the segment was deleted rather than just replaced, it will
      * return a number, which is the position the segment would have been
      * at in the current text.
-     *
-     * @param {number} position
-     * @returns {TextSegment|number|null}
      */
-    segmentAtOriginalPosition(position) {
+    segmentAtOriginalPosition(position: number): TextSegment | number | null {
         const newText = this.segmentedText;
-        const [ newPos, wasDeleted ] = this._orginalCurrentSegmentPositions[String(position)];
+        let newPos, wasDeleted;
+        try {
+            [ newPos, wasDeleted ] = this._orginalCurrentSegmentPositions[String(position)];
+        } catch (e) {
+            console.warn('Error getting _orginalCurrentSegmentPositions, position: %o', position);
+            //debugger;
+            return null;
+        }
+
         if (newPos !== undefined) {
             if (wasDeleted) {
                 return newPos;
@@ -439,10 +444,10 @@ export default class AnnotatedText {
      * Get the segment of the text from the original version that
      * corresponds to the given position in the current version.
      *
-     * @param {number} position - Position in the current version
+     * @param Position in the current version
      * @return {TextSegment|null}
      */
-    originalSegmentAtPosition(position) {
+    originalSegmentAtPosition(position: number) {
         const pos = this._currentOriginalSegmentPositions[position];
         if (pos !== undefined) {
             return this.originalText.segmentAtPosition(pos);

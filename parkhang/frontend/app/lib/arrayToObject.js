@@ -1,4 +1,5 @@
-export default function arrayToObject(arr, key) {
+// @flow
+export default function arrayToObject(arr: Array<any>, key: string|(any) => string) {
     const keyFunc = (typeof key === "function") ? key : null;
     return arr.reduce(function(result, item) {
         let objKey;

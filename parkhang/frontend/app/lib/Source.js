@@ -1,4 +1,4 @@
-
+// @flow
 export const WORKING_VERSION_SOURCE_NAME = 'Working Version';
 
 /**
@@ -7,13 +7,17 @@ export const WORKING_VERSION_SOURCE_NAME = 'Working Version';
  * Usually a collection e.g. Derge
  */
 export default class Source {
+    id: number;
+    name: string;
+    isBase: boolean;
+    isWorking: boolean;
 
     /**
      * Create Source instance.
-     * @param {number} id - id from API
-     * @param {string} name - name of the source
+     * @param id - id from API
+     * @param name - name of the source
      */
-    constructor(id, name, isBase=false, isWorking=false) {
+    constructor(id: number, name: string, isBase: boolean=false, isWorking: boolean=false) {
         this.id = id;
         this.name = name;
         this.isBase = isBase;

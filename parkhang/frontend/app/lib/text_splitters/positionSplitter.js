@@ -1,11 +1,13 @@
+// @flow
+import type { Splitter } from 'lib/SplitText';
+
 /**
  * Returns a function that accepts a string but simply
  * returns the initial array of positions passed to it.
  *
- * @param {number[]} positions - The positions where a string should be split
- * @return {function({string} string): number[]}
+ * @param positions - The positions where a string should be split
  */
-export default function positionSplitter(positions) {
+export default function positionSplitter(positions: number[]): Splitter {
     const newPositions = [...positions];
     if (newPositions[0] === 0) {
         newPositions.shift();

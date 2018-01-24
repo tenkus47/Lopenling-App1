@@ -1,3 +1,5 @@
+// @flow
+import type { Splitter } from 'lib/SplitText';
 
 /**
  * Return a function to calculate the positions in a string in order to split it to a
@@ -14,7 +16,7 @@
  * @param {number} [endStringSuffixLength=0] - The number of characters after the end of the string to use for endStringTest
  * @return {function(*)}
  */
-export default function splitterFactory(length, endStringTest=null, endStringLength=0, endStringSuffixLength=0) {
+export default function splitterFactory(length: number, endStringTest: string|RegExp|null, endStringLength: number=0, endStringSuffixLength: number=0): Splitter {
     if (endStringLength === 0) {
         if (typeof endStringTest === 'string') {
             endStringLength = endStringTest.length;
