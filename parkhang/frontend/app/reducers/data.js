@@ -237,7 +237,7 @@ function deletedAnnotation(state, action) {
     if (!annotation.isSaved) {
         console.warn('Deleting annotation which is not saved: %o', action);
     }
-    const witness = annotation.witness;
+    const witness = action.witness;
     let witnessAnnotations = state.witnessAnnotationsById[witness.id];
     if (witnessAnnotations) {
         witnessAnnotations = {

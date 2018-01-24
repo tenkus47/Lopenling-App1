@@ -243,12 +243,14 @@ export function createdAnnotation(annotation, witness) {
  * The given annotation has been updated with new data.
  *
  * @param {Annotation} annotation
+ * @param {Witness} witness
  * @return {{type: string, annotation: *}}
  */
-export function updatedAnnotation(annotation) {
+export function updatedAnnotation(annotation, witness) {
     return {
         type: UPDATED_ANNOTATION,
-        annotation
+        annotation,
+        witness
     }
 }
 
@@ -258,10 +260,11 @@ export function updatedAnnotation(annotation) {
  * @param {Annotation} annotation
  * @return {{type: string, annotation: *}}
  */
-export function deletedAnnotation(annotation) {
+export function deletedAnnotation(annotation, witness) {
     return {
         type: DELETED_ANNOTATION,
-        annotation
+        annotation,
+        witness
     }
 }
 

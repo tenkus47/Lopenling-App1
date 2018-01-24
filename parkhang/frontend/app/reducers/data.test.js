@@ -153,9 +153,9 @@ describe('CUD annotation', () => {
         ).toEqual(expectedState);
     });
 
-    const updatedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", newAnnotation.type, null, user, newAnnotation.uniqueId);
+    const updatedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", newAnnotation.type, baseWitness, user, newAnnotation.uniqueId);
     updatedAnnotation.save();
-    const updatedAction = actions.updatedAnnotation(updatedAnnotation);
+    const updatedAction = actions.updatedAnnotation(updatedAnnotation, baseWitness);
 
     test('Updated unsaved annotation', () => {
         state = dataReducers[createAction.type](state, createAction);
@@ -176,7 +176,7 @@ describe('CUD annotation', () => {
     });
 
 
-    const savedAnnotation = new Annotation(2, baseWitness, 5, 7, "replaced", newAnnotation.type, null, user, newAnnotation.uniqueId);
+    const savedAnnotation = new Annotation(2, baseWitness, 5, 7, "replaced", newAnnotation.type, baseWitness, user, newAnnotation.uniqueId);
     savedAnnotation.save();
     const savedAction = actions.savedAnnotation(savedAnnotation);
 
@@ -198,9 +198,9 @@ describe('CUD annotation', () => {
 
     });
 
-    const updatedSavedAnnotation = new TemporaryAnnotation(savedAnnotation, baseWitness, 5, 7, "update", savedAnnotation.type, null, user, savedAnnotation.uniqueId);
+    const updatedSavedAnnotation = new TemporaryAnnotation(savedAnnotation, baseWitness, 5, 7, "update", savedAnnotation.type, baseWitness, user, savedAnnotation.uniqueId);
     updatedSavedAnnotation.isSaved = savedAnnotation.isSaved;
-    const updateSavedAction = actions.updatedAnnotation(updatedSavedAnnotation);
+    const updateSavedAction = actions.updatedAnnotation(updatedSavedAnnotation, baseWitness);
 
     test('Updated saved annotation', () => {
         state = dataReducers[savedAction.type](state, savedAction);
@@ -219,10 +219,10 @@ describe('CUD annotation', () => {
     });
 
     const deletedAnnotation = savedAnnotation;
-    const deletedAction = actions.deletedAnnotation(deletedAnnotation);
+    const deletedAction = actions.deletedAnnotation(deletedAnnotation, baseWitness);
 
     test('Deleted annotation', () => {
-        state = dataReducers[updateSavedAction.type](state, updateSavedAction)
+        state = dataReducers[updateSavedAction.type](state, updateSavedAction);
         const expectedState = {
             ...state,
             witnessAnnotationsById: {
