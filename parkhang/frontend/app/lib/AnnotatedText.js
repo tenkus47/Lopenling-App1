@@ -369,27 +369,25 @@ export default class AnnotatedText {
         let updatedSegments = [];
         for (let i=0, len=newSegments.length; i < len; i++) {
             let segment = newSegments[i];
-            if (segment._annotation
-                && processedSegmentAnnotations[segment._annotation.uniqueId] === undefined)
-            {
+            if (segment._annotation) {
                 const annotation = segment._annotation;
                 const deleted = (segment.text.length == 0);
                 const replaced = replacedSegments[annotation.uniqueId];
-                if (annotation.isInsertion) {
+                const alreadyProcessed = (processedSegmentAnnotations[segment._annotation.uniqueId]) ? true : false;
+
+                if (!alreadyProcessed && annotation.isInsertion) {
                     this._orginalCurrentSegmentPositions[String(segment.start) + INSERTION_KEY] = [currentPosition, deleted];
-                    for (let j=0; j < annotation.content.length; j++) {
+                    for (let j = 0; j < annotation.content.length; j++) {
                         this._currentOriginalSegmentPositions[currentPosition + j] = segment.start;
                     }
-                    processedSegmentAnnotations[annotation.uniqueId] = true;
-                } else if (replaced) {
-                    for (let j=0; j < replaced.length; j++) {
-                        let replacedSeg = replaced[j];
-                        for (let k=0; k < replacedSeg.length; k++) {
-                            this._orginalCurrentSegmentPositions[replacedSeg.start + k] = [currentPosition, deleted];
-                        }
-                        for (let k=0; k < segment._annotation.content.length; k++) {
-                            this._currentOriginalSegmentPositions[currentPosition + k] = replacedSeg.start;
-                        }
+                } else if (!alreadyProcessed && replaced) {
+                    const firstReplacedSeg = replaced[0];
+                    const replacedLength = replaced.reduce((length, seg) => length + seg.length, 0);
+                    for (let j = 0; j < replacedLength; j++) {
+                        this._orginalCurrentSegmentPositions[String(segment.start + j)] = [currentPosition, deleted];
+                    }
+                    for (let m = 0; m < annotation.content.length; m++) {
+                        this._currentOriginalSegmentPositions[currentPosition + m] = firstReplacedSeg.start;
                     }
                 }
                 processedSegmentAnnotations[annotation.uniqueId] = true;
