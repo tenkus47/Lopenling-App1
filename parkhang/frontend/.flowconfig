@@ -9,6 +9,8 @@
 [options]
 module.name_mapper='lib/\(.+\)' -> '<PROJECT_ROOT>/app/lib/\1'
 module.name_mapper='actions/?\(.*\)' -> '<PROJECT_ROOT>/app/actions/\1'
+module.name_mapper='api/?\(.*\)' -> '<PROJECT_ROOT>/app/api/\1'
+module.name_mapper='reducers/?\(.*\)' -> '<PROJECT_ROOT>/app/reducers/\1'
 
 [version]
 ^0.63.1
