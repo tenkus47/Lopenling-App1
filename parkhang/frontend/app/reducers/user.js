@@ -1,14 +1,20 @@
+// @flow
 import * as actions from 'actions'
 import User, { getAnonymousUser } from 'lib/User'
 
 const anonymousUser = getAnonymousUser();
 
-export const initialUserState = {
+export type UserState = {
+    userId: number,
+    userName: string
+}
+
+export const initialUserState: UserState = {
     userId: anonymousUser.id,
     userName: anonymousUser.name
 };
 
-function userLoggedIn(state, action) {
+function userLoggedIn(state: UserState, action: actions.UserAction): UserState {
     return {
         ...state,
         userId: action.userId,
@@ -29,7 +35,7 @@ let _user = null;
  * @param state
  * @return {User}
  */
-export function getUser(state) {
+export function getUser(state: UserState): User {
     if (state.userId === anonymousUser.id) {
         return anonymousUser;
     } else {

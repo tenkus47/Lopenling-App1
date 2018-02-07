@@ -220,12 +220,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 );
             }
             let actionsBatch = [];
+            let selectedWitness = stateProps.selectedWitness;
+            let selectedWitnessData = reducers.getWitnessData(state, selectedWitness.id);
             if (annotation.uniqueId != stateProps.activeAnnotation.uniqueId) {
                 if (annotation.id != BASE_ANNOTATION_ID) {
-                    actionsBatch.push(actions.appliedAnnotation(selectedAnnotation, stateProps.selectedWitness));
+                    actionsBatch.push(actions.appliedAnnotation(selectedAnnotation.uniqueId, selectedWitnessData));
                 }
                 if (stateProps.activeAnnotation.id != BASE_ANNOTATION_ID) {
-                    actionsBatch.push(actions.removedAppliedAnnotation(stateProps.activeAnnotation, stateProps.selectedWitness))
+                    actionsBatch.push(actions.removedAppliedAnnotation(stateProps.activeAnnotation.uniqueId, selectedWitnessData))
                 }
                 actionsBatch.push(actions.changedActiveAnnotation(selectedAnnotation));
 
@@ -262,6 +264,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 return;
             }
 
+            let selectedWitnessData = reducers.getWitnessData(state, stateProps.selectedWitness.id);
+
             const newAnnotation = new Annotation(
                 selectedAnnotation.id,
                 selectedAnnotation.witness,
@@ -284,7 +288,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             actionsBatch.push(action(newAnnotation, selectedAnnotation.witness));
             actionsBatch.push(actions.removedTemporaryAnnotation(selectedAnnotation));
-            actionsBatch.push(actions.appliedAnnotation(newAnnotation, stateProps.selectedWitness));
+            actionsBatch.push(actions.appliedAnnotation(newAnnotation.uniqueId, selectedWitnessData));
             actionsBatch.push(actions.changedActiveAnnotation(newAnnotation));
 
             dispatch(

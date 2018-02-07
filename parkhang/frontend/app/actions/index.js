@@ -1,3 +1,10 @@
+// @flow
+import * as api from 'api';
+import Annotation, { TemporaryAnnotation } from 'lib/Annotation';
+import type { AnnotationUniqueId } from 'lib/Annotation';
+import Witness from 'lib/Witness';
+import Text from 'lib/Text';
+
 /** Actions types **/
 
 // Data
@@ -63,25 +70,45 @@ export const USER_LOGGED_IN = 'users/USER_LOGGED_IN';
 
 /** Action creators **/
 
+export type Action = {
+    type: string,
+    payload?: any
+}
+
+export type WitnessAction = Action & {
+    witness: Witness
+}
+
+export type TextDataAction = Action & {
+    text: api.TextData
+}
+
+export type AnnotationAction = Action & {
+    annotation: Annotation
+}
 
 /* DATA */
 
 
 // TEXTS
 
-export function loadTexts() {
+export function loadTexts(): Action {
     return {
         type: LOAD_TEXTS,
     };
 }
 
-export function loadingTexts() {
+export function loadingTexts(): Action {
     return {
         type: LOADING_TEXTS,
     };
 }
 
-export function loadedTexts(texts) {
+export type TextsAction = Action & {
+    texts: api.TextData[]
+};
+
+export function loadedTexts(texts: api.TextData[]): TextsAction {
     return {
         type: LOADED_TEXTS,
         texts,
@@ -90,19 +117,22 @@ export function loadedTexts(texts) {
 
 // SOURCES
 
-export function loadSources() {
+export function loadSources(): Action {
     return {
         type: LOAD_SOURCES,
     };
 }
 
-export function loadingSources() {
+export function loadingSources(): Action {
     return {
         type: LOADING_SOURCES,
     };
 }
 
-export function loadedSources(sources) {
+export type LoadedSourcesAction = Action & {
+    sources: api.SourceData[]
+}
+export function loadedSources(sources: api.SourceData[]): LoadedSourcesAction {
     return {
         type: LOADED_SOURCES,
         sources,
@@ -111,62 +141,65 @@ export function loadedSources(sources) {
 
 // INITIAL DATA
 
-export function loadInitialData() {
+export function loadInitialData(): Action {
     return {
         type: LOAD_INITIAL_DATA,
     };
 }
 
-export function loadingInitialData() {
+export function loadingInitialData(): Action {
     return {
         type: LOADING_INITIAL_DATA,
     };
 }
 
-export function loadedInitialData() {
+export function loadedInitialData(): Action {
     return {
         type: LOADED_INITIAL_DATA,
     };
 }
 
-export function loadTextData(text) {
-    return {
-        type: LOAD_TEXT_DATA,
-        text,
-    };
-}
+// export function loadTextData(text) {
+//     return {
+//         type: LOAD_TEXT_DATA,
+//         text,
+//     };
+// }
 
-export function loadingTextData(text) {
-    return {
-        type: LOADING_TEXT_DATA,
-        text,
-    };
-}
+// export function loadingTextData(text) {
+//     return {
+//         type: LOADING_TEXT_DATA,
+//         text,
+//     };
+// }
 
-export function loadedTextData(text) {
-    return {
-        type: LOADED_TEXT_DATA,
-        text,
-    };
-}
+// export function loadedTextData(text) {
+//     return {
+//         type: LOADED_TEXT_DATA,
+//         text,
+//     };
+// }
 
 // WITNESSES
 
-export function loadWitnesses(text) {
-    return {
-        type: LOAD_WITNESSES,
-        text,
-    };
-}
+// export function loadWitnesses(text) {
+//     return {
+//         type: LOAD_WITNESSES,
+//         text,
+//     };
+// }
 
-export function loadingWitnesses(text) {
+export function loadingWitnesses(text: api.TextData): TextDataAction {
     return {
         type: LOADING_WITNESSES,
         text,
     };
 }
 
-export function loadedWitnesses(text, witnesses) {
+export type LoadedWitnessesAction = TextDataAction & {
+    witnesses: api.WitnessData[]
+}
+export function loadedWitnesses(text: api.TextData, witnesses: api.WitnessData[]) {
     return {
         type: LOADED_WITNESSES,
         text,
@@ -176,21 +209,25 @@ export function loadedWitnesses(text, witnesses) {
 
 // ANNOTATIONS
 
-export function loadWitnessAnnotations(witness) {
+export function loadWitnessAnnotations(witness: Witness): WitnessAction {
     return {
         type: LOAD_WITNESS_ANNOTATIONS,
         witness,
     };
 }
 
-export function loadingWitnessAnnotations(witness) {
+export function loadingWitnessAnnotations(witness: Witness): WitnessAction {
     return {
         type: LOADING_WITNESS_ANNOTATIONS,
         witness,
     };
 }
 
-export function loadedWitnessAnnotations(witness, annotations) {
+export type LoadedWitnessAnnotationsAction = Action & {
+    witness: Witness,
+    annotations: api.AnnotationData[]
+}
+export function loadedWitnessAnnotations(witness: Witness, annotations: api.AnnotationData[]): LoadedWitnessAnnotationsAction {
     return {
         type: LOADED_WITNESS_ANNOTATIONS,
         witness,
@@ -198,40 +235,49 @@ export function loadedWitnessAnnotations(witness, annotations) {
     };
 }
 
-export function loadedWitnessAppliedAnnotations(witness, annotations) {
+export type LoadedWitnessAppliedAnnotationsAction = WitnessAction & {
+    annotationIds: AnnotationUniqueId[]
+}
+export function loadedWitnessAppliedAnnotations(witness: Witness, annotationIds: AnnotationUniqueId[]) {
     return {
         type: LOADED_WITNESS_APPLIED_ANNOTATIONS,
         witness,
-        annotations
+        annotationIds
     }
 }
 
-/**
- *
- * @param {Annotation} annotation
- */
-export function appliedAnnotation(annotation, witness) {
+export type AppliedAnnotationAction = Action & {
+    annotationId: AnnotationUniqueId,
+    witnessData: api.WitnessData
+}
+export function appliedAnnotation(annotationId: AnnotationUniqueId, witnessData: api.WitnessData): AppliedAnnotationAction {
     return {
         type: APPLIED_ANNOTATION,
-        annotation,
-        witness
+        annotationId,
+        witnessData: witnessData
     }
 }
 
-export function removedAppliedAnnotation(annotation, witness) {
+export type RemovedAppliedAnnotationAction = Action & {
+    annotationId: AnnotationUniqueId,
+    witnessData: api.WitnessData
+}
+export function removedAppliedAnnotation(annotationId: AnnotationUniqueId, witnessData: api.WitnessData): RemovedAppliedAnnotationAction {
     return {
         type: REMOVED_APPLIED_ANNOTATION,
-        annotation,
-        witness
+        annotationId,
+        witnessData: witnessData
     }
 }
 
+export type CreatedAnnotationAction = Action & {
+    annotation: Annotation,
+    witness: Witness
+}
 /**
  * The given annotation has been created and applied.
- * @param {Annotation} annotation
- * @return {{type: string, annotation: *}}
  */
-export function createdAnnotation(annotation, witness) {
+export function createdAnnotation(annotation: Annotation, witness: Witness): CreatedAnnotationAction {
     return {
         type: CREATED_ANNOTATION,
         annotation,
@@ -239,14 +285,14 @@ export function createdAnnotation(annotation, witness) {
     }
 }
 
+export type UpdatedAnnotationAction = Action & {
+    annotation: Annotation,
+    witness: Witness
+}
 /**
  * The given annotation has been updated with new data.
- *
- * @param {Annotation} annotation
- * @param {Witness} witness
- * @return {{type: string, annotation: *}}
  */
-export function updatedAnnotation(annotation, witness) {
+export function updatedAnnotation(annotation: Annotation, witness: Witness): UpdatedAnnotationAction {
     return {
         type: UPDATED_ANNOTATION,
         annotation,
@@ -254,13 +300,14 @@ export function updatedAnnotation(annotation, witness) {
     }
 }
 
+export type DeletedAnnotationAction = Action & {
+    annotation: Annotation,
+    witness: Witness
+}
 /**
  * The given annotation has been updated with new data.
- *
- * @param {Annotation} annotation
- * @return {{type: string, annotation: *}}
  */
-export function deletedAnnotation(annotation, witness) {
+export function deletedAnnotation(annotation: Annotation, witness: Witness): DeletedAnnotationAction {
     return {
         type: DELETED_ANNOTATION,
         annotation,
@@ -268,13 +315,14 @@ export function deletedAnnotation(annotation, witness) {
     }
 }
 
+export type SavedAnnotationAction = Action & {
+    annotation: Annotation
+}
 /**
  * The annotation has been succesfully saved and given a
  * valid id.
- * @param {Annotation} annotation
- * @return {{type: string, annotation: *}}
  */
-export function savedAnnotation(annotation) {
+export function savedAnnotation(annotation: Annotation): SavedAnnotationAction {
     return {
         type: SAVED_ANNOTATION,
         annotation
@@ -283,7 +331,11 @@ export function savedAnnotation(annotation) {
 
 
 /* USER */
-export function userLoggedIn(userId, userName) {
+export type UserAction = Action & {
+    userId: number,
+    userName: string
+}
+export function userLoggedIn(userId: number, userName: string): UserAction {
     return {
         type: USER_LOGGED_IN,
         userId,
@@ -293,28 +345,38 @@ export function userLoggedIn(userId, userName) {
 
 /* UI */
 
-export function selectedText(text) {
+export type SelectedTextAction = Action & TextDataAction;
+export function selectedText(text: api.TextData): SelectedTextAction {
     return {
         type: SELECTED_TEXT,
         text,
     };
 }
 
-export function changedSearchValue(searchValue) {
+export type ChangedSearchValueAction = Action & {
+    searchValue: string
+}
+export function changedSearchValue(searchValue: string): ChangedSearchValueAction {
     return {
         type: CHANGED_SEARCH_VALUE,
         searchValue,
     };
 }
 
-export function changedShowPageImages(showPageImages) {
+export type ChangedShowPageImagesAction = Action & {
+    showPageImages: boolean
+}
+export function changedShowPageImages(showPageImages: boolean): ChangedShowPageImagesAction {
     return {
         type: CHANGED_SHOW_PAGE_IMAGES,
         showPageImages,
     }
 }
 
-export function selectedTextWitness(text, witness) {
+export type SelectedTextWitnessAction = WitnessAction & {
+    text: Text
+}
+export function selectedTextWitness(text: Text, witness: Witness): SelectedTextWitnessAction {
     return {
         type: SELECTED_WITNESS,
         text,
@@ -322,24 +384,21 @@ export function selectedTextWitness(text, witness) {
     }
 }
 
-/**
- *
- * @param {TextSegment} segment
- * @returns {{type}}
- */
-export function changedSelectedSegment(segment) {
-    return {
-        type: CHANGED_SELECTED_SEGMENT,
-        segment,
-    }
-}
+// export type ChangedSelectedSegmentAction = Action & {
+//     segment: TextSegment
+// }
+// export function changedSelectedSegment(segment: TextSegment): ChangedSelectedSegmentAction {
+//     return {
+//         type: CHANGED_SELECTED_SEGMENT,
+//         segment,
+//     }
+// }
 
-/**
- *
- * @param {Annotation} annotation
- * @param {boolean} isActive - whether the annotation is currently active
- */
-export function addedTemporaryAnnotation(annotation, isActive) {
+export type AddedTemporaryAnnotationAction = Action & {
+    annotation: TemporaryAnnotation,
+    isActive: boolean
+}
+export function addedTemporaryAnnotation(annotation: TemporaryAnnotation, isActive: boolean): AddedTemporaryAnnotationAction {
     return {
         type: ADDED_TEMPORARY_ANNOTATION,
         annotation,
@@ -347,34 +406,40 @@ export function addedTemporaryAnnotation(annotation, isActive) {
     }
 }
 
-/**
- *
- * @param {Annotation} annotation
- * @param {boolean} isActive - whether the annotation is currently active
- */
-export function updatedTemporaryAnnotation(annotation, isActive) {
-    return {
-        type: UPDATED_TEMPORARY_ANNOTATION,
-        annotation,
-        isActive
-    }
-}
+// /**
+//  *
+//  * @param {Annotation} annotation
+//  * @param {boolean} isActive - whether the annotation is currently active
+//  */
+// export function updatedTemporaryAnnotation(annotation, isActive) {
+//     return {
+//         type: UPDATED_TEMPORARY_ANNOTATION,
+//         annotation,
+//         isActive
+//     }
+// }
 
-export function removedTemporaryAnnotation(annotation) {
+export type RemovedTemporaryAnnotationAction = Action & {
+    annotation: TemporaryAnnotation
+}
+export function removedTemporaryAnnotation(annotation: TemporaryAnnotation): RemovedTemporaryAnnotationAction {
     return {
         type: REMOVED_TEMPORARY_ANNOTATION,
         annotation
     }
 }
 
-export function changedActiveAnnotation(annotation) {
+export function changedActiveAnnotation(annotation: Annotation): AnnotationAction {
     return {
         type: CHANGED_ACTIVE_ANNOTATION,
         annotation
     }
 }
 
-export function changedTextListVisible(isVisible) {
+export type ChangedTextListVisibleAction = Action & {
+    isVisible: boolean
+}
+export function changedTextListVisible(isVisible: boolean): ChangedTextListVisibleAction {
     return {
         type: CHANGED_TEXT_LIST_VISIBLE,
         isVisible

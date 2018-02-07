@@ -1,3 +1,4 @@
+// @flow
 import rootReducer, { dataReducer } from 'reducers';
 import * as actions from 'actions';
 import User, { getAnonymousUser } from 'lib/User'
@@ -27,7 +28,7 @@ const initialState = {
         loadedAppliedAnnotations: false
     },
     ui: {
-        selectedText: false,
+        selectedText: null,
         selectedTextWitness: {},
         searchValue: "",
         showPageImages: false,

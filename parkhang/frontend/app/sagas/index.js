@@ -1,11 +1,14 @@
+// @flow
 import { call, put, take, actionChannel, fork, takeEvery, takeLatest, select, all } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import * as actions from 'actions'
 import * as reducers from 'reducers'
+import Witness from 'lib/Witness';
 
 import * as api from 'api'
 import { BATCH } from 'redux-batched-actions'
-import {SELECTED_WITNESS} from "../actions";
+
+import type { Saga } from 'redux-saga';
 
 /**
  * Get the required delay for a failed request.
@@ -87,8 +90,8 @@ function* watchRequests() {
  * @param callback
  * @return {Function}
  */
-function reqAction(callback) {
-    return function* (action) {
+function reqAction(callback): (actions.Action) => Generator<*,*,*>  {
+    return function* (action: actions.Action): Generator<*,*,*> {
         yield put({
             type: SAGA_REQUEST,
             payload: callback,
@@ -97,8 +100,8 @@ function reqAction(callback) {
     }
 }
 
-function applyAnnotation(action) {
-    return call(api.applyAnnotation, action.annotation, action.witness);
+function applyAnnotation(action: actions.AppliedAnnotationAction): Promise<*> {
+    return (call(api.applyAnnotation, action.annotationId, action.witnessData): any);
 }
 
 function* watchAppliedAnnotation() {
@@ -106,8 +109,8 @@ function* watchAppliedAnnotation() {
 }
 
 
-function removeAppliedAnnotation(action) {
-    return call(api.removeAppliedAnnotation, action.annotation, action.witness);
+function removeAppliedAnnotation(action: actions.RemovedAppliedAnnotationAction) {
+    return call(api.removeAppliedAnnotation, action.annotationId, action.witnessData);
 }
 
 function* watchRemovedAppliedAnnotation() {
@@ -116,7 +119,7 @@ function* watchRemovedAppliedAnnotation() {
 
 // INITIAL DATA
 
-export function* loadTexts() {
+export function* loadTexts(): Saga<void> {
     try {
         const texts = yield call(api.fetchTexts);
         yield put(actions.loadedTexts(texts))
@@ -128,14 +131,13 @@ export function* loadTexts() {
 function* loadSources() {
     try {
         const sources = yield call(api.fetchSources);
-        console.log('sources: %o', sources);
         yield put(actions.loadedSources(sources));
     } catch(e) {
         console.log("FAILED loadSources! %o", e);
     }
 }
 
-function* loadInitialData() {
+function* loadInitialData(): Saga<void> {
     yield all([
         call(loadTexts),
         call(loadSources)
@@ -144,7 +146,7 @@ function* loadInitialData() {
     yield put(actions.loadedInitialData());
 }
 
-export function* watchLoadInitialData() {
+export function* watchLoadInitialData(): any {
     yield takeLatest(actions.LOAD_INITIAL_DATA, typeCalls[actions.LOAD_INITIAL_DATA]);
     yield put(actions.loadingInitialData())
 }
@@ -152,46 +154,52 @@ export function* watchLoadInitialData() {
 
 // SELECTED TEXT
 
-function* selectedText(action) {
-    yield put(actions.loadingWitnesses());
+function* selectedText(action: actions.SelectedTextAction): Saga<void> {
+    yield put(actions.loadingWitnesses(action.text));
     yield all([
         call(loadInitialTextData, action)
     ]);
 }
 
-function* watchSelectedText() {
-    yield takeLatest(actions.SELECTED_TEXT, selectedText)
+function* watchSelectedText(): Saga<void> {
+    yield takeLatest(actions.SELECTED_TEXT, selectedText);
 }
 
 
 // WITNESSES
 
-function* loadInitialTextData(action) {
+function* loadInitialTextData(action: actions.TextDataAction) {
     try {
         const witnesses = yield call(api.fetchTextWitnesses, action.text);
         yield put(actions.loadedWitnesses(action.text, witnesses));
-        let workingWitness = null;
-        let baseWitness = null;
+        let workingWitnessData: api.WitnessData|null = null;
+        let baseWitnessData: api.WitnessData|null = null;
         for (const witness of witnesses) {
             if (witness.is_working) {
-                workingWitness = witness;
+                workingWitnessData = witness;
             }
             if (witness.is_base) {
-                baseWitness = witness;
+                baseWitnessData = witness;
             }
         }
-        yield put(actions.loadingWitnessAnnotations(workingWitness));
-        yield all([
-            call(loadAnnotations, workingWitness),
-            call(loadAppliedAnnotations, workingWitness)
-        ]);
-        yield call(loadAnnotations, baseWitness);
+        if (workingWitnessData) {
+            const workingWitness: Witness = yield (select(reducers.getWitness, workingWitnessData.id): any);
+            yield put(actions.loadingWitnessAnnotations(workingWitness));
+            yield all([
+                call(loadAnnotations, workingWitness),
+                call(loadAppliedAnnotations, workingWitness)
+            ]);
+        }
+        if (baseWitnessData) {
+            const baseWitness: Witness = yield (select(reducers.getWitness, baseWitnessData.id): any);
+            yield call(loadAnnotations, baseWitness);
+        }
     } catch(e) {
         console.log("FAILED loadInitialTextData %o", e);
     }
 }
 
-function *selectedWitness(action) {
+function *selectedWitness(action: actions.SelectedTextWitnessAction) {
     const witnessId = action.witness.id;
     const hasLoadedAnnotations = yield select(reducers.hasLoadedWitnessAnnotations, witnessId);
     if (!hasLoadedAnnotations) {
@@ -206,25 +214,25 @@ function *watchSelectedTextWitness() {
 
 // ANNOTATIONS
 
-function* loadAnnotations(witnessData) {
-    const witness = yield select(reducers.getWitness, witnessData.id);
-    const annotations = yield call(api.fetchWitnessAnnotations, witness);
-    yield put(actions.loadedWitnessAnnotations(witnessData, annotations));
+function* loadAnnotations(witness: Witness) {
+    const witnessData = yield select(reducers.getWitnessData, witness.id);
+    const annotations = yield call(api.fetchWitnessAnnotations, witnessData);
+    yield put(actions.loadedWitnessAnnotations(witness, annotations));
 }
 
-function* loadAppliedAnnotations(witnessData) {
+function* loadAppliedAnnotations(witness: Witness) {
     const user = yield select(reducers.getUser);
     if (user.isLoggedIn) {
-        const witness = yield select(reducers.getWitness, witnessData.id);
-        const annotations = yield call(api.fetchAppliedUserAnnotations, witness);
+        const witnessData = yield select(reducers.getWitnessData, witness.id);
+        const annotations = yield call(api.fetchAppliedUserAnnotations, witnessData);
         let annotationIds = annotations.map(a => a.annotation_unique_id);
-        yield put(actions.loadedWitnessAppliedAnnotations(witnessData, annotationIds));
+        yield put(actions.loadedWitnessAppliedAnnotations(witness, annotationIds));
     } else {
-        yield put(actions.loadedWitnessAppliedAnnotations(witnessData, []));
+        yield put(actions.loadedWitnessAppliedAnnotations(witness, []));
     }
 }
 
-function* loadWitnessAnnotations(action) {
+function* loadWitnessAnnotations(action: actions.WitnessAction) {
     yield put(actions.loadingWitnessAnnotations(action.witness));
     yield all([
         call(loadAnnotations, action.witness),
@@ -263,7 +271,7 @@ function* watchDeletedAnnotation() {
 
 // BATCHED ACTIONS
 
-function* dispatchedBatch(action) {
+function* dispatchedBatch(action): Saga<void> {
     const actions = action.payload;
     for (let i=0; i < actions.length; i++) {
         const batchedAction = actions[i];
@@ -285,7 +293,7 @@ function* watchBatchedActions() {
  *
  * @type {Object.<string, function>}
  */
-const typeCalls = {
+const typeCalls: {[string]: (any) => Saga<void>} = {
     [actions.LOAD_INITIAL_DATA]: loadInitialData,
     [actions.LOAD_WITNESS_ANNOTATIONS]: loadWitnessAnnotations,
     [actions.APPLIED_ANNOTATION]: reqAction(applyAnnotation),
@@ -299,18 +307,18 @@ const typeCalls = {
 
 /** Root **/
 
-export default function* rootSaga() {
+export default function* rootSaga(): Saga<void> {
     yield all([
-        watchLoadInitialData(),
-        watchSelectedText(),
-        watchLoadAnnotations(),
-        watchBatchedActions(),
-        watchAppliedAnnotation(),
-        watchRemovedAppliedAnnotation(),
-        watchCreatedAnnotation(),
-        watchUpdatedAnnotation(),
-        watchDeletedAnnotation(),
-        watchRequests(),
-        watchSelectedTextWitness(),
-    ])
+        call(watchLoadInitialData),
+        call(watchSelectedText),
+        call(watchLoadAnnotations),
+        call(watchBatchedActions),
+        call(watchAppliedAnnotation),
+        call(watchRemovedAppliedAnnotation),
+        call(watchCreatedAnnotation),
+        call(watchUpdatedAnnotation),
+        call(watchDeletedAnnotation),
+        call(watchRequests),
+        call(watchSelectedTextWitness),
+    ]);
 }

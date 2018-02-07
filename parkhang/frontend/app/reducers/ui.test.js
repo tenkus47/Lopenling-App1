@@ -1,3 +1,4 @@
+// @flow
 import uiReducers, { initialUIState } from 'reducers/ui'
 import * as actions from 'actions'
 import Text from 'lib/Text'
@@ -18,7 +19,7 @@ state = {
         id: 1
     },
     selectedTextWitness: {
-        1: 1
+        [1]: 1
     }
 };
 
@@ -31,7 +32,7 @@ test('addedTemporaryAnnotation', () => {
     const expectedState = {
         ...state,
         temporaryAnnotations: {
-            1 : {
+            [1] : {
                 "0-27": [
                     annotation
                 ]
@@ -61,7 +62,7 @@ test('removedTemporaryAnnotation', () => {
     const expectedState = {
         ...state,
         temporaryAnnotations: {
-            1 : {
+            [1] : {
                 "0-27": [],
                 "28-1": [
                     extraAnnotation

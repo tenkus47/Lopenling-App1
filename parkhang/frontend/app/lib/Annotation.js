@@ -22,6 +22,8 @@ export function getUniqueId() {
     return uuidV4();
 }
 
+export type AnnotationUniqueId = string;
+
 export default class Annotation {
     _id: number|null;
     witness: Witness;
@@ -31,7 +33,7 @@ export default class Annotation {
     creatorWitness: Witness;
     creatorUser: User | null;
     type: string;
-    _uniqueId: string | null;
+    _uniqueId: AnnotationUniqueId | null;
     basedOn: Annotation | null;
     _isSaved: boolean;
 
@@ -49,12 +51,12 @@ export default class Annotation {
      * @param {Annotation|null} [basedOn=null] - The annotation this is based on (if any).
      */
     constructor(id: number|null, workingWitness: Witness, start: number, length: number, content: string|null,
-                type: string = ANNOTATION_TYPES.variant, creatorWitness: Witness, creatorUser: User|null = null, uniqueId: string|null = null, basedOn: Annotation|null = null)
+                type: string = ANNOTATION_TYPES.variant, creatorWitness: Witness, creatorUser: User|null = null, uniqueId: AnnotationUniqueId|null = null, basedOn: Annotation|null = null)
     {
         this._id = id;
         this.witness = workingWitness;
         if (!workingWitness.isWorking) {
-            console.warn("Set workingWitness that is not a working witness: %o, %o", this, workingWitness);
+            //console.warn("Set workingWitness that is not a working witness: %o, %o", this, workingWitness);
         }
         this.start = Number(start);
         this.length = Number(length);
@@ -89,7 +91,7 @@ export default class Annotation {
         return this._uniqueId;
     }
 
-    set uniqueId(newUniqueId: string) {
+    set uniqueId(newUniqueId: AnnotationUniqueId) {
         this._uniqueId = newUniqueId;
     }
 
@@ -102,7 +104,7 @@ export default class Annotation {
     }
 
     get creator(): Witness|User {
-        if (this.userCreated) {
+        if (this.creatorUser) {
             return this.creatorUser;
         } else {
             return this.creatorWitness;

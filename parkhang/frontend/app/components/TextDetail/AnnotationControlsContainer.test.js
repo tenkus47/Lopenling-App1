@@ -21,7 +21,9 @@ test('mapStateToProps with no activeAnnotation', () => {
             }
         },
         ui: {
-            selectedText: 1
+            selectedText: {
+                id: 1
+            }
         },
         user: {
             userId: user.id,
@@ -40,7 +42,8 @@ test('mapStateToProps with no activeAnnotation', () => {
         temporaryAnnotation: null,
         inline: null,
         firstSelectedSegment: null,
-        splitTextRect: null
+        splitTextRect: null,
+        selectedWitness: null
     });
 });
 

@@ -1,3 +1,4 @@
+// @flow
 import AnnotatedText, { BASE_ANNOTATION_ID, WORKING_VERSION_ANNOTATION_ID } from './AnnotatedText'
 import Annotation, { ANNOTATION_TYPES } from './Annotation'
 import Source from './Source'
@@ -81,7 +82,7 @@ describe('AnnotatedText', () => {
         ).toEqual(testSegment);
     });
 
-    const noAnnotatedText = new AnnotatedText(segmentedText, []);
+    const noAnnotatedText = new AnnotatedText(segmentedText, [], segmenter, baseWitness);
     test('Return the correct text when no annotation', () => {
         expect(
             noAnnotatedText.getText()
@@ -146,9 +147,6 @@ describe('AnnotatedText', () => {
 
 
     test('Get original segments from amended version', () => {
-        //console.log('_currentOriginalSegmentPositions', annotatedText._currentOriginalSegmentPositions);
-        console.log('_orginalCurrentSegmentPositions', annotatedText._orginalCurrentSegmentPositions);
-
         let expectedSegment = new TextSegment(87, "བོད");
         let originalSegment = annotatedText.originalSegmentAtPosition(57);
         expect(
@@ -357,7 +355,7 @@ describe('AnnotatedText', () => {
 
 
 
-        let includesDeletion = new Annotation(WORKING_VERSION_ANNOTATION_ID, baseWitness, 248, 15, "ཐུང་དྲག་གསུས་", ANNOTATION_TYPES.variant, null, getAnonymousUser());
+        let includesDeletion = new Annotation(WORKING_VERSION_ANNOTATION_ID, baseWitness, 248, 15, "ཐུང་དྲག་གསུས་", ANNOTATION_TYPES.variant, baseWitness, getAnonymousUser());
         expectedPosition = [218, 13];
         expect(
             annotatedText.getPositionOfAnnotation(includesDeletion)

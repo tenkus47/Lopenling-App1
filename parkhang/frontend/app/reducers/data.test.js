@@ -1,4 +1,4 @@
-import { dataReducer } from 'reducers';
+// @flow
 import Text from 'lib/Text'
 import Source from 'lib/Source'
 import Witness from 'lib/Witness'
@@ -12,13 +12,14 @@ const source1 = new Source(1, "Derge", true);
 const source2 = new Source(2, "Narthang");
 const text = new Text(1, "དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ");
 const baseWitness = new Witness(1, text, source1, "Test witness", true);
+const baseWitnessData = data.dataFromWitness(baseWitness);
 const otherWitness = new Witness(2, text, source2, "", false);
 const annotation = new Annotation(1, baseWitness, 0, 27, "༄༅༅", ANNOTATION_TYPES.variant, baseWitness);
 const user = new User(1, "");
 
 describe('Applying and removing reducer', () => {
 
-    const applyAction = actions.appliedAnnotation(annotation, baseWitness);
+    const applyAction = actions.appliedAnnotation(annotation.uniqueId, baseWitnessData);
 
     let state = {...data.initialDataState};
     let witnessActiveAnnotations = {
@@ -39,7 +40,7 @@ describe('Applying and removing reducer', () => {
         ).not.toBe(state);
     });
 
-    const removeAction = actions.removedAppliedAnnotation(annotation, baseWitness);
+    const removeAction = actions.removedAppliedAnnotation(annotation.uniqueId, baseWitnessData);
 
     test('Removing annotation', () => {
         const state = dataReducers[applyAction.type]({...data.initialDataState}, applyAction);
@@ -80,7 +81,8 @@ describe('Processing loaded data', () => {
                 "creator_user": null,
                 "is_deleted": false,
                 "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57",
-                "is_saved": true
+                "is_saved": true,
+                "original": null
             }
         ];
 
@@ -89,7 +91,7 @@ describe('Processing loaded data', () => {
             loadedAnnotations: true,
             loadingAnnotations: true,
             witnessAnnotationsById: {
-                1: {
+                "1": {
                     "1e74ae00-7b15-4b30-95d6-2424cfa93f57": {
                         "id": 498,
                         "type": 'V',
@@ -101,7 +103,8 @@ describe('Processing loaded data', () => {
                         "creator_user": null,
                         "is_deleted": false,
                         "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57",
-                        "is_saved": true
+                        "is_saved": true,
+                        "original": null
                     }
                 }
             }
@@ -139,6 +142,8 @@ describe('CUD annotation', () => {
 
     test('Create annotation', () => {
         let annotationData = data.dataFromAnnotation(newAnnotation);
+        if (!annotationData) throw new Error();
+
         annotationData.is_saved = true;
         const expectedState = {
             ...state,
@@ -161,6 +166,8 @@ describe('CUD annotation', () => {
         state = dataReducers[createAction.type](state, createAction);
 
         let annotationData = data.dataFromAnnotation(updatedAnnotation);
+        if (!annotationData) throw new Error();
+
         annotationData.is_saved = true;
         const expectedState = {
             ...state,
@@ -243,7 +250,7 @@ describe('Data selectors', () => {
     state = {
         ...state,
         textsById: {
-            1: {
+            [1]: {
                 id: text.id,
                 name: text.name,
             }
@@ -279,7 +286,7 @@ describe('Data selectors', () => {
             }
         },
         witnessAnnotationsById: {
-            1: {
+            [1]: {
                 "52bab9be-a395-4c9c-b264-1d03a091cc4b": {
                     id: 488,
                     unique_id: "52bab9be-a395-4c9c-b264-1d03a091cc4b",

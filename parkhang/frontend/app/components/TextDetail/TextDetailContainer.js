@@ -148,8 +148,12 @@ const mapStateToProps = (state) => {
 
     const selectedText = getSelectedText(state);
     let witnesses = {};
-    let workingWitness = getWorkingWitness(state, selectedText.id);
-    let baseWitness = getBaseWitness(state, selectedText.id);
+    let workingWitness;
+    let baseWitness;
+    if (selectedText) {
+        workingWitness = getWorkingWitness(state, selectedText.id);
+        baseWitness = getBaseWitness(state, selectedText.id);
+    }
 
     let annotationPositions = {};
     let annotations = [];
