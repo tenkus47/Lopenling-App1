@@ -347,6 +347,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 activeAnnotation = range.annotation;
             } else if (activeAnnotations.length > 0) {
                 const content = segments.reduce((content, segment) => content + segment.text, "");
+                // TODO: test this when editing non-working edition.
+                // Check if getTextWorkingWitness works as required
+                if (!stateProps.selectedWitness) {
+                    console.log('no stateProps.selectedWitness: %o', stateProps.selectedWitness);
+                }
                 activeAnnotation = new Annotation(
                     WORKING_VERSION_ANNOTATION_ID,
                     getTextWorkingWitness(stateProps.text),
