@@ -97,7 +97,7 @@ function loadedTexts(state: DataState, action: actions.TextsAction): DataState {
     };
 }
 
-function loadingSources(state: DataState, action): DataState {
+function loadingSources(state: DataState): DataState {
     return {
         ...state,
         loadingSources: true,
