@@ -1,10 +1,12 @@
+// @flow
 import React from "react";
 import { connect } from "react-redux";
 import TextList from "components/TextList";
 import { selectedText } from "actions";
 import { getSelectedText } from "reducers";
+import type { AppState } from "reducers";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: AppState) => {
     const searchValue = state.ui.searchValue;
     let texts = state.data.texts;
     if (searchValue.length > 0) {

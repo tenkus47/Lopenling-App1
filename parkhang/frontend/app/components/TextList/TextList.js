@@ -1,13 +1,22 @@
+// @flow
 import React from "react";
 import classnames from "classnames";
 import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import { List } from "react-virtualized/dist/es/List";
+import * as api from "api";
 import GraphemeSplitter from "grapheme-splitter";
 import "react-virtualized/styles.css"; // only needs to be imported once
 import addTibetanShay from "lib/addTibetanShay";
 import styles from "./TextList.css";
 
-class TextList extends React.Component {
+type Props = {
+    selectedText: api.TextData,
+    texts: api.TextData[],
+    onSelectedText: (text: api.TextData) => void,
+    searchTerm: string
+};
+
+class TextList extends React.Component<Props> {
     render() {
         const selectedText = this.props.selectedText;
         const selectedTextId = selectedText ? selectedText.id : -1;
