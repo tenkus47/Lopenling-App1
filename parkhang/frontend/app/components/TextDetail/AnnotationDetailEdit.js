@@ -1,14 +1,13 @@
-import React from 'react'
-import classnames from 'classnames'
-import styles from './AnnotationDetail.css'
+import React from "react";
+import classnames from "classnames";
+import styles from "./AnnotationDetail.css";
 
-const AnnotationDetailEdit = (props) => {
-
+const AnnotationDetailEdit = props => {
     let content = props.annotationData.content;
     let classes = [styles.annotationDetail];
 
     if (props.isActive) {
-        classes.push(styles.active)
+        classes.push(styles.active);
     }
 
     let textarea = null;
@@ -18,11 +17,10 @@ const AnnotationDetailEdit = (props) => {
             <h3>{props.annotationData.name}</h3>
 
             <div className={styles.editing}>
-
                 <textarea
                     defaultValue={content}
                     autoFocus={true}
-                    ref={(ta) => textarea = ta}
+                    ref={ta => (textarea = ta)}
                 />
                 <div className={styles.actionButtons}>
                     <div
@@ -40,10 +38,9 @@ const AnnotationDetailEdit = (props) => {
                         Cancel
                     </div>
                 </div>
-
             </div>
         </div>
-    )
+    );
 };
 
 export default AnnotationDetailEdit;

@@ -2,7 +2,7 @@
 
 const ANONYMOUS_USER_ID = -1;
 // TODO: update when implementing localisation
-const ANONYMOUS_USER_NAME = 'User';
+const ANONYMOUS_USER_NAME = "User";
 
 /**
  * Represents a user of the system.

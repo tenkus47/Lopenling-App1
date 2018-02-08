@@ -1,21 +1,21 @@
 // @flow
-import axios from 'axios';
-import Annotation from 'lib/Annotation';
-import Witness from 'lib/Witness';
+import axios from "axios";
+import Annotation from "lib/Annotation";
+import Witness from "lib/Witness";
 
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
-const GET = 'get';
-const POST = 'post';
-const PUT = 'put';
-const DELETE = 'delete';
+const GET = "get";
+const POST = "post";
+const PUT = "put";
+const DELETE = "delete";
 
-type ReqMethod = 'get' | 'post' | 'put' | 'delete';
+type ReqMethod = "get" | "post" | "put" | "delete";
 
-function request(method: ReqMethod, url, data: any=null): Promise<*> {
+function request(method: ReqMethod, url, data: any = null): Promise<*> {
     let req = null;
-    switch(method) {
+    switch (method) {
         case POST:
             req = axios.post;
             break;
@@ -34,13 +34,13 @@ function request(method: ReqMethod, url, data: any=null): Promise<*> {
     const promiseReq = req;
     return new Promise((resolve, reject) => {
         promiseReq(url, data)
-            .then((response) => {
+            .then(response => {
                 resolve(response.data);
             })
-            .catch((error) => {
+            .catch(error => {
                 console.dir(error);
                 reject(error);
-            })
+            });
     });
 }
 
@@ -51,18 +51,18 @@ export type SourceData = {
     name: string,
     is_base: boolean,
     is_working: boolean
-}
+};
 export function fetchSources(): Promise<SourceData[]> {
-    const url = '/api/sources/';
+    const url = "/api/sources/";
     return request(GET, url);
 }
 
 export type TextData = {
     id: number,
     name: string
-}
+};
 export function fetchTexts(): Promise<TextData[]> {
-    const url = '/api/texts/';
+    const url = "/api/texts/";
     return request(GET, url);
 }
 
@@ -74,9 +74,9 @@ export type WitnessData = {
     revision: number,
     source: number,
     text: number
-}
+};
 export function fetchTextWitnesses(text: TextData): Promise<WitnessData[]> {
-    const url = '/api/texts/'+String(text.id)+'/witnesses/';
+    const url = "/api/texts/" + String(text.id) + "/witnesses/";
     return request(GET, url);
 }
 
@@ -95,28 +95,48 @@ export type AnnotationData = {
     unique_id: AnnotationUniqueId,
     witness: number,
     is_saved?: boolean
-}
-export function fetchWitnessAnnotations(witness: WitnessData): Promise<AnnotationData[]> {
-    const url = '/api/texts/'+witness.text+'/witnesses/'+witness.id+'/annotations/';
+};
+export function fetchWitnessAnnotations(
+    witness: WitnessData
+): Promise<AnnotationData[]> {
+    const url =
+        "/api/texts/" +
+        witness.text +
+        "/witnesses/" +
+        witness.id +
+        "/annotations/";
     return request(GET, url);
 }
 
 // APPLYING ANNOTATIONS
 
-function getApplyAnnotationUrl(witnessData: WitnessData, annotationUniqueId: AnnotationUniqueId|null=null): string {
-    let url = '/api/texts/'+witnessData.text+'/witnesses/'+witnessData.id+'/applied_annotations/';
+function getApplyAnnotationUrl(
+    witnessData: WitnessData,
+    annotationUniqueId: AnnotationUniqueId | null = null
+): string {
+    let url =
+        "/api/texts/" +
+        witnessData.text +
+        "/witnesses/" +
+        witnessData.id +
+        "/applied_annotations/";
     if (annotationUniqueId) {
         url += annotationUniqueId;
     }
     return url;
 }
 
-export function fetchAppliedUserAnnotations(witnessData: WitnessData): Promise<AnnotationData[]> {
+export function fetchAppliedUserAnnotations(
+    witnessData: WitnessData
+): Promise<AnnotationData[]> {
     const url = getApplyAnnotationUrl(witnessData);
     return request(GET, url);
 }
 
-export function applyAnnotation(annotationId: AnnotationUniqueId, witnessData: WitnessData) {
+export function applyAnnotation(
+    annotationId: AnnotationUniqueId,
+    witnessData: WitnessData
+) {
     const url = getApplyAnnotationUrl(witnessData);
     let data = {
         annotation_unique_id: annotationId
@@ -124,7 +144,10 @@ export function applyAnnotation(annotationId: AnnotationUniqueId, witnessData: W
     return request(POST, url, data);
 }
 
-export function removeAppliedAnnotation(annotationId: AnnotationUniqueId, witness: WitnessData) {
+export function removeAppliedAnnotation(
+    annotationId: AnnotationUniqueId,
+    witness: WitnessData
+) {
     const url = getApplyAnnotationUrl(witness, annotationId);
     return request(DELETE, url);
 }
@@ -133,7 +156,9 @@ export function removeAppliedAnnotation(annotationId: AnnotationUniqueId, witnes
 
 export function dataFromAnnotation(annotation: Annotation): AnnotationData {
     const creatorWitness = annotation.creatorWitness.id;
-    const creatorUser = (annotation.creatorUser) ? annotation.creatorUser.id : null;
+    const creatorUser = annotation.creatorUser
+        ? annotation.creatorUser.id
+        : null;
 
     return {
         id: annotation.id,
@@ -145,14 +170,22 @@ export function dataFromAnnotation(annotation: Annotation): AnnotationData {
         creator_witness: creatorWitness,
         creator_user: creatorUser,
         type: annotation.type,
-        original: (annotation.basedOn) ? annotation.basedOn.uniqueId : null,
+        original: annotation.basedOn ? annotation.basedOn.uniqueId : null,
         is_deleted: false,
         is_saved: false
-    }
+    };
 }
 
-function getAnnotationUrl(witness: Witness, annotation: Annotation|null=null): string {
-    let url = '/api/texts/'+witness.text.id+'/witnesses/'+witness.id+'/annotations/';
+function getAnnotationUrl(
+    witness: Witness,
+    annotation: Annotation | null = null
+): string {
+    let url =
+        "/api/texts/" +
+        witness.text.id +
+        "/witnesses/" +
+        witness.id +
+        "/annotations/";
     if (annotation) {
         url += annotation.uniqueId;
     }

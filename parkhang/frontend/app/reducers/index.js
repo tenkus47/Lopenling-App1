@@ -1,25 +1,31 @@
 // @flow
-import { combineReducers } from 'redux'
-import dataReducers, * as data from './data'
-import uiReducers, * as ui from './ui'
-import userReducers, * as user from './user'
-import * as actions from 'actions';
-import Annotation, { ANNOTATION_TYPES, TemporaryAnnotation } from 'lib/Annotation';
-import type { AnnotationUniqueId } from 'lib/Annotation';
-import Witness from 'lib/Witness';
-import Source from 'lib/Source';
-import Text from 'lib/Text';
-import type { WitnessData, AnnotationData, TextData } from 'api';
+import { combineReducers } from "redux";
+import dataReducers, * as data from "./data";
+import uiReducers, * as ui from "./ui";
+import userReducers, * as user from "./user";
+import * as actions from "actions";
+import Annotation, {
+    ANNOTATION_TYPES,
+    TemporaryAnnotation
+} from "lib/Annotation";
+import type { AnnotationUniqueId } from "lib/Annotation";
+import Witness from "lib/Witness";
+import Source from "lib/Source";
+import Text from "lib/Text";
+import type { WitnessData, AnnotationData, TextData } from "api";
 import User from "lib/User";
 
-function createReducer(initialState: {}, handlers): (state: {}, action: actions.Action) => {} {
+function createReducer(
+    initialState: {},
+    handlers
+): (state: {}, action: actions.Action) => {} {
     return function reducer(state = initialState, action: actions.Action) {
         if (handlers.hasOwnProperty(action.type)) {
-            return handlers[action.type](state, action)
+            return handlers[action.type](state, action);
         } else {
-            return state
+            return state;
         }
-    }
+    };
 }
 
 export const dataReducer = createReducer(data.initialDataState, dataReducers);
@@ -30,7 +36,7 @@ export type AppState = {
     data: data.DataState,
     ui: ui.UIState,
     user: user.UserState
-}
+};
 
 /* Selectors */
 
@@ -53,7 +59,10 @@ export const getSelectedText = (state: AppState): TextData | null => {
     return ui.getSelectedText(state.ui);
 };
 
-export const getSelectedTextWitnessId = (state: AppState, textId: number): number => {
+export const getSelectedTextWitnessId = (
+    state: AppState,
+    textId: number
+): number => {
     return ui.getSelectedTextWitnessId(state.ui, textId);
 };
 
@@ -80,7 +89,13 @@ export const getTextListVisible = (state: AppState): boolean => {
     return ui.getTextListVisible(state.ui);
 };
 
-export const getTemporaryAnnotations = (state: AppState, witnessId: number, start: number, length: number, type:string|null=null): TemporaryAnnotation[] => {
+export const getTemporaryAnnotations = (
+    state: AppState,
+    witnessId: number,
+    start: number,
+    length: number,
+    type: string | null = null
+): TemporaryAnnotation[] => {
     return ui.getTemporaryAnnotations(state.ui, witnessId, start, length, type);
 };
 
@@ -98,43 +113,78 @@ export const getSource = (state: AppState, sourceId: number): Source | null => {
     return data.getSource(state.data, sourceId);
 };
 
-export const getWitness = (state: AppState, witnessId: number): Witness | null => {
+export const getWitness = (
+    state: AppState,
+    witnessId: number
+): Witness | null => {
     return data.getWitness(state.data, witnessId);
 };
 
-export const getWitnessData = (state: AppState, witnessId: number): WitnessData | null => {
+export const getWitnessData = (
+    state: AppState,
+    witnessId: number
+): WitnessData | null => {
     return data.getWitnessData(state.data, witnessId);
 };
 
-export const getTextWitnesses = (state: AppState, textId: number): Witness[] => {
+export const getTextWitnesses = (
+    state: AppState,
+    textId: number
+): Witness[] => {
     return data.getTextWitnesses(state.data, textId);
 };
 
-export const getBaseWitness = (state: AppState, textId: number): Witness | null => {
+export const getBaseWitness = (
+    state: AppState,
+    textId: number
+): Witness | null => {
     return data.getBaseWitness(state.data, textId);
 };
 
-export const getWorkingWitness = (state: AppState, textId: number): Witness | null => {
+export const getWorkingWitness = (
+    state: AppState,
+    textId: number
+): Witness | null => {
     return data.getWorkingWitness(state.data, textId);
 };
 
-export const hasLoadedWitnessAnnotations = (state: AppState, witnessId: number): boolean => {
-    return (state.data['witnessAnnotationsById'].hasOwnProperty(witnessId));
+export const hasLoadedWitnessAnnotations = (
+    state: AppState,
+    witnessId: number
+): boolean => {
+    return state.data["witnessAnnotationsById"].hasOwnProperty(witnessId);
 };
 
-export const hasLoadedWitnessAppliedAnnotations = (state: AppState, witnessId: number): boolean => {
-    return (state.data['witnessActiveAnnotationsById'].hasOwnProperty(witnessId));
+export const hasLoadedWitnessAppliedAnnotations = (
+    state: AppState,
+    witnessId: number
+): boolean => {
+    return state.data["witnessActiveAnnotationsById"].hasOwnProperty(witnessId);
 };
 
-export const getAnnotationsForWitnessId = (state: AppState, witnessId: number, annotationType:string=ANNOTATION_TYPES.variant): AnnotationData[] => {
-    return data.getAnnotationsForWitnessId(state.data, witnessId, annotationType);
+export const getAnnotationsForWitnessId = (
+    state: AppState,
+    witnessId: number,
+    annotationType: string = ANNOTATION_TYPES.variant
+): AnnotationData[] => {
+    return data.getAnnotationsForWitnessId(
+        state.data,
+        witnessId,
+        annotationType
+    );
 };
 
-export const getActiveAnnotationsForWitnessId = (state: AppState, witnessId: number): AnnotationUniqueId[] => {
+export const getActiveAnnotationsForWitnessId = (
+    state: AppState,
+    witnessId: number
+): AnnotationUniqueId[] => {
     return data.getActiveAnnotationsForWitnessId(state.data, witnessId);
 };
 
-export const annotationFromData = (state: AppState, annotationData: AnnotationData): Annotation | null => {
+export const annotationFromData = (
+    state: AppState,
+    annotationData: AnnotationData
+): Annotation | null => {
     let annotation = data.annotationFromData(state.data, annotationData);
     if (annotation && annotation.creatorUser) {
         const creatorUser = annotation.creatorUser;
@@ -147,10 +197,13 @@ export const annotationFromData = (state: AppState, annotationData: AnnotationDa
     return annotation;
 };
 
-export const getAnnotationData = (state: AppState, witnessId: number, annotationId: AnnotationUniqueId): AnnotationData | null => {
+export const getAnnotationData = (
+    state: AppState,
+    witnessId: number,
+    annotationId: AnnotationUniqueId
+): AnnotationData | null => {
     return data.getAnnotationData(state.data, witnessId, annotationId);
 };
-
 
 // Root
 

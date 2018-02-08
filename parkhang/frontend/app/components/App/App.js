@@ -1,15 +1,15 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import classnames from 'classnames'
+import React from "react";
+import { connect } from "react-redux";
+import classnames from "classnames";
 
-import HeaderContainer from 'components/Header'
-import TextsSearchContainer from 'components/TextsSearch/TextsSearchContainer'
-import TextListContainer from 'containers/TextListContainer'
-import TextDetailContainer from 'components/TextDetail/TextDetailContainer'
-import TextListTabContainer from 'components/TextList/TextListTabContainer'
+import HeaderContainer from "components/Header";
+import TextsSearchContainer from "components/TextsSearch/TextsSearchContainer";
+import TextListContainer from "containers/TextListContainer";
+import TextDetailContainer from "components/TextDetail/TextDetailContainer";
+import TextListTabContainer from "components/TextList/TextListTabContainer";
 
-import styles from './App.css'
-import utilStyles from 'css/util.css'
+import styles from "./App.css";
+import utilStyles from "css/util.css";
 
 const App = props => {
     let textListClassnames = [styles.listContainer];
@@ -19,8 +19,14 @@ const App = props => {
         textListClassnames.push(styles.hideListContainer);
     }
     return (
-        <div className={classnames(styles.container, utilStyles.flex, utilStyles.flexColumn)}>
-            <HeaderContainer/>
+        <div
+            className={classnames(
+                styles.container,
+                utilStyles.flex,
+                utilStyles.flexColumn
+            )}
+        >
+            <HeaderContainer />
             <div className={classnames(styles.interface, utilStyles.flex)}>
                 <div className={classnames(...textListClassnames)}>
                     <TextListTabContainer />
@@ -30,7 +36,7 @@ const App = props => {
                 <TextDetailContainer />
             </div>
         </div>
-    )
+    );
 };
 
 export default App;

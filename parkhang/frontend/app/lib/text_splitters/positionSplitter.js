@@ -1,5 +1,5 @@
 // @flow
-import type { Splitter } from 'lib/SplitText';
+import type { Splitter } from "lib/SplitText";
 
 /**
  * Returns a function that accepts a string but simply
@@ -12,5 +12,5 @@ export default function positionSplitter(positions: number[]): Splitter {
     if (newPositions[0] === 0) {
         newPositions.shift();
     }
-    return (string) => newPositions;
+    return string => newPositions;
 }

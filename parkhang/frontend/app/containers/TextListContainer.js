@@ -1,15 +1,15 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import TextList from 'components/TextList';
-import { selectedText } from 'actions'
-import { getSelectedText } from 'reducers'
+import React from "react";
+import { connect } from "react-redux";
+import TextList from "components/TextList";
+import { selectedText } from "actions";
+import { getSelectedText } from "reducers";
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     const searchValue = state.ui.searchValue;
     let texts = state.data.texts;
     if (searchValue.length > 0) {
         texts = texts.filter(text => {
-            return (text.name.indexOf(searchValue) !== -1);
+            return text.name.indexOf(searchValue) !== -1;
         });
     }
 
@@ -17,20 +17,19 @@ const mapStateToProps = (state) => {
         texts: texts,
         selectedText: getSelectedText(state),
         searchTerm: searchValue
-    }
+    };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return {
-        onSelectedText: (text) => {
-            dispatch(selectedText(text))
+        onSelectedText: text => {
+            dispatch(selectedText(text));
         }
-    }
+    };
 };
 
-const TextListContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(TextList);
+const TextListContainer = connect(mapStateToProps, mapDispatchToProps)(
+    TextList
+);
 
 export default TextListContainer;

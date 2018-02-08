@@ -1,25 +1,29 @@
 // @flow
-import _ from 'lodash'
-import arrayToObject from 'lib/arrayToObject'
-import * as actions from 'actions'
-import * as api from 'api'
-import Annotation, { ANNOTATION_TYPES } from 'lib/Annotation'
+import _ from "lodash";
+import arrayToObject from "lib/arrayToObject";
+import * as actions from "actions";
+import * as api from "api";
+import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
-import Witness from 'lib/Witness'
-import type { SourceData, TextData, WitnessData, AnnotationData } from 'api';
-import Source from 'lib/Source'
-import Text from 'lib/Text'
-import User from 'lib/User'
+import Witness from "lib/Witness";
+import type { SourceData, TextData, WitnessData, AnnotationData } from "api";
+import Source from "lib/Source";
+import Text from "lib/Text";
+import User from "lib/User";
 
 export type DataState = {
     texts: TextData[],
-    textsById: {[number]: TextData},
+    textsById: { [number]: TextData },
     sources: SourceData[],
-    sourcesById: {[number]: SourceData},
-    textWitnessesById: {[textId: number]: {[witnessId: number]: WitnessData}},
-    witnessesById: {[number]: WitnessData},
-    witnessAnnotationsById: {[witnessId: number]: {[AnnotationUniqueId]: AnnotationData}},
-    witnessActiveAnnotationsById: {[witnessId: number]: AnnotationUniqueId[]},
+    sourcesById: { [number]: SourceData },
+    textWitnessesById: {
+        [textId: number]: { [witnessId: number]: WitnessData }
+    },
+    witnessesById: { [number]: WitnessData },
+    witnessAnnotationsById: {
+        [witnessId: number]: { [AnnotationUniqueId]: AnnotationData }
+    },
+    witnessActiveAnnotationsById: { [witnessId: number]: AnnotationUniqueId[] },
     loadingInitialData: boolean,
     loadedInitialData: boolean,
     loadingTexts: boolean,
@@ -31,7 +35,7 @@ export type DataState = {
     loadingAnnotations: boolean,
     loadedAnnotations: boolean,
     loadedAppliedAnnotations: boolean
-}
+};
 
 // Data
 
@@ -79,11 +83,11 @@ function loadingTexts(state: DataState): DataState {
         ...state,
         loadingTexts: true,
         loadedTexts: false
-    }
+    };
 }
 
 function loadedTexts(state: DataState, action): DataState {
-    const textsById = arrayToObject(action.texts, 'id');
+    const textsById = arrayToObject(action.texts, "id");
     return {
         ...state,
         texts: action.texts,
@@ -98,11 +102,14 @@ function loadingSources(state: DataState, action): DataState {
         ...state,
         loadingSources: true,
         loadedSources: false
-    }
+    };
 }
 
-function loadedSources(state: DataState, action: actions.LoadedSourcesAction): DataState {
-    const sourcesById = arrayToObject(action.sources, 'id');
+function loadedSources(
+    state: DataState,
+    action: actions.LoadedSourcesAction
+): DataState {
+    const sourcesById = arrayToObject(action.sources, "id");
     return {
         ...state,
         sources: action.sources,
@@ -120,8 +127,11 @@ function loadingWitnesses(state: DataState): DataState {
     };
 }
 
-function loadedWitnesses(state: DataState, action: actions.LoadedWitnessesAction): DataState {
-    const witnessesById = arrayToObject(action.witnesses, 'id');
+function loadedWitnesses(
+    state: DataState,
+    action: actions.LoadedWitnessesAction
+): DataState {
+    const witnessesById = arrayToObject(action.witnesses, "id");
     const textWitnessesById = {
         ...state.textWitnessesById,
         [action.text.id]: witnessesById
@@ -148,18 +158,18 @@ function loadingAnnotations(state: DataState): DataState {
 }
 
 function markSaved(annotations: api.AnnotationData[]) {
-    for (let i=0; i < annotations.length; i++) {
+    for (let i = 0; i < annotations.length; i++) {
         annotations[i].is_saved = true;
     }
 }
 
-function loadedAnnotations(state: DataState, action: actions.LoadedWitnessAnnotationsAction): DataState {
+function loadedAnnotations(
+    state: DataState,
+    action: actions.LoadedWitnessAnnotationsAction
+): DataState {
     _annotationCache = {};
     markSaved(action.annotations);
-    const annotationsById = arrayToObject(
-        action.annotations,
-        'unique_id'
-    );
+    const annotationsById = arrayToObject(action.annotations, "unique_id");
     const witnessAnnotationsById = {
         ...state.witnessAnnotationsById,
         [action.witness.id]: annotationsById
@@ -167,12 +177,15 @@ function loadedAnnotations(state: DataState, action: actions.LoadedWitnessAnnota
     return {
         ...state,
         witnessAnnotationsById: witnessAnnotationsById,
-        loadingAnnotations: (!state.loadedAppliedAnnotations),
+        loadingAnnotations: !state.loadedAppliedAnnotations,
         loadedAnnotations: true
     };
 }
 
-function loadedAppliedAnnotations(state: DataState, action: actions.LoadedWitnessAppliedAnnotationsAction): DataState {
+function loadedAppliedAnnotations(
+    state: DataState,
+    action: actions.LoadedWitnessAppliedAnnotationsAction
+): DataState {
     const witnessActiveAnnotationsById = {
         ...state.witnessActiveAnnotationsById,
         [action.witness.id]: action.annotationIds
@@ -180,12 +193,15 @@ function loadedAppliedAnnotations(state: DataState, action: actions.LoadedWitnes
     return {
         ...state,
         witnessActiveAnnotationsById: witnessActiveAnnotationsById,
-        loadingAnnotations: (!state.loadedAnnotations),
+        loadingAnnotations: !state.loadedAnnotations,
         loadedAppliedAnnotations: true
-    }
+    };
 }
 
-function appliedAnnotation(state: DataState, action: actions.AppliedAnnotationAction): DataState {
+function appliedAnnotation(
+    state: DataState,
+    action: actions.AppliedAnnotationAction
+): DataState {
     let annotationId = action.annotationId;
     let witness = action.witnessData;
     let witnessAnnotations = state.witnessActiveAnnotationsById[witness.id];
@@ -200,20 +216,22 @@ function appliedAnnotation(state: DataState, action: actions.AppliedAnnotationAc
         ...state,
         witnessActiveAnnotationsById: {
             ...state.witnessActiveAnnotationsById,
-            [witness.id]: [
-                ...witnessAnnotations,
-                annotationId
-            ]
+            [witness.id]: [...witnessAnnotations, annotationId]
         }
     };
 }
 
-function removedAppliedAnnotation(state: DataState, action: actions.RemovedAppliedAnnotationAction): DataState {
+function removedAppliedAnnotation(
+    state: DataState,
+    action: actions.RemovedAppliedAnnotationAction
+): DataState {
     let annotationId = action.annotationId;
     let witness = action.witnessData;
     let activeAnnotations = state.witnessActiveAnnotationsById[witness.id];
     if (activeAnnotations) {
-        activeAnnotations = activeAnnotations.filter(element => element != annotationId);
+        activeAnnotations = activeAnnotations.filter(
+            element => element != annotationId
+        );
     }
 
     return {
@@ -222,10 +240,13 @@ function removedAppliedAnnotation(state: DataState, action: actions.RemovedAppli
             ...state.witnessActiveAnnotationsById,
             [witness.id]: activeAnnotations
         }
-    }
+    };
 }
 
-function createdAnnotation(state: DataState, action: actions.CreatedAnnotationAction): DataState {
+function createdAnnotation(
+    state: DataState,
+    action: actions.CreatedAnnotationAction
+): DataState {
     const annotation = action.annotation;
     annotation.save();
     const annotationData = dataFromAnnotation(annotation);
@@ -240,21 +261,27 @@ function createdAnnotation(state: DataState, action: actions.CreatedAnnotationAc
                 [annotation.uniqueId]: annotationData
             }
         }
-    }
+    };
 }
 
-function updatedAnnotation(state: DataState, action: actions.UpdatedAnnotationAction): DataState {
+function updatedAnnotation(
+    state: DataState,
+    action: actions.UpdatedAnnotationAction
+): DataState {
     const annotation = action.annotation;
     if (!annotation.isSaved) {
-        console.warn('Updating annotation which is not saved: %o', action);
+        console.warn("Updating annotation which is not saved: %o", action);
     }
     return createdAnnotation(state, action);
 }
 
-function deletedAnnotation(state, action: actions.DeletedAnnotationAction): DataState {
+function deletedAnnotation(
+    state,
+    action: actions.DeletedAnnotationAction
+): DataState {
     const annotation = action.annotation;
     if (!annotation.isSaved) {
-        console.warn('Deleting annotation which is not saved: %o', action);
+        console.warn("Deleting annotation which is not saved: %o", action);
     }
     const witness = action.witness;
     let witnessAnnotations = state.witnessAnnotationsById[witness.id];
@@ -275,7 +302,7 @@ function deletedAnnotation(state, action: actions.DeletedAnnotationAction): Data
             ...state.witnessAnnotationsById,
             [witness.id]: witnessAnnotations
         }
-    }
+    };
 }
 
 /**
@@ -284,7 +311,10 @@ function deletedAnnotation(state, action: actions.DeletedAnnotationAction): Data
  * @param state
  * @param action
  */
-function savedAnnotation(state: DataState, action: actions.SavedAnnotationAction): DataState {
+function savedAnnotation(
+    state: DataState,
+    action: actions.SavedAnnotationAction
+): DataState {
     const annotation = action.annotation;
     const annotationData = dataFromAnnotation(annotation);
     const witness = annotation.witness;
@@ -321,7 +351,9 @@ dataReducers[actions.LOADING_WITNESSES] = loadingWitnesses;
 dataReducers[actions.LOADED_WITNESSES] = loadedWitnesses;
 dataReducers[actions.LOADING_WITNESS_ANNOTATIONS] = loadingAnnotations;
 dataReducers[actions.LOADED_WITNESS_ANNOTATIONS] = loadedAnnotations;
-dataReducers[actions.LOADED_WITNESS_APPLIED_ANNOTATIONS] = loadedAppliedAnnotations;
+dataReducers[
+    actions.LOADED_WITNESS_APPLIED_ANNOTATIONS
+] = loadedAppliedAnnotations;
 dataReducers[actions.APPLIED_ANNOTATION] = appliedAnnotation;
 dataReducers[actions.REMOVED_APPLIED_ANNOTATION] = removedAppliedAnnotation;
 dataReducers[actions.CREATED_ANNOTATION] = createdAnnotation;
@@ -352,18 +384,29 @@ export const getSources = (state: DataState): Source[] => {
     return sources;
 };
 
-export const getSource = (state: DataState, sourceId: number): Source | null => {
+export const getSource = (
+    state: DataState,
+    sourceId: number
+): Source | null => {
     const sourceData = state.sourcesById[sourceId];
     let source = null;
     if (sourceData) {
-        source = new Source(sourceData.id, sourceData.name, sourceData.is_base, sourceData.is_working);
+        source = new Source(
+            sourceData.id,
+            sourceData.name,
+            sourceData.is_base,
+            sourceData.is_working
+        );
     }
     return source;
 };
 
 // cache witnesses as they can have large content values.
 const cachedWitnesses = {};
-export const getWitness = (state: DataState, witnessId: number): Witness | null => {
+export const getWitness = (
+    state: DataState,
+    witnessId: number
+): Witness | null => {
     if (!witnessId) {
         return null;
     }
@@ -386,14 +429,20 @@ export const getWitness = (state: DataState, witnessId: number): Witness | null 
             );
             cachedWitnesses[witnessData.id] = witness;
         } else {
-            console.warn('getWitness result has no source or text for witnessId: %o', witnessId);
+            console.warn(
+                "getWitness result has no source or text for witnessId: %o",
+                witnessId
+            );
         }
     }
 
     return witness;
 };
 
-export const getWitnessData = (state: DataState, witnessId: number): WitnessData => {
+export const getWitnessData = (
+    state: DataState,
+    witnessId: number
+): WitnessData => {
     const witnessData = state.witnessesById[witnessId];
 
     return witnessData;
@@ -408,10 +457,13 @@ export const dataFromWitness = (witness: Witness): WitnessData => {
         revision: witness.revision,
         source: witness.source.id,
         text: witness.text.id
-    }
+    };
 };
 
-export const getBaseWitness = (state: DataState, textId: number): Witness | null => {
+export const getBaseWitness = (
+    state: DataState,
+    textId: number
+): Witness | null => {
     let baseWitness = null;
     if (state.textWitnessesById.hasOwnProperty(textId)) {
         const witnesses = state.textWitnessesById[textId];
@@ -430,7 +482,10 @@ export const getBaseWitness = (state: DataState, textId: number): Witness | null
     return baseWitness;
 };
 
-export const getWorkingWitness = (state: DataState, textId: number): Witness | null => {
+export const getWorkingWitness = (
+    state: DataState,
+    textId: number
+): Witness | null => {
     let workingWitness = null;
     if (state.textWitnessesById.hasOwnProperty(textId)) {
         const witnesses = state.textWitnessesById[textId];
@@ -447,7 +502,10 @@ export const getWorkingWitness = (state: DataState, textId: number): Witness | n
     return workingWitness;
 };
 
-export const getTextWitnesses = (state: DataState, textId: number): Witness[] => {
+export const getTextWitnesses = (
+    state: DataState,
+    textId: number
+): Witness[] => {
     let witnesses = [];
     if (state.textWitnessesById.hasOwnProperty(textId)) {
         const witnessesById = state.textWitnessesById[textId];
@@ -461,10 +519,16 @@ export const getTextWitnesses = (state: DataState, textId: number): Witness[] =>
     return witnesses;
 };
 
-export function annotationFromData(state: DataState, annotationData: api.AnnotationData): Annotation | null {
+export function annotationFromData(
+    state: DataState,
+    annotationData: api.AnnotationData
+): Annotation | null {
     let witness = getWitness(state, annotationData.witness);
     if (!witness) {
-        console.warn('annotationFromData without valid witness, annotationData: %o', annotationData);
+        console.warn(
+            "annotationFromData without valid witness, annotationData: %o",
+            annotationData
+        );
         return null;
     }
     let creatorWitness = null;
@@ -472,19 +536,26 @@ export function annotationFromData(state: DataState, annotationData: api.Annotat
     if (annotationData.creator_witness) {
         creatorWitness = getWitness(state, annotationData.creator_witness);
     }
-    if (!creatorWitness){
-        console.warn('annotationFromData without valid creator_witness, annotationData: %o', annotationData);
+    if (!creatorWitness) {
+        console.warn(
+            "annotationFromData without valid creator_witness, annotationData: %o",
+            annotationData
+        );
         return null;
     }
     if (annotationData.creator_user) {
         creatorUser = new User(annotationData.creator_user, "");
     }
     if (!annotationData.creator_witness && !annotationData.creator_user) {
-        console.warn('No creator found in annotationData: %o', annotationData);
+        console.warn("No creator found in annotationData: %o", annotationData);
     }
     let basedOn = null;
     if (annotationData.original) {
-        basedOn = getAnnotation(state, annotationData.witness, annotationData.original);
+        basedOn = getAnnotation(
+            state,
+            annotationData.witness,
+            annotationData.original
+        );
     }
     let annotation = new Annotation(
         annotationData.id,
@@ -505,9 +576,11 @@ export function annotationFromData(state: DataState, annotationData: api.Annotat
     return annotation;
 }
 
-export function dataFromAnnotation(annotation: Annotation): AnnotationData | null {
+export function dataFromAnnotation(
+    annotation: Annotation
+): AnnotationData | null {
     if (!annotation.creatorWitness) {
-        console.warn('No creatorWitness found in annotation: %o', annotation);
+        console.warn("No creatorWitness found in annotation: %o", annotation);
         return null;
     }
     return {
@@ -518,20 +591,31 @@ export function dataFromAnnotation(annotation: Annotation): AnnotationData | nul
         length: annotation.length,
         content: annotation.content,
         creator_witness: annotation.creatorWitness.id,
-        creator_user: (annotation.creatorUser) ? annotation.creatorUser.id : null,
+        creator_user: annotation.creatorUser ? annotation.creatorUser.id : null,
         unique_id: annotation.uniqueId,
-        original: (annotation.basedOn) ? annotation.basedOn.uniqueId : null,
+        original: annotation.basedOn ? annotation.basedOn.uniqueId : null,
         is_deleted: false,
         is_saved: annotation.isSaved
-    }
+    };
 }
 
-export const getAnnotationsForWitnessId = (state: DataState, witnessId: number, annotationType: string=ANNOTATION_TYPES.variant): AnnotationData[] => {
+export const getAnnotationsForWitnessId = (
+    state: DataState,
+    witnessId: number,
+    annotationType: string = ANNOTATION_TYPES.variant
+): AnnotationData[] => {
     let annotations = state.witnessAnnotationsById[witnessId];
-    return _.pickBy(annotations, (annotation, key) => annotation.type === annotationType);
+    return _.pickBy(
+        annotations,
+        (annotation, key) => annotation.type === annotationType
+    );
 };
 
-export const getAnnotation = (state: DataState, witnessId: number, annotationUniqueId: AnnotationUniqueId) => {
+export const getAnnotation = (
+    state: DataState,
+    witnessId: number,
+    annotationUniqueId: AnnotationUniqueId
+) => {
     const annotations = state.witnessAnnotationsById[witnessId];
     const data = annotations[annotationUniqueId];
     if (data) {
@@ -541,11 +625,18 @@ export const getAnnotation = (state: DataState, witnessId: number, annotationUni
     }
 };
 
-export const getActiveAnnotationsForWitnessId = (state: DataState, witnessId: number): AnnotationUniqueId[] => {
+export const getActiveAnnotationsForWitnessId = (
+    state: DataState,
+    witnessId: number
+): AnnotationUniqueId[] => {
     return state.witnessActiveAnnotationsById[witnessId];
 };
 
-export const getAnnotationData = (state: DataState, witnessId: number, annotationUniqueId: AnnotationUniqueId): AnnotationData | null => {
+export const getAnnotationData = (
+    state: DataState,
+    witnessId: number,
+    annotationUniqueId: AnnotationUniqueId
+): AnnotationData | null => {
     let annotationData = null;
     const witnessAnnotations = state.witnessAnnotationsById[witnessId];
     if (witnessAnnotations) {

@@ -1,7 +1,7 @@
 // @flow
-import rootReducer, { dataReducer } from 'reducers';
-import * as actions from 'actions';
-import User, { getAnonymousUser } from 'lib/User'
+import rootReducer, { dataReducer } from "reducers";
+import * as actions from "actions";
+import User, { getAnonymousUser } from "lib/User";
 
 const anonymousUser = getAnonymousUser();
 
@@ -34,7 +34,7 @@ const initialState = {
         showPageImages: false,
         activeAnnotations: {},
         textListVisible: true,
-        temporaryAnnotations: {},
+        temporaryAnnotations: {}
     },
     user: {
         userId: anonymousUser.id,
@@ -42,22 +42,20 @@ const initialState = {
     }
 };
 
-describe('Root reducer', () => {
-    it('should return initial state', () => {
-        expect(
-            rootReducer(undefined, {}),
-        ).toEqual(initialState);
+describe("Root reducer", () => {
+    it("should return initial state", () => {
+        expect(rootReducer(undefined, {})).toEqual(initialState);
     });
 });
 
-describe('Texts reducer', () => {
-   it('should handle loadedInitialData', () => {
-       expect(
-           dataReducer(initialState.data, actions.loadedInitialData())
-       ).toEqual({
-           ...initialState.data,
-           loadingInitialData: false,
-           loadedInitialData: true,
-       })
-   })
+describe("Texts reducer", () => {
+    it("should handle loadedInitialData", () => {
+        expect(
+            dataReducer(initialState.data, actions.loadedInitialData())
+        ).toEqual({
+            ...initialState.data,
+            loadingInitialData: false,
+            loadedInitialData: true
+        });
+    });
 });

@@ -1,9 +1,9 @@
-import React from 'react'
-import classnames from 'classnames'
-import styles from './Text.css'
-import TextSegment from 'lib/TextSegment'
-import { INSERTION_KEY, DELETION_KEY } from 'lib/AnnotatedText'
-import _ from 'lodash'
+import React from "react";
+import classnames from "classnames";
+import styles from "./Text.css";
+import TextSegment from "lib/TextSegment";
+import { INSERTION_KEY, DELETION_KEY } from "lib/AnnotatedText";
+import _ from "lodash";
 
 export function idForSegment(segment) {
     return "s_" + segment.start;
@@ -18,7 +18,6 @@ export function idForInsertion(segment) {
 }
 
 export default class Text extends React.Component {
-
     constructor(props) {
         super(props);
 
@@ -40,11 +39,15 @@ export default class Text extends React.Component {
         if (foundAnnotations) {
             annotations = foundAnnotations;
         }
-        const insertions = this.props.annotationPositions[INSERTION_KEY+segment.start];
+        const insertions = this.props.annotationPositions[
+            INSERTION_KEY + segment.start
+        ];
         if (insertions) {
             annotations = annotations.concat(insertions);
         }
-        const deletions = this.props.annotationPositions[DELETION_KEY+segment.start];
+        const deletions = this.props.annotationPositions[
+            DELETION_KEY + segment.start
+        ];
         if (deletions) {
             annotations = annotations.concat(deletions);
         }
@@ -52,10 +55,12 @@ export default class Text extends React.Component {
     }
 
     segmentsContainSegment(segments, segment) {
-        for (let i=0; i < segments.length; i++) {
+        for (let i = 0; i < segments.length; i++) {
             let listSegment = segments[i];
-            if (listSegment.start === segment.start && listSegment.text === segment.text)
-            {
+            if (
+                listSegment.start === segment.start &&
+                listSegment.text === segment.text
+            ) {
                 return true;
             }
         }
@@ -72,7 +77,7 @@ export default class Text extends React.Component {
 
     generateHtml(renderProps, renderState) {
         let segments = renderState.segmentedText.sortedSegments();
-        let segmentHTML = '';
+        let segmentHTML = "";
         const insertionClass = styles.insertion;
         const endPosition = segments[segments.length - 1].end + 1;
         if (renderProps.annotationPositions[INSERTION_KEY + endPosition]) {
@@ -87,22 +92,44 @@ export default class Text extends React.Component {
             let deletionText = null;
             let selectedCurrentDeletion = false;
             if (annotations) {
-                let insertions = annotations.filter((annotation) => annotation.isInsertion);
+                let insertions = annotations.filter(
+                    annotation => annotation.isInsertion
+                );
                 let activeInsertions = _.intersectionWith(
                     renderProps.activeAnnotations,
                     insertions,
-                    (a, b) => a.uniqueId === b.uniqueId);
-                let inactiveInsertions = _.differenceWith(insertions, activeInsertions, (a, b) => a.start === b.start);
+                    (a, b) => a.uniqueId === b.uniqueId
+                );
+                let inactiveInsertions = _.differenceWith(
+                    insertions,
+                    activeInsertions,
+                    (a, b) => a.start === b.start
+                );
                 if (inactiveInsertions.length > 0) {
                     const insertion = inactiveInsertions[0];
                     const insertionId = idForInsertion(segment);
 
-                    segmentHTML += '<span id=' + insertionId + ' key=' + insertionId + ' class="' + insertionClass + '">'+insertion.content+'</span>';
+                    segmentHTML +=
+                        "<span id=" +
+                        insertionId +
+                        " key=" +
+                        insertionId +
+                        ' class="' +
+                        insertionClass +
+                        '">' +
+                        insertion.content +
+                        "</span>";
                 }
 
-                let remainingAnnotations = _.differenceWith(annotations, insertions, (a, b) => a.id == b.id);
+                let remainingAnnotations = _.differenceWith(
+                    annotations,
+                    insertions,
+                    (a, b) => a.id == b.id
+                );
 
-                let deletions = remainingAnnotations.filter((annotation) => annotation.isDeletion);
+                let deletions = remainingAnnotations.filter(
+                    annotation => annotation.isDeletion
+                );
                 let activeDeletions = _.intersectionWith(
                     renderProps.activeAnnotations,
                     deletions,
@@ -110,22 +137,31 @@ export default class Text extends React.Component {
                 );
                 if (activeDeletions.length > 0) {
                     // assume any other deletions are the same
-                    remainingAnnotations = remainingAnnotations.filter((annotation) => !annotation.isDeletion);
+                    remainingAnnotations = remainingAnnotations.filter(
+                        annotation => !annotation.isDeletion
+                    );
                     const activeDeletion = activeDeletions[0];
-                    const baseAnnotation = renderProps.getBaseAnnotation(activeDeletion);
+                    const baseAnnotation = renderProps.getBaseAnnotation(
+                        activeDeletion
+                    );
                     deletionText = baseAnnotation.content;
                     if (
-                        renderProps.activeAnnotation
-                        && renderProps.activeAnnotation.isDeletion
-                        && renderProps.activeAnnotation.start == activeDeletion.start
-                        && renderProps.activeAnnotation.length == activeDeletion.length
-                        && segment.length === 0
+                        renderProps.activeAnnotation &&
+                        renderProps.activeAnnotation.isDeletion &&
+                        renderProps.activeAnnotation.start ==
+                            activeDeletion.start &&
+                        renderProps.activeAnnotation.length ==
+                            activeDeletion.length &&
+                        segment.length === 0
                     ) {
                         selectedCurrentDeletion = true;
                     }
                 }
 
-                if (remainingAnnotations.length > 0 || activeInsertions.length > 0) {
+                if (
+                    remainingAnnotations.length > 0 ||
+                    activeInsertions.length > 0
+                ) {
                     classes.push(styles.annotation);
                 }
             }
@@ -145,7 +181,13 @@ export default class Text extends React.Component {
                 id = idForSegment(segment);
             }
 
-            if (this.segmentsContainSegment(renderProps.selectedAnnotatedSegments, segment) || selectedCurrentDeletion) {
+            if (
+                this.segmentsContainSegment(
+                    renderProps.selectedAnnotatedSegments,
+                    segment
+                ) ||
+                selectedCurrentDeletion
+            ) {
                 classes.push(styles.selectedAnnotation);
             }
 
@@ -154,7 +196,16 @@ export default class Text extends React.Component {
                 classAttribute = 'class="' + className + '"';
             }
 
-            segmentHTML += '<span id=' + id + ' key=' + id + ' ' + classAttribute + '>' + segment.text + '</span>';
+            segmentHTML +=
+                "<span id=" +
+                id +
+                " key=" +
+                id +
+                " " +
+                classAttribute +
+                ">" +
+                segment.text +
+                "</span>";
         }
 
         this._renderedSegments = segments;
@@ -187,7 +238,9 @@ export default class Text extends React.Component {
 
         // Generate HTML manually as it is much faster when
         // creating large numbers of elements, such as these spans.
-        const html = (this._renderedHtml) ? this._renderedHtml : this.generateHtml(this.props, this.state);
+        const html = this._renderedHtml
+            ? this._renderedHtml
+            : this.generateHtml(this.props, this.state);
         if (!this._renderedHtml) {
             this._renderedHtml = html;
         }
@@ -195,22 +248,19 @@ export default class Text extends React.Component {
             paddingRight: this.props.paddingRight
         };
         const textStyle = {
-            width: this.props.textWidth,
+            width: this.props.textWidth
         };
 
         return (
-            <div
-                className={styles.textContainer}
-                style={containerStyle}
-            >
+            <div className={styles.textContainer} style={containerStyle}>
                 <div
                     className={classnames(...classes)}
                     dangerouslySetInnerHTML={html}
-                    onClick={(e) => this.selectedElement(e.target)}
+                    onClick={e => this.selectedElement(e.target)}
                     style={textStyle}
                 />
                 <div className={styles.pageNumber}>{this.props.row + 1}</div>
             </div>
-        )
+        );
     }
 }

@@ -1,5 +1,5 @@
 // @flow
-import type { Splitter } from 'lib/SplitText';
+import type { Splitter } from "lib/SplitText";
 
 /**
  * Return a function to calculate the positions in a string in order to split it to a
@@ -16,25 +16,30 @@ import type { Splitter } from 'lib/SplitText';
  * @param {number} [endStringSuffixLength=0] - The number of characters after the end of the string to use for endStringTest
  * @return {function(*)}
  */
-export default function splitterFactory(length: number, endStringTest: string|RegExp|null, endStringLength: number=0, endStringSuffixLength: number=0): Splitter {
+export default function splitterFactory(
+    length: number,
+    endStringTest: string | RegExp | null,
+    endStringLength: number = 0,
+    endStringSuffixLength: number = 0
+): Splitter {
     if (endStringLength === 0) {
-        if (typeof endStringTest === 'string') {
+        if (typeof endStringTest === "string") {
             endStringLength = endStringTest.length;
         } else {
             endStringLength = 1;
         }
     }
-    return (string) => {
+    return string => {
         let indexes = [];
         if (string.length < length) {
             return indexes;
         }
 
-        const test = (chars) => {
+        const test = chars => {
             let passed = true;
 
             if (endStringTest) {
-                if (typeof endStringTest === 'string') {
+                if (typeof endStringTest === "string") {
                     if (chars !== endStringTest) {
                         passed = false;
                     }
@@ -47,16 +52,19 @@ export default function splitterFactory(length: number, endStringTest: string|Re
         };
 
         let start = 0;
-        while(start < string.length) {
+        while (start < string.length) {
             let end = start + length;
             if (!endStringTest) {
                 indexes.push(end);
                 continue;
             }
 
-            let testChars = '';
-            while(!test(testChars) && end < string.length) {
-                testChars = string.slice(end - endStringLength, end + endStringSuffixLength);
+            let testChars = "";
+            while (!test(testChars) && end < string.length) {
+                testChars = string.slice(
+                    end - endStringLength,
+                    end + endStringSuffixLength
+                );
                 end++;
             }
             if (end < string.length) {
@@ -66,5 +74,5 @@ export default function splitterFactory(length: number, endStringTest: string|Re
         }
 
         return indexes;
-    }
+    };
 }

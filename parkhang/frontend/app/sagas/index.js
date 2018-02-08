@@ -1,14 +1,24 @@
 // @flow
-import { call, put, take, actionChannel, fork, takeEvery, takeLatest, select, all } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
-import * as actions from 'actions'
-import * as reducers from 'reducers'
-import Witness from 'lib/Witness';
+import {
+    call,
+    put,
+    take,
+    actionChannel,
+    fork,
+    takeEvery,
+    takeLatest,
+    select,
+    all
+} from "redux-saga/effects";
+import { delay } from "redux-saga";
+import * as actions from "actions";
+import * as reducers from "reducers";
+import Witness from "lib/Witness";
 
-import * as api from 'api'
-import { BATCH } from 'redux-batched-actions'
+import * as api from "api";
+import { BATCH } from "redux-batched-actions";
 
-import type { Saga } from 'redux-saga';
+import type { Saga } from "redux-saga";
 
 /**
  * Get the required delay for a failed request.
@@ -18,7 +28,7 @@ import type { Saga } from 'redux-saga';
  */
 function getDelay(attempt) {
     let seconds = 0;
-    switch(attempt) {
+    switch (attempt) {
         case 1:
             seconds = 5;
             break;
@@ -42,7 +52,7 @@ function getDelay(attempt) {
 }
 
 // Type of action used to add callbacks to the request queue.
-const SAGA_REQUEST = 'SAGA_REQUEST';
+const SAGA_REQUEST = "SAGA_REQUEST";
 
 /**
  * Sets up a serial queue for requests using the API.
@@ -71,7 +81,7 @@ function* watchRequests() {
                 if (e.response) {
                     // if there was a valid HTTP error status code returned just fail now.
                     // e.g. returning a 4xx, 5xx.
-                    console.warn('Queued request failed: %o', e);
+                    console.warn("Queued request failed: %o", e);
                     complete = true;
                 } else {
                     // otherwise, assume network is down and user is offline.
@@ -90,31 +100,46 @@ function* watchRequests() {
  * @param callback
  * @return {Function}
  */
-function reqAction(callback): (actions.Action) => Generator<*,*,*>  {
-    return function* (action: actions.Action): Generator<*,*,*> {
+function reqAction(callback): actions.Action => Generator<*, *, *> {
+    return function*(action: actions.Action): Generator<*, *, *> {
         yield put({
             type: SAGA_REQUEST,
             payload: callback,
             action: action
         });
-    }
+    };
 }
 
 function applyAnnotation(action: actions.AppliedAnnotationAction): Promise<*> {
-    return (call(api.applyAnnotation, action.annotationId, action.witnessData): any);
+    return (call(
+        api.applyAnnotation,
+        action.annotationId,
+        action.witnessData
+    ): any);
 }
 
 function* watchAppliedAnnotation() {
-    yield takeEvery(actions.APPLIED_ANNOTATION, typeCalls[actions.APPLIED_ANNOTATION]);
+    yield takeEvery(
+        actions.APPLIED_ANNOTATION,
+        typeCalls[actions.APPLIED_ANNOTATION]
+    );
 }
 
-
-function removeAppliedAnnotation(action: actions.RemovedAppliedAnnotationAction) {
-    return call(api.removeAppliedAnnotation, action.annotationId, action.witnessData);
+function removeAppliedAnnotation(
+    action: actions.RemovedAppliedAnnotationAction
+) {
+    return call(
+        api.removeAppliedAnnotation,
+        action.annotationId,
+        action.witnessData
+    );
 }
 
 function* watchRemovedAppliedAnnotation() {
-    yield takeEvery(actions.REMOVED_APPLIED_ANNOTATION, typeCalls[actions.REMOVED_APPLIED_ANNOTATION]);
+    yield takeEvery(
+        actions.REMOVED_APPLIED_ANNOTATION,
+        typeCalls[actions.REMOVED_APPLIED_ANNOTATION]
+    );
 }
 
 // INITIAL DATA
@@ -122,8 +147,8 @@ function* watchRemovedAppliedAnnotation() {
 export function* loadTexts(): Saga<void> {
     try {
         const texts = yield call(api.fetchTexts);
-        yield put(actions.loadedTexts(texts))
-    } catch(e) {
+        yield put(actions.loadedTexts(texts));
+    } catch (e) {
         console.log("FAILED loadTexts! %o", e);
     }
 }
@@ -132,39 +157,35 @@ function* loadSources() {
     try {
         const sources = yield call(api.fetchSources);
         yield put(actions.loadedSources(sources));
-    } catch(e) {
+    } catch (e) {
         console.log("FAILED loadSources! %o", e);
     }
 }
 
 function* loadInitialData(): Saga<void> {
-    yield all([
-        call(loadTexts),
-        call(loadSources)
-    ]);
+    yield all([call(loadTexts), call(loadSources)]);
 
     yield put(actions.loadedInitialData());
 }
 
 export function* watchLoadInitialData(): any {
-    yield takeLatest(actions.LOAD_INITIAL_DATA, typeCalls[actions.LOAD_INITIAL_DATA]);
-    yield put(actions.loadingInitialData())
+    yield takeLatest(
+        actions.LOAD_INITIAL_DATA,
+        typeCalls[actions.LOAD_INITIAL_DATA]
+    );
+    yield put(actions.loadingInitialData());
 }
-
 
 // SELECTED TEXT
 
 function* selectedText(action: actions.SelectedTextAction): Saga<void> {
     yield put(actions.loadingWitnesses(action.text));
-    yield all([
-        call(loadInitialTextData, action)
-    ]);
+    yield all([call(loadInitialTextData, action)]);
 }
 
 function* watchSelectedText(): Saga<void> {
     yield takeLatest(actions.SELECTED_TEXT, selectedText);
 }
-
 
 // WITNESSES
 
@@ -172,8 +193,8 @@ function* loadInitialTextData(action: actions.TextDataAction) {
     try {
         const witnesses = yield call(api.fetchTextWitnesses, action.text);
         yield put(actions.loadedWitnesses(action.text, witnesses));
-        let workingWitnessData: api.WitnessData|null = null;
-        let baseWitnessData: api.WitnessData|null = null;
+        let workingWitnessData: api.WitnessData | null = null;
+        let baseWitnessData: api.WitnessData | null = null;
         for (const witness of witnesses) {
             if (witness.is_working) {
                 workingWitnessData = witness;
@@ -183,7 +204,10 @@ function* loadInitialTextData(action: actions.TextDataAction) {
             }
         }
         if (workingWitnessData) {
-            const workingWitness: Witness = yield (select(reducers.getWitness, workingWitnessData.id): any);
+            const workingWitness: Witness = yield (select(
+                reducers.getWitness,
+                workingWitnessData.id
+            ): any);
             yield put(actions.loadingWitnessAnnotations(workingWitness));
             yield all([
                 call(loadAnnotations, workingWitness),
@@ -191,26 +215,31 @@ function* loadInitialTextData(action: actions.TextDataAction) {
             ]);
         }
         if (baseWitnessData) {
-            const baseWitness: Witness = yield (select(reducers.getWitness, baseWitnessData.id): any);
+            const baseWitness: Witness = yield (select(
+                reducers.getWitness,
+                baseWitnessData.id
+            ): any);
             yield call(loadAnnotations, baseWitness);
         }
-    } catch(e) {
+    } catch (e) {
         console.log("FAILED loadInitialTextData %o", e);
     }
 }
 
-function *selectedWitness(action: actions.SelectedTextWitnessAction) {
+function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     const witnessId = action.witness.id;
-    const hasLoadedAnnotations = yield select(reducers.hasLoadedWitnessAnnotations, witnessId);
+    const hasLoadedAnnotations = yield select(
+        reducers.hasLoadedWitnessAnnotations,
+        witnessId
+    );
     if (!hasLoadedAnnotations) {
         yield call(loadWitnessAnnotations, action);
     }
 }
 
-function *watchSelectedTextWitness() {
+function* watchSelectedTextWitness() {
     yield takeLatest(actions.SELECTED_WITNESS, selectedWitness);
 }
-
 
 // ANNOTATIONS
 
@@ -224,9 +253,14 @@ function* loadAppliedAnnotations(witness: Witness) {
     const user = yield select(reducers.getUser);
     if (user.isLoggedIn) {
         const witnessData = yield select(reducers.getWitnessData, witness.id);
-        const annotations = yield call(api.fetchAppliedUserAnnotations, witnessData);
+        const annotations = yield call(
+            api.fetchAppliedUserAnnotations,
+            witnessData
+        );
         let annotationIds = annotations.map(a => a.annotation_unique_id);
-        yield put(actions.loadedWitnessAppliedAnnotations(witness, annotationIds));
+        yield put(
+            actions.loadedWitnessAppliedAnnotations(witness, annotationIds)
+        );
     } else {
         yield put(actions.loadedWitnessAppliedAnnotations(witness, []));
     }
@@ -241,7 +275,7 @@ function* loadWitnessAnnotations(action: actions.WitnessAction) {
 }
 
 function* watchLoadAnnotations() {
-    yield takeLatest(actions.LOAD_WITNESS_ANNOTATIONS, loadWitnessAnnotations)
+    yield takeLatest(actions.LOAD_WITNESS_ANNOTATIONS, loadWitnessAnnotations);
 }
 
 function createAnnotation(action) {
@@ -249,7 +283,10 @@ function createAnnotation(action) {
 }
 
 function* watchCreatedAnnotation() {
-    yield takeEvery(actions.CREATED_ANNOTATION, typeCalls[actions.CREATED_ANNOTATION]);
+    yield takeEvery(
+        actions.CREATED_ANNOTATION,
+        typeCalls[actions.CREATED_ANNOTATION]
+    );
 }
 
 function updateAnnotation(action) {
@@ -257,7 +294,10 @@ function updateAnnotation(action) {
 }
 
 function* watchUpdatedAnnotation() {
-    yield takeEvery(actions.UPDATED_ANNOTATION, typeCalls[actions.UPDATED_ANNOTATION]);
+    yield takeEvery(
+        actions.UPDATED_ANNOTATION,
+        typeCalls[actions.UPDATED_ANNOTATION]
+    );
 }
 
 function deleteAnnotation(action) {
@@ -265,15 +305,17 @@ function deleteAnnotation(action) {
 }
 
 function* watchDeletedAnnotation() {
-    yield takeEvery(actions.DELETED_ANNOTATION, typeCalls[actions.DELETED_ANNOTATION]);
+    yield takeEvery(
+        actions.DELETED_ANNOTATION,
+        typeCalls[actions.DELETED_ANNOTATION]
+    );
 }
-
 
 // BATCHED ACTIONS
 
 function* dispatchedBatch(action): Saga<void> {
     const actions = action.payload;
-    for (let i=0; i < actions.length; i++) {
+    for (let i = 0; i < actions.length; i++) {
         const batchedAction = actions[i];
         if (typeCalls.hasOwnProperty(batchedAction.type)) {
             yield fork(typeCalls[batchedAction.type], batchedAction);
@@ -285,7 +327,6 @@ function* watchBatchedActions() {
     yield takeEvery(BATCH, dispatchedBatch);
 }
 
-
 /**
  * Stores functions by action type.
  * Used primarily to allow batched actions to be handled
@@ -293,7 +334,7 @@ function* watchBatchedActions() {
  *
  * @type {Object.<string, function>}
  */
-const typeCalls: {[string]: (any) => Saga<void>} = {
+const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.LOAD_INITIAL_DATA]: loadInitialData,
     [actions.LOAD_WITNESS_ANNOTATIONS]: loadWitnessAnnotations,
     [actions.APPLIED_ANNOTATION]: reqAction(applyAnnotation),
@@ -301,9 +342,8 @@ const typeCalls: {[string]: (any) => Saga<void>} = {
     [actions.CREATED_ANNOTATION]: reqAction(createAnnotation),
     [actions.UPDATED_ANNOTATION]: reqAction(updateAnnotation),
     [actions.DELETED_ANNOTATION]: reqAction(deleteAnnotation),
-    [actions.SELECTED_WITNESS]: reqAction(selectedWitness),
+    [actions.SELECTED_WITNESS]: reqAction(selectedWitness)
 };
-
 
 /** Root **/
 
@@ -319,6 +359,6 @@ export default function* rootSaga(): Saga<void> {
         call(watchUpdatedAnnotation),
         call(watchDeletedAnnotation),
         call(watchRequests),
-        call(watchSelectedTextWitness),
+        call(watchSelectedTextWitness)
     ]);
 }

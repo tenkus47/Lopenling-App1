@@ -1,6 +1,6 @@
-import React from 'react'
-import classnames from 'classnames'
-import styles from './Popover.css'
+import React from "react";
+import classnames from "classnames";
+import styles from "./Popover.css";
 
 export default class Popover extends React.Component {
     constructor(props) {
@@ -23,8 +23,8 @@ export default class Popover extends React.Component {
     }
 
     updatePosition() {
-        const top = this.props.position.top - this.height + 'px';
-        const left = this.props.position.center - (this.width / 2) + 'px';
+        const top = this.props.position.top - this.height + "px";
+        const left = this.props.position.center - this.width / 2 + "px";
 
         this.popover.style.top = top;
         this.popover.style.left = left;
@@ -39,7 +39,7 @@ export default class Popover extends React.Component {
         return (
             <div
                 className={classnames(...classes)}
-                ref={(popover) => this.popover = popover}
+                ref={popover => (this.popover = popover)}
             >
                 <div className={styles.controls}>
                     Type:
@@ -51,9 +51,9 @@ export default class Popover extends React.Component {
                     </select>
                 </div>
                 <div className={styles.input}>
-                    <textarea></textarea>
+                    <textarea />
                 </div>
             </div>
-        )
+        );
     }
 }

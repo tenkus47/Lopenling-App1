@@ -1,5 +1,5 @@
 // @flow
-import TextSegment from './TextSegment'
+import TextSegment from "./TextSegment";
 
 export default class SegmentedText {
     segments: TextSegment[];
@@ -19,7 +19,7 @@ export default class SegmentedText {
         if (this._sortedText == null) {
             let sorted = this.sortedSegments();
             let text = "";
-            for(let i=0; i < sorted.length; i++) {
+            for (let i = 0; i < sorted.length; i++) {
                 text += sorted[i].text;
             }
             this._sortedText = text;
@@ -63,10 +63,11 @@ export default class SegmentedText {
         let currentIndex;
         let currentSegment;
 
-        while(minIndex <= maxIndex) {
-            currentIndex = (minIndex + maxIndex) / 2 | 0;
+        while (minIndex <= maxIndex) {
+            currentIndex = ((minIndex + maxIndex) / 2) | 0;
             currentSegment = segments[currentIndex];
-            const segmentEnd = currentSegment.start + currentSegment.text.length - 1;
+            const segmentEnd =
+                currentSegment.start + currentSegment.text.length - 1;
             if (segmentEnd < position) {
                 minIndex = currentIndex + 1;
             } else if (currentSegment.start > position) {
@@ -111,17 +112,11 @@ export default class SegmentedText {
                 const segmentEnd = segment.start + segment.text.length - 1;
 
                 if (
-                    (segment.start <= start
-                    && segmentEnd >= start
-                    && segmentEnd <= rangeEnd)
-                    ||
-                    (segment.start >= start
-                        && segmentEnd <= rangeEnd
-                    )
-                    ||
-                    (segment.start <= rangeEnd
-                        && segmentEnd >= rangeEnd
-                    )
+                    (segment.start <= start &&
+                        segmentEnd >= start &&
+                        segmentEnd <= rangeEnd) ||
+                    (segment.start >= start && segmentEnd <= rangeEnd) ||
+                    (segment.start <= rangeEnd && segmentEnd >= rangeEnd)
                 ) {
                     segments.push(segment);
                 } else {

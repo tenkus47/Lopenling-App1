@@ -1,5 +1,5 @@
-import segmentTibetanText, { SegmentedText } from './segmentTibetanText'
-import TextSegment from './TextSegment'
+import segmentTibetanText, { SegmentedText } from "./segmentTibetanText";
+import TextSegment from "./TextSegment";
 
 const text = "༄༅། །ཐེག་པ་ཆེན་པོ་ཉི་ཤུ་པ།༄༅༅། །རྒྱ་གར་སྐད་དུ།།";
 
@@ -37,10 +37,8 @@ const expectedSegments = [
     new TextSegment(46, "།")
 ];
 
-describe('tibetan text segmented', () => {
-   it('should have the correct segments', () => {
-       expect(
-           segmentTibetanText(text).segments
-       ).toEqual(expectedSegments);
-   })
+describe("tibetan text segmented", () => {
+    it("should have the correct segments", () => {
+        expect(segmentTibetanText(text).segments).toEqual(expectedSegments);
+    });
 });

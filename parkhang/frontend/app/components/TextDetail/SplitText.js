@@ -1,18 +1,26 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { AutoSizer } from 'react-virtualized/dist/es/AutoSizer';
-import { List } from 'react-virtualized/dist/es/List';
-import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/es/CellMeasurer'
-import 'react-virtualized/styles.css';
-import Text, { idForSegment, idForDeletedSegment, idForInsertion } from './Text'
-import { CONTROLS_MARGIN_LEFT } from './AnnotationControls'
-import AnnotationControlsContainer from './AnnotationControlsContainer'
-import styles from './SplitText.css'
-import textStyles from './Text.css'
-import controlStyles from './AnnotationControls.css'
-import _ from 'lodash'
+import React from "react";
+import ReactDOM from "react-dom";
+import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
+import { List } from "react-virtualized/dist/es/List";
+import {
+    CellMeasurer,
+    CellMeasurerCache
+} from "react-virtualized/dist/es/CellMeasurer";
+import "react-virtualized/styles.css";
+import Text, {
+    idForSegment,
+    idForDeletedSegment,
+    idForInsertion
+} from "./Text";
+import { CONTROLS_MARGIN_LEFT } from "./AnnotationControls";
+import AnnotationControlsContainer from "./AnnotationControlsContainer";
+import styles from "./SplitText.css";
+import textStyles from "./Text.css";
+import controlStyles from "./AnnotationControls.css";
+import _ from "lodash";
 
-const MIN_SPACE_RIGHT = parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
+const MIN_SPACE_RIGHT =
+    parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
 export default class SplitText extends React.PureComponent {
     constructor(props) {
@@ -23,12 +31,12 @@ export default class SplitText extends React.PureComponent {
             textPaddingRight: null,
             textWidth: null,
             firstSelectedElement: null,
-            splitTextRect: null,
+            splitTextRect: null
         };
         this.list = null;
         this.splitText = null;
         this.cache = new CellMeasurerCache({
-            fixedWidth: true,
+            fixedWidth: true
         });
         this.rowRenderer = this.rowRenderer.bind(this);
         this.resizeHandler = null;
@@ -40,7 +48,7 @@ export default class SplitText extends React.PureComponent {
         this._activeWitness = null;
     }
 
-    updateList(resetCache=true, resetRow=null) {
+    updateList(resetCache = true, resetRow = null) {
         if (this.list) {
             let node;
             let currentScrollTop;
@@ -88,8 +96,11 @@ export default class SplitText extends React.PureComponent {
     }
 
     processSelection(selection) {
-
-        if (selection.rangeCount == 0 || selection.isCollapsed || selection.type == "Caret") {
+        if (
+            selection.rangeCount == 0 ||
+            selection.isCollapsed ||
+            selection.type == "Caret"
+        ) {
             this.selectedNodes = null;
             return;
         }
@@ -114,13 +125,13 @@ export default class SplitText extends React.PureComponent {
             nodes = nodes.concat(this.getRangeNodes(range, endSpan.parentNode));
         }
         this.selectedNodes = nodes;
-        return nodes.map((node) => node.id);
+        return nodes.map(node => node.id);
     }
 
     getNodeSegmentSpan(node) {
         let currentNode = node;
         let span = null;
-        while(!span && currentNode.parentNode) {
+        while (!span && currentNode.parentNode) {
             currentNode = currentNode.parentNode;
             const test = /^(i|s|ds)_/;
             if (currentNode.id && test.test(currentNode.id)) {
@@ -133,7 +144,7 @@ export default class SplitText extends React.PureComponent {
 
     getRangeNodes(range, parentNode) {
         let rangeSpans = [];
-        for (let i=0, len=parentNode.childNodes.length; i < len; i++) {
+        for (let i = 0, len = parentNode.childNodes.length; i < len; i++) {
             const node = parentNode.childNodes[i];
             if (range.intersectsNode(node)) {
                 rangeSpans.push(node);
@@ -151,19 +162,20 @@ export default class SplitText extends React.PureComponent {
         } else {
             textMaxWidth = containerWidth;
         }
-        const extraSpace = containerWidth - (textMaxWidth + paddingSide + paddingSide);
+        const extraSpace =
+            containerWidth - (textMaxWidth + paddingSide + paddingSide);
 
-        let paddingRight = paddingSide + 'px';
-        let newTextWidth = textMaxWidth + 'px';
-        if (extraSpace < (MIN_SPACE_RIGHT * 2)) {
-            paddingRight = MIN_SPACE_RIGHT + 'px';
+        let paddingRight = paddingSide + "px";
+        let newTextWidth = textMaxWidth + "px";
+        if (extraSpace < MIN_SPACE_RIGHT * 2) {
+            paddingRight = MIN_SPACE_RIGHT + "px";
             newTextWidth = containerWidth - MIN_SPACE_RIGHT - paddingSide;
         }
 
         return {
             paddingRight,
             newTextWidth
-        }
+        };
     }
 
     getControlsMeasurements(props) {
@@ -172,12 +184,21 @@ export default class SplitText extends React.PureComponent {
         let selectedElementId = null;
         let splitTextRect = null;
         if (props.activeAnnotation) {
-            const [startPos] = props.splitText.annotatedText.getPositionOfAnnotation(props.activeAnnotation);
-            selectedTextIndex = props.splitText.getTextIndexOfPosition(startPos);
+            const [
+                startPos
+            ] = props.splitText.annotatedText.getPositionOfAnnotation(
+                props.activeAnnotation
+            );
+            selectedTextIndex = props.splitText.getTextIndexOfPosition(
+                startPos
+            );
             splitTextRect = this.splitText.getBoundingClientRect();
         }
-        if (props.selectedAnnotatedSegments && props.selectedAnnotatedSegments.length > 0) {
-            for (let i=0; i < props.selectedAnnotatedSegments.length; i++) {
+        if (
+            props.selectedAnnotatedSegments &&
+            props.selectedAnnotatedSegments.length > 0
+        ) {
+            for (let i = 0; i < props.selectedAnnotatedSegments.length; i++) {
                 let segment = props.selectedAnnotatedSegments[i];
                 if (firstSelectedSegment === null) {
                     firstSelectedSegment = segment;
@@ -187,10 +208,16 @@ export default class SplitText extends React.PureComponent {
             selectedElementId = idForSegment(firstSelectedSegment);
         } else if (props.activeAnnotation) {
             if (props.activeAnnotation.isDeletion) {
-                selectedElementId = idForDeletedSegment({start: props.activeAnnotation.start});
+                selectedElementId = idForDeletedSegment({
+                    start: props.activeAnnotation.start
+                });
             } else if (props.activeAnnotation.isInsertion) {
-                const [start] = props.splitText.annotatedText.getPositionOfAnnotation(props.activeAnnotation);
-                selectedElementId = idForInsertion({start: start});
+                const [
+                    start
+                ] = props.splitText.annotatedText.getPositionOfAnnotation(
+                    props.activeAnnotation
+                );
+                selectedElementId = idForInsertion({ start: start });
             }
         }
         return {
@@ -198,7 +225,7 @@ export default class SplitText extends React.PureComponent {
             firstSelectedSegment: firstSelectedSegment,
             selectedElementId: selectedElementId,
             splitTextRect: splitTextRect
-        }
+        };
     }
 
     updateState(props) {
@@ -218,15 +245,15 @@ export default class SplitText extends React.PureComponent {
     }
 
     shouldResetListCache(oldProps, newProps) {
-        return (
-            oldProps.showImages !== newProps.showImages
-        )
+        return oldProps.showImages !== newProps.showImages;
     }
 
     selectedListRow() {
         let row = null;
         if (this.props.activeAnnotation) {
-            row = this.props.splitText.getTextIndexOfPosition(this.props.activeAnnotation.start);
+            row = this.props.splitText.getTextIndexOfPosition(
+                this.props.activeAnnotation.start
+            );
         }
         return row;
     }
@@ -250,7 +277,10 @@ export default class SplitText extends React.PureComponent {
             }
             if (changedWitness) {
                 this.updateList(true);
-            } else if (this.props.splitText.annotatedText !== props.splitText.annotatedText) {
+            } else if (
+                this.props.splitText.annotatedText !==
+                props.splitText.annotatedText
+            ) {
                 this.updateList(true, this.selectedListRow());
             } else {
                 this.updateList(this.shouldResetListCache(this.props, props));
@@ -268,7 +298,7 @@ export default class SplitText extends React.PureComponent {
 
         window.addEventListener("resize", this.resizeHandler);
 
-        this.selectionHandler = _.debounce((e) => {
+        this.selectionHandler = _.debounce(e => {
             this.handleSelection(e);
         }, 200).bind(this);
 
@@ -306,7 +336,10 @@ export default class SplitText extends React.PureComponent {
     }
 
     getBaseAnnotation(annotation) {
-        return this.props.splitText.annotatedText.getBaseAnnotation(annotation.start, annotation.content.length);
+        return this.props.splitText.annotatedText.getBaseAnnotation(
+            annotation.start,
+            annotation.content.length
+        );
     }
 
     render() {
@@ -315,29 +348,32 @@ export default class SplitText extends React.PureComponent {
         const cache = this.cache;
 
         return (
-            <div className={styles.splitText} ref={(div) => this.splitText = div}>
+            <div
+                className={styles.splitText}
+                ref={div => (this.splitText = div)}
+            >
                 <AutoSizer>
                     {({ height, width }) => (
-                    <List
-                        ref={(list) => this.list = list}
-                        height={height}
-                        rowCount={props.splitText.texts.length}
-                        rowHeight={cache.rowHeight}
-                        rowRenderer={rowRenderer}
-                        width={width}
-                        overscanRowCount={3}
-                        deferredMeasurementCache={cache}
-                    />
+                        <List
+                            ref={list => (this.list = list)}
+                            height={height}
+                            rowCount={props.splitText.texts.length}
+                            rowHeight={cache.rowHeight}
+                            rowRenderer={rowRenderer}
+                            width={width}
+                            overscanRowCount={3}
+                            deferredMeasurementCache={cache}
+                        />
                     )}
                 </AutoSizer>
             </div>
         );
     }
 
-    rowRenderer({key, index, parent, style}) {
+    rowRenderer({ key, index, parent, style }) {
         const props = this.props;
         const cache = this.cache;
-        const pechaImageClass = (props.showImages) ? styles.pechaImage : null;
+        const pechaImageClass = props.showImages ? styles.pechaImage : null;
 
         return (
             <CellMeasurer
@@ -347,16 +383,21 @@ export default class SplitText extends React.PureComponent {
                 rowIndex={index}
                 cache={cache}
             >
-                <div
-                    key={key}
-                    style={style}
-                    className={styles.splitTextRow}
-                >
-                    {props.showImages &&
+                <div key={key} style={style} className={styles.splitTextRow}>
+                    {props.showImages && (
                         <div className={pechaImageClass}>
-                            <div className={styles.pechaContent}><img src={props.imagesBaseUrl + (index + 1) + '.png'} width="100%"/></div>
+                            <div className={styles.pechaContent}>
+                                <img
+                                    src={
+                                        props.imagesBaseUrl +
+                                        (index + 1) +
+                                        ".png"
+                                    }
+                                    width="100%"
+                                />
+                            </div>
                         </div>
-                    }
+                    )}
                     <Text
                         segmentedText={props.splitText.texts[index]}
                         annotations={props.annotations}
@@ -366,25 +407,30 @@ export default class SplitText extends React.PureComponent {
                         row={index}
                         selectedSegmentId={props.selectedSegmentId}
                         annotationPositions={props.annotationPositions}
-                        selectedAnnotatedSegments={props.selectedAnnotatedSegments}
+                        selectedAnnotatedSegments={
+                            props.selectedAnnotatedSegments
+                        }
                         textWidth={this.state.textWidth}
                         paddingRight={this.state.textPaddingRight}
                         getBaseAnnotation={this.getBaseAnnotation.bind(this)}
-                        activeWitness={this.props.splitText.annotatedText.activeWitness}
+                        activeWitness={
+                            this.props.splitText.annotatedText.activeWitness
+                        }
                     />
-                    {this.state.selectedTextIndex === index &&
+                    {this.state.selectedTextIndex === index && (
                         <AnnotationControlsContainer
-                                    annotationPositions={props.annotationPositions}
-                                    annotatedText={props.splitText.annotatedText}
-                                    activeAnnotation={props.activeAnnotation}
-                                    inline={true}
-                                    firstSelectedSegment={this.state.firstSelectedSegment}
-                                    splitTextRect={this.state.splitTextRect}
-                                    selectedElementId={this.state.selectedElementId}
-                                    pechaImageClass={pechaImageClass}
-                                />
-                    }
-
+                            annotationPositions={props.annotationPositions}
+                            annotatedText={props.splitText.annotatedText}
+                            activeAnnotation={props.activeAnnotation}
+                            inline={true}
+                            firstSelectedSegment={
+                                this.state.firstSelectedSegment
+                            }
+                            splitTextRect={this.state.splitTextRect}
+                            selectedElementId={this.state.selectedElementId}
+                            pechaImageClass={pechaImageClass}
+                        />
+                    )}
                 </div>
             </CellMeasurer>
         );

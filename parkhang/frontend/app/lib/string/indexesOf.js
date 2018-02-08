@@ -1,4 +1,3 @@
-
 /**
  * Returns all indexes of searchStr in string.
  *

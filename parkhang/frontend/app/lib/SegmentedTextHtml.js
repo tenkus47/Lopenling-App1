@@ -1,6 +1,4 @@
-
 export default class SegmentedTextHtml {
-
     constructor(segmentedText) {
         this._segmentedText = segmentedText;
         this._html = null;
@@ -11,7 +9,7 @@ export default class SegmentedTextHtml {
             let html = "";
             for (let segment of this._segmentedText.sortedSegments()) {
                 let id = this.idForSegment(segment);
-                html += '<span id="' + id + '">' + segment.text+'</span>';
+                html += '<span id="' + id + '">' + segment.text + "</span>";
             }
             this._html = html;
         }
@@ -34,7 +32,7 @@ export default class SegmentedTextHtml {
             return this.idForSegment(segment);
         });
 
-        return segmentIds
+        return segmentIds;
     }
 
     idForSegment(segment) {

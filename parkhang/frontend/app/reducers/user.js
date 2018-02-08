@@ -1,13 +1,13 @@
 // @flow
-import * as actions from 'actions'
-import User, { getAnonymousUser } from 'lib/User'
+import * as actions from "actions";
+import User, { getAnonymousUser } from "lib/User";
 
 const anonymousUser = getAnonymousUser();
 
 export type UserState = {
     userId: number,
     userName: string
-}
+};
 
 export const initialUserState: UserState = {
     userId: anonymousUser.id,
@@ -19,7 +19,7 @@ function userLoggedIn(state: UserState, action: actions.UserAction): UserState {
         ...state,
         userId: action.userId,
         userName: action.userName
-    }
+    };
 }
 
 const userReducers = {};

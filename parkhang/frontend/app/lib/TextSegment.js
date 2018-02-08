@@ -1,5 +1,5 @@
 // @flow
-import Annotation from 'lib/Annotation';
+import Annotation from "lib/Annotation";
 
 /**
  * Partial segment of a larger text.

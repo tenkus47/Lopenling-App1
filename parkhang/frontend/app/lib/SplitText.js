@@ -1,8 +1,8 @@
 // @flow
-import SegmentedText from './SegmentedText'
+import SegmentedText from "./SegmentedText";
 import AnnotatedText from "./AnnotatedText";
 
-export type Splitter = (string) => number[];
+export type Splitter = string => number[];
 
 export default class SplitText {
     annotatedText: AnnotatedText;
@@ -36,9 +36,11 @@ export default class SplitText {
         const segments = segmentedText.sortedSegments();
         let startIndex = 0;
         let texts = [];
-        for (let i=0; i < splitPositions.length; i++) {
+        for (let i = 0; i < splitPositions.length; i++) {
             const position = splitPositions[i];
-            const endIndex = segmentedText.indexOfSortedSegmentAtPosition(position);
+            const endIndex = segmentedText.indexOfSortedSegmentAtPosition(
+                position
+            );
             let textSegments;
             if (i == splitPositions.length - 1) {
                 // final position
@@ -68,7 +70,7 @@ export default class SplitText {
         const textsFinalPositions = this._getTextsFinalPositions();
         let lastPosition = 0;
         let textIndex = null;
-        for (let i=0; i < textsFinalPositions.length; i++) {
+        for (let i = 0; i < textsFinalPositions.length; i++) {
             let endPosition = textsFinalPositions[i];
             if (position >= lastPosition && position <= endPosition) {
                 textIndex = i;
@@ -77,7 +79,7 @@ export default class SplitText {
             lastPosition = endPosition;
         }
         if (textIndex === null) {
-            console.warn('no index for position %d', position);
+            console.warn("no index for position %d", position);
             textIndex = textsFinalPositions.length - 1;
         }
         return textIndex;

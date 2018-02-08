@@ -1,30 +1,29 @@
-import React from 'react'
-import { connect } from 'react-redux';
-import TextsSearch from './TextsSearch'
-import { changedSearchValue, changedTextListVisible } from 'actions'
+import React from "react";
+import { connect } from "react-redux";
+import TextsSearch from "./TextsSearch";
+import { changedSearchValue, changedTextListVisible } from "actions";
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         searchValue: state.ui.searchValue
-    }
+    };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return {
-        searchChanged: (e) => {
+        searchChanged: e => {
             const value = e.target.value;
             dispatch(changedSearchValue(value));
         },
-        minimiseButtonClicked: (e) => {
+        minimiseButtonClicked: e => {
             const textListIsVisible = false;
             dispatch(changedTextListVisible(textListIsVisible));
         }
-    }
+    };
 };
 
-const TextsSearchContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(TextsSearch);
+const TextsSearchContainer = connect(mapStateToProps, mapDispatchToProps)(
+    TextsSearch
+);
 
 export default TextsSearchContainer;

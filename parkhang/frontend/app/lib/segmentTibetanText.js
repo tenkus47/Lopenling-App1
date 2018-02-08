@@ -1,5 +1,5 @@
-import SegmentedText from './SegmentedText'
-import TextSegment from './TextSegment';
+import SegmentedText from "./SegmentedText";
+import TextSegment from "./TextSegment";
 
 export default function segmentTibetanText(text) {
     const breaks = "།།";
@@ -14,7 +14,10 @@ export default function segmentTibetanText(text) {
     for (let char of text) {
         if (breaks.includes(char)) {
             if (count > 0) {
-                const newSegment = new TextSegment(currentStart, currentSegment);
+                const newSegment = new TextSegment(
+                    currentStart,
+                    currentSegment
+                );
                 segments.push(newSegment);
             }
             inBreak = true;
@@ -26,7 +29,10 @@ export default function segmentTibetanText(text) {
                 currentSegment += char;
             } else {
                 if (count > 0) {
-                    const newSegment = new TextSegment(currentStart, currentSegment);
+                    const newSegment = new TextSegment(
+                        currentStart,
+                        currentSegment
+                    );
                     segments.push(newSegment);
                 }
 
@@ -38,7 +44,10 @@ export default function segmentTibetanText(text) {
         } else {
             if (inSpace || inBreak) {
                 if (count > 0) {
-                    const newSegment = new TextSegment(currentStart, currentSegment);
+                    const newSegment = new TextSegment(
+                        currentStart,
+                        currentSegment
+                    );
                     segments.push(newSegment);
                 }
 

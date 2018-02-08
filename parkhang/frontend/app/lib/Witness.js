@@ -1,6 +1,6 @@
 // @flow
-import Source from 'lib/Source';
-import Text from 'lib/Text';
+import Source from "lib/Source";
+import Text from "lib/Text";
 
 /**
  * Represents a printed version of a text.
@@ -32,7 +32,15 @@ export default class Witness {
      * @param {boolean} isWorking - Whether this is the working edition
      * @param {number} revision - The revision of this witness
      */
-    constructor(id: number, text: Text, source: Source, content: string|null=null, isBase: boolean=false, isWorking:boolean=false, revision:number=1) {
+    constructor(
+        id: number,
+        text: Text,
+        source: Source,
+        content: string | null = null,
+        isBase: boolean = false,
+        isWorking: boolean = false,
+        revision: number = 1
+    ) {
         this.id = id;
         this.text = text;
         this.source = source;

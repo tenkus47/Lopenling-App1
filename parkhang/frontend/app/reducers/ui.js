@@ -1,21 +1,21 @@
 // @flow
-import * as actions from 'actions';
+import * as actions from "actions";
 import Annotation, { TemporaryAnnotation } from "lib/Annotation";
-import * as api from 'api';
+import * as api from "api";
 
 export type UIState = {
     selectedText: api.TextData | null,
-    selectedTextWitness: {[textId: number]: number},
+    selectedTextWitness: { [textId: number]: number },
     searchValue: string,
     showPageImages: boolean,
-    activeAnnotations: {[witnessId: number]: Annotation},
+    activeAnnotations: { [witnessId: number]: Annotation },
     textListVisible: boolean,
     temporaryAnnotations: {
         [witnessId: number]: {
             [tempAnnotationKey: string]: TemporaryAnnotation[]
         }
     }
-}
+};
 
 export const initialUIState = {
     selectedText: null,
@@ -27,24 +27,33 @@ export const initialUIState = {
     temporaryAnnotations: {}
 };
 
-function selectedText(state: UIState, action: actions.SelectedTextAction): UIState {
+function selectedText(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
     return {
         ...state,
         selectedText: action.text
     };
 }
 
-function selectedTextWitness(state: UIState, action: actions.SelectedTextWitnessAction): UIState {
+function selectedTextWitness(
+    state: UIState,
+    action: actions.SelectedTextWitnessAction
+): UIState {
     return {
         ...state,
         selectedTextWitness: {
             ...selectedTextWitness,
             [action.text.id]: action.witness.id
         }
-    }
+    };
 }
 
-function changedSearchValue(state: UIState, action: actions.ChangedSearchValueAction): UIState {
+function changedSearchValue(
+    state: UIState,
+    action: actions.ChangedSearchValueAction
+): UIState {
     let searchValue = action.searchValue;
     if (!searchValue) {
         searchValue = "";
@@ -52,14 +61,17 @@ function changedSearchValue(state: UIState, action: actions.ChangedSearchValueAc
     return {
         ...state,
         searchValue: searchValue
-    }
+    };
 }
 
-function changedShowPageImages(state: UIState, action: actions.ChangedShowPageImagesAction): UIState {
+function changedShowPageImages(
+    state: UIState,
+    action: actions.ChangedShowPageImagesAction
+): UIState {
     return {
         ...state,
         showPageImages: action.showPageImages
-    }
+    };
 }
 
 // TODO: delete? Doesn't seem to be used anywhere.
@@ -75,9 +87,12 @@ function changedShowPageImages(state: UIState, action: actions.ChangedShowPageIm
 //     }
 // }
 
-function changedActiveAnnotation(state: UIState, action: actions.AnnotationAction): UIState {
+function changedActiveAnnotation(
+    state: UIState,
+    action: actions.AnnotationAction
+): UIState {
     if (!state.selectedText) {
-        console.warn('changedActiveAnnotation without selectedText');
+        console.warn("changedActiveAnnotation without selectedText");
         return state;
     }
 
@@ -88,28 +103,40 @@ function changedActiveAnnotation(state: UIState, action: actions.AnnotationActio
             ...state.activeAnnotations,
             [activeWitnessId]: action.annotation
         }
-    }
+    };
 }
 
-function textListVisibleChanged(state: UIState, action: actions.ChangedTextListVisibleAction): UIState {
+function textListVisibleChanged(
+    state: UIState,
+    action: actions.ChangedTextListVisibleAction
+): UIState {
     return {
         ...state,
         textListVisible: action.isVisible
-    }
+    };
 }
 
 function getTemporaryAnnotationKey(start: number, length: number): string {
     return [start, length].join("-");
 }
 
-function addedTemporaryAnnotation(state, action: actions.AddedTemporaryAnnotationAction): UIState {
+function addedTemporaryAnnotation(
+    state,
+    action: actions.AddedTemporaryAnnotationAction
+): UIState {
     const annotation = action.annotation;
     // const textId = annotation.witness.text.id;
     const activeWitnessId = state.selectedTextWitness[state.selectedText.id];
     const key = getTemporaryAnnotationKey(annotation.start, annotation.length);
 
-    let temporaryAnnotations = (state.temporaryAnnotations[activeWitnessId]) ? state.temporaryAnnotations[activeWitnessId] : {};
-    let textTemporaryAnnotations = (state.temporaryAnnotations[activeWitnessId] && state.temporaryAnnotations[activeWitnessId][key]) ? state.temporaryAnnotations[activeWitnessId][key] : [];
+    let temporaryAnnotations = state.temporaryAnnotations[activeWitnessId]
+        ? state.temporaryAnnotations[activeWitnessId]
+        : {};
+    let textTemporaryAnnotations =
+        state.temporaryAnnotations[activeWitnessId] &&
+        state.temporaryAnnotations[activeWitnessId][key]
+            ? state.temporaryAnnotations[activeWitnessId][key]
+            : [];
 
     return {
         ...state,
@@ -117,10 +144,7 @@ function addedTemporaryAnnotation(state, action: actions.AddedTemporaryAnnotatio
             ...state.temporaryAnnotations,
             [activeWitnessId]: {
                 ...temporaryAnnotations,
-                [key]: [
-                    ...textTemporaryAnnotations,
-                    annotation
-                ]
+                [key]: [...textTemporaryAnnotations, annotation]
             }
         }
     };
@@ -130,7 +154,10 @@ function addedTemporaryAnnotation(state, action: actions.AddedTemporaryAnnotatio
 //     return addedTemporaryAnnotation(state, action);
 // }
 
-function removedTemporaryAnnotation(state, action: actions.RemovedTemporaryAnnotationAction): UIState {
+function removedTemporaryAnnotation(
+    state,
+    action: actions.RemovedTemporaryAnnotationAction
+): UIState {
     const annotation = action.annotation;
     // const textId = annotation.witness.text.id;
     const activeWitnessId = state.selectedTextWitness[state.selectedText.id];
@@ -142,10 +169,12 @@ function removedTemporaryAnnotation(state, action: actions.RemovedTemporaryAnnot
             ...state.temporaryAnnotations,
             [activeWitnessId]: {
                 ...state.temporaryAnnotations[activeWitnessId],
-                [key]: state.temporaryAnnotations[activeWitnessId][key].filter(a => a.uniqueId !== annotation.uniqueId)
+                [key]: state.temporaryAnnotations[activeWitnessId][key].filter(
+                    a => a.uniqueId !== annotation.uniqueId
+                )
             }
         }
-    }
+    };
 }
 
 const uiReducers = {};
@@ -164,7 +193,10 @@ export const getSelectedText = (state: UIState): api.TextData | null => {
     return state.selectedText;
 };
 
-export const getSelectedTextWitnessId = (state: UIState, textId: number): number | null => {
+export const getSelectedTextWitnessId = (
+    state: UIState,
+    textId: number
+): number | null => {
     return state.selectedTextWitness[textId];
 };
 
@@ -174,7 +206,8 @@ export const showPageImages = (state: UIState): boolean => {
 
 export const getActiveAnnotation = (state: UIState): Annotation | null => {
     if (state.selectedText) {
-        const activeWitnessId = state.selectedTextWitness[state.selectedText.id];
+        const activeWitnessId =
+            state.selectedTextWitness[state.selectedText.id];
         return state.activeAnnotations[activeWitnessId];
     } else {
         return null;
@@ -185,11 +218,23 @@ export const getTextListVisible = (state: UIState): boolean => {
     return state.textListVisible;
 };
 
-export const getTemporaryAnnotations = (state: UIState, witnessId: number, start: number, length: number, type: string): TemporaryAnnotation[] => {
+export const getTemporaryAnnotations = (
+    state: UIState,
+    witnessId: number,
+    start: number,
+    length: number,
+    type: string
+): TemporaryAnnotation[] => {
     let annotations = [];
     const key = getTemporaryAnnotationKey(start, length);
-    if (type && state.temporaryAnnotations[witnessId] && state.temporaryAnnotations[witnessId][key]) {
-        annotations =  state.temporaryAnnotations[witnessId][key].filter(a => a.type === type);
+    if (
+        type &&
+        state.temporaryAnnotations[witnessId] &&
+        state.temporaryAnnotations[witnessId][key]
+    ) {
+        annotations = state.temporaryAnnotations[witnessId][key].filter(
+            a => a.type === type
+        );
     }
     return annotations;
 };

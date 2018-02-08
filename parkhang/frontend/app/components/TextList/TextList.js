@@ -1,25 +1,22 @@
-import React from 'react';
-import classnames from 'classnames';
-import { AutoSizer } from 'react-virtualized/dist/es/AutoSizer';
-import { List } from 'react-virtualized/dist/es/List';
-import GraphemeSplitter from 'grapheme-splitter';
-import 'react-virtualized/styles.css'; // only needs to be imported once
-import addTibetanShay from 'lib/addTibetanShay'
-import styles from './TextList.css'
+import React from "react";
+import classnames from "classnames";
+import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
+import { List } from "react-virtualized/dist/es/List";
+import GraphemeSplitter from "grapheme-splitter";
+import "react-virtualized/styles.css"; // only needs to be imported once
+import addTibetanShay from "lib/addTibetanShay";
+import styles from "./TextList.css";
 
 class TextList extends React.Component {
-
     render() {
         const selectedText = this.props.selectedText;
-        const selectedTextId = (selectedText) ? selectedText.id : -1;
+        const selectedTextId = selectedText ? selectedText.id : -1;
         const texts = this.props.texts;
         const onSelectedText = this.props.onSelectedText;
         const searchTerm = this.props.searchTerm;
         const splitter = new GraphemeSplitter();
 
-        function rowRenderer({
-            key, index, style
-        }) {
+        function rowRenderer({ key, index, style }) {
             let className = styles.textListRow;
             const text = texts[index];
             if (text.id == selectedTextId) {
@@ -32,8 +29,8 @@ class TextList extends React.Component {
                 const start = name.indexOf(searchTerm);
                 const end = start + searchTerm.length;
                 let position = 0;
-                let foundGraphemes = '';
-                for (let i=0; i < graphemes.length; i++) {
+                let foundGraphemes = "";
+                for (let i = 0; i < graphemes.length; i++) {
                     let grapheme = graphemes[i];
                     if (position >= start && position < end) {
                         foundGraphemes += grapheme;
@@ -41,7 +38,12 @@ class TextList extends React.Component {
                     position += grapheme.length;
                 }
                 if (foundGraphemes.length > 0) {
-                    const graphemeSpan = '<span class='+styles.highlight+'>'+foundGraphemes+'</span>';
+                    const graphemeSpan =
+                        "<span class=" +
+                        styles.highlight +
+                        ">" +
+                        foundGraphemes +
+                        "</span>";
                     name = name.replace(foundGraphemes, graphemeSpan);
                 }
             }
@@ -59,36 +61,36 @@ class TextList extends React.Component {
                         onSelectedText(texts[index]);
                     }}
                 >
-                    <span className={styles.textName} dangerouslySetInnerHTML={html} />
+                    <span
+                        className={styles.textName}
+                        dangerouslySetInnerHTML={html}
+                    />
                 </div>
-            )
+            );
         }
 
         return (
             <div className={styles.textList}>
-
-                { this.props.texts ?
-
+                {this.props.texts ? (
                     <AutoSizer>
                         {({ height, width }) => (
-                        <List
-                            height={height}
-                            rowCount={this.props.texts.length}
-                            rowHeight={50}
-                            rowRenderer={rowRenderer}
-                            width={width}
-                        />
+                            <List
+                                height={height}
+                                rowCount={this.props.texts.length}
+                                rowHeight={50}
+                                rowRenderer={rowRenderer}
+                                width={width}
+                            />
                         )}
                     </AutoSizer>
-
-                    :
+                ) : (
                     <ul className="textList">
                         <li>(no texts)</li>
                     </ul>
-                }
+                )}
             </div>
-        )
+        );
     }
 }
 
-export default TextList
+export default TextList;

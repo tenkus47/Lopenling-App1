@@ -1,12 +1,15 @@
 // @flow
-import Text from 'lib/Text'
-import Source from 'lib/Source'
-import Witness from 'lib/Witness'
-import Annotation, { TemporaryAnnotation, ANNOTATION_TYPES } from 'lib/Annotation'
-import User from 'lib/User'
-import dataReducers, * as data from 'reducers/data'
+import Text from "lib/Text";
+import Source from "lib/Source";
+import Witness from "lib/Witness";
+import Annotation, {
+    TemporaryAnnotation,
+    ANNOTATION_TYPES
+} from "lib/Annotation";
+import User from "lib/User";
+import dataReducers, * as data from "reducers/data";
 // import dataReducers, { initialDataState, dataFromAnnotation } from 'reducers/data'
-import * as actions from 'actions';
+import * as actions from "actions";
 
 const source1 = new Source(1, "Derge", true);
 const source2 = new Source(2, "Narthang");
@@ -14,75 +17,90 @@ const text = new Text(1, "དཔལ་ནག་པོ་ཆེན་པོ་ཡ
 const baseWitness = new Witness(1, text, source1, "Test witness", true);
 const baseWitnessData = data.dataFromWitness(baseWitness);
 const otherWitness = new Witness(2, text, source2, "", false);
-const annotation = new Annotation(1, baseWitness, 0, 27, "༄༅༅", ANNOTATION_TYPES.variant, baseWitness);
+const annotation = new Annotation(
+    1,
+    baseWitness,
+    0,
+    27,
+    "༄༅༅",
+    ANNOTATION_TYPES.variant,
+    baseWitness
+);
 const user = new User(1, "");
 
-describe('Applying and removing reducer', () => {
+describe("Applying and removing reducer", () => {
+    const applyAction = actions.appliedAnnotation(
+        annotation.uniqueId,
+        baseWitnessData
+    );
 
-    const applyAction = actions.appliedAnnotation(annotation.uniqueId, baseWitnessData);
-
-    let state = {...data.initialDataState};
+    let state = { ...data.initialDataState };
     let witnessActiveAnnotations = {
         [baseWitness.id]: [annotation.uniqueId]
     };
     let expectedState = {
         ...state,
-        witnessActiveAnnotationsById: witnessActiveAnnotations,
+        witnessActiveAnnotationsById: witnessActiveAnnotations
     };
 
-    test('Applying annotation', () => {
-        expect(
-            dataReducers[applyAction.type](state, applyAction)
-        ).toEqual(expectedState);
+    test("Applying annotation", () => {
+        expect(dataReducers[applyAction.type](state, applyAction)).toEqual(
+            expectedState
+        );
 
-        expect(
-            dataReducers[applyAction.type](state, applyAction)
-        ).not.toBe(state);
+        expect(dataReducers[applyAction.type](state, applyAction)).not.toBe(
+            state
+        );
     });
 
-    const removeAction = actions.removedAppliedAnnotation(annotation.uniqueId, baseWitnessData);
+    const removeAction = actions.removedAppliedAnnotation(
+        annotation.uniqueId,
+        baseWitnessData
+    );
 
-    test('Removing annotation', () => {
-        const state = dataReducers[applyAction.type]({...data.initialDataState}, applyAction);
+    test("Removing annotation", () => {
+        const state = dataReducers[applyAction.type](
+            { ...data.initialDataState },
+            applyAction
+        );
         const witnessActiveAnnotations = {
             [baseWitness.id]: []
         };
         const expectedState = {
             ...state,
-            witnessActiveAnnotationsById: witnessActiveAnnotations,
+            witnessActiveAnnotationsById: witnessActiveAnnotations
         };
 
-        expect(
-            dataReducers[removeAction.type](state, removeAction)
-        ).toEqual(expectedState);
+        expect(dataReducers[removeAction.type](state, removeAction)).toEqual(
+            expectedState
+        );
 
-        expect(
-            dataReducers[removeAction.type](state, removeAction)
-        ).not.toBe(state);
+        expect(dataReducers[removeAction.type](state, removeAction)).not.toBe(
+            state
+        );
     });
 });
 
-describe('Processing loaded data', () => {
-
-    test('loadedAnnotations', () => {
+describe("Processing loaded data", () => {
+    test("loadedAnnotations", () => {
         let state = {
             ...data.initialDataState
         };
 
         const annotationsData = [
             {
-                "id": 498,
-                "type": 'V',
-                "witness": 1,
-                "start": 0,
-                "length": 67,
-                "content": "",
-                "creator_witness": 152,
-                "creator_user": null,
-                "is_deleted": false,
-                "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57",
-                "is_saved": true,
-                "original": null
+                id: 498,
+                type: "V",
+                witness: 1,
+                start: 0,
+                length: 67,
+                content: "",
+                creator_witness: 152,
+                creator_user: null,
+                is_deleted: false,
+                unique_id: "1e74ae00-7b15-4b30-95d6-2424cfa93f57",
+                is_saved: true,
+                original: null
             }
         ];
 
@@ -93,32 +111,33 @@ describe('Processing loaded data', () => {
             witnessAnnotationsById: {
                 "1": {
                     "1e74ae00-7b15-4b30-95d6-2424cfa93f57": {
-                        "id": 498,
-                        "type": 'V',
-                        "witness": 1,
-                        "start": 0,
-                        "length": 67,
-                        "content": "",
-                        "creator_witness": 152,
-                        "creator_user": null,
-                        "is_deleted": false,
-                        "unique_id": "1e74ae00-7b15-4b30-95d6-2424cfa93f57",
-                        "is_saved": true,
-                        "original": null
+                        id: 498,
+                        type: "V",
+                        witness: 1,
+                        start: 0,
+                        length: 67,
+                        content: "",
+                        creator_witness: 152,
+                        creator_user: null,
+                        is_deleted: false,
+                        unique_id: "1e74ae00-7b15-4b30-95d6-2424cfa93f57",
+                        is_saved: true,
+                        original: null
                     }
                 }
             }
         };
 
-        const action = actions.loadedWitnessAnnotations(baseWitness, annotationsData);
+        const action = actions.loadedWitnessAnnotations(
+            baseWitness,
+            annotationsData
+        );
 
-        expect(
-            dataReducers[action.type](state, action)
-        ).toEqual(expectedState);
+        expect(dataReducers[action.type](state, action)).toEqual(expectedState);
 
         state = {
             ...state,
-            loadedAppliedAnnotations: true,
+            loadedAppliedAnnotations: true
         };
 
         expectedState = {
@@ -127,20 +146,26 @@ describe('Processing loaded data', () => {
             loadingAnnotations: false
         };
 
-        expect(
-            dataReducers[action.type](state, action)
-        ).toEqual(expectedState);
+        expect(dataReducers[action.type](state, action)).toEqual(expectedState);
     });
 });
 
-describe('CUD annotation', () => {
-
-    const newAnnotation = new TemporaryAnnotation(null, baseWitness, 5, 7, "replacement", ANNOTATION_TYPES.variant, baseWitness, user);
+describe("CUD annotation", () => {
+    const newAnnotation = new TemporaryAnnotation(
+        null,
+        baseWitness,
+        5,
+        7,
+        "replacement",
+        ANNOTATION_TYPES.variant,
+        baseWitness,
+        user
+    );
     const createAction = actions.createdAnnotation(newAnnotation, baseWitness);
 
-    let state = {...data.initialDataState};
+    let state = { ...data.initialDataState };
 
-    test('Create annotation', () => {
+    test("Create annotation", () => {
         let annotationData = data.dataFromAnnotation(newAnnotation);
         if (!annotationData) throw new Error();
 
@@ -153,16 +178,29 @@ describe('CUD annotation', () => {
                 }
             }
         };
-        expect(
-            dataReducers[createAction.type](state, createAction)
-        ).toEqual(expectedState);
+        expect(dataReducers[createAction.type](state, createAction)).toEqual(
+            expectedState
+        );
     });
 
-    const updatedAnnotation = new TemporaryAnnotation(newAnnotation, baseWitness, 5, 7, "replaced", newAnnotation.type, baseWitness, user, newAnnotation.uniqueId);
+    const updatedAnnotation = new TemporaryAnnotation(
+        newAnnotation,
+        baseWitness,
+        5,
+        7,
+        "replaced",
+        newAnnotation.type,
+        baseWitness,
+        user,
+        newAnnotation.uniqueId
+    );
     updatedAnnotation.save();
-    const updatedAction = actions.updatedAnnotation(updatedAnnotation, baseWitness);
+    const updatedAction = actions.updatedAnnotation(
+        updatedAnnotation,
+        baseWitness
+    );
 
-    test('Updated unsaved annotation', () => {
+    test("Updated unsaved annotation", () => {
         state = dataReducers[createAction.type](state, createAction);
 
         let annotationData = data.dataFromAnnotation(updatedAnnotation);
@@ -177,45 +215,70 @@ describe('CUD annotation', () => {
                 }
             }
         };
-        expect(
-            dataReducers[updatedAction.type](state, updatedAction)
-        ).toEqual(expectedState);
+        expect(dataReducers[updatedAction.type](state, updatedAction)).toEqual(
+            expectedState
+        );
     });
 
-
-    const savedAnnotation = new Annotation(2, baseWitness, 5, 7, "replaced", newAnnotation.type, baseWitness, user, newAnnotation.uniqueId);
+    const savedAnnotation = new Annotation(
+        2,
+        baseWitness,
+        5,
+        7,
+        "replaced",
+        newAnnotation.type,
+        baseWitness,
+        user,
+        newAnnotation.uniqueId
+    );
     savedAnnotation.save();
     const savedAction = actions.savedAnnotation(savedAnnotation);
 
-    test('Saved annotation', () => {
+    test("Saved annotation", () => {
         state = dataReducers[updatedAction.type](state, updatedAction);
 
         const expectedState = {
             ...state,
             witnessAnnotationsById: {
                 [baseWitness.id]: {
-                    [savedAnnotation.uniqueId]: data.dataFromAnnotation(savedAnnotation)
+                    [savedAnnotation.uniqueId]: data.dataFromAnnotation(
+                        savedAnnotation
+                    )
                 }
             }
         };
 
-        expect(
-            dataReducers[savedAction.type](state, savedAction)
-        ).toEqual(expectedState);
-
+        expect(dataReducers[savedAction.type](state, savedAction)).toEqual(
+            expectedState
+        );
     });
 
-    const updatedSavedAnnotation = new TemporaryAnnotation(savedAnnotation, baseWitness, 5, 7, "update", savedAnnotation.type, baseWitness, user, savedAnnotation.uniqueId);
+    const updatedSavedAnnotation = new TemporaryAnnotation(
+        savedAnnotation,
+        baseWitness,
+        5,
+        7,
+        "update",
+        savedAnnotation.type,
+        baseWitness,
+        user,
+        savedAnnotation.uniqueId
+    );
     updatedSavedAnnotation.isSaved = savedAnnotation.isSaved;
-    const updateSavedAction = actions.updatedAnnotation(updatedSavedAnnotation, baseWitness);
+    const updateSavedAction = actions.updatedAnnotation(
+        updatedSavedAnnotation,
+        baseWitness
+    );
 
-    test('Updated saved annotation', () => {
+    test("Updated saved annotation", () => {
         state = dataReducers[savedAction.type](state, savedAction);
         const expectedState = {
             ...state,
             witnessAnnotationsById: {
                 [baseWitness.id]: {
-                    [savedAnnotation.uniqueId]: data.dataFromAnnotation(updatedSavedAnnotation)
+                    [savedAnnotation.uniqueId]: data.dataFromAnnotation(
+                        updatedSavedAnnotation
+                    )
                 }
             }
         };
@@ -226,9 +289,12 @@ describe('CUD annotation', () => {
     });
 
     const deletedAnnotation = savedAnnotation;
-    const deletedAction = actions.deletedAnnotation(deletedAnnotation, baseWitness);
+    const deletedAction = actions.deletedAnnotation(
+        deletedAnnotation,
+        baseWitness
+    );
 
-    test('Deleted annotation', () => {
+    test("Deleted annotation", () => {
         state = dataReducers[updateSavedAction.type](state, updateSavedAction);
         const expectedState = {
             ...state,
@@ -237,22 +303,20 @@ describe('CUD annotation', () => {
             }
         };
 
-        expect(
-            dataReducers[deletedAction.type](state, deletedAction)
-        ).toEqual(expectedState);
+        expect(dataReducers[deletedAction.type](state, deletedAction)).toEqual(
+            expectedState
+        );
     });
-
 });
 
-describe('Data selectors', () => {
-
+describe("Data selectors", () => {
     let state = data.initialDataState;
     state = {
         ...state,
         textsById: {
             [1]: {
                 id: text.id,
-                name: text.name,
+                name: text.name
             }
         },
         sourcesById: {
@@ -319,25 +383,51 @@ describe('Data selectors', () => {
         }
     };
 
-    const expectedGetAnnotation = new Annotation(488, baseWitness, 0, 29, "", "V", otherWitness, null, "52bab9be-a395-4c9c-b264-1d03a091cc4b");
+    const expectedGetAnnotation = new Annotation(
+        488,
+        baseWitness,
+        0,
+        29,
+        "",
+        "V",
+        otherWitness,
+        null,
+        "52bab9be-a395-4c9c-b264-1d03a091cc4b"
+    );
 
-    test('getAnnotation', () => {
-
+    test("getAnnotation", () => {
         expectedGetAnnotation.save();
 
         expect(
-            data.getAnnotation(state, baseWitness.id, expectedGetAnnotation.uniqueId)
+            data.getAnnotation(
+                state,
+                baseWitness.id,
+                expectedGetAnnotation.uniqueId
+            )
         ).toEqual(expectedGetAnnotation);
-
-
     });
 
-    test('annotationFromData', () => {
-        const expectedAnnotationFromData = new Annotation(489, baseWitness, 0, 29, "Test", "V", otherWitness, user, "527713e8-b191-4b74-9f34-cd9f8d0e4318", expectedGetAnnotation);
+    test("annotationFromData", () => {
+        const expectedAnnotationFromData = new Annotation(
+            489,
+            baseWitness,
+            0,
+            29,
+            "Test",
+            "V",
+            otherWitness,
+            user,
+            "527713e8-b191-4b74-9f34-cd9f8d0e4318",
+            expectedGetAnnotation
+        );
         expectedAnnotationFromData.save();
         expect(
-            data.annotationFromData(state, state.witnessAnnotationsById[1][expectedAnnotationFromData.uniqueId])
+            data.annotationFromData(
+                state,
+                state.witnessAnnotationsById[1][
+                    expectedAnnotationFromData.uniqueId
+                ]
+            )
         ).toEqual(expectedAnnotationFromData);
-
     });
 });

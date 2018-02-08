@@ -1,10 +1,10 @@
 export default function arrayToMap(arr, key) {
     return arr.reduce(function(result, item) {
         if (item[key] != undefined) {
-            const objKey = item[key]
+            const objKey = item[key];
             result.set(objKey, item);
             // result[objKey] = item
-            return result
+            return result;
         }
     }, new Map());
 }

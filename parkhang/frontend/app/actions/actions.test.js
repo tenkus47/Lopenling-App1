@@ -1,23 +1,23 @@
-import * as actions from './index';
+import * as actions from "./index";
 
-describe('actions', () => {
-    it('creates loadTexts action', () => {
+describe("actions", () => {
+    it("creates loadTexts action", () => {
         const expectedAction = {
-            type: actions.LOAD_TEXTS,
+            type: actions.LOAD_TEXTS
         };
         expect(actions.loadTexts()).toEqual(expectedAction);
     });
 
-    it('creates loadedTexts action', () => {
+    it("creates loadedTexts action", () => {
         const texts = [
             {
                 id: 1,
-                name: 'Test',
-            },
+                name: "Test"
+            }
         ];
         const expectedAction = {
             type: actions.LOADED_TEXTS,
-            texts,
+            texts
         };
         expect(actions.loadedTexts(texts)).toEqual(expectedAction);
     });

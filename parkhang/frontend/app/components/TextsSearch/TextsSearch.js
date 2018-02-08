@@ -1,5 +1,5 @@
-import React from 'react'
-import styles from './TextsSearch.css'
+import React from "react";
+import styles from "./TextsSearch.css";
 
 const TextsSearch = props => {
     return (
@@ -16,11 +16,14 @@ const TextsSearch = props => {
                     <option>Titles</option>
                 </select>
             </div>
-            <div className={styles.minify} onClick={props.minimiseButtonClicked}>
+            <div
+                className={styles.minify}
+                onClick={props.minimiseButtonClicked}
+            >
                 &lt;&lt;
             </div>
         </div>
-    )
+    );
 };
 
 export default TextsSearch;

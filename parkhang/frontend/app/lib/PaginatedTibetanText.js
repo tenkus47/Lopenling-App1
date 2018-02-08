@@ -1,18 +1,17 @@
-import segmentTibetanText from './segmentTibetanText'
-import SegmentedText from './SegmentedText'
+import segmentTibetanText from "./segmentTibetanText";
+import SegmentedText from "./SegmentedText";
 
 /**
  * Represents a tibetan text split into multiple pages.
  */
 export default class PaginatedTibetanText {
-
     /**
      * Creates a PaginatedText.
      * @param {string} text - the text to be paginated
      * @param {number[]} [pageBreaks] - positions in the text to split pages
      * @param {number} [charsPerPage=400] - if no pageBreaks are supplied, split the text every multiple of this
      */
-    constructor(text, pageBreaks, charsPerPage=400) {
+    constructor(text, pageBreaks, charsPerPage = 400) {
         this.text = text;
         this.pageBreaks = pageBreaks;
         this.charsPerPage = charsPerPage;
@@ -32,7 +31,10 @@ export default class PaginatedTibetanText {
             if (this.pageBreaks != null) {
                 pages = this.getPagesWithPageBreaks(this.pageBreaks, segments);
             } else {
-                pages = this.getPagesWithCharsPerPage(this.charsPerPage, segments);
+                pages = this.getPagesWithCharsPerPage(
+                    this.charsPerPage,
+                    segments
+                );
             }
 
             this._pages = pages;
@@ -47,7 +49,7 @@ export default class PaginatedTibetanText {
         let pageSegments = [];
         for (let pageBreak of pageBreaks) {
             let segment = null;
-            while(segment = segments.shift()) {
+            while ((segment = segments.shift())) {
                 charCount += segment.text.length;
                 if (charCount > pageBreak) {
                     const segmentedText = new SegmentedText(pageSegments);

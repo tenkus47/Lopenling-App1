@@ -1,5 +1,5 @@
 // @flow
-export const WORKING_VERSION_SOURCE_NAME = 'Working Version';
+export const WORKING_VERSION_SOURCE_NAME = "Working Version";
 
 /**
  * A source of text witnesses.
@@ -17,7 +17,12 @@ export default class Source {
      * @param id - id from API
      * @param name - name of the source
      */
-    constructor(id: number, name: string, isBase: boolean=false, isWorking: boolean=false) {
+    constructor(
+        id: number,
+        name: string,
+        isBase: boolean = false,
+        isWorking: boolean = false
+    ) {
         this.id = id;
         this.name = name;
         this.isBase = isBase;

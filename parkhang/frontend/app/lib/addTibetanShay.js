@@ -1,13 +1,10 @@
-
 const tibetanVowels = ["ི", "ུ", "ེ", "ོ"];
 const shaySwallowers = ["ཀ", "ག"];
 export const NON_BREAKING_TSHEG = "༌";
 
-
 function isTibetanCharacter(char) {
-    return (char.codePointAt(0) >= 3840 && char.codePointAt(0) <= 4095);
+    return char.codePointAt(0) >= 3840 && char.codePointAt(0) <= 4095;
 }
-
 
 /**
  * Returns the given string with a Tibetan shay character
@@ -15,7 +12,7 @@ function isTibetanCharacter(char) {
  * @param {string} str
  * @returns {string}
  */
-export default function addTibetanShay(str, alternateEnd=null) {
+export default function addTibetanShay(str, alternateEnd = null) {
     const lastChar = str.slice(-1);
     let newStr = "";
 
@@ -25,11 +22,11 @@ export default function addTibetanShay(str, alternateEnd=null) {
             newStr += alternateEnd;
         }
     } else if (lastChar === "ང") {
-        newStr += str + NON_BREAKING_TSHEG+"།";
+        newStr += str + NON_BREAKING_TSHEG + "།";
     } else if (shaySwallowers.indexOf(lastChar) !== -1) {
         newStr += str;
     } else if (tibetanVowels.indexOf(lastChar) !== -1) {
-        if (shaySwallowers.indexOf(str.charAt(str.length-2)) !== -1) {
+        if (shaySwallowers.indexOf(str.charAt(str.length - 2)) !== -1) {
             newStr += str;
         } else {
             newStr += str + "།";
