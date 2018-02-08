@@ -86,7 +86,7 @@ function loadingTexts(state: DataState): DataState {
     };
 }
 
-function loadedTexts(state: DataState, action): DataState {
+function loadedTexts(state: DataState, action: actions.TextsAction): DataState {
     const textsById = arrayToObject(action.texts, "id");
     return {
         ...state,
