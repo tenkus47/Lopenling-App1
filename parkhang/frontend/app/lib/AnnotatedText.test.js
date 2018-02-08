@@ -42,7 +42,7 @@ describe('AnnotatedText', () => {
 
     const segmentedText = segmentTibetanText(baseWitness.content);
     const annotatedText = new AnnotatedText(segmentedText, annotations, segmenter, baseWitness);
-    annotatedText.testGenerateText();
+
     test('Return the correct text', () => {
         expect(
             annotatedText.getText()
