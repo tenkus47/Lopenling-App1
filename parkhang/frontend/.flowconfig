@@ -13,6 +13,7 @@ module.name_mapper='api/?\(.*\)' -> '<PROJECT_ROOT>/app/api/\1'
 module.name_mapper='reducers/?\(.*\)' -> '<PROJECT_ROOT>/app/reducers/\1'
 module.name_mapper='components/?\(.*\)' -> '<PROJECT_ROOT>/app/components/\1'
 module.name_mapper='containers/?\(.*\)' -> '<PROJECT_ROOT>/app/containers/\1'
+module.name_mapper='css/?\(.*\)' -> '<PROJECT_ROOT>/app/css/\1'
 
 [version]
 ^0.63.1
