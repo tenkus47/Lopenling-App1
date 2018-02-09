@@ -5,6 +5,7 @@ import TextList from "components/TextList";
 import { selectedText } from "actions";
 import { getSelectedText } from "reducers";
 import type { AppState } from "reducers";
+import * as api from "api";
 
 const mapStateToProps = (state: AppState) => {
     const searchValue = state.ui.searchValue;
@@ -24,7 +25,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onSelectedText: text => {
+        onSelectedText: (text: api.TextData) => {
             dispatch(selectedText(text));
         }
     };
