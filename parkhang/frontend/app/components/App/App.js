@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
@@ -11,7 +12,11 @@ import TextListTabContainer from "components/TextList/TextListTabContainer";
 import styles from "./App.css";
 import utilStyles from "css/util.css";
 
-const App = props => {
+type Props = {
+    textListIsVisible: boolean
+};
+
+const App = (props: Props) => {
     let textListClassnames = [styles.listContainer];
     if (props.textListIsVisible) {
         textListClassnames.push(styles.showListContainer);
