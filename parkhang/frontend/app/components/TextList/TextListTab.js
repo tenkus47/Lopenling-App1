@@ -1,8 +1,14 @@
+// @flow
 import React from "react";
 import classnames from "classnames";
 import styles from "components/TextList/TextListTab.css";
 
-const TextListTab = props => {
+type Props = {
+    textListIsVisible: boolean,
+    tabClicked: (e: SyntheticEvent<>) => void
+};
+
+const TextListTab = (props: Props) => {
     let tabClassnames = [styles.tab];
     if (props.textListIsVisible) {
         tabClassnames.push(styles.hideTab);

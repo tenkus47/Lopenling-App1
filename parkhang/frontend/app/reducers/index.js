@@ -62,7 +62,7 @@ export const getSelectedText = (state: AppState): TextData | null => {
 export const getSelectedTextWitnessId = (
     state: AppState,
     textId: number
-): number => {
+): number | null => {
     return ui.getSelectedTextWitnessId(state.ui, textId);
 };
 
@@ -71,7 +71,9 @@ export const getSelectedTextWitness = (state: AppState): Witness | null => {
     let witness = null;
     if (text) {
         const selectedWitnessId = getSelectedTextWitnessId(state, text.id);
-        witness = getWitness(state, selectedWitnessId);
+        if (selectedWitnessId) {
+            witness = getWitness(state, selectedWitnessId);
+        }
     }
 
     return witness;

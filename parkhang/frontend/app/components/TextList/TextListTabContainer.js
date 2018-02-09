@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import { connect } from "react-redux";
 import { batchActions } from "redux-batched-actions";
@@ -15,7 +16,7 @@ const mapStateToProps = state => {
 
 const mapStateToDispatch = dispatch => {
     return {
-        tabClicked: e => {
+        tabClicked: () => {
             const textListIsVisible = true;
             dispatch(
                 batchActions([

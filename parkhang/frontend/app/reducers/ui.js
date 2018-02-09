@@ -45,7 +45,7 @@ function selectedTextWitness(
         ...state,
         selectedTextWitness: {
             ...selectedTextWitness,
-            [action.text.id]: action.witness.id
+            [action.textId]: action.witnessId
         }
     };
 }
@@ -223,7 +223,7 @@ export const getTemporaryAnnotations = (
     witnessId: number,
     start: number,
     length: number,
-    type: string
+    type: string | null
 ): TemporaryAnnotation[] => {
     let annotations = [];
     const key = getTemporaryAnnotationKey(start, length);

@@ -399,17 +399,18 @@ export function changedShowPageImages(
     };
 }
 
-export type SelectedTextWitnessAction = WitnessAction & {
-    text: Text
+export type SelectedTextWitnessAction = {
+    witnessId: number,
+    textId: number
 };
 export function selectedTextWitness(
-    text: Text,
-    witness: Witness
+    textId: number,
+    witnessId: number
 ): SelectedTextWitnessAction {
     return {
         type: SELECTED_WITNESS,
-        text,
-        witness
+        textId,
+        witnessId
     };
 }
 
@@ -463,9 +464,13 @@ export function removedTemporaryAnnotation(
     };
 }
 
+export type ChangedActiveAnnotationAction = Action & {
+    annotation: Annotation | null
+};
+
 export function changedActiveAnnotation(
-    annotation: Annotation
-): AnnotationAction {
+    annotation: Annotation | null
+): ChangedActiveAnnotationAction {
     return {
         type: CHANGED_ACTIVE_ANNOTATION,
         annotation

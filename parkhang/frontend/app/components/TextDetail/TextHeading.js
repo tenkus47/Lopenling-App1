@@ -1,9 +1,19 @@
+// @flow
 import React from "react";
 import addTibetanShay from "lib/addTibetanShay";
 import styles from "./TextHeading.css";
 import TabBar from "./TabBar";
+import Witness from "lib/Witness";
+import type { TextData } from "api";
 
-const TextHeading = props => {
+export type Props = {
+    witnesses: Witness[],
+    selectedText: TextData,
+    selectedWitness: Witness,
+    onSelectedWitness: () => void
+};
+
+const TextHeading = (props: Props) => {
     let name = "";
     if (props.selectedText && props.selectedText.name) {
         name = addTibetanShay(props.selectedText.name);
