@@ -199,6 +199,10 @@ export const annotationFromData = (
     return annotation;
 };
 
+export const dataFromWitness = (witness: Witness): WitnessData => {
+    return data.dataFromWitness(witness);
+};
+
 export const getAnnotationData = (
     state: AppState,
     witnessId: number,
