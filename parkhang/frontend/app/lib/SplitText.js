@@ -66,7 +66,7 @@ export default class SplitText {
         return this._textsFinalPositions;
     }
 
-    getTextIndexOfPosition(position: number) {
+    getTextIndexOfPosition(position: number): number {
         const textsFinalPositions = this._getTextsFinalPositions();
         let lastPosition = 0;
         let textIndex = null;
