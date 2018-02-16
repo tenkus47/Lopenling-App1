@@ -94,7 +94,8 @@ export type AnnotationData = {
     type: string,
     unique_id: AnnotationUniqueId,
     witness: number,
-    is_saved?: boolean
+    is_saved?: boolean,
+    name?: string
 };
 export function fetchWitnessAnnotations(
     witness: WitnessData
