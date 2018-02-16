@@ -1,21 +1,36 @@
+// @flow
 import React from "react";
 import { connect } from "react-redux";
 import { batchActions } from "redux-batched-actions";
 import AnnotationControls from "./AnnotationControls";
 import addTibetanShay from "lib/addTibetanShay";
 import * as reducers from "reducers";
+import type { AppState } from "reducers";
 import * as actions from "actions";
 import { BASE_ANNOTATION_ID } from "lib/AnnotatedText";
 import Annotation, {
     ANNOTATION_TYPES,
     TemporaryAnnotation
 } from "lib/Annotation";
+import type { AnnotationUniqueId } from "lib/Annotation";
+import AnnotatedText from "lib/AnnotatedText";
+import User from "lib/User";
+import Witness from "lib/Witness";
+import TextSegment from "lib/TextSegment";
 import _ from "lodash";
 
 const TEMPORARY_ANNOTATION_ID = -3;
 const BASE_NAME = "Working";
 
-const getAnnotationsData = (annotations, sources) => {
+type AnnotationData = {
+    name: string,
+    content: string,
+    id: AnnotationUniqueId,
+    isTemporary: boolean,
+    annotation: Annotation,
+    userCreated: boolean
+};
+const getAnnotationsData = (annotations, sources): AnnotationData[] => {
     let annotationsData = [];
     let baseSources = sources.map(source => source.name);
     if (annotations) {
@@ -81,11 +96,11 @@ const getAnnotationsData = (annotations, sources) => {
 };
 
 const getAvailableAnnotations = (
-    annotatedText,
-    activeAnnotation,
-    temporaryAnnotation,
-    annotationPositions
-) => {
+    annotatedText: AnnotatedText,
+    activeAnnotation: Annotation,
+    temporaryAnnotation: TemporaryAnnotation | null,
+    annotationPositions: { [string]: Annotation[] }
+): Annotation[] => {
     let availableAnnotations = [];
     if (
         !temporaryAnnotation ||
@@ -99,6 +114,11 @@ const getAvailableAnnotations = (
     let [start, length] = annotatedText.getPositionOfAnnotation(
         activeAnnotation
     );
+
+    if (!start) {
+        return availableAnnotations;
+    }
+
     let end = start + length;
 
     let possibleAnnotations = [];
@@ -110,7 +130,7 @@ const getAvailableAnnotations = (
                 insertionAnnotations
             );
         }
-        const activeInsertionAnnotations = annotationPositions[start];
+        const activeInsertionAnnotations = annotationPositions[String(start)];
         if (activeInsertionAnnotations) {
             possibleAnnotations = possibleAnnotations.concat(
                 activeInsertionAnnotations
@@ -120,8 +140,8 @@ const getAvailableAnnotations = (
         // Only include annotations if they encompass the whole annotation
         // i.e. not if activeAnnotation is a user annotation and combines
         // annotated text with normal text.
-        let startAnnotations = annotationPositions[start];
-        let endAnnotations = annotationPositions[end];
+        let startAnnotations = annotationPositions[String(start)];
+        let endAnnotations = annotationPositions[String(end)];
 
         if (startAnnotations) {
             possibleAnnotations = startAnnotations;
@@ -165,7 +185,14 @@ const getAvailableAnnotations = (
     return availableAnnotations;
 };
 
-const getTemporaryAnnotation = (state, type, user, witness, start, length) => {
+const getTemporaryAnnotation = (
+    state: AppState,
+    type: string,
+    user: User,
+    witness: Witness,
+    start: number,
+    length: number
+): TemporaryAnnotation | null => {
     const annotations = reducers.getTemporaryAnnotations(
         state,
         witness.id,
@@ -180,10 +207,32 @@ const getTemporaryAnnotation = (state, type, user, witness, start, length) => {
     }
 };
 
-export const mapStateToProps = (state, ownProps) => {
+// These are the props that are expected to be set and available in ownProps
+type ContainerProps = {
+    annotationPositions: { [string]: Annotation[] },
+    annotatedText: AnnotatedText,
+    activeAnnotation: Annotation | null,
+    inline?: boolean,
+    firstSelectedSegment: TextSegment,
+    splitTextRect: ClientRect | null
+};
+
+export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
     const user = reducers.getUser(state);
     const activeAnnotation = ownProps.activeAnnotation;
-    if (!activeAnnotation) {
+    const inline = ownProps.inline;
+    let selectedWitness = reducers.getSelectedTextWitness(state);
+    if (!selectedWitness) {
+        const selectedText = reducers.getSelectedText(state);
+        if (selectedText) {
+            selectedWitness = reducers.getWorkingWitness(
+                state,
+                selectedText.id
+            );
+        }
+    }
+
+    if (!activeAnnotation || !selectedWitness) {
         return {
             annotationsData: null,
             activeAnnotation: null,
@@ -196,12 +245,6 @@ export const mapStateToProps = (state, ownProps) => {
             splitTextRect: null,
             selectedWitness: null
         };
-    }
-    const inline = ownProps.inline;
-    let selectedWitness = reducers.getSelectedTextWitness(state);
-    if (!selectedWitness) {
-        const selectedText = reducers.getSelectedText(state);
-        selectedWitness = reducers.getWorkingWitness(state, selectedText.id);
     }
 
     const temporaryVariant = getTemporaryAnnotation(
@@ -228,31 +271,39 @@ export const mapStateToProps = (state, ownProps) => {
         const [start, length] = ownProps.annotatedText.getPositionOfAnnotation(
             activeAnnotation
         );
-        baseAnnotation = ownProps.annotatedText.getBaseAnnotation(
-            start,
-            length
-        );
-        const baseAnnotationData = getAnnotationsData(
-            [baseAnnotation],
-            sources
-        );
-        annotationsData = baseAnnotationData.concat(annotationsData);
+        if (start === null || length === null) {
+            annotationsData = null;
+        } else {
+            baseAnnotation = ownProps.annotatedText.getBaseAnnotation(
+                start,
+                length
+            );
+            const baseAnnotationData = getAnnotationsData(
+                [baseAnnotation],
+                sources
+            );
+            annotationsData = baseAnnotationData.concat(annotationsData);
+        }
     }
 
     // make sure temporary annotation is first, then user created, then base annotation
-    annotationsData.sort((a, b) => {
-        if (a.isTemporary) {
-            return -1;
-        } else if (b.isTemporary) {
-            return 1;
-        } else if (a.userCreated) {
-            return -1;
-        } else if (b.userCreated) {
-            return 1;
-        } else {
-            return a.annotation.id - b.annotation.id;
-        }
-    });
+    if (annotationsData) {
+        annotationsData.sort((a, b) => {
+            if (a.isTemporary) {
+                return -1;
+            } else if (b.isTemporary) {
+                return 1;
+            } else if (a.userCreated) {
+                return -1;
+            } else if (b.userCreated) {
+                return 1;
+            } else if (a.annotation.id && b.annotation.id) {
+                return a.annotation.id - b.annotation.id;
+            } else {
+                return 1;
+            }
+        });
+    }
 
     return {
         annotationsData: annotationsData,
@@ -273,7 +324,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     return {
         ...stateProps,
         ...ownProps,
-        didSelectAnnotation: annotation => {
+        didSelectAnnotation: (annotation: Annotation) => {
             let selectedAnnotation = null;
             if (annotation.id == BASE_ANNOTATION_ID) {
                 selectedAnnotation = stateProps.baseAnnotation;
@@ -285,10 +336,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             let actionsBatch = [];
             let selectedWitness = stateProps.selectedWitness;
-            let selectedWitnessData = reducers.getWitnessData(
-                state,
-                selectedWitness.id
-            );
+            // let selectedWitnessData = reducers.getWitnessData(
+            //     state,
+            //     selectedWitness.id
+            // );
+            let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
             if (annotation.uniqueId != stateProps.activeAnnotation.uniqueId) {
                 if (annotation.id != BASE_ANNOTATION_ID) {
                     actionsBatch.push(
@@ -313,7 +365,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 dispatch(batchActions(actionsBatch));
             }
         },
-        editAnnotation: selectedAnnotation => {
+        editAnnotation: (selectedAnnotation: Annotation) => {
             const basedOn =
                 selectedAnnotation.isWorkingAnnotation ||
                 selectedAnnotation.userCreated ||
@@ -340,7 +392,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 actions.addedTemporaryAnnotation(temporaryAnnotation, true)
             );
         },
-        saveAnnotation: (selectedAnnotation, content) => {
+        saveAnnotation: (
+            selectedAnnotation: TemporaryAnnotation,
+            content: string
+        ) => {
             if (!selectedAnnotation.isTemporary) {
                 console.warn(
                     "Tried to save a non-temporary annotation: %o",
@@ -349,10 +404,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 return;
             }
 
-            let selectedWitnessData = reducers.getWitnessData(
-                state,
-                stateProps.selectedWitness.id
-            );
+            let selectedWitness = stateProps.selectedWitness;
+            let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
 
             const newAnnotation = new Annotation(
                 selectedAnnotation.id,
@@ -390,7 +443,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
             dispatch(batchActions(actionsBatch));
         },
-        cancelEditAnnotation: selectedAnnotation => {
+        cancelEditAnnotation: (selectedAnnotation: TemporaryAnnotation) => {
             if (!selectedAnnotation.isTemporary) {
                 console.warn(
                     "Tried to call cancelEditAnnotation on a non-temporary annotation: %o",

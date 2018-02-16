@@ -1,14 +1,37 @@
-import React from "react";
+// @flow
+import * as React from "react";
 import classnames from "classnames";
 import AnnotationDetail from "./AnnotationDetail";
 import AnnotationDetailEdit from "./AnnotationDetailEdit";
 import styles from "./AnnotationControls.css";
 import textStyles from "./Text.css";
+import User from "lib/User";
+import Witness from "lib/Witness";
 
 export const CONTROLS_MARGIN_LEFT = 10;
 
-export default class AnnotationControls extends React.PureComponent {
-    constructor(props) {
+export type Props = {
+    inline: boolean,
+    user: User,
+    annotationsData: null,
+    activeAnnotation: null,
+    baseAnnotation: null,
+    availableAnnotations: null,
+    temporaryAnnotation: null,
+    inline: null,
+    firstSelectedSegment: null,
+    splitTextRect: ClientRect | null,
+    selectedWitness: Witness,
+    selectedElementId: string | null,
+    pechaImageClass: string
+};
+
+export default class AnnotationControls extends React.PureComponent<Props> {
+    controls: HTMLDivElement | null;
+    arrow: HTMLDivElement | null;
+    arrowDs: HTMLDivElement | null;
+
+    constructor(props: Props) {
         super(props);
 
         this.controls = null;
@@ -25,10 +48,17 @@ export default class AnnotationControls extends React.PureComponent {
     }
 
     updatePosition() {
-        if (!this.props.inline) {
+        const measurements = this.getMeasurements();
+        if (
+            !this.props.inline ||
+            !this.controls ||
+            !measurements ||
+            !measurements.viewPortTop ||
+            !measurements.viewPortBottom
+        ) {
             return;
         }
-        const measurements = this.getMeasurements();
+
         const height = this.controls.offsetHeight;
         let top = measurements.top - height / 2;
         const isWithinViewport =
@@ -47,16 +77,26 @@ export default class AnnotationControls extends React.PureComponent {
         const left = measurements.textRight + "px";
         this.controls.style.top = top + "px";
         this.controls.style.left = left;
-        this.arrow.style.top = measurements.top - top + "px";
-        this.arrowDs.style.top = measurements.top - top + 2 + "px";
+        if (this.arrow && this.arrowDs) {
+            this.arrow.style.top = measurements.top - top + "px";
+            this.arrowDs.style.top = measurements.top - top + 2 + "px";
+        }
     }
 
-    getMeasurements() {
+    getMeasurements(): {
+        top: number,
+        textRight: number,
+        viewPortTop: number | null,
+        viewPortBottom: number | null
+    } | null {
+        if (!this.props.selectedElementId) {
+            return null;
+        }
+
+        const selectedElementId = this.props.selectedElementId;
         const firstText = document.getElementsByClassName(textStyles.text)[0];
         const splitTextRect = this.props.splitTextRect;
-        const firstElement = document.getElementById(
-            this.props.selectedElementId
-        );
+        const firstElement = document.getElementById(selectedElementId);
         let extraTop = 0;
         if (this.props.pechaImageClass) {
             const pechaImage = document.getElementsByClassName(
@@ -81,7 +121,7 @@ export default class AnnotationControls extends React.PureComponent {
         let viewPortBottom = null;
         let elViewPortTop = null;
         let elViewPortBottom = null;
-        if (firstElement) {
+        if (firstElement && splitTextRect) {
             const elRect = firstElement.getBoundingClientRect();
 
             elViewPortTop = elRect.top - splitTextRect.top;
@@ -192,7 +232,9 @@ export default class AnnotationControls extends React.PureComponent {
         return (
             <div
                 className={classnames(...classes)}
-                ref={controls => (this.controls = controls)}
+                ref={(controls: HTMLDivElement | null) =>
+                    (this.controls = controls)
+                }
             >
                 {anonymousUserMessage}
                 {nothingSelected}

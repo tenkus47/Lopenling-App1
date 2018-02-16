@@ -1,9 +1,17 @@
+// @flow
 import React from "react";
 import classnames from "classnames";
 import styles from "./TabBar.css";
+import Witness from "lib/Witness";
 
-export default class TabBar extends React.Component {
-    constructor(props) {
+export type Props = {
+    witnesses: Witness[],
+    activeWitness: Witness | null,
+    onSelectedWitness: (witness: Witness) => void
+};
+
+export default class TabBar extends React.Component<Props> {
+    constructor(props: Props) {
         super(props);
     }
 

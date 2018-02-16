@@ -1,4 +1,5 @@
-import React from "react";
+// @flow
+import * as React from "react";
 import ReactDOM from "react-dom";
 import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import { List } from "react-virtualized/dist/es/List";
@@ -12,26 +13,76 @@ import Text, {
     idForDeletedSegment,
     idForInsertion
 } from "./Text";
+import SplitText from "lib/SplitText";
 import { CONTROLS_MARGIN_LEFT } from "./AnnotationControls";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import styles from "./SplitText.css";
 import textStyles from "./Text.css";
 import controlStyles from "./AnnotationControls.css";
 import _ from "lodash";
+import TextSegment from "lib/TextSegment";
+import Annotation from "lib/Annotation";
+import Witness from "lib/Witness";
 
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
-export default class SplitText extends React.PureComponent {
-    constructor(props) {
+export type Props = {
+    textListVisible: boolean,
+    imagesBaseUrl: string,
+    splitText: SplitText,
+    didSelectSegmentIds: (segmentIds: string[]) => void,
+    limitWidth: boolean,
+    activeAnnotation: Annotation | null,
+    selectedAnnotatedSegments: Array<TextSegment | number>,
+    showImages: boolean,
+    annotationPositions: { [string]: Annotation[] },
+    annotations: Annotation[],
+    activeAnnotations: Annotation[] | null,
+    selectedSegmentId: (segmentId: string) => void
+};
+
+export type State = {
+    selectedTextIndex: number | null,
+    textPaddingRight: string | null,
+    textWidth: string | null,
+    splitTextRect: ClientRect | null,
+    firstSelectedSegment: TextSegment | null,
+    selectedElementId: string | null
+};
+
+export default class SplitTextComponent extends React.PureComponent<
+    Props,
+    State
+> {
+    list: List | null;
+    splitText: HTMLDivElement | null;
+    cache: CellMeasurerCache;
+    rowRenderer: (params: {
+        key: string,
+        index: number,
+        parent: {},
+        style: {}
+    }) => React.Element<CellMeasurer>;
+    resizeHandler: () => void;
+    selectionHandler: (e: Event) => void;
+    textListVisible: boolean;
+    activeSelection: Selection | null;
+    selectedNodes: Node[] | null;
+    // Whether the mouse button is down
+    _mouseDown: boolean;
+    _activeWitness: Witness | null;
+
+    constructor(props: Props) {
         super(props);
 
         this.state = {
             selectedTextIndex: null,
             textPaddingRight: null,
             textWidth: null,
-            firstSelectedElement: null,
-            splitTextRect: null
+            splitTextRect: null,
+            firstSelectedSegment: null,
+            selectedElementId: null
         };
         this.list = null;
         this.splitText = null;
@@ -39,8 +90,8 @@ export default class SplitText extends React.PureComponent {
             fixedWidth: true
         });
         this.rowRenderer = this.rowRenderer.bind(this);
-        this.resizeHandler = null;
-        this.selectionHandler = null;
+        // this.resizeHandler = null;
+        // this.selectionHandler = null;
         this.textListVisible = props.textListVisible;
         this.activeSelection = null;
         this.selectedNodes = null;
@@ -48,24 +99,27 @@ export default class SplitText extends React.PureComponent {
         this._activeWitness = null;
     }
 
-    updateList(resetCache = true, resetRow = null) {
+    updateList(resetCache: boolean = true, resetRow: number | null = null) {
         if (this.list) {
+            const list = this.list;
             let node;
             let currentScrollTop;
             if (resetCache) {
-                node = ReactDOM.findDOMNode(this.list);
-                currentScrollTop = node.scrollTop;
+                node = ReactDOM.findDOMNode(list);
+                if (node && node instanceof Element) {
+                    currentScrollTop = node.scrollTop;
+                }
                 if (resetRow) {
                     this.cache.clear(resetRow);
                 } else {
                     this.cache.clearAll();
                 }
-                this.list.measureAllRows();
+                list.measureAllRows();
             }
-            this.list.recomputeRowHeights();
+            list.recomputeRowHeights();
             if (currentScrollTop) {
                 setTimeout(() => {
-                    this.list.scrollToPosition(currentScrollTop);
+                    list.scrollToPosition(currentScrollTop);
                 }, 0);
             }
         }
@@ -87,7 +141,7 @@ export default class SplitText extends React.PureComponent {
         }
     }
 
-    handleSelection(e) {
+    handleSelection(e: Event) {
         this.activeSelection = document.getSelection();
         if (!this._mouseDown) {
             // sometimes, this gets called after the mouseDown event handler
@@ -95,29 +149,33 @@ export default class SplitText extends React.PureComponent {
         }
     }
 
-    processSelection(selection) {
+    processSelection(selection: Selection): string[] | null {
         if (
-            selection.rangeCount == 0 ||
+            selection.rangeCount === 0 ||
             selection.isCollapsed ||
-            selection.type == "Caret"
+            selection.type === "Caret"
         ) {
             this.selectedNodes = null;
-            return;
+            return null;
         }
 
         const range = selection.getRangeAt(0);
         const start = range.startContainer;
         const startSpan = this.getNodeSegmentSpan(start);
-        if (!startSpan) {
+        if (!(startSpan && startSpan.parentNode)) {
             // If the selection is not a text segment, ignore.
             // Assuming if the first node is a non-segment, they
             // all are.
-            return;
+            return null;
         }
+
         let nodes = this.getRangeNodes(range, startSpan.parentNode);
 
         const end = range.endContainer;
         const endSpan = this.getNodeSegmentSpan(end);
+        if (!(endSpan && endSpan.parentNode)) {
+            return null;
+        }
         if (endSpan && startSpan.parentNode !== endSpan.parentNode) {
             // Selection is spanning Texts.
             // We assume a selection can only run across a maximum
@@ -125,16 +183,27 @@ export default class SplitText extends React.PureComponent {
             nodes = nodes.concat(this.getRangeNodes(range, endSpan.parentNode));
         }
         this.selectedNodes = nodes;
-        return nodes.map(node => node.id);
+        let nodeIds = [];
+        nodes.reduce((accumulator: string[], current: Node) => {
+            if (current instanceof Element) {
+                accumulator.push(current.id);
+            }
+            return accumulator;
+        }, nodeIds);
+
+        return nodeIds;
     }
 
-    getNodeSegmentSpan(node) {
+    getNodeSegmentSpan(node: Node): Element | null {
+        // if (!(node instanceof Element)) {
+        //     return null;
+        // }
         let currentNode = node;
         let span = null;
         while (!span && currentNode.parentNode) {
             currentNode = currentNode.parentNode;
             const test = /^(i|s|ds)_/;
-            if (currentNode.id && test.test(currentNode.id)) {
+            if (currentNode instanceof Element && test.test(currentNode.id)) {
                 span = currentNode;
             }
         }
@@ -142,10 +211,12 @@ export default class SplitText extends React.PureComponent {
         return span;
     }
 
-    getRangeNodes(range, parentNode) {
+    getRangeNodes(range: Range, parentNode: Node): Node[] {
         let rangeSpans = [];
         for (let i = 0, len = parentNode.childNodes.length; i < len; i++) {
             const node = parentNode.childNodes[i];
+            // TODO: add polyfill for i.e.?
+            // e.g. https://gist.github.com/jonathansampson/6d09bd6d2e8c22c53868aec42e66b0f9
             if (range.intersectsNode(node)) {
                 rangeSpans.push(node);
             }
@@ -153,9 +224,16 @@ export default class SplitText extends React.PureComponent {
         return rangeSpans;
     }
 
-    getTextMeasurements() {
+    getTextMeasurements(): {
+        paddingRight: string,
+        newTextWidth: string
+    } | null {
+        if (!this.splitText) {
+            return null;
+        }
+        const splitText = this.splitText;
         const paddingSide = parseInt(textStyles.paddingSide, 10);
-        const containerWidth = this.splitText.offsetWidth;
+        const containerWidth = splitText.offsetWidth;
         let textMaxWidth;
         if (this.props.limitWidth) {
             textMaxWidth = parseInt(textStyles.maxWidth, 10);
@@ -174,11 +252,22 @@ export default class SplitText extends React.PureComponent {
 
         return {
             paddingRight,
-            newTextWidth
+            newTextWidth: String(newTextWidth)
         };
     }
 
-    getControlsMeasurements(props) {
+    getControlsMeasurements(
+        props: Props
+    ): {
+        selectedTextIndex: number,
+        firstSelectedSegment: TextSegment,
+        selectedElementId: string,
+        splitTextRect: ClientRect
+    } | null {
+        if (!this.splitText) {
+            return null;
+        }
+        let splitTextComponent = this.splitText;
         let selectedTextIndex = null;
         let firstSelectedSegment = null;
         let selectedElementId = null;
@@ -189,10 +278,15 @@ export default class SplitText extends React.PureComponent {
             ] = props.splitText.annotatedText.getPositionOfAnnotation(
                 props.activeAnnotation
             );
+            if (!startPos) {
+                console.warn("No startPos in getControlsMeasurements");
+                return null;
+            }
+
             selectedTextIndex = props.splitText.getTextIndexOfPosition(
                 startPos
             );
-            splitTextRect = this.splitText.getBoundingClientRect();
+            splitTextRect = splitTextComponent.getBoundingClientRect();
         }
         if (
             props.selectedAnnotatedSegments &&
@@ -200,7 +294,10 @@ export default class SplitText extends React.PureComponent {
         ) {
             for (let i = 0; i < props.selectedAnnotatedSegments.length; i++) {
                 let segment = props.selectedAnnotatedSegments[i];
-                if (firstSelectedSegment === null) {
+                if (
+                    firstSelectedSegment === null &&
+                    segment instanceof TextSegment
+                ) {
                     firstSelectedSegment = segment;
                     break;
                 }
@@ -220,35 +317,47 @@ export default class SplitText extends React.PureComponent {
                 selectedElementId = idForInsertion({ start: start });
             }
         }
-        return {
-            selectedTextIndex: selectedTextIndex,
-            firstSelectedSegment: firstSelectedSegment,
-            selectedElementId: selectedElementId,
-            splitTextRect: splitTextRect
-        };
+        if (
+            selectedTextIndex &&
+            firstSelectedSegment &&
+            selectedElementId &&
+            splitTextRect
+        ) {
+            return {
+                selectedTextIndex: selectedTextIndex,
+                firstSelectedSegment: firstSelectedSegment,
+                selectedElementId: selectedElementId,
+                splitTextRect: splitTextRect
+            };
+        } else {
+            return null;
+        }
     }
 
-    updateState(props) {
+    updateState(props: Props) {
         const textMeasurements = this.getTextMeasurements();
         const controlsMeasurements = this.getControlsMeasurements(props);
-        this.setState((prevState, props) => {
-            return {
-                ...prevState,
-                selectedTextIndex: controlsMeasurements.selectedTextIndex,
-                textPaddingRight: textMeasurements.paddingRight,
-                textWidth: textMeasurements.newTextWidth,
-                firstSelectedSegment: controlsMeasurements.firstSelectedSegment,
-                splitTextRect: controlsMeasurements.splitTextRect,
-                selectedElementId: controlsMeasurements.selectedElementId
-            };
-        });
+        if (textMeasurements && controlsMeasurements) {
+            this.setState((prevState: State, props: Props) => {
+                return {
+                    ...prevState,
+                    selectedTextIndex: controlsMeasurements.selectedTextIndex,
+                    textPaddingRight: textMeasurements.paddingRight,
+                    textWidth: textMeasurements.newTextWidth,
+                    firstSelectedSegment:
+                        controlsMeasurements.firstSelectedSegment,
+                    splitTextRect: controlsMeasurements.splitTextRect,
+                    selectedElementId: controlsMeasurements.selectedElementId
+                };
+            });
+        }
     }
 
-    shouldResetListCache(oldProps, newProps) {
+    shouldResetListCache(oldProps: Props, newProps: Props) {
         return oldProps.showImages !== newProps.showImages;
     }
 
-    selectedListRow() {
+    selectedListRow(): number | null {
         let row = null;
         if (this.props.activeAnnotation) {
             row = this.props.splitText.getTextIndexOfPosition(
@@ -258,7 +367,7 @@ export default class SplitText extends React.PureComponent {
         return row;
     }
 
-    componentWillReceiveProps(props) {
+    componentWillReceiveProps(props: Props) {
         const activeWitness = this.props.splitText.annotatedText.activeWitness;
         let changedWitness = false;
         if (activeWitness !== this._activeWitness) {
@@ -313,19 +422,30 @@ export default class SplitText extends React.PureComponent {
     }
 
     componentDidUpdate() {
-        if (this.selectedNodes) {
+        if (this.selectedNodes && this.selectedNodes.length > 0) {
+            const selectedNodes = this.selectedNodes;
             setTimeout(() => {
                 let selRange = document.createRange();
-                let startNode = this.selectedNodes[0];
-                startNode = document.getElementById(startNode.id);
-                selRange.setStart(startNode, 0);
-                let endNode = this.selectedNodes[this.selectedNodes.length - 1];
-                endNode = document.getElementById(endNode.id);
-                selRange.setEnd(endNode, endNode.childNodes.length);
-                let sel = document.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(selRange);
-                this.selectedNodes = null;
+                let startNode = selectedNodes[0];
+                let endNode = selectedNodes[selectedNodes.length - 1];
+
+                if (
+                    startNode instanceof Element &&
+                    endNode instanceof Element
+                ) {
+                    startNode = document.getElementById(startNode.id);
+                    endNode = document.getElementById(endNode.id);
+                    if (startNode && endNode) {
+                        selRange.setStart(startNode, 0);
+                        selRange.setEnd(endNode, endNode.childNodes.length);
+                        let sel = document.getSelection();
+                        if (sel) {
+                            sel.removeAllRanges();
+                            sel.addRange(selRange);
+                            this.selectedNodes = null;
+                        }
+                    }
+                }
             }, 0);
         }
     }
@@ -335,7 +455,7 @@ export default class SplitText extends React.PureComponent {
         document.removeEventListener("selectionchange", this.selectionHandler);
     }
 
-    getBaseAnnotation(annotation) {
+    getBaseAnnotation(annotation: Annotation): Annotation {
         return this.props.splitText.annotatedText.getBaseAnnotation(
             annotation.start,
             annotation.content.length
@@ -370,7 +490,17 @@ export default class SplitText extends React.PureComponent {
         );
     }
 
-    rowRenderer({ key, index, parent, style }) {
+    rowRenderer({
+        key,
+        index,
+        parent,
+        style
+    }: {
+        key: string,
+        index: number,
+        parent: {},
+        style: {}
+    }): React.Element<CellMeasurer> {
         const props = this.props;
         const cache = this.cache;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;

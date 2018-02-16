@@ -9,7 +9,7 @@ import * as reducers from "reducers";
 import Witness from "lib/Witness";
 import type { AppState } from "reducers";
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: AppState): {} => {
     const selectedText = reducers.getSelectedText(state);
     let witnesses = [];
     let selectedWitness;
@@ -36,7 +36,7 @@ const mapStateToProps = (state: AppState) => {
     };
 };
 
-const mergeProps = (stateProps: Props, dispatchProps, ownProps) => {
+const mergeProps = (stateProps: Props, dispatchProps, ownProps): {} => {
     const { dispatch } = dispatchProps;
     const { selectedText } = stateProps;
     return {
@@ -53,7 +53,7 @@ const mergeProps = (stateProps: Props, dispatchProps, ownProps) => {
     };
 };
 
-const TextHeadingContainer = connect(mapStateToProps, null, mergeProps)(
+const TextHeadingContainer = connect(mapStateToProps, null, mergeProps) (
     TextHeading
 );
 

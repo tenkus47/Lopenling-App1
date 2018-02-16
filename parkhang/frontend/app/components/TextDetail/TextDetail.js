@@ -1,25 +1,42 @@
+// @flow
 import React from "react";
 import classnames from "classnames";
 
-import TextHeading from "./TextHeading";
 import TextHeadingContainer from "./TextHeadingContainer";
-import Text from "./Text";
 import SplitTextComponent from "components/TextDetail/SplitText";
-import PechaText from "./PechaText";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
-
-import SegmentedText from "lib/SegmentedText";
 import SplitText from "lib/SplitText";
-import PaginatedTibetanText from "lib/PaginatedTibetanText";
-import segmentTibetanText from "lib/segmentTibetanText";
+import Annotation from "lib/Annotation";
+import Witness from "lib/Witness";
+import AnnotatedText from "lib/AnnotatedText";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import positionSplitter from "lib/text_splitters/positionSplitter";
 
 import styles from "./TextDetail.css";
 import utilStyles from "css/util.css";
+import type { TextData } from "api";
+import TextSegment from "lib/TextSegment";
 
-class TextDetail extends React.Component {
+export type Props = {
+    paginated: boolean,
+    text: TextData | null,
+    loading: boolean,
+    pageBreaks: number[],
+    annotatedText: AnnotatedText,
+    annotations: Annotation[],
+    activeAnnotations: Annotation[],
+    activeAnnotation: Annotation | null,
+    didSelectSegmentIds: (segmentIds: string[]) => void,
+    selectedSegmentId: (segmentId: string) => void,
+    annotationPositions: { [string]: Annotation[] },
+    selectedAnnotatedSegments: Array<TextSegment | number>,
+    textListVisible: boolean,
+    imagesBaseUrl: string,
+    selectedWitness: Witness | null
+};
+
+class TextDetail extends React.Component<Props> {
     render() {
         let text = {
             name: ""
@@ -51,7 +68,6 @@ class TextDetail extends React.Component {
                     activeAnnotations={this.props.activeAnnotations}
                     activeAnnotation={this.props.activeAnnotation}
                     limitWidth={limitWidth}
-                    didSelectSegment={this.props.didSelectSegment}
                     didSelectSegmentIds={this.props.didSelectSegmentIds}
                     selectedSegmentId={this.props.selectedSegmentId}
                     annotationPositions={this.props.annotationPositions}

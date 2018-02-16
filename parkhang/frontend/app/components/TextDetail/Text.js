@@ -1,24 +1,47 @@
+// @flow
 import React from "react";
 import classnames from "classnames";
 import styles from "./Text.css";
 import TextSegment from "lib/TextSegment";
 import { INSERTION_KEY, DELETION_KEY } from "lib/AnnotatedText";
 import _ from "lodash";
+import SegmentedText from "lib/SegmentedText";
+import Annotation from "../../lib/Annotation";
 
-export function idForSegment(segment) {
+export function idForSegment(segment: TextSegment): string {
     return "s_" + segment.start;
 }
 
-export function idForDeletedSegment(segment) {
+export function idForDeletedSegment(segment: TextSegment): string {
     return "ds_" + segment.start;
 }
 
-export function idForInsertion(segment) {
+export function idForInsertion(segment: TextSegment): string {
     return "i_" + segment.start;
 }
 
-export default class Text extends React.Component {
-    constructor(props) {
+export type Props = {
+    segmentedText: SegmentedText,
+    annotationPositions: { [string]: Annotation[] },
+    selectedSegmentId: (id: string) => void,
+    activeAnnotations: Annotation[] | null,
+    getBaseAnnotation: (annotation: Annotation) => Annotation,
+    selectedAnnotatedSegments: TextSegment[],
+    limitWidth: boolean,
+    row: number,
+    paddingRight: string,
+    textWidth: string
+};
+
+export type State = {
+    segmentedText: SegmentedText
+};
+
+export default class Text extends React.Component<Props, State> {
+    _renderedSegments: TextSegment[] | null;
+    _renderedHtml: { __html: string } | null;
+
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -29,13 +52,21 @@ export default class Text extends React.Component {
         this._renderedHtml = null;
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.state.segmentedText = nextProps.segmentedText;
+    componentWillReceiveProps(nextProps: Props) {
+        this.setState((prevState: State, props: Props) => {
+            return {
+                ...prevState,
+                segmentedText: nextProps.segmentedText
+            };
+        });
+        // this.state.segmentedText = nextProps.segmentedText;
     }
 
-    annotationsForSegment(segment) {
+    annotationsForSegment(segment: TextSegment) {
         let annotations = [];
-        const foundAnnotations = this.props.annotationPositions[segment.start];
+        const foundAnnotations = this.props.annotationPositions[
+            String(segment.start)
+        ];
         if (foundAnnotations) {
             annotations = foundAnnotations;
         }
@@ -54,7 +85,7 @@ export default class Text extends React.Component {
         return annotations;
     }
 
-    segmentsContainSegment(segments, segment) {
+    segmentsContainSegment(segments: TextSegment[], segment: TextSegment) {
         for (let i = 0; i < segments.length; i++) {
             let listSegment = segments[i];
             if (
@@ -67,7 +98,7 @@ export default class Text extends React.Component {
         return false;
     }
 
-    selectedElement(element) {
+    selectedElement(element: Element) {
         const selection = document.getSelection();
         if (selection && selection.type === "Range") {
             return;
@@ -75,7 +106,7 @@ export default class Text extends React.Component {
         this.props.selectedSegmentId(element.id);
     }
 
-    generateHtml(renderProps, renderState) {
+    generateHtml(renderProps: Props, renderState: State): { __html: string } {
         let segments = renderState.segmentedText.sortedSegments();
         let segmentHTML = "";
         const insertionClass = styles.insertion;
@@ -148,9 +179,9 @@ export default class Text extends React.Component {
                     if (
                         renderProps.activeAnnotation &&
                         renderProps.activeAnnotation.isDeletion &&
-                        renderProps.activeAnnotation.start ==
+                        renderProps.activeAnnotation.start ===
                             activeDeletion.start &&
-                        renderProps.activeAnnotation.length ==
+                        renderProps.activeAnnotation.length ===
                             activeDeletion.length &&
                         segment.length === 0
                     ) {
@@ -171,7 +202,7 @@ export default class Text extends React.Component {
                 break;
             }
             let id = null;
-            if (segment.length == 0) {
+            if (segment.length === 0) {
                 id = idForDeletedSegment(segment);
                 classes.push(styles.removedByAnnotation);
                 if (deletionText) {
@@ -217,9 +248,12 @@ export default class Text extends React.Component {
         return html;
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
-        if (renderedHtml.__html == this._renderedHtml.__html) {
+        if (
+            this._renderedHtml &&
+            renderedHtml.__html === this._renderedHtml.__html
+        ) {
             return false;
         } else {
             this._renderedHtml = renderedHtml;

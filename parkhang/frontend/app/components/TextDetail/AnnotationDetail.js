@@ -1,12 +1,21 @@
+// @flow
 import React from "react";
 import classnames from "classnames";
-import { BASE_ANNOTATION_ID } from "lib/AnnotatedText";
 import styles from "./AnnotationDetail.css";
+import type { AnnotationData } from "api";
 
-const AnnotationDetail = props => {
+export type Props = {
+    annotationData: AnnotationData,
+    isActive: boolean,
+    selectAnnotationHandler: () => void,
+    isLoggedIn: boolean,
+    editAnnotationHandler: () => void
+};
+
+const AnnotationDetail = (props: Props) => {
     let desc = <p>&lt;delete&gt;</p>;
     let content = props.annotationData.content;
-    if (content.trim() != "") {
+    if (content.trim() !== "") {
         desc = <p>{props.annotationData.content}</p>;
     }
 

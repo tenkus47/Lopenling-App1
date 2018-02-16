@@ -1,8 +1,15 @@
+// @flow
 import React from "react";
 import classnames from "classnames";
 import styles from "./AnnotationDetail.css";
+import type { Props as AnnotationDetailProps } from "./AnnotationDetail";
 
-const AnnotationDetailEdit = props => {
+export type Props = AnnotationDetailProps & {
+    saveAnnotationHandler: (text: string) => void,
+    cancelAnnotationHandler: () => void
+};
+
+const AnnotationDetailEdit = (props: Props) => {
     let content = props.annotationData.content;
     let classes = [styles.annotationDetail];
 
@@ -26,7 +33,9 @@ const AnnotationDetailEdit = props => {
                     <div
                         className={styles.save}
                         onClick={() => {
-                            props.saveAnnotationHandler(textarea.value);
+                            if (textarea) {
+                                props.saveAnnotationHandler(textarea.value);
+                            }
                         }}
                     >
                         Save

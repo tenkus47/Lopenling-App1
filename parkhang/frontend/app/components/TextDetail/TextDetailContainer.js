@@ -1,8 +1,12 @@
+// @flow
 import React from "react";
 import { connect } from "react-redux";
 import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import Source, { WORKING_VERSION_SOURCE_NAME } from "lib/Source";
 import Witness from "lib/Witness";
+import Text from "lib/Text";
+import type { AppState } from "reducers";
+import type { AnnotationData, TextData } from "api";
 import {
     WORKING_VERSION_ANNOTATION_ID,
     INSERTION_KEY,
@@ -40,7 +44,10 @@ function getInsertionKey(annotation) {
 let _posAnnotatedText;
 let _posAnnotations;
 let _positions;
-const getAnnotationPositions = (annotatedText, annotations) => {
+const getAnnotationPositions = (
+    annotatedText: AnnotatedText,
+    annotations: Annotation[]
+): { [string]: Annotation[] } => {
     if (
         annotatedText === _posAnnotatedText &&
         annotations === _posAnnotations
@@ -56,6 +63,9 @@ const getAnnotationPositions = (annotatedText, annotations) => {
         let [startPos, length] = annotatedText.getPositionOfAnnotation(
             annotation
         );
+        if (startPos == null) {
+            continue;
+        }
         if (length === 0) {
             if (annotation.isInsertion) {
                 // group with any active insertions at the same position
@@ -106,16 +116,21 @@ const getAnnotationPositions = (annotatedText, annotations) => {
 };
 
 let _annotationsFromData = null;
-const annotationsFromData = (state, annotationList) => {
+const annotationsFromData = (
+    state: AppState,
+    annotationList: AnnotationData[] | null
+): Annotation[] => {
     let annotations = [];
     if (annotationList) {
-        for (let key in annotationList) {
-            if (annotationList.hasOwnProperty(key)) {
-                let annotationData = annotationList[key];
-                let annotation = annotationFromData(state, annotationData);
-
+        //for (let key in annotationList) {
+        for (let annotationData of annotationList) {
+            // if (annotationList.hasOwnProperty(key)) {
+            //     let annotationData = annotationList[key];
+            let annotation = annotationFromData(state, annotationData);
+            if (annotation) {
                 annotations.push(annotation);
             }
+            // }
         }
     }
     return annotations;
@@ -123,7 +138,11 @@ const annotationsFromData = (state, annotationList) => {
 
 let _activeAnnotationsList;
 let _activeAnnotations;
-const getActiveAnnotations = (state, witnessId, baseWitnessId) => {
+const getActiveAnnotations = (
+    state: AppState,
+    witnessId,
+    baseWitnessId
+): Annotation[] => {
     const loadedAppliedAnnotations = hasLoadedWitnessAppliedAnnotations(
         state,
         witnessId
@@ -202,7 +221,7 @@ const mapStateToProps = state => {
     let appliedAnnotations = [];
     let pageBreaks = [];
     let imagesBaseUrl = "";
-    let selectedWitness = workingWitness;
+    let selectedWitness;
     // Whether to show the text's page images
     let paginated = false;
     if (
@@ -211,12 +230,17 @@ const mapStateToProps = state => {
         state.data.witnessAnnotationsById.hasOwnProperty(workingWitness.id)
     ) {
         witnesses = getTextWitnesses(state, selectedText.id);
-        const selectedWitnessId = getSelectedTextWitnessId(
+        let selectedWitnessId = getSelectedTextWitnessId(
             state,
             selectedText.id
         );
         if (selectedWitnessId) {
             selectedWitness = getWitness(state, selectedWitnessId);
+        }
+
+        if (!selectedWitness) {
+            selectedWitness = workingWitness;
+            selectedWitnessId = workingWitness.id;
         }
 
         // set cached witness
@@ -226,6 +250,7 @@ const mapStateToProps = state => {
             state,
             workingWitness.id
         );
+
         appliedAnnotations = getActiveAnnotations(
             state,
             selectedWitness.id,
@@ -242,21 +267,19 @@ const mapStateToProps = state => {
                 state,
                 selectedWitness.id
             );
-            Object.keys(selectedWitnessAnnotationData).map(key => {
-                if (!selectedWitnessAnnotationData[key].creator_user) {
-                    selectedWitnessAnnotations.push(
-                        selectedWitnessAnnotationData[key]
-                    );
-                }
-            });
 
-            for (let key of Object.keys(workingAnnotationList)) {
+            for (let annotationData of selectedWitnessAnnotationData) {
+                if (!annotationData.creator_user) {
+                    selectedWitnessAnnotations.push(annotationData);
+                }
+            }
+
+            for (let annotationData of workingAnnotationList) {
                 if (
-                    workingAnnotationList[key].creator_witness ===
-                        selectedWitness.id &&
-                    !workingAnnotationList[key].creator_user
+                    annotationData.creator_witness === selectedWitness.id &&
+                    !annotationData.creator_user
                 ) {
-                    selectedWitnessAnnotations.push(workingAnnotationList[key]);
+                    selectedWitnessAnnotations.push(annotationData);
                 }
             }
 
@@ -270,7 +293,7 @@ const mapStateToProps = state => {
             );
 
             workingAnnotationList = _.pickBy(workingAnnotationList, anno => {
-                return anno.creator_witness === selectedWitness.id;
+                return anno.creator_witness === selectedWitnessId;
             });
 
             // always show images if we are viewing a specific edition
@@ -310,21 +333,23 @@ const mapStateToProps = state => {
             );
         }
 
-        pageBreaks = getAnnotationsForWitnessId(
-            state,
-            baseWitness.id,
-            ANNOTATION_TYPES.pageBreak
-        );
-        let starts = [];
-        _.forIn(pageBreaks, o => starts.push(o.start));
-        pageBreaks = starts.sort((a, b) => a - b);
-        if (paginated) {
-            imagesBaseUrl =
-                "/static/images/texts/" +
-                selectedText.name +
-                "/" +
-                selectedWitness.source.name +
-                "/";
+        if (baseWitness) {
+            pageBreaks = getAnnotationsForWitnessId(
+                state,
+                baseWitness.id,
+                ANNOTATION_TYPES.pageBreak
+            );
+            let starts = [];
+            _.forIn(pageBreaks, o => starts.push(o.start));
+            pageBreaks = starts.sort((a, b) => a - b);
+            if (paginated) {
+                imagesBaseUrl =
+                    "/static/images/texts/" +
+                    selectedText.name +
+                    "/" +
+                    selectedWitness.source.name +
+                    "/";
+            }
         }
     }
 
@@ -370,7 +395,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             let [start, length] = annotatedText.getPositionOfAnnotation(
                 longestAvailable
             );
-            if (longestAvailable.isInsertion) {
+            if (longestAvailable && longestAvailable.isInsertion) {
                 length = 0;
             }
             activeAnnotation = annotatedText.getBaseAnnotation(start, length);
@@ -443,6 +468,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 activeAnnotations,
                 segmentAnnotations
             );
+            if (!range) {
+                console.warn(
+                    "No range for selected segment ids: %o",
+                    segmentIds
+                );
+                return;
+            }
             const baseAnnotation = annotatedText.getBaseAnnotation(
                 range.start,
                 range.length
@@ -506,14 +538,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     };
 };
 
-const getTextWorkingWitness = selectedText => {
+const getTextWorkingWitness = (textData: TextData): Witness => {
     const source = new Source(
         WORKING_VERSION_ANNOTATION_ID,
         WORKING_VERSION_SOURCE_NAME
     );
+    const text = new Text(textData.id, textData.name);
     const witness = new Witness(
         WORKING_VERSION_ANNOTATION_ID,
-        selectedText,
+        text,
         source,
         "",
         false
@@ -522,7 +555,11 @@ const getTextWorkingWitness = selectedText => {
     return witness;
 };
 
-const getSegmentsRange = (segments, activeAnnotations, annotations) => {
+const getSegmentsRange = (
+    segments,
+    activeAnnotations,
+    annotations
+): { start: number, length: number, annotation: Annotation | null } | null => {
     if (segments.length === 0) {
         return null;
     }
@@ -566,7 +603,7 @@ const getSegmentsRange = (segments, activeAnnotations, annotations) => {
     };
 };
 
-const getLongestAnnotation = annotations => {
+const getLongestAnnotation = (annotations: Annotation[]): Annotation | null => {
     let longest = null;
     for (let i = 0; i < annotations.length; i++) {
         let annotation = annotations[i];
