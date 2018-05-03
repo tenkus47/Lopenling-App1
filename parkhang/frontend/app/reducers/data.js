@@ -603,12 +603,16 @@ export const getAnnotationsForWitnessId = (
     state: DataState,
     witnessId: number,
     annotationType: string = ANNOTATION_TYPES.variant
-): AnnotationData[] => {
+): { [string]: AnnotationData } => {
     let annotations = state.witnessAnnotationsById[witnessId];
-    return _.pickBy(
+
+    annotations = _.pickBy(
         annotations,
-        (annotation, key) => annotation.type === annotationType
+        (annotation: AnnotationData, key: string): boolean =>
+            annotation.type === annotationType
     );
+
+    return annotations;
 };
 
 export const getAnnotation = (

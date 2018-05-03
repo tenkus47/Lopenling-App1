@@ -168,7 +168,7 @@ export const getAnnotationsForWitnessId = (
     state: AppState,
     witnessId: number,
     annotationType: string = ANNOTATION_TYPES.variant
-): AnnotationData[] => {
+): { [string]: AnnotationData } => {
     return data.getAnnotationsForWitnessId(
         state.data,
         witnessId,

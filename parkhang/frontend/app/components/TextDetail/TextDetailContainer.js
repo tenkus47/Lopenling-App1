@@ -118,19 +118,18 @@ const getAnnotationPositions = (
 let _annotationsFromData = null;
 const annotationsFromData = (
     state: AppState,
-    annotationList: AnnotationData[] | null
+    annotationList: { [string]: AnnotationData } | null
 ): Annotation[] => {
     let annotations = [];
     if (annotationList) {
-        //for (let key in annotationList) {
-        for (let annotationData of annotationList) {
-            // if (annotationList.hasOwnProperty(key)) {
-            //     let annotationData = annotationList[key];
-            let annotation = annotationFromData(state, annotationData);
-            if (annotation) {
-                annotations.push(annotation);
+        for (let key in annotationList) {
+            if (annotationList.hasOwnProperty(key)) {
+                let annotationData = annotationList[key];
+                let annotation = annotationFromData(state, annotationData);
+                if (annotation) {
+                    annotations.push(annotation);
+                }
             }
-            // }
         }
     }
     return annotations;
@@ -163,7 +162,7 @@ const getActiveAnnotations = (
         _activeAnnotationsList = activeAnnotationList;
     }
 
-    let activeAnnotationDataList = [];
+    let activeAnnotationDataList = {};
     for (let i = 0; i < activeAnnotationList.length; i++) {
         let activeAnnotationId = activeAnnotationList[i];
         let activeAnnotationData = getAnnotationData(
@@ -172,7 +171,9 @@ const getActiveAnnotations = (
             activeAnnotationId
         );
         if (activeAnnotationData) {
-            activeAnnotationDataList.push(activeAnnotationData);
+            activeAnnotationDataList[
+                activeAnnotationData.unique_id
+            ] = activeAnnotationData;
         }
     }
 
@@ -262,24 +263,30 @@ const mapStateToProps = state => {
             // get all the annotations created by the selected witness
             // BUT NOT BY A USER to apply to the base text.
             // User-created annotations need to be in appliedAnnotations.
-            let selectedWitnessAnnotations = [];
+            let selectedWitnessAnnotations = {};
             let selectedWitnessAnnotationData = getAnnotationsForWitnessId(
                 state,
                 selectedWitness.id
             );
 
-            for (let annotationData of selectedWitnessAnnotationData) {
-                if (!annotationData.creator_user) {
-                    selectedWitnessAnnotations.push(annotationData);
+            for (let key in selectedWitnessAnnotationData) {
+                if (selectedWitnessAnnotationData.hasOwnProperty(key)) {
+                    let annotationData = selectedWitnessAnnotationData[key];
+                    if (!annotationData.creator_user) {
+                        selectedWitnessAnnotations.push(annotationData);
+                    }
                 }
             }
 
-            for (let annotationData of workingAnnotationList) {
-                if (
-                    annotationData.creator_witness === selectedWitness.id &&
-                    !annotationData.creator_user
-                ) {
-                    selectedWitnessAnnotations.push(annotationData);
+            for (let key in workingAnnotationList) {
+                if (workingAnnotationList.hasOwnProperty(key)) {
+                    let annotationData = workingAnnotationList[key];
+                    if (
+                        annotationData.creator_witness === selectedWitness.id &&
+                        !annotationData.creator_user
+                    ) {
+                        selectedWitnessAnnotations.push(annotationData);
+                    }
                 }
             }
 
