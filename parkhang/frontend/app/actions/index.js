@@ -76,7 +76,7 @@ export type Action = {
 };
 
 export type WitnessAction = Action & {
-    witness: Witness
+    witnessId: number
 };
 
 export type TextDataAction = Action & {
@@ -211,31 +211,31 @@ export function loadedWitnesses(
 
 // ANNOTATIONS
 
-export function loadWitnessAnnotations(witness: Witness): WitnessAction {
+export function loadWitnessAnnotations(witnessId: number): WitnessAction {
     return {
         type: LOAD_WITNESS_ANNOTATIONS,
-        witness
+        witnessId
     };
 }
 
-export function loadingWitnessAnnotations(witness: Witness): WitnessAction {
+export function loadingWitnessAnnotations(witnessId: number): WitnessAction {
     return {
         type: LOADING_WITNESS_ANNOTATIONS,
-        witness
+        witnessId
     };
 }
 
 export type LoadedWitnessAnnotationsAction = Action & {
-    witness: Witness,
+    witnessId: number,
     annotations: api.AnnotationData[]
 };
 export function loadedWitnessAnnotations(
-    witness: Witness,
+    witnessId: number,
     annotations: api.AnnotationData[]
 ): LoadedWitnessAnnotationsAction {
     return {
         type: LOADED_WITNESS_ANNOTATIONS,
-        witness,
+        witnessId,
         annotations
     };
 }
@@ -244,12 +244,12 @@ export type LoadedWitnessAppliedAnnotationsAction = WitnessAction & {
     annotationIds: AnnotationUniqueId[]
 };
 export function loadedWitnessAppliedAnnotations(
-    witness: Witness,
+    witnessId: number,
     annotationIds: AnnotationUniqueId[]
 ) {
     return {
         type: LOADED_WITNESS_APPLIED_ANNOTATIONS,
-        witness,
+        witnessId,
         annotationIds
     };
 }
@@ -399,7 +399,7 @@ export function changedShowPageImages(
     };
 }
 
-export type SelectedTextWitnessAction = {
+export type SelectedTextWitnessAction = Action & {
     witnessId: number,
     textId: number
 };

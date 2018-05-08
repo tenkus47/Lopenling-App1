@@ -172,7 +172,7 @@ function loadedAnnotations(
     const annotationsById = arrayToObject(action.annotations, "unique_id");
     const witnessAnnotationsById = {
         ...state.witnessAnnotationsById,
-        [action.witness.id]: annotationsById
+        [action.witnessId]: annotationsById
     };
     return {
         ...state,
@@ -188,7 +188,7 @@ function loadedAppliedAnnotations(
 ): DataState {
     const witnessActiveAnnotationsById = {
         ...state.witnessActiveAnnotationsById,
-        [action.witness.id]: action.annotationIds
+        [action.witnessId]: action.annotationIds
     };
     return {
         ...state,
