@@ -179,6 +179,9 @@ export default class AnnotationControls extends React.PureComponent<Props> {
                                     annotationData.annotation
                                 );
                             }}
+                            isLoggedIn={isLoggedIn}
+                            selectAnnotationHandler={() => {}}
+                            editAnnotationHandler={() => {}}
                         />
                     );
                     temporaryAnnotations.push(annotationDetail);

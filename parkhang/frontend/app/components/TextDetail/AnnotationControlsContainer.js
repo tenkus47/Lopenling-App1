@@ -282,7 +282,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
                 [baseAnnotation],
                 sources
             );
-            annotationsData = baseAnnotationData.concat(annotationsData);
+            annotationsData = [...baseAnnotationData, ...annotationsData];
         }
     }
 

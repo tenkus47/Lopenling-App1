@@ -48,7 +48,8 @@ export type State = {
     textWidth: string | null,
     splitTextRect: ClientRect | null,
     firstSelectedSegment: TextSegment | null,
-    selectedElementId: string | null
+    selectedElementId: string | null,
+    selectedAnnotatedSegments: TextSegment[]
 };
 
 export default class SplitTextComponent extends React.PureComponent<
@@ -82,7 +83,8 @@ export default class SplitTextComponent extends React.PureComponent<
             textWidth: null,
             splitTextRect: null,
             firstSelectedSegment: null,
-            selectedElementId: null
+            selectedElementId: null,
+            selectedAnnotatedSegments: []
         };
         this.list = null;
         this.splitText = null;
@@ -105,6 +107,7 @@ export default class SplitTextComponent extends React.PureComponent<
             let node;
             let currentScrollTop;
             if (resetCache) {
+                // eslint-disable-next-line react/no-find-dom-node
                 node = ReactDOM.findDOMNode(list);
                 if (node && node instanceof Element) {
                     currentScrollTop = node.scrollTop;
@@ -302,19 +305,23 @@ export default class SplitTextComponent extends React.PureComponent<
                     break;
                 }
             }
-            selectedElementId = idForSegment(firstSelectedSegment);
+            if (firstSelectedSegment) {
+                selectedElementId = idForSegment(firstSelectedSegment);
+            }
         } else if (props.activeAnnotation) {
             if (props.activeAnnotation.isDeletion) {
-                selectedElementId = idForDeletedSegment({
-                    start: props.activeAnnotation.start
-                });
+                let segment = new TextSegment(props.activeAnnotation.start, "");
+                selectedElementId = idForDeletedSegment(segment);
             } else if (props.activeAnnotation.isInsertion) {
                 const [
                     start
                 ] = props.splitText.annotatedText.getPositionOfAnnotation(
                     props.activeAnnotation
                 );
-                selectedElementId = idForInsertion({ start: start });
+                if (start) {
+                    let segment = new TextSegment(start, "");
+                    selectedElementId = idForInsertion(segment);
+                }
             }
         }
         if (
@@ -337,6 +344,15 @@ export default class SplitTextComponent extends React.PureComponent<
     updateState(props: Props) {
         const textMeasurements = this.getTextMeasurements();
         const controlsMeasurements = this.getControlsMeasurements(props);
+        // make sure there's no numbers in selectedAnnotatedSegments
+        // as we want to pass it to Text which only expects TextSegments
+        const selectedAnnotatedSegments: TextSegment[] = props.selectedAnnotatedSegments.reduce(
+            (acc, current: TextSegment | number) => {
+                if (current instanceof TextSegment) acc.push(current);
+                return acc;
+            },
+            []
+        );
         if (textMeasurements && controlsMeasurements) {
             this.setState((prevState: State, props: Props) => {
                 return {
@@ -347,7 +363,8 @@ export default class SplitTextComponent extends React.PureComponent<
                     firstSelectedSegment:
                         controlsMeasurements.firstSelectedSegment,
                     splitTextRect: controlsMeasurements.splitTextRect,
-                    selectedElementId: controlsMeasurements.selectedElementId
+                    selectedElementId: controlsMeasurements.selectedElementId,
+                    selectedAnnotatedSegments: selectedAnnotatedSegments
                 };
             });
         }
@@ -503,6 +520,7 @@ export default class SplitTextComponent extends React.PureComponent<
     }): React.Element<CellMeasurer> {
         const props = this.props;
         const cache = this.cache;
+        const state = this.state;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
 
         return (
@@ -538,10 +556,10 @@ export default class SplitTextComponent extends React.PureComponent<
                         selectedSegmentId={props.selectedSegmentId}
                         annotationPositions={props.annotationPositions}
                         selectedAnnotatedSegments={
-                            props.selectedAnnotatedSegments
+                            state.selectedAnnotatedSegments
                         }
-                        textWidth={this.state.textWidth}
-                        paddingRight={this.state.textPaddingRight}
+                        textWidth={this.state.textWidth || ""}
+                        paddingRight={this.state.textPaddingRight || ""}
                         getBaseAnnotation={this.getBaseAnnotation.bind(this)}
                         activeWitness={
                             this.props.splitText.annotatedText.activeWitness

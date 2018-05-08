@@ -30,7 +30,8 @@ export type Props = {
     limitWidth: boolean,
     row: number,
     paddingRight: string,
-    textWidth: string
+    textWidth: string,
+    activeAnnotation: Annotation | null
 };
 
 export type State = {
@@ -63,7 +64,7 @@ export default class Text extends React.Component<Props, State> {
     }
 
     annotationsForSegment(segment: TextSegment) {
-        let annotations = [];
+        let annotations: Annotation[] = [];
         const foundAnnotations = this.props.annotationPositions[
             String(segment.start)
         ];
