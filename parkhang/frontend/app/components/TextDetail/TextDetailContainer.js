@@ -273,7 +273,9 @@ const mapStateToProps = state => {
                 if (selectedWitnessAnnotationData.hasOwnProperty(key)) {
                     let annotationData = selectedWitnessAnnotationData[key];
                     if (!annotationData.creator_user) {
-                        selectedWitnessAnnotations.push(annotationData);
+                        selectedWitnessAnnotations[
+                            annotationData.unique_id
+                        ] = annotationData;
                     }
                 }
             }
@@ -285,18 +287,20 @@ const mapStateToProps = state => {
                         annotationData.creator_witness === selectedWitness.id &&
                         !annotationData.creator_user
                     ) {
-                        selectedWitnessAnnotations.push(annotationData);
+                        selectedWitnessAnnotations[
+                            annotationData.unique_id
+                        ] = annotationData;
                     }
                 }
             }
 
-            selectedWitnessAnnotations = annotationsFromData(
+            let selectedWitnessAnnotationsList = annotationsFromData(
                 state,
                 selectedWitnessAnnotations
             );
 
             appliedAnnotations = appliedAnnotations.concat(
-                selectedWitnessAnnotations
+                selectedWitnessAnnotationsList
             );
 
             workingAnnotationList = _.pickBy(workingAnnotationList, anno => {
