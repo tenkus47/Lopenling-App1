@@ -292,6 +292,7 @@ export default class AnnotatedText {
      * @return {TextSegment|number[]}
      */
     segmentsForAnnotation(annotation: Annotation): Array<TextSegment | number> {
+        this.segmentedText;
         let segments = [];
         let isActive = false;
         if (
