@@ -36,7 +36,17 @@ export type Props = {
     selectedWitness: Witness | null
 };
 
+let textDetailId = 0;
+
 class TextDetail extends React.Component<Props> {
+    key: number;
+
+    constructor() {
+        super();
+
+        this.key = textDetailId++;
+    }
+
     render() {
         let text = {
             name: ""
@@ -49,7 +59,7 @@ class TextDetail extends React.Component<Props> {
         let textComponent = null;
 
         if (!this.props.text || this.props.loading) {
-            textComponent = <div />;
+            textComponent = <div key={this.key} />;
         } else {
             let limitWidth = false;
             let splitter;
@@ -78,6 +88,7 @@ class TextDetail extends React.Component<Props> {
                     showImages={this.props.paginated}
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
+                    key={this.key}
                 />
             );
         }
@@ -105,6 +116,7 @@ class TextDetail extends React.Component<Props> {
                     utilStyles.flex,
                     utilStyles.flexColumn
                 )}
+                key={this.key}
             >
                 <TextHeadingContainer text={text} />
                 <Loader loaded={!this.props.loading} />
