@@ -325,7 +325,7 @@ export default class SplitTextComponent extends React.PureComponent<
             }
         }
         if (
-            selectedTextIndex &&
+            selectedTextIndex != null &&
             firstSelectedSegment &&
             selectedElementId &&
             splitTextRect
