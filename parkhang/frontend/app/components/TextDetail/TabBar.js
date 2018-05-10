@@ -45,6 +45,7 @@ export default class TabBar extends React.Component<Props> {
                         onClick={() => {
                             this.props.onSelectedWitness(witness);
                         }}
+                        key={witness.id}
                     >
                         {witness.source.name}
                     </div>
