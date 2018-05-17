@@ -101,27 +101,16 @@ export default class SplitTextComponent extends React.PureComponent<
     updateList(resetCache: boolean = true, resetRow: number | null = null) {
         if (this.list) {
             const list = this.list;
-            let node;
-            let currentScrollTop;
             if (resetCache) {
-                // eslint-disable-next-line react/no-find-dom-node
-                node = ReactDOM.findDOMNode(list);
-                if (node && node instanceof Element) {
-                    currentScrollTop = node.scrollTop;
-                }
-                if (resetRow) {
+                if (resetRow !== null) {
                     this.cache.clear(resetRow);
                 } else {
                     this.cache.clearAll();
+                    list.measureAllRows();
+                    list.recomputeRowHeights(0);
                 }
-                list.measureAllRows();
             }
-            list.recomputeRowHeights();
-            if (currentScrollTop) {
-                setTimeout(() => {
-                    list.scrollToPosition(currentScrollTop);
-                }, 0);
-            }
+            list.forceUpdateGrid();
         }
     }
 
