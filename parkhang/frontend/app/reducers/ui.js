@@ -204,11 +204,18 @@ export const showPageImages = (state: UIState): boolean => {
     return state.showPageImages;
 };
 
-export const getActiveAnnotation = (state: UIState): Annotation | null => {
+export const getActiveAnnotation = (
+    state: UIState,
+    witnessId?: number
+): Annotation | null => {
     if (state.selectedText) {
-        const activeWitnessId =
-            state.selectedTextWitness[state.selectedText.id];
-        return state.activeAnnotations[activeWitnessId];
+        if (!witnessId) {
+            witnessId = state.selectedTextWitness[state.selectedText.id];
+        }
+        if (witnessId) {
+            return state.activeAnnotations[witnessId];
+        }
+        return null;
     } else {
         return null;
     }

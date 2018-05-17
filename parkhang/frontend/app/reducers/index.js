@@ -83,8 +83,11 @@ export const showPageImages = (state: AppState): boolean => {
     return ui.showPageImages(state.ui);
 };
 
-export const getActiveAnnotation = (state: AppState): Annotation | null => {
-    return ui.getActiveAnnotation(state.ui);
+export const getActiveAnnotation = (
+    state: AppState,
+    witnessId?: number
+): Annotation | null => {
+    return ui.getActiveAnnotation(state.ui, witnessId);
 };
 
 export const getTextListVisible = (state: AppState): boolean => {
