@@ -434,11 +434,13 @@ export default class SplitTextComponent extends React.PureComponent<
         const props = this.props;
         const rowRenderer = this.rowRenderer;
         const cache = this.cache;
+        const key = props.selectedWitness ? props.selectedWitness.id : 0;
 
         return (
             <div
                 className={styles.splitText}
                 ref={div => (this.splitText = div)}
+                key={key}
             >
                 <AutoSizer>
                     {({ height, width }) => (
