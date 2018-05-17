@@ -333,23 +333,26 @@ export default class SplitTextComponent extends React.PureComponent<
         return oldProps.showImages !== newProps.showImages;
     }
 
-    selectedListRow(): number | null {
+    selectedListRow(props: Props): number | null {
         let row = null;
-        if (this.props.activeAnnotation) {
-            row = this.props.splitText.getTextIndexOfPosition(
-                this.props.activeAnnotation.start
+        if (props.activeAnnotation) {
+            row = props.splitText.getTextIndexOfPosition(
+                props.activeAnnotation.start
             );
         }
         return row;
     }
 
     componentWillReceiveProps(props: Props) {
-        const activeWitness = this.props.splitText.annotatedText.activeWitness;
         let changedWitness = false;
-        if (activeWitness !== this._activeWitness) {
-            this._activeWitness = activeWitness;
+        if (
+            !this.props.selectedWitness ||
+            (props.selectedWitness &&
+                props.selectedWitness.id !== this.props.selectedWitness.id)
+        ) {
             changedWitness = true;
         }
+
         if (props.textListVisible !== this.textListVisible) {
             setTimeout(() => {
                 this.textListVisible = props.textListVisible;
@@ -357,7 +360,7 @@ export default class SplitTextComponent extends React.PureComponent<
                 this.updateList(true);
             }, 500);
         } else {
-            if (this.splitText) {
+            if (this.splitText && !shallowEqual(this.props, props)) {
                 this.updateState(props);
             }
             if (changedWitness) {
@@ -366,7 +369,7 @@ export default class SplitTextComponent extends React.PureComponent<
                 this.props.splitText.annotatedText !==
                 props.splitText.annotatedText
             ) {
-                this.updateList(true, this.selectedListRow());
+                this.updateList(true, this.selectedListRow(props));
             } else {
                 this.updateList(this.shouldResetListCache(this.props, props));
             }
