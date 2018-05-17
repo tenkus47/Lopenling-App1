@@ -14,6 +14,7 @@ import Text, {
     idForInsertion
 } from "./Text";
 import SplitText from "lib/SplitText";
+import shallowEqual from "lib/shallowEqual";
 import { CONTROLS_MARGIN_LEFT } from "./AnnotationControls";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import styles from "./SplitText.css";
