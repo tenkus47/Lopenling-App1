@@ -18,12 +18,7 @@ const mapStateToDispatch = dispatch => {
     return {
         tabClicked: () => {
             const textListIsVisible = true;
-            dispatch(
-                batchActions([
-                    changedActiveAnnotation(null),
-                    changedTextListVisible(textListIsVisible)
-                ])
-            );
+            dispatch(changedTextListVisible(textListIsVisible));
         }
     };
 };
