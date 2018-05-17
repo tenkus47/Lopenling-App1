@@ -46,8 +46,6 @@ export type Props = {
 
 export type State = {
     selectedTextIndex: number | null,
-    textPaddingRight: string | null,
-    textWidth: string | null,
     splitTextRect: ClientRect | null,
     firstSelectedSegment: TextSegment | null,
     selectedElementId: string | null,
