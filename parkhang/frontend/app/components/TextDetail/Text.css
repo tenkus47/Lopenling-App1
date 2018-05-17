@@ -26,6 +26,8 @@
     margin: 0px;
     min-width: 0;
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .textFirstRow {
@@ -46,6 +48,7 @@
     padding-left: 0;
     min-width: 200px;
     display: flex;
+    flex-direction: column;
     position: relative;
 }
 

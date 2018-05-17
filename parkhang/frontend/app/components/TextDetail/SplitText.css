@@ -1,3 +1,5 @@
+@import 'AnnotationControls.css';
+
 .splitText {
     width: 100%;
     background-color: white;
@@ -10,9 +12,15 @@
     outline: none;
 }
 
-.splitTextRow {
+.splitTextRowContent {
     display: flex;
     flex-direction: column;
+}
+
+.splitTextRow {
+    display: flex;
+    flex-direction: row;
+    background-color: #ccc;
 }
 
 .splitTextRow .text {
@@ -27,4 +35,13 @@
     align-items: center;
     flex-grow: 0;
     flex-shrink: 0;
+}
+
+.controlsPlaceholder {
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: var(--controlsWidth);
+    padding: var(--controlsPadding);
+    margin-left: var(--controlsMargin);
+    margin-right: var(--controlsMargin);
 }

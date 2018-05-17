@@ -27,10 +27,7 @@ export type Props = {
     activeAnnotations: Annotation[] | null,
     getBaseAnnotation: (annotation: Annotation) => Annotation,
     selectedAnnotatedSegments: TextSegment[],
-    limitWidth: boolean,
     row: number,
-    paddingRight: string,
-    textWidth: string,
     activeAnnotation: Annotation | null
 };
 
@@ -60,7 +57,6 @@ export default class Text extends React.Component<Props, State> {
                 segmentedText: nextProps.segmentedText
             };
         });
-        // this.state.segmentedText = nextProps.segmentedText;
     }
 
     annotationsForSegment(segment: TextSegment) {
@@ -264,9 +260,6 @@ export default class Text extends React.Component<Props, State> {
 
     render() {
         let classes = [styles.text];
-        if (this.props.limitWidth) {
-            classes.push(styles.limitWidth);
-        }
         if (this.props.row === 0) {
             classes.push(styles.textFirstRow);
         }
@@ -279,20 +272,13 @@ export default class Text extends React.Component<Props, State> {
         if (!this._renderedHtml) {
             this._renderedHtml = html;
         }
-        const containerStyle = {
-            paddingRight: this.props.paddingRight
-        };
-        const textStyle = {
-            width: this.props.textWidth
-        };
 
         return (
-            <div className={styles.textContainer} style={containerStyle}>
+            <div className={styles.textContainer}>
                 <div
                     className={classnames(...classes)}
                     dangerouslySetInnerHTML={html}
                     onClick={e => this.selectedElement(e.target)}
-                    style={textStyle}
                 />
                 <div className={styles.pageNumber}>{this.props.row + 1}</div>
             </div>

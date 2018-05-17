@@ -17,6 +17,7 @@ import SplitText from "lib/SplitText";
 import { CONTROLS_MARGIN_LEFT } from "./AnnotationControls";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import styles from "./SplitText.css";
+import annotationControlsStyles from "./AnnotationControls.css";
 import textStyles from "./Text.css";
 import controlStyles from "./AnnotationControls.css";
 import _ from "lodash";
@@ -79,8 +80,6 @@ export default class SplitTextComponent extends React.PureComponent<
 
         this.state = {
             selectedTextIndex: null,
-            textPaddingRight: null,
-            textWidth: null,
             splitTextRect: null,
             firstSelectedSegment: null,
             selectedElementId: null,
@@ -227,38 +226,6 @@ export default class SplitTextComponent extends React.PureComponent<
         return rangeSpans;
     }
 
-    getTextMeasurements(): {
-        paddingRight: string,
-        newTextWidth: string
-    } | null {
-        if (!this.splitText) {
-            return null;
-        }
-        const splitText = this.splitText;
-        const paddingSide = parseInt(textStyles.paddingSide, 10);
-        const containerWidth = splitText.offsetWidth;
-        let textMaxWidth;
-        if (this.props.limitWidth) {
-            textMaxWidth = parseInt(textStyles.maxWidth, 10);
-        } else {
-            textMaxWidth = containerWidth;
-        }
-        const extraSpace =
-            containerWidth - (textMaxWidth + paddingSide + paddingSide);
-
-        let paddingRight = paddingSide + "px";
-        let newTextWidth = textMaxWidth + "px";
-        if (extraSpace < MIN_SPACE_RIGHT * 2) {
-            paddingRight = MIN_SPACE_RIGHT + "px";
-            newTextWidth = containerWidth - MIN_SPACE_RIGHT - paddingSide;
-        }
-
-        return {
-            paddingRight,
-            newTextWidth: String(newTextWidth)
-        };
-    }
-
     getControlsMeasurements(
         props: Props
     ): {
@@ -342,7 +309,6 @@ export default class SplitTextComponent extends React.PureComponent<
     }
 
     updateState(props: Props) {
-        const textMeasurements = this.getTextMeasurements();
         const controlsMeasurements = this.getControlsMeasurements(props);
         // make sure there's no numbers in selectedAnnotatedSegments
         // as we want to pass it to Text which only expects TextSegments
@@ -353,13 +319,11 @@ export default class SplitTextComponent extends React.PureComponent<
             },
             []
         );
-        if (textMeasurements && controlsMeasurements) {
+        if (controlsMeasurements) {
             this.setState((prevState: State, props: Props) => {
                 return {
                     ...prevState,
                     selectedTextIndex: controlsMeasurements.selectedTextIndex,
-                    textPaddingRight: textMeasurements.paddingRight,
-                    textWidth: textMeasurements.newTextWidth,
                     firstSelectedSegment:
                         controlsMeasurements.firstSelectedSegment,
                     splitTextRect: controlsMeasurements.splitTextRect,
@@ -532,52 +496,55 @@ export default class SplitTextComponent extends React.PureComponent<
                 cache={cache}
             >
                 <div key={key} style={style} className={styles.splitTextRow}>
-                    {props.showImages && (
-                        <div className={pechaImageClass}>
-                            <div className={styles.pechaContent}>
-                                <img
-                                    src={
-                                        props.imagesBaseUrl +
-                                        (index + 1) +
-                                        ".png"
-                                    }
-                                    width="100%"
-                                />
+                    <div className={styles.splitTextRowContent}>
+                        {props.showImages && (
+                            <div className={pechaImageClass}>
+                                <div className={styles.pechaContent}>
+                                    <img
+                                        src={
+                                            props.imagesBaseUrl +
+                                            (index + 1) +
+                                            ".png"
+                                        }
+                                        width="100%"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    <Text
-                        segmentedText={props.splitText.texts[index]}
-                        annotations={props.annotations}
-                        activeAnnotations={props.activeAnnotations}
-                        activeAnnotation={props.activeAnnotation}
-                        limitWidth={props.limitWidth}
-                        row={index}
-                        selectedSegmentId={props.selectedSegmentId}
-                        annotationPositions={props.annotationPositions}
-                        selectedAnnotatedSegments={
-                            state.selectedAnnotatedSegments
-                        }
-                        textWidth={this.state.textWidth || ""}
-                        paddingRight={this.state.textPaddingRight || ""}
-                        getBaseAnnotation={this.getBaseAnnotation.bind(this)}
-                        activeWitness={
-                            this.props.splitText.annotatedText.activeWitness
-                        }
-                    />
-                    {this.state.selectedTextIndex === index && (
-                        <AnnotationControlsContainer
-                            annotationPositions={props.annotationPositions}
-                            annotatedText={props.splitText.annotatedText}
+                        )}
+                        <Text
+                            segmentedText={props.splitText.texts[index]}
+                            annotations={props.annotations}
+                            activeAnnotations={props.activeAnnotations}
                             activeAnnotation={props.activeAnnotation}
-                            inline={true}
-                            firstSelectedSegment={
-                                this.state.firstSelectedSegment
+                            row={index}
+                            selectedSegmentId={props.selectedSegmentId}
+                            annotationPositions={props.annotationPositions}
+                            selectedAnnotatedSegments={
+                                state.selectedAnnotatedSegments
                             }
-                            splitTextRect={this.state.splitTextRect}
-                            selectedElementId={this.state.selectedElementId}
-                            pechaImageClass={pechaImageClass}
+                            getBaseAnnotation={this.getBaseAnnotation.bind(
+                                this
+                            )}
+                            activeWitness={this.props.selectedWitness}
                         />
+                    </div>
+                    {this.state.selectedTextIndex === index &&
+                        this.props.activeAnnotation && (
+                            <AnnotationControlsContainer
+                                annotationPositions={props.annotationPositions}
+                                annotatedText={props.splitText.annotatedText}
+                                activeAnnotation={props.activeAnnotation}
+                                inline={true}
+                                firstSelectedSegment={
+                                    this.state.firstSelectedSegment
+                                }
+                                splitTextRect={this.state.splitTextRect}
+                                selectedElementId={this.state.selectedElementId}
+                                pechaImageClass={pechaImageClass}
+                            />
+                        )}
+                    {this.state.selectedTextIndex !== index && (
+                        <div className={styles.controlsPlaceholder} />
                     )}
                 </div>
             </CellMeasurer>

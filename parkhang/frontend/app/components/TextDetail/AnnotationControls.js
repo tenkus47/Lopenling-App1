@@ -74,9 +74,7 @@ export default class AnnotationControls extends React.PureComponent<Props> {
             top = 0;
         }
 
-        const left = measurements.textRight + "px";
         this.controls.style.top = top + "px";
-        this.controls.style.left = left;
         if (this.arrow && this.arrowDs) {
             this.arrow.style.top = measurements.top - top + "px";
             this.arrowDs.style.top = measurements.top - top + 2 + "px";
