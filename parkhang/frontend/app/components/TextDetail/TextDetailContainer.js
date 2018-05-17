@@ -237,6 +237,12 @@ const mapStateToProps = state => {
         );
         if (selectedWitnessId) {
             selectedWitness = getWitness(state, selectedWitnessId);
+            if (selectedWitness) {
+                activeAnnotation = getActiveAnnotation(
+                    state,
+                    selectedWitness.id
+                );
+            }
         }
 
         if (!selectedWitness) {
