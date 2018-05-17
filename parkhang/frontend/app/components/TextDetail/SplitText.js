@@ -41,7 +41,8 @@ export type Props = {
     annotationPositions: { [string]: Annotation[] },
     annotations: Annotation[],
     activeAnnotations: Annotation[] | null,
-    selectedSegmentId: (segmentId: string) => void
+    selectedSegmentId: (segmentId: string) => void,
+    selectedWitness: Witness | null
 };
 
 export type State = {
