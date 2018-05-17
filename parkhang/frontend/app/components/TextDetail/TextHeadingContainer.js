@@ -43,12 +43,7 @@ const mergeProps = (stateProps: Props, dispatchProps, ownProps): {} => {
         ...stateProps,
         ...ownProps,
         onSelectedWitness: (witness: Witness) => {
-            dispatch(
-                batchActions([
-                    changedActiveAnnotation(null),
-                    selectedTextWitness(selectedText.id, witness.id)
-                ])
-            );
+            dispatch(selectedTextWitness(selectedText.id, witness.id));
         }
     };
 };
