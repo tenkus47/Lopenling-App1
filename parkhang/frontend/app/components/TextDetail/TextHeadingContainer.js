@@ -48,7 +48,7 @@ const mergeProps = (stateProps: Props, dispatchProps, ownProps): {} => {
     };
 };
 
-const TextHeadingContainer = connect(mapStateToProps, null, mergeProps) (
+const TextHeadingContainer = connect(mapStateToProps, null, mergeProps)(
     TextHeading
 );
 
