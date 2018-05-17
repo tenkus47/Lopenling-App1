@@ -91,8 +91,6 @@ export default class SplitTextComponent extends React.PureComponent<
             fixedWidth: true
         });
         this.rowRenderer = this.rowRenderer.bind(this);
-        // this.resizeHandler = null;
-        // this.selectionHandler = null;
         this.textListVisible = props.textListVisible;
         this.activeSelection = null;
         this.selectedNodes = null;
@@ -197,9 +195,6 @@ export default class SplitTextComponent extends React.PureComponent<
     }
 
     getNodeSegmentSpan(node: Node): Element | null {
-        // if (!(node instanceof Element)) {
-        //     return null;
-        // }
         let currentNode = node;
         let span = null;
         while (!span && currentNode.parentNode) {
