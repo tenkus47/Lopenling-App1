@@ -53,8 +53,8 @@ export default class AnnotationControls extends React.PureComponent<Props> {
             !this.props.inline ||
             !this.controls ||
             !measurements ||
-            !measurements.viewPortTop ||
-            !measurements.viewPortBottom
+            measurements.viewPortTop === null ||
+            measurements.viewPortBottom === null
         ) {
             return;
         }
