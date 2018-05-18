@@ -504,7 +504,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 pechaImageClass={pechaImageClass}
                             />
                         )}
-                    {this.selectedTextIndex !== index && (
+                    {(this.selectedTextIndex !== index ||
+                        !this.props.activeAnnotation) && (
                         <div className={styles.controlsPlaceholder} />
                     )}
                 </div>
