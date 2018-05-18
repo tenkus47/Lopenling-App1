@@ -45,18 +45,7 @@ export type Props = {
     selectedWitness: Witness | null
 };
 
-export type State = {
-    selectedTextIndex: number | null,
-    splitTextRect: ClientRect | null,
-    firstSelectedSegment: TextSegment | null,
-    selectedElementId: string | null,
-    selectedAnnotatedSegments: TextSegment[]
-};
-
-export default class SplitTextComponent extends React.PureComponent<
-    Props,
-    State
-> {
+export default class SplitTextComponent extends React.PureComponent<Props> {
     list: List | null;
     splitText: HTMLDivElement | null;
     cache: CellMeasurerCache;
@@ -74,17 +63,15 @@ export default class SplitTextComponent extends React.PureComponent<
     // Whether the mouse button is down
     _mouseDown: boolean;
     _activeWitness: Witness | null;
+    _filteredSelectedAnnotatedSegments: TextSegment[];
+    selectedTextIndex: number | null;
+    splitTextRect: ClientRect | null;
+    firstSelectedSegment: TextSegment | null;
+    selectedElementId: string | null;
 
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            selectedTextIndex: null,
-            splitTextRect: null,
-            firstSelectedSegment: null,
-            selectedElementId: null,
-            selectedAnnotatedSegments: []
-        };
         this.list = null;
         this.splitText = null;
         this.cache = new CellMeasurerCache({
@@ -96,6 +83,8 @@ export default class SplitTextComponent extends React.PureComponent<
         this.selectedNodes = null;
         this._mouseDown = false;
         this._activeWitness = null;
+
+        this.processProps(props);
     }
 
     updateList(resetCache: boolean = true, resetRow: number | null = null) {
@@ -292,32 +281,6 @@ export default class SplitTextComponent extends React.PureComponent<
         }
     }
 
-    updateState(props: Props) {
-        const controlsMeasurements = this.getControlsMeasurements(props);
-        // make sure there's no numbers in selectedAnnotatedSegments
-        // as we want to pass it to Text which only expects TextSegments
-        const selectedAnnotatedSegments: TextSegment[] = props.selectedAnnotatedSegments.reduce(
-            (acc, current: TextSegment | number) => {
-                if (current instanceof TextSegment) acc.push(current);
-                return acc;
-            },
-            []
-        );
-        if (controlsMeasurements) {
-            this.setState((prevState: State, props: Props) => {
-                return {
-                    ...prevState,
-                    selectedTextIndex: controlsMeasurements.selectedTextIndex,
-                    firstSelectedSegment:
-                        controlsMeasurements.firstSelectedSegment,
-                    splitTextRect: controlsMeasurements.splitTextRect,
-                    selectedElementId: controlsMeasurements.selectedElementId,
-                    selectedAnnotatedSegments: selectedAnnotatedSegments
-                };
-            });
-        }
-    }
-
     shouldResetListCache(oldProps: Props, newProps: Props) {
         return oldProps.showImages !== newProps.showImages;
     }
@@ -332,7 +295,7 @@ export default class SplitTextComponent extends React.PureComponent<
         return row;
     }
 
-    componentWillReceiveProps(props: Props) {
+    processProps(props: Props) {
         let changedWitness = false;
         if (
             !this.props.selectedWitness ||
@@ -342,16 +305,31 @@ export default class SplitTextComponent extends React.PureComponent<
             changedWitness = true;
         }
 
+        // make sure there's no numbers in selectedAnnotatedSegments
+        // as we want to pass it to Text which only expects TextSegments
+        this._filteredSelectedAnnotatedSegments = props.selectedAnnotatedSegments.reduce(
+            (acc, current: TextSegment | number) => {
+                if (current instanceof TextSegment) acc.push(current);
+                return acc;
+            },
+            []
+        );
+
+        const controlsMeasurements = this.getControlsMeasurements(props);
+        if (controlsMeasurements) {
+            this.selectedTextIndex = controlsMeasurements.selectedTextIndex;
+            this.firstSelectedSegment =
+                controlsMeasurements.firstSelectedSegment;
+            this.splitTextRect = controlsMeasurements.splitTextRect;
+            this.selectedElementId = controlsMeasurements.selectedElementId;
+        }
+
         if (props.textListVisible !== this.textListVisible) {
             setTimeout(() => {
                 this.textListVisible = props.textListVisible;
-                this.updateState(this.props);
                 this.updateList(true);
             }, 500);
         } else {
-            if (this.splitText && !shallowEqual(this.props, props)) {
-                this.updateState(props);
-            }
             if (changedWitness) {
                 this.updateList(true);
             } else if (
@@ -365,12 +343,13 @@ export default class SplitTextComponent extends React.PureComponent<
         }
     }
 
+    componentWillReceiveProps(props: Props) {
+        this.processProps(props);
+    }
+
     componentDidMount() {
         this.resizeHandler = _.throttle(() => {
             this.updateList();
-            setTimeout(() => {
-                this.updateState(this.props);
-            }, 200);
         }, 500).bind(this);
 
         window.addEventListener("resize", this.resizeHandler);
@@ -383,10 +362,6 @@ export default class SplitTextComponent extends React.PureComponent<
 
         document.addEventListener("mousedown", this.mouseDown.bind(this));
         document.addEventListener("mouseup", this.mouseUp.bind(this));
-
-        if (this.splitText) {
-            this.updateState(this.props);
-        }
     }
 
     componentDidUpdate() {
@@ -473,7 +448,6 @@ export default class SplitTextComponent extends React.PureComponent<
     }): React.Element<CellMeasurer> {
         const props = this.props;
         const cache = this.cache;
-        const state = this.state;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
 
         return (
@@ -509,7 +483,7 @@ export default class SplitTextComponent extends React.PureComponent<
                             selectedSegmentId={props.selectedSegmentId}
                             annotationPositions={props.annotationPositions}
                             selectedAnnotatedSegments={
-                                state.selectedAnnotatedSegments
+                                this._filteredSelectedAnnotatedSegments
                             }
                             getBaseAnnotation={this.getBaseAnnotation.bind(
                                 this
@@ -517,22 +491,20 @@ export default class SplitTextComponent extends React.PureComponent<
                             activeWitness={this.props.selectedWitness}
                         />
                     </div>
-                    {this.state.selectedTextIndex === index &&
+                    {this.selectedTextIndex === index &&
                         this.props.activeAnnotation && (
                             <AnnotationControlsContainer
                                 annotationPositions={props.annotationPositions}
                                 annotatedText={props.splitText.annotatedText}
                                 activeAnnotation={props.activeAnnotation}
                                 inline={true}
-                                firstSelectedSegment={
-                                    this.state.firstSelectedSegment
-                                }
-                                splitTextRect={this.state.splitTextRect}
-                                selectedElementId={this.state.selectedElementId}
+                                firstSelectedSegment={this.firstSelectedSegment}
+                                splitTextRect={this.splitTextRect}
+                                selectedElementId={this.selectedElementId}
                                 pechaImageClass={pechaImageClass}
                             />
                         )}
-                    {this.state.selectedTextIndex !== index && (
+                    {this.selectedTextIndex !== index && (
                         <div className={styles.controlsPlaceholder} />
                     )}
                 </div>
