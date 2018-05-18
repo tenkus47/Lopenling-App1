@@ -213,6 +213,10 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 call(loadAnnotations, workingWitness.id),
                 call(loadAppliedAnnotations, workingWitness.id)
             ]);
+            // auto-select the working witness
+            yield put(
+                actions.selectedTextWitness(action.text.id, workingWitness.id)
+            );
         }
         if (baseWitnessData) {
             const baseWitness: Witness = yield (select(
