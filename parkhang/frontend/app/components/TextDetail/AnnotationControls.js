@@ -60,7 +60,8 @@ export default class AnnotationControls extends React.PureComponent<Props> {
         }
 
         const height = this.controls.offsetHeight;
-        let top = measurements.top - height / 2;
+        let top =
+            measurements.top - height / 2 + measurements.firstElementHeight / 2;
         const isWithinViewport =
             measurements.top >= measurements.viewPortTop &&
             measurements.top <= measurements.viewPortBottom;
@@ -70,20 +71,18 @@ export default class AnnotationControls extends React.PureComponent<Props> {
         if (isWithinViewport && top + height > measurements.viewPortBottom) {
             top = measurements.viewPortBottom - height;
         }
-        if (top < 0) {
-            top = 0;
-        }
 
         this.controls.style.top = top + "px";
         if (this.arrow && this.arrowDs) {
-            this.arrow.style.top = measurements.top - top + "px";
-            this.arrowDs.style.top = measurements.top - top + 2 + "px";
+            let arrowTop = measurements.top - top;
+            this.arrow.style.top = arrowTop + "px";
+            this.arrowDs.style.top = arrowTop + 2 + "px";
         }
     }
 
     getMeasurements(): {
         top: number,
-        textRight: number,
+        firstElementHeight: number,
         viewPortTop: number | null,
         viewPortBottom: number | null
     } | null {
@@ -92,7 +91,6 @@ export default class AnnotationControls extends React.PureComponent<Props> {
         }
 
         const selectedElementId = this.props.selectedElementId;
-        const firstText = document.getElementsByClassName(textStyles.text)[0];
         const splitTextRect = this.props.splitTextRect;
         const firstElement = document.getElementById(selectedElementId);
         let extraTop = 0;
@@ -109,7 +107,7 @@ export default class AnnotationControls extends React.PureComponent<Props> {
             );
             return {
                 top: 0,
-                textRight: 0,
+                firstElementHeight: 1,
                 viewPortTop: 0,
                 viewPortBottom: 0
             };
@@ -127,11 +125,13 @@ export default class AnnotationControls extends React.PureComponent<Props> {
             viewPortTop = firstElement.offsetTop - elViewPortTop;
             viewPortBottom = firstElement.offsetTop + elViewPortBottom;
         }
-        const textRight =
-            firstText.offsetLeft + firstText.offsetWidth + CONTROLS_MARGIN_LEFT;
+
         return {
             top: top,
-            textRight: textRight,
+            firstElementHeight:
+                firstElement && firstElement.offsetHeight
+                    ? firstElement.offsetHeight
+                    : 1,
             viewPortTop: viewPortTop,
             viewPortBottom: viewPortBottom
         };
