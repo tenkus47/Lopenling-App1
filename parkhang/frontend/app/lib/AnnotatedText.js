@@ -17,12 +17,13 @@ export default class AnnotatedText {
     originalText: SegmentedText;
     segmenter: Segmenter | null;
     baseWitness: Witness;
-    activeWitness: Witness | null;
+    activeWitness: Witness;
     _generatedText: SegmentedText | null;
     _orginalCurrentSegmentPositions: { [position: string]: [number, boolean] };
     _currentOriginalSegmentPositions: { [position: number]: number };
     annotations: Annotation[];
     _annotationsByType: { [string]: Annotation[] };
+    _uniqueId: string | null;
 
     /**
      *
@@ -52,6 +53,7 @@ export default class AnnotatedText {
         for (let i = 0; i < annotations.length; i++) {
             this.addAnnotation(annotations[i]);
         }
+        this._uniqueId = null;
     }
 
     addAnnotation(annotation: Annotation) {
@@ -64,6 +66,8 @@ export default class AnnotatedText {
                 this._annotationsByType[annotation.type] = [];
             }
             this._annotationsByType[annotation.type].push(annotation);
+
+            this.resetUniqueId();
         }
     }
 
@@ -88,6 +92,28 @@ export default class AnnotatedText {
         }
 
         return this._generatedText;
+    }
+
+    getUniqueId() {
+        if (!this._uniqueId) {
+            let id = this.baseWitness.id + "-" + this.activeWitness.id + "-";
+            for (let type in this._annotationsByType) {
+                if (this._annotationsByType.hasOwnProperty(type)) {
+                    id += this._annotationsByType[type].reduce(
+                        (acc: string, annotation: Annotation) => {
+                            return (acc += annotation.uniqueId);
+                        },
+                        ""
+                    );
+                }
+            }
+            this._uniqueId = id;
+        }
+        return this._uniqueId;
+    }
+
+    resetUniqueId() {
+        this._uniqueId = null;
     }
 
     getText(): string {
