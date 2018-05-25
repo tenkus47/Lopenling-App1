@@ -36,6 +36,7 @@ import _ from "lodash";
 
 import AnnotatedText from "lib/AnnotatedText";
 import segmentTibetanText from "lib/segmentTibetanText";
+import SegmentedText from "lib/SegmentedText";
 
 function getInsertionKey(annotation) {
     return [annotation.start, annotation.length].join("-");
@@ -180,6 +181,18 @@ const getActiveAnnotations = (
     _activeAnnotations = annotationsFromData(state, activeAnnotationDataList);
     return _activeAnnotations;
 };
+
+// TODO: clear cache when changing texts
+let _segmentedWitnesses: { [number]: SegmentedText } = {};
+function getSegmentedWitness(witness: Witness): SegmentedText {
+    if (!_segmentedWitnesses[witness.id]) {
+        _segmentedWitnesses[witness.id] = segmentTibetanText(
+            witness.content || ""
+        );
+    }
+
+    return _segmentedWitnesses[witness.id];
+}
 
 let _selectedWitness;
 const mapStateToProps = state => {
@@ -327,8 +340,9 @@ const mapStateToProps = state => {
             }
         );
 
+        let segmentedWorkingWitness = getSegmentedWitness(workingWitness);
         annotatedText = new AnnotatedText(
-            segmentTibetanText(workingWitness.content),
+            segmentedWorkingWitness,
             appliedAnnotations,
             text => {
                 return segmentTibetanText(text).sortedSegments();
