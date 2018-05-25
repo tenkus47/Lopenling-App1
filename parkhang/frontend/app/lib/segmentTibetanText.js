@@ -1,7 +1,8 @@
+// @flow
 import SegmentedText from "./SegmentedText";
 import TextSegment from "./TextSegment";
 
-export default function segmentTibetanText(text) {
+export default function segmentTibetanText(text: string): SegmentedText {
     const breaks = "།།";
     const spaces = "༌་ \n";
 
