@@ -108,7 +108,7 @@ describe("AnnotatedText", () => {
     const expectedTextContent =
         "༄༅༅། །རྒྱ་གར་སྐད་དུ། ས་པྲཛྙཱ་ཤྲི་མ་ཧཱ་ཀཱ་ལ་སཱ་དྷ་ན་ནཱ་མ། བད་ཁད་དུ། དཔལ་ནག་པོ་ཆེན་པོ་ཡུམ་ཅན་གྱི་སྒྲུབ་ཐབས་ཞེས་བྱ་བ། བླ་མ་དང་དཔལ་རྡོ་རྗེ་མཁའ་འགྲོ་ལ་ཕྱག་འཚལ་ལོ། །འགྱེལ་བའི་རོ་ན་ལ་ཞབས་མཆོག་མཉམ་པའི་སྟབས་ཀྱིས་བཞུགས་ཤིང་སྦོམ་ཐུང་དྲག་གསུས་ཁྱིམ་དང་ཡངས།";
 
-    const segmentedText = segmentTibetanText(baseWitness.content);
+    const segmentedText = segmentTibetanText(baseWitness.content || "");
     const annotatedText = new AnnotatedText(
         segmentedText,
         annotations,
@@ -739,5 +739,24 @@ describe("AnnotatedText", () => {
         );
 
         // TODO: write some more tests for multi-segment changes
+    });
+
+    test("AnnotatedText uniqueId", () => {
+        const segmentedText = segmentTibetanText(baseWitness.content || "");
+        const annotatedText = new AnnotatedText(
+            segmentedText,
+            annotations,
+            segmenter,
+            baseWitness
+        );
+
+        let expectedId = baseWitness.id + "-" + baseWitness.id + "-";
+        expectedId += annotations.reduce(
+            (acc: string, annotation: Annotation) => {
+                return (acc += annotation.uniqueId);
+            },
+            ""
+        );
+        expect(annotatedText.getUniqueId()).toEqual(expectedId);
     });
 });
