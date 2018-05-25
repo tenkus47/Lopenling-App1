@@ -7,13 +7,15 @@ export type Splitter = string => number[];
 export default class SplitText {
     annotatedText: AnnotatedText;
     splitter: Splitter;
-    _texts: SegmentedText[];
+    _texts: SegmentedText[] | null;
+    _textsId: string | null;
     _textsFinalPositions: number[];
 
     constructor(annotatedText: AnnotatedText, splitter: Splitter) {
         this.annotatedText = annotatedText;
         this.splitter = splitter;
-        this._texts = [];
+        this._texts = null;
+        this._textsId = null;
         this._textsFinalPositions = [];
     }
 
@@ -21,44 +23,53 @@ export default class SplitText {
         if (!this.annotatedText) {
             return [];
         }
-        this._textsFinalPositions = [];
-        const segmentedText = this.annotatedText.segmentedText;
-        const textString = segmentedText.getText();
-        let splitPositions = this.splitter(textString);
-        if (splitPositions.length == 0) {
-            this._textsFinalPositions.push(textString.length);
-            return [segmentedText];
-        }
-        let lastPosition = splitPositions[splitPositions.length - 1];
-        if (lastPosition + 1 < textString.length) {
-            splitPositions.push(textString.length - 1);
-        }
-        const segments = segmentedText.sortedSegments();
-        let startIndex = 0;
-        let texts = [];
-        for (let i = 0; i < splitPositions.length; i++) {
-            const position = splitPositions[i];
-            const endIndex = segmentedText.indexOfSortedSegmentAtPosition(
-                position
-            );
-            let textSegments;
-            if (i == splitPositions.length - 1) {
-                // final position
-                textSegments = segments.slice(startIndex);
-            } else {
-                textSegments = segments.slice(startIndex, endIndex);
+
+        if (
+            !this._texts ||
+            this._textsId !== this.annotatedText.getUniqueId()
+        ) {
+            this._textsFinalPositions = [];
+            const segmentedText = this.annotatedText.segmentedText;
+            const textString = segmentedText.getText();
+            let splitPositions = this.splitter(textString);
+            if (splitPositions.length === 0) {
+                this._textsFinalPositions.push(textString.length);
+                return [segmentedText];
+            }
+            let lastPosition = splitPositions[splitPositions.length - 1];
+            if (lastPosition + 1 < textString.length) {
+                splitPositions.push(textString.length - 1);
+            }
+            const segments = segmentedText.sortedSegments();
+            let startIndex = 0;
+            let texts = [];
+            for (let i = 0; i < splitPositions.length; i++) {
+                const position = splitPositions[i];
+                const endIndex = segmentedText.indexOfSortedSegmentAtPosition(
+                    position
+                );
+                let textSegments;
+                if (i == splitPositions.length - 1) {
+                    // final position
+                    textSegments = segments.slice(startIndex);
+                } else {
+                    textSegments = segments.slice(startIndex, endIndex);
+                }
+
+                const text = new SegmentedText(textSegments);
+                texts.push(text);
+                startIndex = endIndex;
+                if (endIndex >= 0) {
+                    const finalSegment = segments[endIndex];
+                    this._textsFinalPositions.push(finalSegment.end);
+                }
             }
 
-            const text = new SegmentedText(textSegments);
-            texts.push(text);
-            startIndex = endIndex;
-            if (endIndex >= 0) {
-                const finalSegment = segments[endIndex];
-                this._textsFinalPositions.push(finalSegment.end);
-            }
+            this._texts = texts;
+            this._textsId = this.annotatedText.getUniqueId();
         }
 
-        return texts;
+        return this._texts || [];
     }
 
     _getTextsFinalPositions(): number[] {
