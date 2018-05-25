@@ -32,6 +32,7 @@ export default class SegmentedText {
      */
     sortedSegments(): TextSegment[] {
         if (!this._sortedSegments) {
+            // Note: much faster than slice(0)
             this._sortedSegments = [...this.segments];
             this._sortedSegments.sort((a, b) => {
                 let res = a.start - b.start;
