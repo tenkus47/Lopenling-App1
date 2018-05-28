@@ -332,10 +332,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         } else {
             if (changedWitness) {
                 this.updateList(true);
-            } else if (
-                this.props.splitText.annotatedText !==
-                props.splitText.annotatedText
-            ) {
+            } else if (this.props.activeAnnotation) {
                 this.updateList(true, this.selectedListRow(props));
             } else {
                 this.updateList(this.shouldResetListCache(this.props, props));
