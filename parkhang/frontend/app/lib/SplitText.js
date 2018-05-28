@@ -40,12 +40,12 @@ export default class SplitText {
             if (lastPosition + 1 < textString.length) {
                 splitPositions.push(textString.length - 1);
             }
-            const segments = segmentedText.sortedSegments();
+            const segments = segmentedText.segments;
             let startIndex = 0;
             let texts = [];
             for (let i = 0; i < splitPositions.length; i++) {
                 const position = splitPositions[i];
-                const endIndex = segmentedText.indexOfSortedSegmentAtPosition(
+                const endIndex = segmentedText.indexOfSegmentAtPosition(
                     position
                 );
                 let textSegments;

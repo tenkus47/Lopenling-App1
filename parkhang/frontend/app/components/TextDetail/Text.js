@@ -104,7 +104,7 @@ export default class Text extends React.Component<Props, State> {
     }
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
-        let segments = renderState.segmentedText.sortedSegments();
+        let segments = renderState.segmentedText.segments;
         let segmentHTML = "";
         const insertionClass = styles.insertion;
         const endPosition = segments[segments.length - 1].end + 1;

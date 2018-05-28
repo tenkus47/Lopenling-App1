@@ -384,7 +384,7 @@ export default class AnnotatedText {
         text: SegmentedText,
         annotations: Annotation[]
     ): SegmentedText {
-        const segments = text.sortedSegments();
+        const segments = text.segments;
         let newSegments = segments.slice();
         let replacedSegments = {};
 

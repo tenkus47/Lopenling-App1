@@ -345,7 +345,7 @@ const mapStateToProps = state => {
             segmentedWorkingWitness,
             appliedAnnotations,
             text => {
-                return segmentTibetanText(text).sortedSegments();
+                return segmentTibetanText(text).segments;
             },
             workingWitness,
             selectedWitness

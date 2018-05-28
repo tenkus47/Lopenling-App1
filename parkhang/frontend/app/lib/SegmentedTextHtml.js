@@ -7,7 +7,7 @@ export default class SegmentedTextHtml {
     html() {
         if (!this._html) {
             let html = "";
-            for (let segment of this._segmentedText.sortedSegments()) {
+            for (let segment of this._segmentedText.segments) {
                 let id = this.idForSegment(segment);
                 html += '<span id="' + id + '">' + segment.text + "</span>";
             }

@@ -17,10 +17,9 @@ export default class SegmentedText {
      */
     getText(): string {
         if (this._sortedText == null) {
-            let sorted = this.sortedSegments();
             let text = "";
-            for (let i = 0; i < sorted.length; i++) {
-                text += sorted[i].text;
+            for (let i = 0, len = this.segments.length; i < len; i++) {
+                text += this.segments[i].text;
             }
             this._sortedText = text;
         }
@@ -49,16 +48,16 @@ export default class SegmentedText {
     }
 
     /**
-     * Return the index of the sorted segment at the given position.
+     * Return the index of the segment at the given position.
      *
      * Intended to be used privately by internal methods.
      *
      * @return 0 or greater if a segment is found; -1 if not found.
      */
-    indexOfSortedSegmentAtPosition(position: number): number {
+    indexOfSegmentAtPosition(position: number): number {
         let foundSegmentIndex = -1;
 
-        const segments = this.sortedSegments();
+        const segments = this.segments;
         let minIndex = 0;
         let maxIndex = segments.length - 1;
         let currentIndex;
@@ -86,9 +85,9 @@ export default class SegmentedText {
      */
     segmentAtPosition(position: number): TextSegment | null {
         let foundSegment = null;
-        let segmentIndex = this.indexOfSortedSegmentAtPosition(position);
+        let segmentIndex = this.indexOfSegmentAtPosition(position);
         if (segmentIndex > -1) {
-            foundSegment = this.sortedSegments()[segmentIndex];
+            foundSegment = this.segments[segmentIndex];
         }
         return foundSegment;
     }
@@ -105,11 +104,11 @@ export default class SegmentedText {
             rangeEnd = start + length - 1;
         }
 
-        const sorted = this.sortedSegments();
-        const firstSegmentIndex = this.indexOfSortedSegmentAtPosition(start);
+        const allSegments = this.segments;
+        const firstSegmentIndex = this.indexOfSegmentAtPosition(start);
         if (firstSegmentIndex > -1) {
-            for (let i = firstSegmentIndex; i < sorted.length; i++) {
-                let segment = sorted[i];
+            for (let i = firstSegmentIndex; i < allSegments.length; i++) {
+                let segment = allSegments[i];
                 const segmentEnd = segment.start + segment.text.length - 1;
 
                 if (
