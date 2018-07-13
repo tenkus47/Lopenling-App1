@@ -401,6 +401,37 @@ export default class AnnotatedText {
         }
         return segments;
     }
+
+    indexOfSegment(segment: TextSegment, segments: TextSegment[]) {
+        let foundSegmentIndex = -1;
+
+        let minIndex = 0;
+        let maxIndex = segments.length - 1;
+        let currentIndex;
+        let currentSegment;
+        let position = segment.start;
+
+        while (minIndex <= maxIndex) {
+            currentIndex = ((minIndex + maxIndex) / 2) | 0;
+            currentSegment = segments[currentIndex];
+            const segmentEnd =
+                currentSegment.start + currentSegment.text.length - 1;
+            if (segmentEnd < position) {
+                minIndex = currentIndex + 1;
+            } else if (currentSegment.start > position) {
+                maxIndex = currentIndex - 1;
+            } else if (currentSegment.text !== segment.text) {
+                // These should be equal, so if not just punt and use
+                // indexOf instead.
+                return segments.indexOf(segment);
+            } else {
+                return currentIndex;
+            }
+        }
+
+        return foundSegmentIndex;
+    }
+
     /**
      * Generate a new SegmentedText with the given annotations.
      */
@@ -420,7 +451,7 @@ export default class AnnotatedText {
             );
             if (targets.length > 0) {
                 let start = targets[0].start;
-                let firstIndex = newSegments.indexOf(targets[0]);
+                let firstIndex = this.indexOfSegment(targets[0], newSegments);
                 if (firstIndex === -1) {
                     let found = newSegments.filter(
                         seg => seg.start === targets[0].start
