@@ -75,7 +75,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.list = null;
         this.splitText = null;
         this.cache = new CellMeasurerCache({
-            fixedWidth: true
+            fixedWidth: true,
+            defaultHeight: 300
         });
         this.rowRenderer = this.rowRenderer.bind(this);
         this.textListVisible = props.textListVisible;
