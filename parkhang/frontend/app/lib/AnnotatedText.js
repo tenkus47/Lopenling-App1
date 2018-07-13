@@ -19,7 +19,9 @@ export default class AnnotatedText {
     baseWitness: Witness;
     activeWitness: Witness;
     _generatedText: SegmentedText | null;
-    _orginalCurrentSegmentPositions: { [position: string]: [number, boolean] };
+    _orginalCurrentSegmentPositions: {
+        [position: string | number]: [number, boolean]
+    };
     _currentOriginalSegmentPositions: { [position: number]: number };
     annotations: Annotation[];
     _annotationsByType: { [string]: Annotation[] };
@@ -457,7 +459,7 @@ export default class AnnotatedText {
 
         let processedSegmentAnnotations = {};
         let currentPosition = 0;
-        let updatedSegments = [];
+        let updatedSegments = new Array(newSegments.length);
         for (let i = 0, len = newSegments.length; i < len; i++) {
             let segment = newSegments[i];
             if (segment._annotation) {
@@ -488,7 +490,7 @@ export default class AnnotatedText {
                     );
                     for (let j = 0; j < replacedLength; j++) {
                         this._orginalCurrentSegmentPositions[
-                            String(segment.start + j)
+                            segment.start + j
                         ] = [currentPosition, deleted];
                     }
                     for (let m = 0; m < annotation.content.length; m++) {
@@ -502,16 +504,17 @@ export default class AnnotatedText {
             } else {
                 const segmentPos = segment.start;
                 for (let j = 0; j < segment.text.length; j++) {
-                    this._orginalCurrentSegmentPositions[
-                        String(segmentPos + j)
-                    ] = [currentPosition + j, false];
+                    this._orginalCurrentSegmentPositions[segmentPos + j] = [
+                        currentPosition + j,
+                        false
+                    ];
                     this._currentOriginalSegmentPositions[currentPosition + j] =
                         segmentPos + j;
                 }
             }
 
             segment = new TextSegment(currentPosition, newSegments[i].text);
-            updatedSegments.push(segment);
+            updatedSegments[i] = segment;
             currentPosition += segment.length;
         }
 
