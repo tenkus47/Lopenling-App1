@@ -103,7 +103,9 @@ export default class AnnotatedText {
                 if (this._annotationsByType.hasOwnProperty(type)) {
                     id += this._annotationsByType[type].reduce(
                         (acc: string, annotation: Annotation) => {
-                            return (acc += annotation.uniqueId);
+                            return (
+                                acc + annotation.uniqueId + annotation.content
+                            );
                         },
                         ""
                     );
