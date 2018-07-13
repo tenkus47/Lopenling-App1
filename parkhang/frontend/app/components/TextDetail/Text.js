@@ -59,7 +59,7 @@ export default class Text extends React.Component<Props, State> {
         });
     }
 
-    annotationsForSegment(segment: TextSegment) {
+    annotationsForSegment(segment: TextSegment): Annotation[] {
         let annotations: Annotation[] = [];
         const foundAnnotations = this.props.annotationPositions[
             String(segment.start)
@@ -67,19 +67,12 @@ export default class Text extends React.Component<Props, State> {
         if (foundAnnotations) {
             annotations = foundAnnotations;
         }
-        const insertions = this.props.annotationPositions[
-            INSERTION_KEY + segment.start
-        ];
-        if (insertions) {
-            annotations = annotations.concat(insertions);
-        }
-        const deletions = this.props.annotationPositions[
-            DELETION_KEY + segment.start
-        ];
-        if (deletions) {
-            annotations = annotations.concat(deletions);
-        }
-        return annotations;
+        const insertions =
+            this.props.annotationPositions[INSERTION_KEY + segment.start] || [];
+        const deletions =
+            this.props.annotationPositions[DELETION_KEY + segment.start] || [];
+
+        return annotations.concat(insertions, deletions);
     }
 
     segmentsContainSegment(segments: TextSegment[], segment: TextSegment) {
@@ -112,6 +105,15 @@ export default class Text extends React.Component<Props, State> {
             const endSegment = new TextSegment(endPosition, "");
             segments.push(endSegment);
         }
+
+        let activeAnnotationIds = {};
+        if (renderProps.activeAnnotations) {
+            for (let i = 0; i < renderProps.activeAnnotations.length; i++) {
+                let annotation = renderProps.activeAnnotations[i];
+                activeAnnotationIds[annotation.uniqueId] = annotation;
+            }
+        }
+
         for (let i = 0; i < segments.length; i++) {
             let segment = segments[i];
             let classAttribute = "";
@@ -120,19 +122,34 @@ export default class Text extends React.Component<Props, State> {
             let deletionText = null;
             let selectedCurrentDeletion = false;
             if (annotations) {
-                let insertions = annotations.filter(
-                    annotation => annotation.isInsertion
-                );
-                let activeInsertions = _.intersectionWith(
-                    renderProps.activeAnnotations,
-                    insertions,
-                    (a, b) => a.uniqueId === b.uniqueId
-                );
-                let inactiveInsertions = _.differenceWith(
-                    insertions,
-                    activeInsertions,
-                    (a, b) => a.start === b.start
-                );
+                let insertions = [];
+                let activeInsertions = [];
+                let inactiveInsertions = [];
+                let remainingAnnotations = [];
+                let deletions = [];
+                let activeDeletions = [];
+
+                for (let j = 0, len = annotations.length; j < len; j++) {
+                    let annotation = annotations[j];
+                    if (annotation.isInsertion) {
+                        insertions.push(annotation);
+                        if (annotation.uniqueId in activeAnnotationIds) {
+                            activeInsertions.push(annotation);
+                        } else {
+                            inactiveInsertions.push(annotation);
+                        }
+                    } else {
+                        if (annotation.isDeletion) {
+                            deletions.push(annotation);
+                            if (annotation.uniqueId in activeAnnotationIds) {
+                                activeDeletions.push(annotation);
+                            }
+                        } else {
+                            remainingAnnotations.push(annotation);
+                        }
+                    }
+                }
+
                 if (inactiveInsertions.length > 0) {
                     const insertion = inactiveInsertions[0];
                     const insertionId = idForInsertion(segment);
@@ -149,25 +166,7 @@ export default class Text extends React.Component<Props, State> {
                         "</span>";
                 }
 
-                let remainingAnnotations = _.differenceWith(
-                    annotations,
-                    insertions,
-                    (a, b) => a.id == b.id
-                );
-
-                let deletions = remainingAnnotations.filter(
-                    annotation => annotation.isDeletion
-                );
-                let activeDeletions = _.intersectionWith(
-                    renderProps.activeAnnotations,
-                    deletions,
-                    (a, b) => a.id === b.id
-                );
                 if (activeDeletions.length > 0) {
-                    // assume any other deletions are the same
-                    remainingAnnotations = remainingAnnotations.filter(
-                        annotation => !annotation.isDeletion
-                    );
                     const activeDeletion = activeDeletions[0];
                     const baseAnnotation = renderProps.getBaseAnnotation(
                         activeDeletion
@@ -193,6 +192,7 @@ export default class Text extends React.Component<Props, State> {
                     classes.push(styles.annotation);
                 }
             }
+
             // It's an insertion at the end of the text, which should have just been added to the html.
             // So break as we don't want anymore segment html adding.
             if (segment.start === endPosition) {
