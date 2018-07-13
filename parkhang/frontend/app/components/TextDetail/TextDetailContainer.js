@@ -184,6 +184,36 @@ const getActiveAnnotations = (
     return _activeAnnotations;
 };
 
+let _annotatedTextsCache: {
+    textId: number | null,
+    texts: { [id: string]: AnnotatedText }
+} = {
+    textId: null,
+    texts: {}
+};
+function getCachedAnnotatedText(
+    text: AnnotatedText,
+    witness: Witness
+): AnnotatedText {
+    let textId = witness.text.id;
+    if (_annotatedTextsCache.textId === textId) {
+        if (_annotatedTextsCache.texts.hasOwnProperty(text.getUniqueId())) {
+            console.log("got cached annotated text");
+            return _annotatedTextsCache.texts[text.getUniqueId()];
+        } else {
+            _annotatedTextsCache.texts[text.getUniqueId()] = text;
+            return text;
+        }
+    } else {
+        console.log("reset cache");
+        _annotatedTextsCache.textId = textId;
+        _annotatedTextsCache.texts = {
+            [text.getUniqueId()]: text
+        };
+        return text;
+    }
+}
+
 // TODO: clear cache when changing texts
 let _segmentedWitnesses: { [number]: SegmentedText } = {};
 function getSegmentedWitness(witness: Witness): SegmentedText {
@@ -366,6 +396,9 @@ const mapStateToProps = state => {
             workingWitness,
             selectedWitness
         );
+        // A cached text will already have it text generated
+        // so it's more performant than doing so again.
+        annotatedText = getCachedAnnotatedText(annotatedText, selectedWitness);
 
         annotationPositions = getAnnotationPositions(
             annotatedText,
