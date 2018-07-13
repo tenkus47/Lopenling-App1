@@ -80,11 +80,3 @@
     @apply --removedText;
     text-decoration: line-through green;
 }
-
-.pageNumber {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    font-size: 42px;
-    color: #444;
-}

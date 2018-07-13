@@ -506,6 +506,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                         !this.props.activeAnnotation) && (
                         <div className={styles.controlsPlaceholder} />
                     )}
+                    <div className={styles.pageNumber}>{index + 1}</div>
                 </div>
             </CellMeasurer>
         );

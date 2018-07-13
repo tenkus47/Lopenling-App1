@@ -280,7 +280,6 @@ export default class Text extends React.Component<Props, State> {
                     dangerouslySetInnerHTML={html}
                     onClick={e => this.selectedElement(e.target)}
                 />
-                <div className={styles.pageNumber}>{this.props.row + 1}</div>
             </div>
         );
     }
