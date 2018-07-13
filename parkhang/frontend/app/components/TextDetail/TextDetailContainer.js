@@ -165,17 +165,18 @@ const getActiveAnnotations = (
     }
 
     let activeAnnotationDataList = {};
-    for (let i = 0; i < activeAnnotationList.length; i++) {
-        let activeAnnotationId = activeAnnotationList[i];
-        let activeAnnotationData = getAnnotationData(
-            state,
-            baseWitnessId,
-            activeAnnotationId
-        );
-        if (activeAnnotationData) {
-            activeAnnotationDataList[
-                activeAnnotationData.unique_id
-            ] = activeAnnotationData;
+    for (let activeAnnotationId in activeAnnotationList) {
+        if (activeAnnotationList.hasOwnProperty(activeAnnotationId)) {
+            let activeAnnotationData = getAnnotationData(
+                state,
+                baseWitnessId,
+                activeAnnotationId
+            );
+            if (activeAnnotationData) {
+                activeAnnotationDataList[
+                    activeAnnotationData.unique_id
+                ] = activeAnnotationData;
+            }
         }
     }
 
