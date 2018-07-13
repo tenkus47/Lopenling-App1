@@ -753,7 +753,7 @@ describe("AnnotatedText", () => {
         let expectedId = baseWitness.id + "-" + baseWitness.id + "-";
         expectedId += annotations.reduce(
             (acc: string, annotation: Annotation) => {
-                return (acc += annotation.uniqueId);
+                return acc + annotation.uniqueId + annotation.content;
             },
             ""
         );
