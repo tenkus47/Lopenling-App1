@@ -381,6 +381,26 @@ export default class AnnotatedText {
         );
     }
 
+    createSegments(annotation: Annotation, start: number) {
+        const deleted = annotation.content.length === 0;
+        let segments = [];
+        if (this.segmenter !== null && !deleted) {
+            let annotationSegments = this.segmenter(annotation.content);
+            let annoSegStart = start;
+            for (let j = 0; j < annotationSegments.length; j++) {
+                let annotationSegment = annotationSegments[j];
+                annotationSegment.start = annoSegStart;
+                annotationSegment._annotation = annotation;
+                annoSegStart += annotationSegment.text.length;
+            }
+            segments = annotationSegments;
+        } else {
+            let annotationSegment = new TextSegment(start, annotation.content);
+            annotationSegment._annotation = annotation;
+            segments = [annotationSegment];
+        }
+        return segments;
+    }
     /**
      * Generate a new SegmentedText with the given annotations.
      */
@@ -391,31 +411,6 @@ export default class AnnotatedText {
         const segments = text.segments;
         let newSegments = segments.slice();
         let replacedSegments = {};
-
-        // create new segments for annotation
-        const createSegments = (annotation, start) => {
-            const deleted = annotation.content.length === 0;
-            let segments = [];
-            if (this.segmenter !== null && !deleted) {
-                let annotationSegments = this.segmenter(annotation.content);
-                let annoSegStart = start;
-                for (let j = 0; j < annotationSegments.length; j++) {
-                    let annotationSegment = annotationSegments[j];
-                    annotationSegment.start = annoSegStart;
-                    annotationSegment._annotation = annotation;
-                    annoSegStart += annotationSegment.text.length;
-                }
-                segments = annotationSegments;
-            } else {
-                let annotationSegment = new TextSegment(
-                    start,
-                    annotation.content
-                );
-                annotationSegment._annotation = annotation;
-                segments = [annotationSegment];
-            }
-            return segments;
-        };
 
         for (let i = 0, len = annotations.length; i < len; i++) {
             let annotation = annotations[i];
@@ -435,7 +430,7 @@ export default class AnnotatedText {
                     }
                 }
 
-                const segments = createSegments(annotation, start);
+                const segments = this.createSegments(annotation, start);
                 if (annotation.isInsertion) {
                     newSegments.splice(firstIndex, 0, ...segments);
                 } else {
@@ -448,7 +443,10 @@ export default class AnnotatedText {
                 }
             } else {
                 // Assume insertion at end of text, otherwise a target segment would exist
-                const segments = createSegments(annotation, annotation.start);
+                const segments = this.createSegments(
+                    annotation,
+                    annotation.start
+                );
                 newSegments = newSegments.concat(segments);
                 if (!annotation.isInsertion) {
                     console.warn(
