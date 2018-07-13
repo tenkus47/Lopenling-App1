@@ -3,7 +3,6 @@ import * as api from "api";
 import Annotation, { TemporaryAnnotation } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
-import Text from "lib/Text";
 
 /** Actions types **/
 
@@ -164,36 +163,6 @@ export function loadedInitialData(): Action {
         type: LOADED_INITIAL_DATA
     };
 }
-
-// export function loadTextData(text) {
-//     return {
-//         type: LOAD_TEXT_DATA,
-//         text,
-//     };
-// }
-
-// export function loadingTextData(text) {
-//     return {
-//         type: LOADING_TEXT_DATA,
-//         text,
-//     };
-// }
-
-// export function loadedTextData(text) {
-//     return {
-//         type: LOADED_TEXT_DATA,
-//         text,
-//     };
-// }
-
-// WITNESSES
-
-// export function loadWitnesses(text) {
-//     return {
-//         type: LOAD_WITNESSES,
-//         text,
-//     };
-// }
 
 export function loadingWitnesses(text: api.TextData): TextDataAction {
     return {
@@ -451,16 +420,6 @@ export function selectedTextWitness(
     };
 }
 
-// export type ChangedSelectedSegmentAction = Action & {
-//     segment: TextSegment
-// }
-// export function changedSelectedSegment(segment: TextSegment): ChangedSelectedSegmentAction {
-//     return {
-//         type: CHANGED_SELECTED_SEGMENT,
-//         segment,
-//     }
-// }
-
 export type AddedTemporaryAnnotationAction = Action & {
     annotation: TemporaryAnnotation,
     isActive: boolean
@@ -475,19 +434,6 @@ export function addedTemporaryAnnotation(
         isActive
     };
 }
-
-// /**
-//  *
-//  * @param {Annotation} annotation
-//  * @param {boolean} isActive - whether the annotation is currently active
-//  */
-// export function updatedTemporaryAnnotation(annotation, isActive) {
-//     return {
-//         type: UPDATED_TEMPORARY_ANNOTATION,
-//         annotation,
-//         isActive
-//     }
-// }
 
 export type RemovedTemporaryAnnotationAction = Action & {
     annotation: TemporaryAnnotation
