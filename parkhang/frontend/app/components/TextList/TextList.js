@@ -86,7 +86,7 @@ class TextList extends React.Component<Props> {
                             <List
                                 height={height}
                                 rowCount={this.props.texts.length}
-                                rowHeight={50}
+                                rowHeight={60}
                                 rowRenderer={rowRenderer}
                                 width={width}
                             />

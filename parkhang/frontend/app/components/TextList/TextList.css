@@ -14,18 +14,18 @@
 .textListRow {
     display: flex;
     align-items: center;
-    background-color: #efefef;
+    background-color: #555;
+    color: white;
     padding: 0 10px;
     cursor: pointer;
-    border-bottom: 1px solid #ccc;
     white-space: nowrap;
     font-family: var(--tibetan-fonts);
     font-size: 18px;
 }
 
 .selectedRow {
-    background-color: #888;
-    color: white;
+    background-color: #efefef;
+    color: black;
 }
 
 .textName {
