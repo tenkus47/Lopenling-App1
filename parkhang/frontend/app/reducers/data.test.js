@@ -10,6 +10,7 @@ import User from "lib/User";
 import dataReducers, * as data from "reducers/data";
 // import dataReducers, { initialDataState, dataFromAnnotation } from 'reducers/data'
 import * as actions from "actions";
+import * as api from "api";
 
 const source1 = new Source(1, "Derge", true);
 const source2 = new Source(2, "Narthang");
@@ -36,11 +37,16 @@ describe("Applying and removing reducer", () => {
 
     let state = { ...data.initialDataState };
     let witnessActiveAnnotations = {
-        [baseWitness.id]: [annotation.uniqueId]
+        [baseWitness.id]: {
+            [api.appliedOp]: {
+                [annotation.uniqueId]: annotation.uniqueId
+            },
+            [api.removedOp]: {}
+        }
     };
     let expectedState = {
         ...state,
-        witnessActiveAnnotationsById: witnessActiveAnnotations
+        witnessAnnotationOperationsById: witnessActiveAnnotations
     };
 
     test("Applying annotation", () => {
@@ -64,11 +70,14 @@ describe("Applying and removing reducer", () => {
             applyAction
         );
         const witnessActiveAnnotations = {
-            [baseWitness.id]: []
+            [baseWitness.id]: {
+                [api.appliedOp]: {},
+                [api.removedOp]: {}
+            }
         };
         const expectedState = {
             ...state,
-            witnessActiveAnnotationsById: witnessActiveAnnotations
+            witnessAnnotationOperationsById: witnessActiveAnnotations
         };
 
         expect(dataReducers[removeAction.type](state, removeAction)).toEqual(
@@ -78,6 +87,68 @@ describe("Applying and removing reducer", () => {
         expect(dataReducers[removeAction.type](state, removeAction)).not.toBe(
             state
         );
+    });
+
+    const removeDefaultAction = actions.removedDefaultAnnotation(
+        annotation.uniqueId,
+        baseWitnessData
+    );
+
+    test("Removing default annotation", () => {
+        const state = dataReducers[removeDefaultAction.type](
+            { ...data.initialDataState },
+            removeDefaultAction
+        );
+
+        const witnessActiveAnnotations = {
+            [baseWitness.id]: {
+                [api.appliedOp]: {},
+                [api.removedOp]: {
+                    [annotation.uniqueId]: annotation.uniqueId
+                }
+            }
+        };
+        const expectedState = {
+            ...state,
+            witnessAnnotationOperationsById: witnessActiveAnnotations
+        };
+
+        let newState = dataReducers[removeDefaultAction.type](
+            state,
+            removeDefaultAction
+        );
+        expect(newState).toEqual(expectedState);
+    });
+
+    const applyDefaultAction = actions.appliedDefaultAnnotation(
+        annotation.uniqueId,
+        baseWitnessData
+    );
+
+    test("Applying default annotation", () => {
+        let state = dataReducers[removeDefaultAction.type](
+            { ...data.initialDataState },
+            removeDefaultAction
+        );
+        state = dataReducers[removeDefaultAction.type](
+            state,
+            applyDefaultAction
+        );
+
+        const witnessActiveAnnotations = {
+            [baseWitness.id]: {
+                [api.appliedOp]: {},
+                [api.removedOp]: {}
+            }
+        };
+        const expectedState = {
+            ...state,
+            witnessAnnotationOperationsById: witnessActiveAnnotations
+        };
+
+        expect(
+            dataReducers[applyDefaultAction.type](state, applyDefaultAction)
+        ).toEqual(expectedState);
     });
 });
 
@@ -129,7 +200,7 @@ describe("Processing loaded data", () => {
         };
 
         const action = actions.loadedWitnessAnnotations(
-            baseWitness,
+            baseWitness.id,
             annotationsData
         );
 
@@ -137,12 +208,12 @@ describe("Processing loaded data", () => {
 
         state = {
             ...state,
-            loadedAppliedAnnotations: true
+            loadedAnnotationOperations: true
         };
 
         expectedState = {
             ...expectedState,
-            loadedAppliedAnnotations: true,
+            loadedAnnotationOperations: true,
             loadingAnnotations: false
         };
 

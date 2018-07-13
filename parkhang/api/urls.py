@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 
-from .views import SourceList, TextList, TextDetail, WitnessList, AnnotationList, AnnotationDetail, AppliedUserAnnotations, AppliedUserAnnotationDetail
+from .views import SourceList, TextList, TextDetail, WitnessList, AnnotationList, AnnotationDetail, UserAnnotationOperations, UserAnnotationOperationDetail
 
 urlpatterns = [
     url(r'sources/$', SourceList.as_view()),
@@ -9,7 +9,9 @@ urlpatterns = [
     url(r'texts/(?P<text_id>[0-9]+)/witnesses/$', WitnessList.as_view()),
     url(r'texts/(?P<text_id>[0-9]+)/witnesses/(?P<witness_id>[0-9]+)/annotations/$', AnnotationList.as_view()),
     url(r'texts/(?P<text_id>[0-9]+)/witnesses/(?P<witness_id>[0-9]+)/annotations/(?P<annotation_unique_id>.+)$', AnnotationDetail.as_view()),
-    url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/applied_annotations/$', AppliedUserAnnotations.as_view()),
-url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/applied_annotations/(?P<annotation_unique_id>.+)$', AppliedUserAnnotationDetail.as_view())
+    url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/applied_annotations/$', UserAnnotationOperations.as_view()),
+    url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/applied_annotations/(?P<annotation_unique_id>.+)$', UserAnnotationOperationDetail.as_view()),
+    url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/user_annotation_operations/$', UserAnnotationOperations.as_view()),
+    url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/user_annotation_operations/(?P<annotation_unique_id>.+)$', UserAnnotationOperationDetail.as_view())
 ]
 

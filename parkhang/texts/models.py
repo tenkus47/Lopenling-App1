@@ -129,14 +129,16 @@ class Annotation(models.Model):
         return f'{self.witness.text.name} ({self.witness.source.name}): {self.start}-{self.start+self.length} - {name}'
 
 
-class AppliedUserAnnotation(models.Model):
-    """
-    Annotations that a User has selected to be active.
-    """
+class UserAnnotationOperation(models.Model):
+    OPERATION_CHOICES = (
+        ('A', 'Applied'),
+        ('R', 'Removed'),
+    )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     annotation = models.ForeignKey(Annotation)
     witness = models.ForeignKey(Witness)
+    operation = models.CharField(max_length=1, choices=OPERATION_CHOICES)
     """Intended to allow a user to say why they applied this annotation"""
     note = models.TextField(null=True, blank=True)
 

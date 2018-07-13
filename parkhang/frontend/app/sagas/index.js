@@ -142,6 +142,40 @@ function* watchRemovedAppliedAnnotation() {
     );
 }
 
+function removeDefaultAnnotation(
+    action: actions.RemovedDefaultAnnotationAction
+) {
+    return call(
+        api.removeDefaultAnnotation,
+        action.annotationId,
+        action.witnessData
+    );
+}
+
+function* watchRemovedDefaultAnnotation() {
+    yield takeEvery(
+        actions.REMOVED_DEFAULT_ANNOTATION,
+        typeCalls[actions.REMOVED_APPLIED_ANNOTATION]
+    );
+}
+
+function appliedDefaultAnnotation(
+    action: actions.AppliedDefaultAnnotationAction
+) {
+    return call(
+        api.applyDefaultAnnotation,
+        action.annotationId,
+        action.witnessData
+    );
+}
+
+function* watchAppliedDefaultAnnotation() {
+    yield takeEvery(
+        actions.APPLIED_DEFAULT_ANNOTATION,
+        typeCalls[actions.APPLIED_DEFAULT_ANNOTATION]
+    );
+}
+
 // INITIAL DATA
 
 export function* loadTexts(): Saga<void> {
@@ -211,7 +245,7 @@ function* loadInitialTextData(action: actions.TextDataAction) {
             yield put(actions.loadingWitnessAnnotations(workingWitness.id));
             yield all([
                 call(loadAnnotations, workingWitness.id),
-                call(loadAppliedAnnotations, workingWitness.id)
+                call(loadAnnotationOperations, workingWitness.id)
             ]);
             // auto-select the working witness
             yield put(
@@ -253,20 +287,19 @@ function* loadAnnotations(witnessId: number) {
     yield put(actions.loadedWitnessAnnotations(witnessId, annotations));
 }
 
-function* loadAppliedAnnotations(witnessId: number) {
+function* loadAnnotationOperations(witnessId: number) {
     const user = yield select(reducers.getUser);
     if (user.isLoggedIn) {
         const witnessData = yield select(reducers.getWitnessData, witnessId);
-        const annotations = yield call(
-            api.fetchAppliedUserAnnotations,
+        const operationsData = yield call(
+            api.fetchUserAnnotationOperations,
             witnessData
         );
-        let annotationIds = annotations.map(a => a.annotation_unique_id);
         yield put(
-            actions.loadedWitnessAppliedAnnotations(witnessId, annotationIds)
+            actions.loadedWitnessAnnotationOperations(witnessId, operationsData)
         );
     } else {
-        yield put(actions.loadedWitnessAppliedAnnotations(witnessId, []));
+        yield put(actions.loadedWitnessAnnotationOperations(witnessId, []));
     }
 }
 
@@ -274,7 +307,7 @@ function* loadWitnessAnnotations(action: actions.WitnessAction) {
     yield put(actions.loadingWitnessAnnotations(action.witnessId));
     yield all([
         call(loadAnnotations, action.witnessId),
-        call(loadAppliedAnnotations, action.witnessId)
+        call(loadAnnotationOperations, action.witnessId)
     ]);
 }
 
@@ -343,6 +376,8 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.LOAD_WITNESS_ANNOTATIONS]: loadWitnessAnnotations,
     [actions.APPLIED_ANNOTATION]: reqAction(applyAnnotation),
     [actions.REMOVED_APPLIED_ANNOTATION]: reqAction(removeAppliedAnnotation),
+    [actions.APPLIED_DEFAULT_ANNOTATION]: reqAction(appliedDefaultAnnotation),
+    [actions.REMOVED_DEFAULT_ANNOTATION]: reqAction(removeDefaultAnnotation),
     [actions.CREATED_ANNOTATION]: reqAction(createAnnotation),
     [actions.UPDATED_ANNOTATION]: reqAction(updateAnnotation),
     [actions.DELETED_ANNOTATION]: reqAction(deleteAnnotation),
@@ -359,6 +394,8 @@ export default function* rootSaga(): Saga<void> {
         call(watchBatchedActions),
         call(watchAppliedAnnotation),
         call(watchRemovedAppliedAnnotation),
+        call(watchAppliedDefaultAnnotation),
+        call(watchRemovedDefaultAnnotation),
         call(watchCreatedAnnotation),
         call(watchUpdatedAnnotation),
         call(watchDeletedAnnotation),

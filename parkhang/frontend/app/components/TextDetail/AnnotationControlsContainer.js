@@ -341,23 +341,87 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             //     selectedWitness.id
             // );
             let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
+
             if (annotation.uniqueId != stateProps.activeAnnotation.uniqueId) {
-                if (annotation.id != BASE_ANNOTATION_ID) {
-                    actionsBatch.push(
-                        actions.appliedAnnotation(
-                            selectedAnnotation.uniqueId,
-                            selectedWitnessData
-                        )
-                    );
+                if (selectedWitness.isWorking) {
+                    if (annotation.id != BASE_ANNOTATION_ID) {
+                        actionsBatch.push(
+                            actions.appliedAnnotation(
+                                selectedAnnotation.uniqueId,
+                                selectedWitnessData
+                            )
+                        );
+                    }
+                    if (stateProps.activeAnnotation.id != BASE_ANNOTATION_ID) {
+                        actionsBatch.push(
+                            actions.removedAppliedAnnotation(
+                                stateProps.activeAnnotation.uniqueId,
+                                selectedWitnessData
+                            )
+                        );
+                    }
+                } else {
+                    if (
+                        stateProps.activeAnnotation.creatorWitness.id ===
+                        selectedWitness.id
+                    ) {
+                        // Replacing a default annotation
+
+                        // Currently selected annotation is a default
+                        // annotation. So need to remove that then
+                        // apply the newly selected annotation.
+
+                        actionsBatch.push(
+                            actions.removedDefaultAnnotation(
+                                stateProps.activeAnnotation.uniqueId,
+                                selectedWitnessData
+                            )
+                        );
+
+                        if (selectedAnnotation.id !== BASE_ANNOTATION_ID) {
+                            actionsBatch.push(
+                                actions.appliedAnnotation(
+                                    selectedAnnotation.uniqueId,
+                                    selectedWitnessData
+                                )
+                            );
+                        }
+                    } else {
+                        if (
+                            selectedAnnotation.creatorWitness.id ===
+                            selectedWitness.id
+                        ) {
+                            actionsBatch.push(
+                                actions.appliedDefaultAnnotation(
+                                    selectedAnnotation.uniqueId,
+                                    selectedWitnessData
+                                )
+                            );
+                        } else if (
+                            selectedAnnotation.id !== BASE_ANNOTATION_ID
+                        ) {
+                            actionsBatch.push(
+                                actions.appliedAnnotation(
+                                    selectedAnnotation.uniqueId,
+                                    selectedWitnessData
+                                )
+                            );
+                        }
+
+                        if (
+                            stateProps.activeAnnotation.id !==
+                            BASE_ANNOTATION_ID
+                        ) {
+                            actionsBatch.push(
+                                actions.removedAppliedAnnotation(
+                                    stateProps.activeAnnotation.uniqueId,
+                                    selectedWitnessData
+                                )
+                            );
+                        }
+                    }
                 }
-                if (stateProps.activeAnnotation.id != BASE_ANNOTATION_ID) {
-                    actionsBatch.push(
-                        actions.removedAppliedAnnotation(
-                            stateProps.activeAnnotation.uniqueId,
-                            selectedWitnessData
-                        )
-                    );
-                }
+
                 actionsBatch.push(
                     actions.changedActiveAnnotation(selectedAnnotation)
                 );

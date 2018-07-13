@@ -13,6 +13,10 @@ const DELETE = "delete";
 
 type ReqMethod = "get" | "post" | "put" | "delete";
 
+export type AnnotationOp = "A" | "R";
+export const appliedOp: AnnotationOp = "A";
+export const removedOp: AnnotationOp = "R";
+
 function request(method: ReqMethod, url, data: any = null): Promise<*> {
     let req = null;
     switch (method) {
@@ -111,7 +115,14 @@ export function fetchWitnessAnnotations(
 
 // APPLYING ANNOTATIONS
 
-function getApplyAnnotationUrl(
+export type AnnotationOperationData = {
+    id: number,
+    operation: AnnotationOp,
+    annotation_unique_id: AnnotationUniqueId,
+    witness: number
+};
+
+function getAnnotationOperationsUrl(
     witnessData: WitnessData,
     annotationUniqueId: AnnotationUniqueId | null = null
 ): string {
@@ -120,17 +131,17 @@ function getApplyAnnotationUrl(
         witnessData.text +
         "/witnesses/" +
         witnessData.id +
-        "/applied_annotations/";
+        "/user_annotation_operations/";
     if (annotationUniqueId) {
         url += annotationUniqueId;
     }
     return url;
 }
 
-export function fetchAppliedUserAnnotations(
+export function fetchUserAnnotationOperations(
     witnessData: WitnessData
-): Promise<AnnotationData[]> {
-    const url = getApplyAnnotationUrl(witnessData);
+): Promise<AnnotationOperationData[]> {
+    const url = getAnnotationOperationsUrl(witnessData);
     return request(GET, url);
 }
 
@@ -138,9 +149,10 @@ export function applyAnnotation(
     annotationId: AnnotationUniqueId,
     witnessData: WitnessData
 ) {
-    const url = getApplyAnnotationUrl(witnessData);
+    const url = getAnnotationOperationsUrl(witnessData);
     let data = {
-        annotation_unique_id: annotationId
+        annotation_unique_id: annotationId,
+        operation: appliedOp
     };
     return request(POST, url, data);
 }
@@ -149,7 +161,32 @@ export function removeAppliedAnnotation(
     annotationId: AnnotationUniqueId,
     witness: WitnessData
 ) {
-    const url = getApplyAnnotationUrl(witness, annotationId);
+    const url = getAnnotationOperationsUrl(witness, annotationId);
+    return request(DELETE, url);
+}
+
+// REMOVING DEFAULT ANNOTATIONS
+
+export function removeDefaultAnnotation(
+    annotationId: AnnotationUniqueId,
+    witnessData: WitnessData
+) {
+    const url = getAnnotationOperationsUrl(witnessData);
+    let data = {
+        annotation_unique_id: annotationId,
+        operation: removedOp
+    };
+    return request(POST, url, data);
+}
+
+// Default annotations are automatically applied,
+// so the only operations present should be a removedOp.
+// Therefore, we should just delete any operations related to them.
+export function applyDefaultAnnotation(
+    annotationId: AnnotationUniqueId,
+    witnessData: WitnessData
+) {
+    const url = getAnnotationOperationsUrl(witnessData, annotationId);
     return request(DELETE, url);
 }
 
@@ -210,3 +247,5 @@ export function deleteAnnotation(annotation: Annotation) {
     const url = getAnnotationUrl(annotation.witness, annotation);
     return request(DELETE, url);
 }
+
+// TODO: get default annotations

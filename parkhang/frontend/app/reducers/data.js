@@ -11,6 +11,10 @@ import Source from "lib/Source";
 import Text from "lib/Text";
 import User from "lib/User";
 
+export type AnnotationOperations = {
+    [api.AnnotationOp]: { [AnnotationUniqueId]: AnnotationUniqueId }
+};
+
 export type DataState = {
     texts: TextData[],
     textsById: { [number]: TextData },
@@ -23,7 +27,9 @@ export type DataState = {
     witnessAnnotationsById: {
         [witnessId: number]: { [AnnotationUniqueId]: AnnotationData }
     },
-    witnessActiveAnnotationsById: { [witnessId: number]: AnnotationUniqueId[] },
+    witnessAnnotationOperationsById: {
+        [witnessId: number]: AnnotationOperations
+    },
     loadingInitialData: boolean,
     loadedInitialData: boolean,
     loadingTexts: boolean,
@@ -34,7 +40,7 @@ export type DataState = {
     loadedWitnesses: boolean,
     loadingAnnotations: boolean,
     loadedAnnotations: boolean,
-    loadedAppliedAnnotations: boolean
+    loadedAnnotationOperations: boolean
 };
 
 // Data
@@ -48,7 +54,7 @@ export const initialDataState: DataState = {
     textWitnessesById: {},
     witnessesById: {},
     witnessAnnotationsById: {},
-    witnessActiveAnnotationsById: {},
+    witnessAnnotationOperationsById: {},
     loadingInitialData: false,
     loadedInitialData: false,
     loadingTexts: false,
@@ -59,7 +65,7 @@ export const initialDataState: DataState = {
     loadedWitnesses: false,
     loadingAnnotations: false,
     loadedAnnotations: false,
-    loadedAppliedAnnotations: false
+    loadedAnnotationOperations: false
 };
 
 function loadingInitialData(state: DataState): DataState {
@@ -177,25 +183,65 @@ function loadedAnnotations(
     return {
         ...state,
         witnessAnnotationsById: witnessAnnotationsById,
-        loadingAnnotations: !state.loadedAppliedAnnotations,
+        loadingAnnotations: !state.loadedAnnotationOperations,
         loadedAnnotations: true
     };
 }
 
-function loadedAppliedAnnotations(
+function loadedAnnotationOperations(
     state: DataState,
-    action: actions.LoadedWitnessAppliedAnnotationsAction
+    action: actions.LoadedWitnessAnnotationOperationsAction
 ): DataState {
-    const witnessActiveAnnotationsById = {
-        ...state.witnessActiveAnnotationsById,
-        [action.witnessId]: action.annotationIds
+    let operations = {
+        [api.appliedOp]: {},
+        [api.removedOp]: {}
     };
+    operations = action.annotationOperations.reduce(
+        (
+            acc: { [api.AnnotationOp]: {} },
+            operationData: api.AnnotationOperationData
+        ) => {
+            acc[operationData.operation][operationData.annotation_unique_id] =
+                operationData.annotation_unique_id;
+            return acc;
+        },
+        operations
+    );
+
     return {
         ...state,
-        witnessActiveAnnotationsById: witnessActiveAnnotationsById,
+        witnessAnnotationOperationsById: {
+            ...state.witnessAnnotationOperationsById,
+            [action.witnessId]: operations
+        },
         loadingAnnotations: !state.loadedAnnotations,
-        loadedAppliedAnnotations: true
+        loadedAnnotationOperations: true
     };
+}
+
+function setupWitnessOperations(
+    state: DataState,
+    witnessId: number
+): DataState {
+    if (!state.witnessAnnotationOperationsById.hasOwnProperty(witnessId)) {
+        state.witnessAnnotationOperationsById[witnessId] = {};
+    }
+    if (
+        !state.witnessAnnotationOperationsById[witnessId].hasOwnProperty(
+            api.appliedOp
+        )
+    ) {
+        state.witnessAnnotationOperationsById[witnessId][api.appliedOp] = {};
+    }
+    if (
+        !state.witnessAnnotationOperationsById[witnessId].hasOwnProperty(
+            api.removedOp
+        )
+    ) {
+        state.witnessAnnotationOperationsById[witnessId][api.removedOp] = {};
+    }
+
+    return state;
 }
 
 function appliedAnnotation(
@@ -204,19 +250,33 @@ function appliedAnnotation(
 ): DataState {
     let annotationId = action.annotationId;
     let witness = action.witnessData;
-    let witnessAnnotations = state.witnessActiveAnnotationsById[witness.id];
-    if (witnessAnnotations && witnessAnnotations.indexOf(annotationId) !== -1) {
+    let witnessAnnotationOperations =
+        state.witnessAnnotationOperationsById[witness.id];
+    // If the annotation is already applied, don't mutate state
+    if (
+        witnessAnnotationOperations &&
+        witnessAnnotationOperations[api.appliedOp].hasOwnProperty(annotationId)
+    ) {
         return state;
     }
-    if (!witnessAnnotations) {
-        witnessAnnotations = [];
+    if (!witnessAnnotationOperations) {
+        witnessAnnotationOperations = {
+            [api.appliedOp]: {},
+            [api.removedOp]: {}
+        };
     }
 
     return {
         ...state,
-        witnessActiveAnnotationsById: {
-            ...state.witnessActiveAnnotationsById,
-            [witness.id]: [...witnessAnnotations, annotationId]
+        witnessAnnotationOperationsById: {
+            ...state.witnessAnnotationOperationsById,
+            [witness.id]: {
+                ...witnessAnnotationOperations,
+                [api.appliedOp]: {
+                    ...witnessAnnotationOperations[api.appliedOp],
+                    [annotationId]: annotationId
+                }
+            }
         }
     };
 }
@@ -227,18 +287,86 @@ function removedAppliedAnnotation(
 ): DataState {
     let annotationId = action.annotationId;
     let witness = action.witnessData;
-    let activeAnnotations = state.witnessActiveAnnotationsById[witness.id];
-    if (activeAnnotations) {
-        activeAnnotations = activeAnnotations.filter(
-            element => element != annotationId
-        );
+    let witnessAnnotationOperations = {
+        ...state.witnessAnnotationOperationsById[witness.id]
+    };
+    if (
+        witnessAnnotationOperations &&
+        witnessAnnotationOperations.hasOwnProperty(api.appliedOp)
+    ) {
+        if (
+            witnessAnnotationOperations[api.appliedOp].hasOwnProperty(
+                annotationId
+            )
+        ) {
+            let appliedOps = {
+                ...witnessAnnotationOperations[api.appliedOp]
+            };
+            delete appliedOps[annotationId];
+
+            return {
+                ...state,
+                witnessAnnotationOperationsById: {
+                    ...state.witnessAnnotationOperationsById,
+                    [witness.id]: {
+                        ...witnessAnnotationOperations,
+                        [api.appliedOp]: appliedOps
+                    }
+                }
+            };
+        }
     }
 
+    return state;
+}
+
+function removedDefaultAnnotation(
+    state: DataState,
+    action: actions.RemovedDefaultAnnotationAction
+): DataState {
+    let annotationId = action.annotationId;
+    let witnessId = action.witnessData.id;
+    state = setupWitnessOperations({ ...state }, witnessId);
     return {
         ...state,
-        witnessActiveAnnotationsById: {
-            ...state.witnessActiveAnnotationsById,
-            [witness.id]: activeAnnotations
+        witnessAnnotationOperationsById: {
+            [witnessId]: {
+                ...state.witnessAnnotationOperationsById[witnessId],
+                [api.removedOp]: {
+                    ...state.witnessAnnotationOperationsById[witnessId][
+                        api.removedOp
+                    ],
+                    [annotationId]: annotationId
+                }
+            }
+        }
+    };
+}
+
+function appliedDefaultAnnotation(
+    state: DataState,
+    action: actions.AppliedDefaultAnnotationAction
+): DataState {
+    let annotationId = action.annotationId;
+    let witnessId = action.witnessData.id;
+    state = setupWitnessOperations({ ...state }, witnessId);
+    let removeOperations = {
+        ...state.witnessAnnotationOperationsById[witnessId][api.removedOp]
+    };
+    if (
+        state.witnessAnnotationOperationsById[witnessId][
+            api.removedOp
+        ].hasOwnProperty(annotationId)
+    ) {
+        delete removeOperations[annotationId];
+    }
+    return {
+        ...state,
+        witnessAnnotationOperationsById: {
+            [witnessId]: {
+                ...state.witnessAnnotationOperationsById[witnessId],
+                [api.removedOp]: removeOperations
+            }
         }
     };
 }
@@ -352,10 +480,12 @@ dataReducers[actions.LOADED_WITNESSES] = loadedWitnesses;
 dataReducers[actions.LOADING_WITNESS_ANNOTATIONS] = loadingAnnotations;
 dataReducers[actions.LOADED_WITNESS_ANNOTATIONS] = loadedAnnotations;
 dataReducers[
-    actions.LOADED_WITNESS_APPLIED_ANNOTATIONS
-] = loadedAppliedAnnotations;
+    actions.LOADED_WITNESS_ANNOTATION_OPERATIONS
+] = loadedAnnotationOperations;
 dataReducers[actions.APPLIED_ANNOTATION] = appliedAnnotation;
 dataReducers[actions.REMOVED_APPLIED_ANNOTATION] = removedAppliedAnnotation;
+dataReducers[actions.REMOVED_DEFAULT_ANNOTATION] = removedDefaultAnnotation;
+dataReducers[actions.APPLIED_DEFAULT_ANNOTATION] = appliedDefaultAnnotation;
 dataReducers[actions.CREATED_ANNOTATION] = createdAnnotation;
 dataReducers[actions.UPDATED_ANNOTATION] = updatedAnnotation;
 dataReducers[actions.DELETED_ANNOTATION] = deletedAnnotation;
@@ -632,8 +762,37 @@ export const getAnnotation = (
 export const getActiveAnnotationsForWitnessId = (
     state: DataState,
     witnessId: number
-): AnnotationUniqueId[] => {
-    return state.witnessActiveAnnotationsById[witnessId];
+): { [AnnotationUniqueId]: AnnotationUniqueId } => {
+    if (state.witnessAnnotationOperationsById.hasOwnProperty(witnessId)) {
+        if (
+            state.witnessAnnotationOperationsById[witnessId].hasOwnProperty(
+                api.appliedOp
+            )
+        ) {
+            return state.witnessAnnotationOperationsById[witnessId][
+                api.appliedOp
+            ];
+        }
+    }
+    return {};
+};
+
+export const getRemovedDefaultAnnotationsForWitnessId = (
+    state: DataState,
+    witnessId: number
+): { [AnnotationUniqueId]: AnnotationUniqueId } => {
+    if (state.witnessAnnotationOperationsById.hasOwnProperty(witnessId)) {
+        if (
+            state.witnessAnnotationOperationsById[witnessId].hasOwnProperty(
+                api.removedOp
+            )
+        ) {
+            return state.witnessAnnotationOperationsById[witnessId][
+                api.removedOp
+            ];
+        }
+    }
+    return {};
 };
 
 export const getAnnotationData = (

@@ -30,6 +30,7 @@ import {
     getTextWitnesses,
     getWitness,
     hasLoadedWitnessAnnotations,
+    getRemovedDefaultAnnotationsForWitnessId,
     hasLoadedWitnessAppliedAnnotations
 } from "reducers";
 import _ from "lodash";
@@ -282,6 +283,12 @@ const mapStateToProps = state => {
             // get all the annotations created by the selected witness
             // BUT NOT BY A USER to apply to the base text.
             // User-created annotations need to be in appliedAnnotations.
+            
+            let removedDefaultAnnotations = getRemovedDefaultAnnotationsForWitnessId(
+                state,
+                selectedWitness.id
+            );
+
             let selectedWitnessAnnotations = {};
             let selectedWitnessAnnotationData = getAnnotationsForWitnessId(
                 state,
@@ -291,7 +298,12 @@ const mapStateToProps = state => {
             for (let key in selectedWitnessAnnotationData) {
                 if (selectedWitnessAnnotationData.hasOwnProperty(key)) {
                     let annotationData = selectedWitnessAnnotationData[key];
-                    if (!annotationData.creator_user) {
+                    if (
+                        !annotationData.creator_user &&
+                        !removedDefaultAnnotations.hasOwnProperty(
+                            annotationData.unique_id
+                        )
+                    ) {
                         selectedWitnessAnnotations[
                             annotationData.unique_id
                         ] = annotationData;
@@ -304,7 +316,10 @@ const mapStateToProps = state => {
                     let annotationData = workingAnnotationList[key];
                     if (
                         annotationData.creator_witness === selectedWitness.id &&
-                        !annotationData.creator_user
+                        !annotationData.creator_user &&
+                        !removedDefaultAnnotations.hasOwnProperty(
+                            annotationData.unique_id
+                        )
                     ) {
                         selectedWitnessAnnotations[
                             annotationData.unique_id

@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ParseError, ValidationError, NotFound, PermissionDenied
 
-from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer, AppliedUserAnnotationSerializer
-from texts.models import Text, Source, Witness, Annotation, AppliedUserAnnotation
+from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer, UserAnnotationOperationsSerializer
+from texts.models import Text, Source, Witness, Annotation, UserAnnotationOperation
 
 
 class TextList(APIView):
@@ -118,6 +118,7 @@ def get_annotation(request, unique_id):
 
     return annotation
 
+
 class AnnotationDetail(APIView):
 
     def get(self, request, annotation_unique_id, *args, **kwargs):
@@ -166,7 +167,7 @@ class AnnotationDetail(APIView):
         return Response('', status=status.HTTP_204_NO_CONTENT)
 
 
-class AppliedUserAnnotations(APIView):
+class UserAnnotationOperations(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, witness_id):
@@ -178,23 +179,24 @@ class AppliedUserAnnotations(APIView):
         :return: JSON encoded list of active annotation id's for the given witness.
         """
 
-        annotations = AppliedUserAnnotation.objects.filter(
+        annotation_operations = UserAnnotationOperation.objects.filter(
             user=request.user,
             witness=witness_id
         )
 
-        serializer = AppliedUserAnnotationSerializer(annotations, many=True)
+        serializer = UserAnnotationOperationsSerializer(annotation_operations, many=True)
         return Response(serializer.data)
 
-    def post(self, request, witness_id, *args, **kwargs):
+    def put(self, request, witness_id, *args, **kwargs):
         """
-        Apply annotation to it's assigned witness
+        Update annotation operation on assigned witness
 
         :param request: Django Request
-        :param annotation_unique_id: unique_id of the annotation to apply
+        :param witness_id: id of witness the operation relates to
         :return: Empty string
         """
 
+        operation = request.data['operation']
         unique_id = request.data['annotation_unique_id']
 
         try:
@@ -208,24 +210,64 @@ class AppliedUserAnnotations(APIView):
             raise NotFound('An witness with that ID does not exist.')
 
         try:
-            applied_user_annotation = AppliedUserAnnotation.objects.get(
+            user_annotation_operation = UserAnnotationOperation.objects.get(
                 user=request.user,
                 annotation=annotation,
                 witness=witness
             )
-            return Response('Annotation already applied')
-        except AppliedUserAnnotation.DoesNotExist:
-            applied_user_annotation = AppliedUserAnnotation()
+            if user_annotation_operation.operation is operation:
+                return Response('Annotation operation already assigned')
+        except UserAnnotationOperation.DoesNotExist:
+            raise NotFound('That annotation operation does not exist.')
 
-        applied_user_annotation.user = request.user
-        applied_user_annotation.annotation = annotation
-        applied_user_annotation.witness = witness
-        applied_user_annotation.save()
+        user_annotation_operation.operation = operation
+        user_annotation_operation.save()
+
+        return Response('', status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, witness_id, *args, **kwargs):
+        """
+        Apply annotation to it's assigned witness
+
+        :param request: Django Request
+        :param witness_id: id of witness the operation relates to
+        :return: Empty string
+        """
+
+        operation = request.data['operation']
+        unique_id = request.data['annotation_unique_id']
+
+        try:
+            annotation = Annotation.objects.get(unique_id=unique_id)
+        except Annotation.DoesNotExist:
+            raise NotFound('An annotation with that ID does not exist.')
+
+        try:
+            witness = Witness.objects.get(pk=witness_id)
+        except Witness.DoesNotExist:
+            raise NotFound('An witness with that ID does not exist.')
+
+        try:
+            user_annotation_operation = UserAnnotationOperation.objects.get(
+                user=request.user,
+                annotation=annotation,
+                witness=witness
+            )
+            if user_annotation_operation.operation is operation:
+                return Response('Annotation operation already assigned')
+        except UserAnnotationOperation.DoesNotExist:
+            user_annotation_operation = UserAnnotationOperation()
+
+        user_annotation_operation.user = request.user
+        user_annotation_operation.annotation = annotation
+        user_annotation_operation.witness = witness
+        user_annotation_operation.operation = operation
+        user_annotation_operation.save()
 
         return Response('', status=status.HTTP_204_NO_CONTENT)
 
 
-class AppliedUserAnnotationDetail(APIView):
+class UserAnnotationOperationDetail(APIView):
     permission_classes = (IsAuthenticated,)
 
     def delete(self, request, witness_id, annotation_unique_id, *args, **kwargs):
@@ -238,16 +280,14 @@ class AppliedUserAnnotationDetail(APIView):
             raise NotFound('An witness with that ID does not exist.')
 
         try:
-            applied_user_annotation = AppliedUserAnnotation.objects.get(
+            user_annotation_operation = UserAnnotationOperation.objects.get(
                 user=request.user,
                 witness=witness,
                 annotation=annotation
             )
-        except AppliedUserAnnotation.DoesNotExist:
+        except UserAnnotationOperation.DoesNotExist:
             raise NotFound('That annotation id is not applied to the given witness')
 
-        applied_user_annotation.delete()
+        user_annotation_operation.delete()
 
         return Response('', status=status.HTTP_204_NO_CONTENT)
-
-

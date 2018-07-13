@@ -31,14 +31,18 @@ export const LOADED_WITNESSES = "LOADED_WITNESSES";
 export const LOAD_WITNESS_ANNOTATIONS = "LOAD_WITNESS_ANNOTATIONS";
 export const LOADING_WITNESS_ANNOTATIONS = "LOADING_WITNESS_ANNOTATIONS";
 export const LOADED_WITNESS_ANNOTATIONS = "LOADED_WITNESS_ANNOTATIONS";
-export const LOADED_WITNESS_APPLIED_ANNOTATIONS =
-    "LOADED_WITNESS_APPLIED_ANNOTATIONS";
+export const LOADED_WITNESS_ANNOTATION_OPERATIONS =
+    "LOADED_WITNESS_ANNOTATION_OPERATIONS";
+export const LOADED_WITNESS_REMOVED_ANNOTATIONS =
+    "LOADED_WITNESS_REMOVED_ANNOTATIONS";
 
 export const LOADED_TEXT_DATA = "LOADED_TEXT_DATA";
 
 // These are intended for when the data will be saved via the server API
 export const APPLIED_ANNOTATION = "text/APPLIED_ANNOTATION";
 export const REMOVED_APPLIED_ANNOTATION = "text/REMOVED_APPLIED_ANNOTATION";
+export const REMOVED_DEFAULT_ANNOTATION = "text/REMOVED_DEFAULT_ANNOTATION";
+export const APPLIED_DEFAULT_ANNOTATION = "text/APPLIED_DEFAULT_ANNOTATION";
 
 export const CREATED_ANNOTATION = "text/CREATED_ANNOTATION";
 export const UPDATED_ANNOTATION = "text/UPDATED_ANNOTATION";
@@ -64,6 +68,9 @@ export const DESELECTED_SEGMENT = "text/DESELECTED_SEGMENT";
 export const CHANGED_ACTIVE_ANNOTATION = "text/CHANGED_ACTIVE_ANNOTATION";
 
 export const CHANGED_TEXT_LIST_VISIBLE = "textList/CHANGED_TEXT_LIST_VISIBLE";
+
+export const CHANGED_WITNESS_SCROLL_POSITION =
+    "text/CHANGED_WITNESS_SCROLL_POSITION";
 
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
@@ -240,17 +247,17 @@ export function loadedWitnessAnnotations(
     };
 }
 
-export type LoadedWitnessAppliedAnnotationsAction = WitnessAction & {
-    annotationIds: AnnotationUniqueId[]
+export type LoadedWitnessAnnotationOperationsAction = WitnessAction & {
+    annotationOperations: api.AnnotationOperationData[]
 };
-export function loadedWitnessAppliedAnnotations(
+export function loadedWitnessAnnotationOperations(
     witnessId: number,
-    annotationIds: AnnotationUniqueId[]
-) {
+    annotationOperations: api.AnnotationOperationData[]
+): LoadedWitnessAnnotationOperationsAction {
     return {
-        type: LOADED_WITNESS_APPLIED_ANNOTATIONS,
+        type: LOADED_WITNESS_ANNOTATION_OPERATIONS,
         witnessId,
-        annotationIds
+        annotationOperations
     };
 }
 
@@ -279,6 +286,36 @@ export function removedAppliedAnnotation(
 ): RemovedAppliedAnnotationAction {
     return {
         type: REMOVED_APPLIED_ANNOTATION,
+        annotationId,
+        witnessData: witnessData
+    };
+}
+
+export type RemovedDefaultAnnotationAction = Action & {
+    annotationId: AnnotationUniqueId,
+    witnessData: api.WitnessData
+};
+export function removedDefaultAnnotation(
+    annotationId: AnnotationUniqueId,
+    witnessData: api.WitnessData
+): RemovedDefaultAnnotationAction {
+    return {
+        type: REMOVED_DEFAULT_ANNOTATION,
+        annotationId,
+        witnessData: witnessData
+    };
+}
+
+export type AppliedDefaultAnnotationAction = Action & {
+    annotationId: AnnotationUniqueId,
+    witnessData: api.WitnessData
+};
+export function appliedDefaultAnnotation(
+    annotationId: AnnotationUniqueId,
+    witnessData: api.WitnessData
+): AppliedDefaultAnnotationAction {
+    return {
+        type: APPLIED_DEFAULT_ANNOTATION,
         annotationId,
         witnessData: witnessData
     };

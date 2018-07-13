@@ -13,6 +13,7 @@ import Witness from "lib/Witness";
 import Source from "lib/Source";
 import Text from "lib/Text";
 import type { WitnessData, AnnotationData, TextData } from "api";
+import { appliedOp, removedOp } from "api";
 import User from "lib/User";
 
 function createReducer(
@@ -104,6 +105,13 @@ export const getTemporaryAnnotations = (
     return ui.getTemporaryAnnotations(state.ui, witnessId, start, length, type);
 };
 
+export const getScrollPosition = (
+    state: AppState,
+    witnessId: number
+): number | null => {
+    return ui.getScrollPosition(state.ui, witnessId);
+};
+
 // data
 
 export const getText = (state: AppState, textId: number): Text | null => {
@@ -164,7 +172,18 @@ export const hasLoadedWitnessAppliedAnnotations = (
     state: AppState,
     witnessId: number
 ): boolean => {
-    return state.data["witnessActiveAnnotationsById"].hasOwnProperty(witnessId);
+    let hasLoaded = false;
+    if (state.data.witnessAnnotationOperationsById.hasOwnProperty(witnessId)) {
+        if (
+            state.data.witnessAnnotationOperationsById[
+                witnessId
+            ].hasOwnProperty(appliedOp)
+        ) {
+            hasLoaded = true;
+        }
+    }
+    // return state.data["witnessActiveAnnotationsById"].hasOwnProperty(witnessId);
+    return hasLoaded;
 };
 
 export const getAnnotationsForWitnessId = (
@@ -182,9 +201,16 @@ export const getAnnotationsForWitnessId = (
 export const getActiveAnnotationsForWitnessId = (
     state: AppState,
     witnessId: number
-): AnnotationUniqueId[] => {
+): { [AnnotationUniqueId]: AnnotationUniqueId } => {
     return data.getActiveAnnotationsForWitnessId(state.data, witnessId);
 };
+
+export const getRemovedDefaultAnnotationsForWitnessId = (
+    state: AppState,
+    witnessId: number
+): { [AnnotationUniqueId]: AnnotationUniqueId } => {
+    return data.getRemovedDefaultAnnotationsForWitnessId(state.data, witnessId);
+}
 
 export const annotationFromData = (
     state: AppState,
