@@ -381,6 +381,40 @@ describe("CUD annotation", () => {
 });
 
 describe("Data selectors", () => {
+    let originalAnnotationUniqueId = "52bab9be-a395-4c9c-b264-1d03a091cc4b";
+    let originalAnnotationId = 488;
+    let originalAnnotationContent = "";
+    let originalAnnotationData = {
+        id: originalAnnotationId,
+        unique_id: originalAnnotationUniqueId,
+        type: "V",
+        witness: baseWitness.id,
+        start: 0,
+        length: 29,
+        content: originalAnnotationContent,
+        creator_witness: otherWitness.id,
+        creator_user: null,
+        original: null,
+        is_deleted: false,
+        is_saved: true
+    };
+    let editedAnnotationUniqueId = "527713e8-b191-4b74-9f34-cd9f8d0e4318";
+    let editedAnnotationId = 489;
+    let editedAnnotationContent = "Test";
+    let editedAnnotationData = {
+        id: editedAnnotationId,
+        unique_id: editedAnnotationUniqueId,
+        type: "V",
+        witness: baseWitness.id,
+        start: 0,
+        length: 29,
+        content: editedAnnotationContent,
+        creator_witness: otherWitness.id,
+        creator_user: user.id,
+        original: originalAnnotationUniqueId,
+        is_deleted: false,
+        is_saved: true
+    };
     let state = data.initialDataState;
     state = {
         ...state,
@@ -422,40 +456,14 @@ describe("Data selectors", () => {
         },
         witnessAnnotationsById: {
             [1]: {
-                "52bab9be-a395-4c9c-b264-1d03a091cc4b": {
-                    id: 488,
-                    unique_id: "52bab9be-a395-4c9c-b264-1d03a091cc4b",
-                    type: "V",
-                    witness: 1,
-                    start: 0,
-                    length: 29,
-                    content: "",
-                    creator_witness: 2,
-                    creator_user: null,
-                    original: null,
-                    is_deleted: false,
-                    is_saved: true
-                },
-                "527713e8-b191-4b74-9f34-cd9f8d0e4318": {
-                    id: 489,
-                    unique_id: "527713e8-b191-4b74-9f34-cd9f8d0e4318",
-                    type: "V",
-                    witness: 1,
-                    start: 0,
-                    length: 29,
-                    content: "Test",
-                    creator_witness: 2,
-                    creator_user: 1,
-                    original: "52bab9be-a395-4c9c-b264-1d03a091cc4b",
-                    is_deleted: false,
-                    is_saved: true
-                }
+                [originalAnnotationUniqueId]: originalAnnotationData,
+                [editedAnnotationUniqueId]: editedAnnotationData
             }
         }
     };
 
     const expectedGetAnnotation = new Annotation(
-        488,
+        originalAnnotationId,
         baseWitness,
         0,
         29,
@@ -463,7 +471,7 @@ describe("Data selectors", () => {
         "V",
         otherWitness,
         null,
-        "52bab9be-a395-4c9c-b264-1d03a091cc4b"
+        originalAnnotationUniqueId
     );
 
     test("getAnnotation", () => {
@@ -480,7 +488,7 @@ describe("Data selectors", () => {
 
     test("annotationFromData", () => {
         const expectedAnnotationFromData = new Annotation(
-            489,
+            editedAnnotationId,
             baseWitness,
             0,
             29,
@@ -488,7 +496,7 @@ describe("Data selectors", () => {
             "V",
             otherWitness,
             user,
-            "527713e8-b191-4b74-9f34-cd9f8d0e4318",
+            editedAnnotationUniqueId,
             expectedGetAnnotation
         );
         expectedAnnotationFromData.save();
@@ -500,5 +508,25 @@ describe("Data selectors", () => {
                 ]
             )
         ).toEqual(expectedAnnotationFromData);
+    });
+
+    test("getAnnotationOriginalData", () => {
+        expect(
+            data.getAnnotationOriginalData(
+                state,
+                baseWitness.id,
+                editedAnnotationUniqueId
+            )
+        ).toEqual(originalAnnotationData);
+    });
+
+    test("annotationOriginallyUserCreated", () => {
+        expect(
+            data.annotationOriginallyUserCreated(
+                state,
+                baseWitness.id,
+                editedAnnotationUniqueId
+            )
+        ).toEqual(false);
     });
 });

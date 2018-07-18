@@ -240,6 +240,18 @@ export const getAnnotationData = (
     return data.getAnnotationData(state.data, witnessId, annotationId);
 };
 
+export const annotationOriginallyUserCreated = (
+    state: AppState,
+    witnessId: number,
+    annotationId: AnnotationUniqueId
+): boolean => {
+    return data.annotationOriginallyUserCreated(
+        state.data,
+        witnessId,
+        annotationId
+    );
+};
+
 // Root
 
 const rootReducer = combineReducers({

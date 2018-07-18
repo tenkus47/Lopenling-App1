@@ -807,3 +807,41 @@ export const getAnnotationData = (
     }
     return annotationData;
 };
+
+export const getAnnotationOriginalData = (
+    state: DataState,
+    witnessId: number,
+    annotationUniqueId: AnnotationUniqueId
+): AnnotationData | null => {
+    let annotationData = getAnnotationData(
+        state,
+        witnessId,
+        annotationUniqueId
+    );
+    if (annotationData && annotationData["original"]) {
+        annotationData = getAnnotationOriginalData(
+            state,
+            witnessId,
+            annotationData["original"]
+        );
+    }
+    return annotationData;
+};
+
+export const annotationOriginallyUserCreated = (
+    state: DataState,
+    witnessId: number,
+    annotationId: AnnotationUniqueId
+): boolean => {
+    let isUserCreated = false;
+    let annotationData = getAnnotationOriginalData(
+        state,
+        witnessId,
+        annotationId
+    );
+    if (annotationData && annotationData["creator_user"]) {
+        isUserCreated = true;
+    }
+
+    return isUserCreated;
+};
