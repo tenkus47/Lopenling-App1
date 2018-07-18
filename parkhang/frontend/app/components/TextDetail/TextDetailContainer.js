@@ -347,7 +347,6 @@ const mapStateToProps = state => {
                     let annotationData = workingAnnotationList[key];
                     if (
                         annotationData.creator_witness === selectedWitness.id &&
-                        !annotationData.creator_user &&
                         !removedDefaultAnnotations.hasOwnProperty(
                             annotationData.unique_id
                         )
