@@ -3,6 +3,7 @@ import * as api from "api";
 import Annotation, { TemporaryAnnotation } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
+import type { LocalesData } from "i18n";
 
 /** Actions types **/
 
@@ -73,6 +74,10 @@ export const CHANGED_WITNESS_SCROLL_POSITION =
 
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
+
+// I18N
+export const UPDATE_LOCALES = "i18n/UPDATE_LOCALES";
+export const SELECTED_LOCALE = "i18n/SELECT_LOCALE";
 
 /** Action creators **/
 
@@ -469,5 +474,25 @@ export function changedTextListVisible(
     return {
         type: CHANGED_TEXT_LIST_VISIBLE,
         isVisible
+    };
+}
+
+/* I18N */
+export type UpdateLocalesAction = {
+    type: string,
+    payload: LocalesData
+};
+
+export function updateLocales(locales: LocalesData): UpdateLocalesAction {
+    return {
+        type: UPDATE_LOCALES,
+        payload: locales
+    };
+}
+
+export function selectedLocale(locale: string): Action {
+    return {
+        type: SELECTED_LOCALE,
+        payload: locale
     };
 }

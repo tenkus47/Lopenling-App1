@@ -14,6 +14,7 @@ import { delay } from "redux-saga";
 import * as actions from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
+import { updateIntl } from "react-intl-redux";
 
 import * as api from "api";
 import { BATCH } from "redux-batched-actions";
@@ -348,6 +349,24 @@ function* watchDeletedAnnotation() {
     );
 }
 
+// I18N
+
+function* selectLocale(action: actions.Action) {
+    const locale: string = String(action.payload);
+    const localeData = yield select(reducers.getLocaleData, locale);
+    yield put(
+        updateIntl({
+            locale: locale,
+            messages: localeData.messages,
+            key: locale
+        })
+    );
+}
+
+function* watchSelectedLocale() {
+    yield takeEvery(actions.SELECTED_LOCALE, selectLocale);
+}
+
 // BATCHED ACTIONS
 
 function* dispatchedBatch(action): Saga<void> {
@@ -400,6 +419,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchUpdatedAnnotation),
         call(watchDeletedAnnotation),
         call(watchRequests),
-        call(watchSelectedTextWitness)
+        call(watchSelectedTextWitness),
+        call(watchSelectedLocale)
     ]);
 }

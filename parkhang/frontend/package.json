@@ -20,6 +20,8 @@
     "lodash": "^4.17.10",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "react-intl": "^2.4.0",
+    "react-intl-redux": "^2.0.1",
     "react-loader": "^2.4.5",
     "react-redux": "^5.0.7",
     "react-virtualized": "^9.18.5",

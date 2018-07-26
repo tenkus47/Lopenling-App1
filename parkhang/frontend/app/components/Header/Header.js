@@ -2,18 +2,24 @@
 import React from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { getUser } from "reducers";
+import { getUser, getActiveLocale, getIntlLocale } from "reducers";
 import styles from "./Header.css";
 import User from "lib/User";
 import type { AppState } from "reducers";
+import { FormattedMessage } from "react-intl";
+import LocaleSwitcher from "components/LocaleSwitcher/LocaleSwitcher";
 
 export const LoginControls = () => (
     <div className={classnames(styles.notLoggedIn, styles.controls)}>
         <div className={classnames(styles.login, styles.textLink)}>
-            <a href="/accounts/login/">Login</a>
+            <a href="/accounts/login/">
+                <FormattedMessage id="header.login" />
+            </a>
         </div>
         <div className={classnames(styles.signUp, styles.buttonLink)}>
-            <a href="/accounts/signup/">Sign Up</a>
+            <a href="/accounts/signup/">
+                <FormattedMessage id="header.signUp" />
+            </a>
         </div>
     </div>
 );
@@ -24,12 +30,15 @@ type LoggedInControlsProps = {
 
 export const LoggedInControls = (props: LoggedInControlsProps) => (
     <div className={styles.controls}>
-        {props.user.name} |&nbsp;<a href="/accounts/logout/">Logout</a>
+        {props.user.name} |&nbsp;<a href="/accounts/logout/">
+            <FormattedMessage id="header.logout" />
+        </a>
     </div>
 );
 
 type HeaderProps = {
-    user: User
+    user: User,
+    activeLocale: string
 };
 
 export const Header = (props: HeaderProps) => {
@@ -39,10 +48,13 @@ export const Header = (props: HeaderProps) => {
     } else {
         controls = <LoginControls />;
     }
+
     return (
         <header className={styles.header}>
-            <p>Esukhia</p>
-
+            <p>
+                <FormattedMessage id="header.title" key={props.activeLocale} />
+            </p>
+            <LocaleSwitcher />
             {controls}
         </header>
     );
@@ -50,9 +62,11 @@ export const Header = (props: HeaderProps) => {
 
 const mapStateToProps = (state: AppState): { user: User } => {
     const user = getUser(state);
+    const activeLocale = getActiveLocale(state);
 
     return {
-        user: user
+        user: user,
+        activeLocale: activeLocale
     };
 };
 

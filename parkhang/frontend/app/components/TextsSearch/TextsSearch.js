@@ -1,12 +1,14 @@
 // @flow
 import React from "react";
 import styles from "./TextsSearch.css";
+import { injectIntl } from "react-intl";
 
 type Props = {
     searchValue: string,
     searchChanged: (e: SyntheticEvent<HTMLInputElement>) => void,
     selectedSearchOption?: (e: SyntheticEvent<HTMLSelectElement>) => void,
-    minimiseButtonClicked: () => void
+    minimiseButtonClicked: () => void,
+    intl: { formatMessage: ({ [id: string]: string }) => string }
 };
 
 const TextsSearch = (props: Props) => {
@@ -18,10 +20,16 @@ const TextsSearch = (props: Props) => {
                     id="textSearchInput"
                     value={props.searchValue}
                     onChange={props.searchChanged}
-                    placeholder="Search"
+                    placeholder={props.intl.formatMessage({
+                        id: "leftbar.search"
+                    })}
                 />
                 <select onChange={props.selectedSearchOption}>
-                    <option>Titles</option>
+                    <option>
+                        {props.intl.formatMessage({
+                            id: "leftbar.titles"
+                        })}
+                    </option>
                 </select>
             </div>
             <div
@@ -34,4 +42,4 @@ const TextsSearch = (props: Props) => {
     );
 };
 
-export default TextsSearch;
+export default injectIntl(TextsSearch);
