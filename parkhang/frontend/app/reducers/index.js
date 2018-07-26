@@ -16,6 +16,11 @@ import type { WitnessData, AnnotationData, TextData } from "api";
 import { appliedOp, removedOp } from "api";
 import User from "lib/User";
 
+// i18n
+import { intlReducer } from "react-intl-redux";
+import localesReducers, * as locales from "./locales";
+import type { LocaleData, LocalesData } from "i18n";
+
 function createReducer(
     initialState: {},
     handlers
@@ -30,16 +35,38 @@ function createReducer(
 }
 
 export const dataReducer = createReducer(data.initialDataState, dataReducers);
-const uiReducer = createReducer(ui.initialUIState, uiReducers);
-const userReducer = createReducer(user.initialUserState, userReducers);
+export const uiReducer = createReducer(ui.initialUIState, uiReducers);
+export const userReducer = createReducer(user.initialUserState, userReducers);
+export const localesReducer = createReducer(
+    locales.initialLocalesState,
+    localesReducers
+);
 
 export type AppState = {
     data: data.DataState,
     ui: ui.UIState,
-    user: user.UserState
+    user: user.UserState,
+    intl: { locale: string, messages: { [string]: string } },
+    locales: locales.LocaleState
 };
 
 /* Selectors */
+
+// i18n
+export const getLocales = (state: AppState): locales.LocalesList => {
+    return locales.getLocales(state.locales);
+};
+
+export const getLocaleData = (
+    state: AppState,
+    locale: string
+): LocaleData | null => {
+    return locales.getLocaleData(state.locales, locale);
+};
+
+export const getActiveLocale = (state: AppState): string => {
+    return locales.getActiveLocale(state.locales);
+};
 
 // user
 
@@ -210,7 +237,7 @@ export const getRemovedDefaultAnnotationsForWitnessId = (
     witnessId: number
 ): { [AnnotationUniqueId]: AnnotationUniqueId } => {
     return data.getRemovedDefaultAnnotationsForWitnessId(state.data, witnessId);
-}
+};
 
 export const annotationFromData = (
     state: AppState,
@@ -257,7 +284,9 @@ export const annotationOriginallyUserCreated = (
 const rootReducer = combineReducers({
     data: dataReducer,
     ui: uiReducer,
-    user: userReducer
+    user: userReducer,
+    intl: intlReducer,
+    locales: localesReducer
 });
 
 export default rootReducer;

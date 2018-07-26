@@ -7,6 +7,7 @@ import styles from "./AnnotationControls.css";
 import textStyles from "./Text.css";
 import User from "lib/User";
 import Witness from "lib/Witness";
+import { FormattedMessage } from "react-intl";
 
 export const CONTROLS_MARGIN_LEFT = 10;
 
@@ -209,13 +210,27 @@ export default class AnnotationControls extends React.PureComponent<Props> {
                     annotations.push(annotationDetail);
                 }
             }, this);
-            variantsHeading = <h3>Variants</h3>;
+            variantsHeading = (
+                <h3>
+                    <FormattedMessage id="annotations.variantsHeading" />
+                </h3>
+            );
 
             if (!props.user.isLoggedIn) {
+                // NOTE: FormattedMessage cannot take a child when using
+                // the values option, so need to wrap it in a div
                 anonymousUserMessage = (
                     <div className={styles.anonymousMessage}>
-                        Please <a href="/accounts/login/">login</a> to make
-                        changes.
+                        <FormattedMessage
+                            id="annotations.loginMessage"
+                            values={{
+                                login: (
+                                    <a href="/accounts/login/">
+                                        <FormattedMessage id="annotations.login" />
+                                    </a>
+                                )
+                            }}
+                        />
                     </div>
                 );
             }

@@ -23,6 +23,23 @@ import rootReducer from "reducers";
 import "babel-polyfill";
 import rootSaga from "sagas";
 
+// i18n
+import { addLocaleData } from "react-intl";
+import { IntlProvider, updateIntl } from "react-intl-redux";
+import { updateLocales } from "actions";
+import boLocaleData from "react-intl/locale-data/bo";
+import en from "i18n/en/app.translations.json";
+import bo from "i18n/bo/app.translations.json";
+
+addLocaleData([...boLocaleData]);
+
+// For react-intl - prevents FormattedMessage from always
+// outputting a <span>
+// see https://github.com/yahoo/react-intl/issues/999#issuecomment-335799491
+function Fragment(props) {
+    return props.children || <span {...props} /> || null;
+}
+
 const sagaMiddleware = createSagaMiddleware();
 
 const middlewares = [sagaMiddleware];
@@ -39,9 +56,28 @@ if (process.env.NODE_ENV === "development") {
 
 sagaMiddleware.run(rootSaga);
 
+// TODO: use batch dispatcher?
+store.dispatch(
+    updateLocales({
+        en: en,
+        bo: bo
+    })
+);
+
+store.dispatch(updateIntl(en));
+
+function intlSelector(state) {
+    return {
+        ...state.intl,
+        key: state.intl.locale
+    };
+}
+
 ReactDOM.render(
     <Provider store={store}>
-        <AppContainer />
+        <IntlProvider textComponent={Fragment} intlSelector={intlSelector}>
+            <AppContainer />
+        </IntlProvider>
     </Provider>,
     document.getElementById("app")
 );
