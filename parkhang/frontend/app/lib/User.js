@@ -3,6 +3,7 @@
 const ANONYMOUS_USER_ID = -1;
 // TODO: update when implementing localisation
 const ANONYMOUS_USER_NAME = "User";
+export const DEFAULT_LOCALE = "bo";
 
 /**
  * Represents a user of the system.
@@ -12,10 +13,12 @@ const ANONYMOUS_USER_NAME = "User";
 export default class User {
     id: number;
     name: string;
+    locale: string;
 
-    constructor(id: number, name: string) {
+    constructor(id: number, name: string, locale: string = DEFAULT_LOCALE) {
         this.id = Number(id);
         this.name = name;
+        this.locale = locale;
     }
 
     /**

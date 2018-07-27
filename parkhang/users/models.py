@@ -20,6 +20,7 @@ class FullUnicodeUsernameValidator(RegexValidator):
     )
     flags = re.UNICODE
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Replica of the bundled AbstractUser but with only
@@ -27,6 +28,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     Username and password are required. Other fields are optional.
     """
+    LOCALE_CHOICES = (
+        ('en', 'English'),
+        ('bo', 'བོད་ཡིག')
+    )
     username_validator = FullUnicodeUsernameValidator()
 
     username = models.CharField(
@@ -56,6 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    locale = models.CharField(max_length=10, choices=LOCALE_CHOICES, default="bo")
 
     objects = UserManager()
 

@@ -26,10 +26,14 @@ import rootSaga from "sagas";
 // i18n
 import { addLocaleData } from "react-intl";
 import { IntlProvider, updateIntl } from "react-intl-redux";
-import { updateLocales } from "actions";
+import { updateLocales, selectedLocale } from "actions";
 import boLocaleData from "react-intl/locale-data/bo";
 import en from "i18n/en/app.translations.json";
 import bo from "i18n/bo/app.translations.json";
+const locales = {
+    en: en,
+    bo: bo
+};
 
 addLocaleData([...boLocaleData]);
 
@@ -64,7 +68,12 @@ store.dispatch(
     })
 );
 
-store.dispatch(updateIntl(en));
+if (USER_LOGGED_IN) {
+    store.dispatch(userLoggedIn(USER_ID, USER_NAME, USER_LOCALE));
+    store.dispatch(selectedLocale(USER_LOCALE));
+}
+
+store.dispatch(updateIntl(locales[USER_LOCALE]));
 
 function intlSelector(state) {
     return {
@@ -82,7 +91,4 @@ ReactDOM.render(
     document.getElementById("app")
 );
 
-if (USER_LOGGED_IN) {
-    store.dispatch(userLoggedIn(USER_ID, USER_NAME));
-}
 store.dispatch(loadInitialData());

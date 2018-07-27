@@ -9,6 +9,21 @@ from rest_framework.exceptions import ParseError, ValidationError, NotFound, Per
 
 from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer, UserAnnotationOperationsSerializer
 from texts.models import Text, Source, Witness, Annotation, UserAnnotationOperation
+from users.models import User
+
+
+class UserDetail(APIView):
+
+    def put(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        if user:
+            if 'locale' in request.data:
+                user.locale = request.data['locale']
+                user.save()
+
+            return Response(status=204)
+        else:
+            raise Http404
 
 
 class TextList(APIView):

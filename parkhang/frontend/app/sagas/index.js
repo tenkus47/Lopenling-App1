@@ -14,6 +14,7 @@ import { delay } from "redux-saga";
 import * as actions from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
+import User from "lib/User";
 import { updateIntl } from "react-intl-redux";
 
 import * as api from "api";
@@ -354,6 +355,12 @@ function* watchDeletedAnnotation() {
 function* selectLocale(action: actions.Action) {
     const locale: string = String(action.payload);
     const localeData = yield select(reducers.getLocaleData, locale);
+
+    const user: User = yield select(reducers.getUser);
+    if (user.isLoggedIn) {
+        yield call(api.setUserLocale, user, locale);
+    }
+
     yield put(
         updateIntl({
             locale: locale,

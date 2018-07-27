@@ -11,10 +11,12 @@
 USER_LOGGED_IN = true;
 USER_NAME = "{{ user.username }}";
 USER_ID = "{{ user.id }}";
+USER_LOCALE = "{{ user.locale }}";
 {% else %}
 USER_LOGGED_IN = false;
 USER_NAME = "";
 USER_ID = null;
+USER_LOCALE = "bo";
 {% endif %}
     </script>
 </head>

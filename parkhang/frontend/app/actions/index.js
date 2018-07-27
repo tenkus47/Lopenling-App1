@@ -366,13 +366,19 @@ export function savedAnnotation(annotation: Annotation): SavedAnnotationAction {
 /* USER */
 export type UserAction = Action & {
     userId: number,
-    userName: string
+    userName: string,
+    userLocale: string
 };
-export function userLoggedIn(userId: number, userName: string): UserAction {
+export function userLoggedIn(
+    userId: number,
+    userName: string,
+    userLocale: string
+): UserAction {
     return {
         type: USER_LOGGED_IN,
         userId,
-        userName
+        userName,
+        userLocale
     };
 }
 

@@ -2,6 +2,7 @@
 import axios from "axios";
 import Annotation from "lib/Annotation";
 import Witness from "lib/Witness";
+import User from "lib/User";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -46,6 +47,24 @@ function request(method: ReqMethod, url, data: any = null): Promise<*> {
                 reject(error);
             });
     });
+}
+
+// USER
+
+export class InvalidUserError extends Error {}
+
+export function setUserLocale(
+    user: User,
+    locale: string
+): Promise<string> | InvalidUserError {
+    if (!user.isLoggedIn) {
+        throw new InvalidUserError("The user is not logged in.");
+    }
+    const url = "/api/users/" + user.id;
+    let data = {
+        locale: locale
+    };
+    return request(PUT, url, data);
 }
 
 // GET DATA
