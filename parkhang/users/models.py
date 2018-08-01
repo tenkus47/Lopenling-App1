@@ -30,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     LOCALE_CHOICES = (
         ('en', 'English'),
-        ('bo', 'བོད་ཡིག')
+        ('bo', 'Tibetan')
     )
     username_validator = FullUnicodeUsernameValidator()
 
