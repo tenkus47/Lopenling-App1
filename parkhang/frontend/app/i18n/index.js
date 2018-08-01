@@ -11,3 +11,5 @@ export type LocalesData = {
         [locale: string]: LocaleData
     }
 };
+
+export const i18n_cookie_name = "django_language";

@@ -16,6 +16,8 @@ import * as reducers from "reducers";
 import Witness from "lib/Witness";
 import User from "lib/User";
 import { updateIntl } from "react-intl-redux";
+import Cookies from "js-cookie";
+import { i18n_cookie_name } from "i18n";
 
 import * as api from "api";
 import { BATCH } from "redux-batched-actions";
@@ -360,6 +362,8 @@ function* selectLocale(action: actions.Action) {
     if (user.isLoggedIn) {
         yield call(api.setUserLocale, user, locale);
     }
+
+    yield call(Cookies.set, i18n_cookie_name, locale);
 
     yield put(
         updateIntl({

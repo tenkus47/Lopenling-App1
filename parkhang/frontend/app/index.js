@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Cookies from "js-cookie";
 import AppContainer from "components/App/AppContainer";
 
 // For dev only
@@ -27,6 +28,7 @@ import rootSaga from "sagas";
 import { addLocaleData } from "react-intl";
 import { IntlProvider, updateIntl } from "react-intl-redux";
 import { updateLocales, selectedLocale } from "actions";
+import { i18n_cookie_name } from "i18n";
 import boLocaleData from "react-intl/locale-data/bo";
 import en from "i18n/en/app.translations.json";
 import bo from "i18n/bo/app.translations.json";
@@ -70,9 +72,11 @@ store.dispatch(
 
 if (USER_LOGGED_IN) {
     store.dispatch(userLoggedIn(USER_ID, USER_NAME, USER_LOCALE));
-    store.dispatch(selectedLocale(USER_LOCALE));
+} else {
+    const cookieLang = Cookies.get(i18n_cookie_name);
+    USER_LOCALE = cookieLang;
 }
-
+store.dispatch(selectedLocale(USER_LOCALE));
 store.dispatch(updateIntl(locales[USER_LOCALE]));
 
 function intlSelector(state) {

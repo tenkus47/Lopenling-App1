@@ -17,6 +17,7 @@
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.5",
     "grapheme-splitter": "git+https://github.com/orling/grapheme-splitter.git",
+    "js-cookie": "^2.2.0",
     "lodash": "^4.17.10",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
