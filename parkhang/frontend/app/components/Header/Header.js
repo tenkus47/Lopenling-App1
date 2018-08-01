@@ -2,7 +2,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { getUser, getActiveLocale, getIntlLocale } from "reducers";
+import { getUser, getActiveLocale } from "reducers";
 import styles from "./Header.css";
 import User from "lib/User";
 import type { AppState } from "reducers";
