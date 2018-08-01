@@ -68,6 +68,19 @@ export const getActiveLocale = (state: AppState): string => {
     return locales.getActiveLocale(state.locales);
 };
 
+export const getTranslation = (
+    state: AppState,
+    translateId: string,
+    defaultTranslation?: string
+): string => {
+    let translation = defaultTranslation || translateId;
+    if (state.intl.messages.hasOwnProperty(translateId)) {
+        translation = state.intl.messages[translateId];
+    }
+
+    return translation;
+};
+
 // user
 
 /**
