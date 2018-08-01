@@ -42,6 +42,40 @@ export default class SegmentedText {
 
                 return res;
             });
+
+            let segmentsStr = this.segments.reduce(
+                (acc: string, curr: TextSegment): string => {
+                    return (acc += curr.text);
+                },
+                ""
+            );
+
+            let sortedSegmentsStr = this._sortedSegments.reduce(
+                (acc: string, curr: TextSegment): string => {
+                    return (acc += curr.text);
+                },
+                ""
+            );
+
+            if (segmentsStr != sortedSegmentsStr) {
+                console.warn(
+                    "segments not same as sortedSegments, length: %d",
+                    segmentsStr.length
+                );
+            } else {
+                console.log(
+                    "segments SAME as sortedSegments, length: %d, \nextracts: %s\nextracts: %s",
+                    segmentsStr.length,
+                    segmentsStr.substr(
+                        0,
+                        segmentsStr.length > 500 ? 500 : segmentsStr.length
+                    ),
+                    sortedSegmentsStr.substr(
+                        0,
+                        segmentsStr.length > 500 ? 500 : segmentsStr.length
+                    )
+                );
+            }
         }
 
         return this._sortedSegments;

@@ -1,6 +1,6 @@
 {
     "locale": "bo",
-    "displayName": "བོདདཡིག",
+    "displayName": "བོད་ཡིག",
     "messages": {
         "header.title": "Nalanda Texts Project",
         "header.login": "Login",
@@ -8,7 +8,11 @@
         "header.logout": "Logout",
         "leftbar.search": "Search",
         "leftbar.titles": "Titles",
-        "annotation.workingEdition": "Working",
+        "annotation.workingEdition": "བོད Working",
+        "annotation.edit": "Edit",
+        "annotation.delete": "delete",
+        "annotation.save": "Save",
+        "annotation.cancel": "Cancel",
         "annotations.login": "login",
         "annotations.loginMessage": "Please {login} to make changes.",
         "annotations.variantsHeading": "Variants"

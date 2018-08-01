@@ -1,6 +1,7 @@
 // @flow
 import React from "react";
 import classnames from "classnames";
+import { FormattedMessage } from "react-intl";
 import styles from "./TabBar.css";
 import Witness from "lib/Witness";
 
@@ -39,6 +40,12 @@ export default class TabBar extends React.Component<Props> {
                 if (witness === this.props.activeWitness) {
                     classes.push(styles.selected);
                 }
+                let tabName = witness.source.name;
+                if (witness.isWorking) {
+                    tabName = (
+                        <FormattedMessage id="annotation.workingEdition" />
+                    );
+                }
                 tabs.push(
                     <div
                         className={classnames(...classes)}
@@ -47,7 +54,7 @@ export default class TabBar extends React.Component<Props> {
                         }}
                         key={witness.id}
                     >
-                        {witness.source.name}
+                        {tabName}
                     </div>
                 );
             }

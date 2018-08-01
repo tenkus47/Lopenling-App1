@@ -1,6 +1,7 @@
 // @flow
 import React from "react";
 import classnames from "classnames";
+import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
 import type { Props as AnnotationDetailProps } from "./AnnotationDetail";
 
@@ -38,13 +39,13 @@ const AnnotationDetailEdit = (props: Props) => {
                             }
                         }}
                     >
-                        Save
+                        <FormattedMessage id="annotation.save" />
                     </div>
                     <div
                         className={styles.cancel}
                         onClick={props.cancelAnnotationHandler}
                     >
-                        Cancel
+                        <FormattedMessage id="annotation.cancel" />
                     </div>
                 </div>
             </div>

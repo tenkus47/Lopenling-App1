@@ -30,7 +30,11 @@ type AnnotationData = {
     annotation: Annotation,
     userCreated: boolean
 };
-const getAnnotationsData = (annotations, sources): AnnotationData[] => {
+const getAnnotationsData = (
+    annotations,
+    sources,
+    workingSourceName
+): AnnotationData[] => {
     let annotationsData = [];
     let baseSources = sources.map(source => source.name);
     if (annotations) {
@@ -78,7 +82,8 @@ const getAnnotationsData = (annotations, sources): AnnotationData[] => {
                 annotationsById[id].isWorking = false;
             }
         }
-        baseSources.unshift(BASE_NAME);
+        // Make sure Working source is first
+        baseSources.unshift(workingSourceName);
         annotationsData = Object.keys(annotationsById).reduce((arr, key) => {
             const annotationData = annotationsById[key];
             if (annotationData.isWorking) {
@@ -262,7 +267,16 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         ownProps.annotationPositions
     );
     const sources = reducers.getSources(state);
-    let annotationsData = getAnnotationsData(annotations, sources);
+    const workingSourceName = reducers.getTranslation(
+        state,
+        "annotation.workingEdition",
+        BASE_NAME
+    );
+    let annotationsData = getAnnotationsData(
+        annotations,
+        sources,
+        workingSourceName
+    );
 
     let baseAnnotation = null;
     if (activeAnnotation.id == BASE_ANNOTATION_ID) {
@@ -280,7 +294,8 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
             );
             const baseAnnotationData = getAnnotationsData(
                 [baseAnnotation],
-                sources
+                sources,
+                workingSourceName
             );
             annotationsData = [...baseAnnotationData, ...annotationsData];
         }

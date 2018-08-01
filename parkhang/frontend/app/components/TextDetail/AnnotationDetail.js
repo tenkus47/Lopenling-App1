@@ -1,6 +1,7 @@
 // @flow
 import React from "react";
 import classnames from "classnames";
+import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 
@@ -13,7 +14,11 @@ export type Props = {
 };
 
 const AnnotationDetail = (props: Props) => {
-    let desc = <p>&lt;delete&gt;</p>;
+    let desc = (
+        <p>
+            &lt;<FormattedMessage id="annotation.delete" />&gt;
+        </p>
+    );
     let content = props.annotationData.content;
     if (content.trim() !== "") {
         desc = <p>{props.annotationData.content}</p>;
@@ -36,8 +41,24 @@ const AnnotationDetail = (props: Props) => {
                             className={styles.edit}
                             onClick={props.editAnnotationHandler}
                         >
-                            <svg version="1.1" width="15" height="15" viewBox="0 0 24 24" data-code="57940" data-tags="mode_edit" > <g transform="scale(0.0234375 0.0234375)" > <path className={styles.editImage} d="M884 300l-78 78-160-160 78-78c16-16 44-16 60 0l100 100c16 16 16 44 0 60zM128 736l472-472 160 160-472 472h-160v-160z" /> </g> </svg>
-                            Edit
+                            <svg
+                                version="1.1"
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                data-code="57940"
+                                data-tags="mode_edit"
+                            >
+                                {" "}
+                                <g transform="scale(0.0234375 0.0234375)">
+                                    {" "}
+                                    <path
+                                        className={styles.editImage}
+                                        d="M884 300l-78 78-160-160 78-78c16-16 44-16 60 0l100 100c16 16 16 44 0 60zM128 736l472-472 160 160-472 472h-160v-160z"
+                                    />{" "}
+                                </g>{" "}
+                            </svg>
+                            <FormattedMessage id="annotation.edit" />
                         </button>
                     )}
             </div>
