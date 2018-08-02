@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dokku": {
+      "postdeploy": "parkhang/manage.py migrate; parkhang/manage.py collectstatic --no-input"
+    }
+  }
+}

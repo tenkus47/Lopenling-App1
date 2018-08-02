@@ -1,0 +1,1 @@
+web: env PYTHONPATH=$PYTHONPATH:$PWD/parkhang gunicorn parkhang.project.wsgi
