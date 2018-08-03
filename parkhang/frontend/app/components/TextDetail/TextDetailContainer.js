@@ -198,14 +198,12 @@ function getCachedAnnotatedText(
     let textId = witness.text.id;
     if (_annotatedTextsCache.textId === textId) {
         if (_annotatedTextsCache.texts.hasOwnProperty(text.getUniqueId())) {
-            console.log("got cached annotated text");
             return _annotatedTextsCache.texts[text.getUniqueId()];
         } else {
             _annotatedTextsCache.texts[text.getUniqueId()] = text;
             return text;
         }
     } else {
-        console.log("reset cache");
         _annotatedTextsCache.textId = textId;
         _annotatedTextsCache.texts = {
             [text.getUniqueId()]: text
