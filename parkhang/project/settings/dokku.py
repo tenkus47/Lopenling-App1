@@ -2,6 +2,8 @@ from .base import *
 
 PROD_ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST')]
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
 ALLOWED_HOSTS = ALLOWED_HOSTS + PROD_ALLOWED_HOSTS
 
 STATIC_ROOT = '/app/storage/static_collected/'
