@@ -48,6 +48,7 @@ we require as we don't want to change the html.
     border-right: 1px solid var(--main-tint);
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+    height: 40px;
 }
 
 .login .account-menu-signinLink,
