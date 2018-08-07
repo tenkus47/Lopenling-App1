@@ -21,7 +21,7 @@ module.exports = {
         path: path.resolve(__dirname, 'static/bundles/'),
         filename: "[name]-[hash].js",
         library: 'parkhang',
-        publicPath: '/bundles/'
+        publicPath: '/static/bundles/'
     },
 
     plugins: [
