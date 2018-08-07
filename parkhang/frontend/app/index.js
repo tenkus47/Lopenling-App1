@@ -74,7 +74,9 @@ if (USER_LOGGED_IN) {
     store.dispatch(userLoggedIn(USER_ID, USER_NAME, USER_LOCALE));
 } else {
     const cookieLang = Cookies.get(i18n_cookie_name);
-    USER_LOCALE = cookieLang;
+    if (cookieLang) {
+        USER_LOCALE = cookieLang;
+    }
 }
 store.dispatch(selectedLocale(USER_LOCALE));
 store.dispatch(updateIntl(locales[USER_LOCALE]));
