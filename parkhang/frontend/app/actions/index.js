@@ -483,6 +483,22 @@ export function changedTextListVisible(
     };
 }
 
+export type ChangedWitnessScrollPositionAction = Action & {
+    witnessId: number,
+    scrollPosition: number
+};
+
+export function changedWitnessScrollPosition(
+    witnessId: number,
+    scrollPosition: number
+): ChangedWitnessScrollPositionAction {
+    return {
+        type: CHANGED_WITNESS_SCROLL_POSITION,
+        witnessId,
+        scrollPosition
+    };
+}
+
 /* I18N */
 export type UpdateLocalesAction = {
     type: string,

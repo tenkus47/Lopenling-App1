@@ -2,6 +2,7 @@
 import * as actions from "actions";
 import Annotation, { TemporaryAnnotation } from "lib/Annotation";
 import * as api from "api";
+import { CHANGED_WITNESS_SCROLL_POSITION } from "../actions";
 
 export type UIState = {
     selectedText: api.TextData | null,
@@ -14,6 +15,9 @@ export type UIState = {
         [witnessId: number]: {
             [tempAnnotationKey: string]: TemporaryAnnotation[]
         }
+    },
+    scrollPositions: {
+        [witnessId: number]: number
     }
 };
 
@@ -24,7 +28,8 @@ export const initialUIState = {
     showPageImages: false,
     activeAnnotations: {},
     textListVisible: true,
-    temporaryAnnotations: {}
+    temporaryAnnotations: {},
+    scrollPositions: {}
 };
 
 function selectedText(
@@ -177,6 +182,19 @@ function removedTemporaryAnnotation(
     };
 }
 
+function changedScrollPosition(
+    state: UIState,
+    action: actions.ChangedWitnessScrollPositionAction
+): UIState {
+    return {
+        ...state,
+        scrollPositions: {
+            ...state.scrollPositions,
+            [action.witnessId]: action.scrollPosition
+        }
+    };
+}
+
 const uiReducers = {};
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
@@ -187,6 +205,7 @@ uiReducers[actions.CHANGED_ACTIVE_ANNOTATION] = changedActiveAnnotation;
 uiReducers[actions.CHANGED_TEXT_LIST_VISIBLE] = textListVisibleChanged;
 uiReducers[actions.ADDED_TEMPORARY_ANNOTATION] = addedTemporaryAnnotation;
 uiReducers[actions.REMOVED_TEMPORARY_ANNOTATION] = removedTemporaryAnnotation;
+uiReducers[actions.CHANGED_WITNESS_SCROLL_POSITION] = changedScrollPosition;
 export default uiReducers;
 
 export const getSelectedText = (state: UIState): api.TextData | null => {
@@ -244,4 +263,11 @@ export const getTemporaryAnnotations = (
         );
     }
     return annotations;
+};
+
+export const getScrollPosition = (
+    state: UIState,
+    witnessId: number
+): number | null => {
+    return state.scrollPositions[witnessId] || null;
 };
