@@ -15,6 +15,9 @@
         "annotation.cancel": "Cancel",
         "annotations.login": "login",
         "annotations.loginMessage": "Please {login} to make changes.",
-        "annotations.variantsHeading": "Variants"
+        "annotations.variantsHeading": "Variants",
+        "annotation.notesHeading": "Notes",
+        "annotation.addNoteHelp": "Add a new note",
+        "annotation.noNotes": "No notes available"
     }
 }

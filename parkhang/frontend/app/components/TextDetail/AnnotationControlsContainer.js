@@ -260,11 +260,15 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         activeAnnotation.start,
         activeAnnotation.length
     );
+
     const annotations = getAvailableAnnotations(
         ownProps.annotatedText,
         activeAnnotation,
         temporaryVariant,
         ownProps.annotationPositions
+    );
+    const variants = annotations.filter(
+        (annotation: Annotation) => annotation.type === ANNOTATION_TYPES.variant
     );
     const sources = reducers.getSources(state);
     const workingSourceName = reducers.getTranslation(
@@ -272,11 +276,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         "annotation.workingEdition",
         BASE_NAME
     );
-    let annotationsData = getAnnotationsData(
-        annotations,
-        sources,
-        workingSourceName
-    );
+    let variantsData = getAnnotationsData(variants, sources, workingSourceName);
 
     let baseAnnotation = null;
     if (activeAnnotation.id == BASE_ANNOTATION_ID) {
@@ -286,7 +286,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
             activeAnnotation
         );
         if (start === null || length === null) {
-            annotationsData = null;
+            variantsData = null;
         } else {
             baseAnnotation = ownProps.annotatedText.getBaseAnnotation(
                 start,
@@ -297,13 +297,13 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
                 sources,
                 workingSourceName
             );
-            annotationsData = [...baseAnnotationData, ...annotationsData];
+            variantsData = [...baseAnnotationData, ...variantsData];
         }
     }
 
     // make sure temporary annotation is first, then user created, then base annotation
-    if (annotationsData) {
-        annotationsData.sort((a, b) => {
+    if (variantsData) {
+        variantsData.sort((a, b) => {
             if (a.isTemporary) {
                 return -1;
             } else if (b.isTemporary) {
@@ -320,17 +320,31 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         });
     }
 
+    const notes = annotations.filter(
+        (annotation: Annotation) => annotation.type === ANNOTATION_TYPES.note
+    );
+
+    const temporaryNotes = reducers.getTemporaryAnnotations(
+        state,
+        selectedWitness.id,
+        activeAnnotation.start,
+        activeAnnotation.length,
+        ANNOTATION_TYPES.note
+    );
+
     return {
-        annotationsData: annotationsData,
+        annotationsData: variantsData,
         activeAnnotation: activeAnnotation,
         baseAnnotation: baseAnnotation,
-        availableAnnotations: annotations,
+        availableAnnotations: variants,
         user: user,
         temporaryAnnotation: temporaryVariant,
         inline: inline,
         firstSelectedSegment: ownProps.firstSelectedSegment,
         splitTextRect: ownProps.splitTextRect,
-        selectedWitness: selectedWitness
+        selectedWitness: selectedWitness,
+        notes: notes,
+        temporaryNotes: temporaryNotes
     };
 };
 
@@ -512,14 +526,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             actionsBatch.push(
                 actions.removedTemporaryAnnotation(selectedAnnotation)
             );
+            // TODO: figure out what needs changing to handle note annotations
             actionsBatch.push(
                 actions.appliedAnnotation(
                     newAnnotation.uniqueId,
                     selectedWitnessData
                 )
             );
-            actionsBatch.push(actions.changedActiveAnnotation(newAnnotation));
-
+            if (newAnnotation.type === ANNOTATION_TYPES.variant) {
+                actionsBatch.push(
+                    actions.changedActiveAnnotation(newAnnotation)
+                );
+            }
             dispatch(batchActions(actionsBatch));
         },
         cancelEditAnnotation: (selectedAnnotation: TemporaryAnnotation) => {
@@ -535,6 +553,55 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 selectedAnnotation
             );
             dispatch(cancelAction);
+        },
+        deleteAnnotation: (annotation: Annotation) => {
+            let selectedWitness = stateProps.selectedWitness;
+            let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
+            const deleteAction = actions.deletedAnnotation(
+                annotation,
+                selectedWitness
+            );
+            const removeAppliedAction = actions.removedAppliedAnnotation(
+                annotation.uniqueId,
+                selectedWitnessData
+            );
+
+            const actionsBatch = [deleteAction, removeAppliedAction];
+
+            dispatch(batchActions(actionsBatch));
+        },
+        addNote: () => {
+            const activeAnnotation = ownProps.activeAnnotation;
+            const temporaryAnnotation = new TemporaryAnnotation(
+                null,
+                activeAnnotation.witness,
+                activeAnnotation.start,
+                activeAnnotation.length,
+                "",
+                ANNOTATION_TYPES.note,
+                stateProps.selectedWitness,
+                stateProps.user
+            );
+
+            dispatch(
+                actions.addedTemporaryAnnotation(temporaryAnnotation, true)
+            );
+        },
+        editNote: (note: Annotation) => {
+            const temporaryAnnotation = new TemporaryAnnotation(
+                note,
+                note.witness,
+                note.start,
+                note.length,
+                note.content,
+                ANNOTATION_TYPES.note,
+                stateProps.selectedWitness,
+                stateProps.user
+            );
+
+            dispatch(
+                actions.addedTemporaryAnnotation(temporaryAnnotation, true)
+            );
         }
     };
 };

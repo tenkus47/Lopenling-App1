@@ -86,3 +86,9 @@
 .anonymousMessage a:visited {
     color: red;
 }
+
+.noNotes {
+    color: #aaa;
+    font-style: italic;
+    font-size: 18px;
+}

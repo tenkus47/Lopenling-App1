@@ -120,9 +120,12 @@ class AnnotationList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def get_annotation(request, unique_id):
+def get_annotation(request, unique_id, active_only=True):
     try:
-        annotation = Annotation.objects.get_active(unique_id)
+        if active_only:
+            annotation = Annotation.objects.get_active(unique_id)
+        else:
+            annotation = Annotation.objects.get(unique_id=unique_id)
     except Annotation.DoesNotExist:
         raise NotFound('An annotation with that ID does not exist.')
 
@@ -166,7 +169,7 @@ class AnnotationDetail(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, annotation_unique_id):
+    def delete(self, request, annotation_unique_id, *args, **kwargs):
         """
         Set given annotation's is_deleted to True.
         This prevents it being returned elsewhere and is effectively deleted. 
@@ -287,7 +290,7 @@ class UserAnnotationOperationDetail(APIView):
 
     def delete(self, request, witness_id, annotation_unique_id, *args, **kwargs):
 
-        annotation = get_annotation(request, annotation_unique_id)
+        annotation = get_annotation(request, annotation_unique_id, False)
 
         try:
             witness = Witness.objects.get(pk=witness_id)

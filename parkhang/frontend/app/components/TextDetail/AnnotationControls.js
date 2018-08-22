@@ -7,7 +7,12 @@ import styles from "./AnnotationControls.css";
 import textStyles from "./Text.css";
 import User from "lib/User";
 import Witness from "lib/Witness";
+import Annotation from "lib/Annotation";
+import AnnotationControlsHeading from "./AnnotationControlsHeading";
+import AddButton from "./AddButton";
+import NoteEditor from "./NoteEditor";
 import { FormattedMessage } from "react-intl";
+import Note from "./Note";
 
 export const CONTROLS_MARGIN_LEFT = 10;
 
@@ -24,7 +29,14 @@ export type Props = {
     splitTextRect: ClientRect | null,
     selectedWitness: Witness,
     selectedElementId: string | null,
-    pechaImageClass: string
+    pechaImageClass: string,
+    notes: Annotation[],
+    temporaryNotes: Annotation[],
+    addNote: () => void,
+    editNote: (annotation: Annotation) => void,
+    saveAnnotation: (annotation: Annotation, content: string) => void,
+    cancelEditAnnotation: (annotation: Annotation) => void,
+    deleteAnnotation: (annotation: Annotation) => void
 };
 
 export default class AnnotationControls extends React.PureComponent<Props> {
@@ -210,10 +222,9 @@ export default class AnnotationControls extends React.PureComponent<Props> {
                     annotations.push(annotationDetail);
                 }
             }, this);
+
             variantsHeading = (
-                <h3>
-                    <FormattedMessage id="annotations.variantsHeading" />
-                </h3>
+                <AnnotationControlsHeading titleId="annotations.variantsHeading" />
             );
 
             if (!props.user.isLoggedIn) {
@@ -240,6 +251,59 @@ export default class AnnotationControls extends React.PureComponent<Props> {
             );
         }
 
+        let tempNotes = null;
+        let tempNoteIds = {};
+        if (props.temporaryNotes && props.temporaryNotes.length > 0) {
+            tempNotes = props.temporaryNotes.map((note: Annotation) => {
+                let key = "NOTE_" + note.uniqueId;
+                if (note.basedOn) {
+                    tempNoteIds[note.basedOn.uniqueId] = note.uniqueId;
+                }
+                return (
+                    <NoteEditor
+                        note={note}
+                        key={key}
+                        saveNote={props.saveAnnotation}
+                        cancel={() => props.cancelEditAnnotation(note)}
+                    />
+                );
+            });
+        }
+
+        let notes = null;
+        if (props.notes && props.notes.length > 0) {
+            const validNotes = props.notes.filter(
+                (note: Annotation) => !tempNoteIds.hasOwnProperty(note.uniqueId)
+            );
+            notes = validNotes.map((note: Annotation) => {
+                let key = "NOTE_" + note.uniqueId;
+                return (
+                    <Note
+                        note={note}
+                        key={key}
+                        delete={this.props.deleteAnnotation}
+                        edit={this.props.editNote}
+                    />
+                );
+            });
+        }
+
+        const noNotes = (
+            <div className={styles.noNotes}>
+                <FormattedMessage id="annotation.noNotes" />
+            </div>
+        );
+
+        const notesHeading = (
+            <AnnotationControlsHeading
+                titleId="annotation.notesHeading"
+                buttonOnClick={
+                    isLoggedIn && !tempNotes ? () => props.addNote() : null
+                }
+                buttonTitleId="annotation.addNoteHelp"
+            />
+        );
+
         let classes = [styles.annotationControls];
         if (props.inline) {
             classes.push(styles.inline);
@@ -257,6 +321,10 @@ export default class AnnotationControls extends React.PureComponent<Props> {
                 {variantsHeading}
                 {temporaryAnnotations}
                 {annotations}
+                {notesHeading}
+                {tempNotes}
+                {notes}
+                {!tempNotes && !notes && noNotes}
                 <div className={styles.arrow} ref={div => (this.arrow = div)} />
                 <div
                     className={styles.arrowDs}
