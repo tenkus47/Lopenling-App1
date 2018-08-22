@@ -336,7 +336,7 @@ export type DeletedAnnotationAction = Action & {
     witness: Witness
 };
 /**
- * The given annotation has been updated with new data.
+ * The given annotation has been deleted.
  */
 export function deletedAnnotation(
     annotation: Annotation,
