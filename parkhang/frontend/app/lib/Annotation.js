@@ -152,7 +152,9 @@ export default class Annotation {
     }
 
     get end(): number {
-        return this.start + this.length - 1;
+        let end = this.start;
+        if (this.length > 0) end += this.length - 1;
+        return end;
     }
 
     isWithinRange(start: number, length: number): boolean {
