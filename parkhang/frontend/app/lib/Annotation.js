@@ -177,7 +177,7 @@ export default class Annotation {
     }
 
     get isInsertion(): boolean {
-        return Number(this.length) === 0;
+        return this.isVariant && Number(this.length) === 0;
     }
 
     get isDeletion(): boolean {

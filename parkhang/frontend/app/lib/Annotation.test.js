@@ -40,5 +40,9 @@ describe("Annotation", () => {
         expect(pageBreak.end).toEqual(23);
         expect(insertion.end).toEqual(11);
     });
+
+    test("Is an insertion", () => {
+        expect(pageBreak.isInsertion).toEqual(false);
+        expect(insertion.isInsertion).toEqual(true);
     });
 });
