@@ -165,7 +165,7 @@ export default class AnnotatedText {
 
         let startKey = annotation.start;
         let isActive = _.some(
-            this.variants,
+            this.annotations,
             a => a.uniqueId == annotation.uniqueId
         );
         if (annotation.isInsertion) {
@@ -327,7 +327,7 @@ export default class AnnotatedText {
         let isActive = false;
         if (
             _.some(
-                this.variants,
+                this.annotations,
                 active => annotation.uniqueId == active.uniqueId
             )
         ) {
