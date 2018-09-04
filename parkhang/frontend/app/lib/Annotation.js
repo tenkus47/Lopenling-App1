@@ -153,7 +153,7 @@ export default class Annotation {
 
     get end(): number {
         let end = this.start;
-        if (this.length > 0) end += this.length - 1;
+        if (this.content.length > 0) end += this.content.length - 1;
         return end;
     }
 

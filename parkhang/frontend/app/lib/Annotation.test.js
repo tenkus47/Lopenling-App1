@@ -25,8 +25,20 @@ const pageBreak = new Annotation(
     otherWitness
 );
 
+const insertion = new Annotation(
+    1,
+    baseWitness,
+    3,
+    0,
+    "insertion",
+    ANNOTATION_TYPES.variant,
+    otherWitness
+);
+
 describe("Annotation", () => {
     test("End of annotation", () => {
         expect(pageBreak.end).toEqual(23);
+        expect(insertion.end).toEqual(11);
+    });
     });
 });
