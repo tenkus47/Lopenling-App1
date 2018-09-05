@@ -50,6 +50,8 @@ describe("SplitText", () => {
     test("Get correct text index for position", () => {
         expect(splitText.getTextIndexOfPosition(29)).toEqual(0);
 
+        expect(splitText.getTextIndexOfPosition(45)).toEqual(1);
+
         expect(splitText.getTextIndexOfPosition(92)).toEqual(1);
 
         expect(splitText.getTextIndexOfPosition(250)).toEqual(2);

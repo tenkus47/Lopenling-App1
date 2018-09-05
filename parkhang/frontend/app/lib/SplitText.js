@@ -46,19 +46,19 @@ export default class SplitText {
             for (let i = 0; i < splitPositions.length; i++) {
                 const position = splitPositions[i];
                 const endIndex = segmentedText.indexOfSegmentAtPosition(
-                    position
+                    position - 1
                 );
                 let textSegments;
                 if (i == splitPositions.length - 1) {
                     // final position
                     textSegments = segments.slice(startIndex);
                 } else {
-                    textSegments = segments.slice(startIndex, endIndex);
+                    textSegments = segments.slice(startIndex, endIndex + 1);
                 }
 
                 const text = new SegmentedText(textSegments);
                 texts.push(text);
-                startIndex = endIndex;
+                startIndex = endIndex + 1;
                 if (endIndex >= 0) {
                     const finalSegment = segments[endIndex];
                     this._textsFinalPositions.push(finalSegment.end);
