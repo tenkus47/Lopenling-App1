@@ -72,7 +72,7 @@ export default class SplitText {
         return this._texts || [];
     }
 
-    _getTextsFinalPositions(): number[] {
+    getTextsFinalPositions(): number[] {
         this.texts;
         return this._textsFinalPositions;
     }
@@ -84,7 +84,7 @@ export default class SplitText {
      * @returns number
      */
     getTextIndexOfPosition(position: number): number {
-        const textsFinalPositions = this._getTextsFinalPositions();
+        const textsFinalPositions = this.getTextsFinalPositions();
         let lastPosition = 0;
         let textIndex = null;
         for (let i = 0; i < textsFinalPositions.length; i++) {

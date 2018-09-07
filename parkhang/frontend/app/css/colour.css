@@ -1,8 +1,17 @@
+@value main-tint: #024279;
+@value active-button: #00746b;
+
 :root {
-    --main-tint: #024279;
+    --main-tint: main-tint;
     --text-bg: #ddd;
     --green: #5B8960;
     --yellow: #ffc300;
     --red: #840000;
     --cancel: #aaa;
+    --active-button: active-button;
+}
+
+:export {
+    mainTint: main-tint;
+    activeButton: active-button;
 }

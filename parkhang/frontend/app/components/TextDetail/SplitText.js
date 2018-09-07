@@ -283,7 +283,24 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     shouldResetListCache(oldProps: Props, newProps: Props) {
-        return oldProps.showImages !== newProps.showImages;
+        let shouldReset = false;
+        if (
+            oldProps.showImages !== newProps.showImages ||
+            this.pageBreaksChanged(oldProps, newProps)
+        ) {
+            shouldReset = true;
+        }
+
+        return shouldReset;
+    }
+
+    pageBreaksChanged(oldProps: Props, newProps: Props) {
+        const oldTextBreaks = oldProps.splitText.getTextsFinalPositions();
+        const newTextBreaks = newProps.splitText.getTextsFinalPositions();
+
+        if (oldTextBreaks.length !== newTextBreaks.length) return true;
+
+        return JSON.stringify(oldTextBreaks) !== JSON.stringify(newTextBreaks);
     }
 
     selectedListRow(props: Props): number | null {
@@ -332,6 +349,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }, 500);
         } else {
             if (changedWitness) {
+                this.updateList(true);
+            } else if (this.pageBreaksChanged(this.props, props)) {
                 this.updateList(true);
             } else if (this.props.activeAnnotation) {
                 this.updateList(true, this.selectedListRow(props));
@@ -500,6 +519,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 splitTextRect={this.splitTextRect}
                                 selectedElementId={this.selectedElementId}
                                 pechaImageClass={pechaImageClass}
+                                splitText={props.splitText}
                             />
                         )}
                     {(this.selectedTextIndex !== index ||

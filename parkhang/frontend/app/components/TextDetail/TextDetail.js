@@ -57,6 +57,7 @@ class TextDetail extends React.Component<Props> {
 
         let inlineControls = false;
         let textComponent = null;
+        let splitText = null;
 
         if (!this.props.text || this.props.loading) {
             textComponent = <div key={this.key} />;
@@ -69,7 +70,7 @@ class TextDetail extends React.Component<Props> {
                 splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
             }
 
-            let splitText = new SplitText(this.props.annotatedText, splitter);
+            splitText = new SplitText(this.props.annotatedText, splitter);
             inlineControls = true;
             textComponent = (
                 <SplitTextComponent
@@ -100,6 +101,7 @@ class TextDetail extends React.Component<Props> {
                     annotationPositions={this.props.annotationPositions}
                     annotatedText={this.props.annotatedText}
                     activeAnnotation={this.props.activeAnnotation}
+                    splitText={splitText}
                 />
             );
         }

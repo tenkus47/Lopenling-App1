@@ -17,6 +17,7 @@ import AnnotatedText from "lib/AnnotatedText";
 import User from "lib/User";
 import Witness from "lib/Witness";
 import TextSegment from "lib/TextSegment";
+import SplitText from "lib/SplitText";
 import _ from "lodash";
 
 const TEMPORARY_ANNOTATION_ID = -3;
@@ -179,6 +180,8 @@ const getAvailableAnnotations = (
             ) {
                 availableAnnotations.push(annotation);
             }
+        } else if (annotation.type === ANNOTATION_TYPES.pageBreak) {
+            availableAnnotations.push(annotation);
         }
     }
 
@@ -219,7 +222,8 @@ type ContainerProps = {
     activeAnnotation: Annotation | null,
     inline?: boolean,
     firstSelectedSegment: TextSegment,
-    splitTextRect: ClientRect | null
+    splitTextRect: ClientRect | null,
+    splitText: SplitText | null
 };
 
 export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
@@ -336,7 +340,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         annotationsData: variantsData,
         activeAnnotation: activeAnnotation,
         baseAnnotation: baseAnnotation,
-        availableAnnotations: variants,
+        availableAnnotations: annotations,
         user: user,
         temporaryAnnotation: temporaryVariant,
         inline: inline,
@@ -520,9 +524,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             } else {
                 action = actions.createdAnnotation;
             }
-            actionsBatch.push(
-                action(newAnnotation, selectedAnnotation.witness)
-            );
+            actionsBatch.push(action(newAnnotation));
             actionsBatch.push(
                 actions.removedTemporaryAnnotation(selectedAnnotation)
             );
@@ -602,6 +604,41 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             dispatch(
                 actions.addedTemporaryAnnotation(temporaryAnnotation, true)
             );
+        },
+        addPageBreak: () => {
+            const location = ownProps.activeAnnotation;
+            const pageIndex = ownProps.splitText.getTextIndexOfPosition(
+                location.start
+            );
+            // pageNumber is 1-indexed, so add one to get current page.
+            // Then, add one again as pageBreak stores the start of a page.
+            const pageNumber = pageIndex + 2;
+
+            const pageBreak = new Annotation(
+                null,
+                location.witness,
+                location.start,
+                0,
+                String(pageNumber),
+                ANNOTATION_TYPES.pageBreak,
+                stateProps.selectedWitness,
+                stateProps.user
+            );
+            let selectedWitnessData = reducers.dataFromWitness(
+                stateProps.selectedWitness
+            );
+
+            let actionsBatch = [];
+
+            actionsBatch.push(actions.createdAnnotation(pageBreak));
+            actionsBatch.push(
+                actions.appliedAnnotation(
+                    pageBreak.uniqueId,
+                    selectedWitnessData
+                )
+            );
+
+            dispatch(batchActions(actionsBatch));
         }
     };
 };

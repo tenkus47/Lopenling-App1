@@ -92,3 +92,12 @@
     font-style: italic;
     font-size: 18px;
 }
+
+.breakButtons {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.breakButtons > button {
+    flex-grow: 1;
+}

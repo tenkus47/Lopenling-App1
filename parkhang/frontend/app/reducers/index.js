@@ -229,12 +229,14 @@ export const hasLoadedWitnessAppliedAnnotations = (
 export const getAnnotationsForWitnessId = (
     state: AppState,
     witnessId: number,
-    annotationType: string = ANNOTATION_TYPES.variant
-): { [string]: AnnotationData } => {
+    annotationType: string = ANNOTATION_TYPES.variant,
+    creatorWitnessId?: number
+): { [AnnotationUniqueId]: AnnotationData } => {
     return data.getAnnotationsForWitnessId(
         state.data,
         witnessId,
-        annotationType
+        annotationType,
+        creatorWitnessId
     );
 };
 

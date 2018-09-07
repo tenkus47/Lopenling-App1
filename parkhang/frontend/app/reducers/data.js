@@ -378,7 +378,7 @@ function createdAnnotation(
     const annotation = action.annotation;
     annotation.save();
     const annotationData = dataFromAnnotation(annotation);
-    const witness = action.witness;
+    const witness = annotation.witness;
 
     return {
         ...state,
@@ -411,7 +411,7 @@ function deletedAnnotation(
     if (!annotation.isSaved) {
         console.warn("Deleting annotation which is not saved: %o", action);
     }
-    const witness = action.witness;
+    const witness = annotation.witness;
     let witnessAnnotations = state.witnessAnnotationsById[witness.id];
     if (witnessAnnotations) {
         witnessAnnotations = {
@@ -732,14 +732,19 @@ export function dataFromAnnotation(
 export const getAnnotationsForWitnessId = (
     state: DataState,
     witnessId: number,
-    annotationType: string = ANNOTATION_TYPES.variant
-): { [string]: AnnotationData } => {
+    annotationType: string = ANNOTATION_TYPES.variant,
+    creatorWitnessId?: number
+): { [AnnotationUniqueId]: AnnotationData } => {
     let annotations = state.witnessAnnotationsById[witnessId];
-
     annotations = _.pickBy(
         annotations,
-        (annotation: AnnotationData, key: string): boolean =>
-            annotation.type === annotationType
+        (annotation: AnnotationData, key: string): boolean => {
+            let include = annotation.type === annotationType;
+            if (include && creatorWitnessId) {
+                include = annotation.creator_witness === creatorWitnessId;
+            }
+            return include;
+        }
     );
 
     return annotations;

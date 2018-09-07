@@ -296,38 +296,32 @@ export function appliedDefaultAnnotation(
 }
 
 export type CreatedAnnotationAction = Action & {
-    annotation: Annotation,
-    witness: Witness
+    annotation: Annotation
 };
 /**
  * The given annotation has been created and applied.
  */
 export function createdAnnotation(
-    annotation: Annotation,
-    witness: Witness
+    annotation: Annotation
 ): CreatedAnnotationAction {
     return {
         type: CREATED_ANNOTATION,
-        annotation,
-        witness
+        annotation
     };
 }
 
 export type UpdatedAnnotationAction = Action & {
-    annotation: Annotation,
-    witness: Witness
+    annotation: Annotation
 };
 /**
  * The given annotation has been updated with new data.
  */
 export function updatedAnnotation(
-    annotation: Annotation,
-    witness: Witness
+    annotation: Annotation
 ): UpdatedAnnotationAction {
     return {
         type: UPDATED_ANNOTATION,
-        annotation,
-        witness
+        annotation
     };
 }
 

@@ -2,9 +2,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
+import type { AnnotationUniqueId } from "lib/Annotation";
 import Source, { WORKING_VERSION_SOURCE_NAME } from "lib/Source";
 import Witness from "lib/Witness";
 import Text from "lib/Text";
+import TextSegment from "lib/TextSegment";
 import type { AppState } from "reducers";
 import type { AnnotationData, TextData } from "api";
 import {
@@ -410,15 +412,34 @@ const mapStateToProps = state => {
             );
         }
 
-        if (baseWitness) {
-            pageBreaks = getAnnotationsForWitnessId(
+        if (selectedWitness && baseWitness) {
+            let witnessPageBreaks = getAnnotationsForWitnessId(
                 state,
-                baseWitness.id,
-                ANNOTATION_TYPES.pageBreak
+                workingWitness.id,
+                ANNOTATION_TYPES.pageBreak,
+                selectedWitness.id
             );
-            let starts = [];
-            _.forIn(pageBreaks, o => starts.push(o.start));
-            pageBreaks = starts.sort((a, b) => a - b);
+
+            let basePageBreaks = null;
+            if (selectedWitness.id !== baseWitness.id) {
+                basePageBreaks = getAnnotationsForWitnessId(
+                    state,
+                    baseWitness.id,
+                    ANNOTATION_TYPES.pageBreak
+                );
+            }
+
+            pageBreaks = getPageBreaks(witnessPageBreaks, basePageBreaks);
+            for (let i = 0, len = pageBreaks.length; i < len; i++) {
+                let position = pageBreaks[i];
+                let segment = annotatedText.segmentAtOriginalPosition(position);
+                if (segment instanceof TextSegment) {
+                    pageBreaks[i] = segment.start;
+                } else if (segment instanceof Number) {
+                    pageBreaks[i] = segment;
+                }
+            }
+
             if (paginated) {
                 imagesBaseUrl =
                     "/static/images/texts/" +
@@ -457,8 +478,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
     const didSelectSegmentPosition = (segmentPosition, start, length) => {
         let segmentAnnotations = annotationPositions[segmentPosition];
+        let segmentVariants = [];
+        if (segmentAnnotations) {
+            segmentVariants = segmentAnnotations.filter(
+                (annotation: Annotation) =>
+                    annotation.type === ANNOTATION_TYPES.variant
+            );
+        }
         let activeAnnotations = _.intersectionWith(
-            segmentAnnotations,
+            segmentVariants,
             annotatedText.annotations,
             (a, b) => a.toString() == b.toString()
         );
@@ -466,9 +494,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         if (activeAnnotations.length > 0) {
             // get any active annotations
             activeAnnotation = activeAnnotations[0];
-        } else if (segmentAnnotations && segmentAnnotations.length > 0) {
+        } else if (segmentVariants && segmentVariants.length > 0) {
             // get base text annotation for longest annotation highlighted in text
-            let longestAvailable = getLongestAnnotation(segmentAnnotations);
+            let longestAvailable = getLongestAnnotation(segmentVariants);
             let [start, length] = annotatedText.getPositionOfAnnotation(
                 longestAvailable
             );
@@ -613,6 +641,41 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
         }
     };
+};
+
+const getPageBreaks = (
+    witnessPageBreaks: { [AnnotationUniqueId]: AnnotationData },
+    basePageBreaks: { [AnnotationUniqueId]: AnnotationData } | null
+): number[] => {
+    let witnessStarts = [];
+    _.forIn(witnessPageBreaks, o => witnessStarts.push(o.start));
+    witnessStarts = witnessStarts.sort((a, b) => a - b);
+
+    if (!basePageBreaks) {
+        return witnessStarts;
+    }
+
+    let baseStarts = [];
+    _.forIn(basePageBreaks, o => baseStarts.push(o.start));
+    baseStarts = baseStarts.sort((a, b) => a - b);
+
+    if (witnessStarts.length === 0) {
+        return baseStarts;
+    }
+
+    // Only add page breaks if witness has < 90% of base witness breaks.
+    // Editions often have differing numbers of words per page so can't
+    // be 100%.
+    const threshold = 0.9;
+    if (witnessStarts.length / baseStarts.length < threshold) {
+        let lastWitnessPageStart = witnessStarts[witnessStarts.length - 1];
+        for (let i = 0, len = baseStarts.length; i < len; i++) {
+            let start = baseStarts[i];
+            if (start > lastWitnessPageStart) witnessStarts.push(start);
+        }
+    }
+
+    return witnessStarts;
 };
 
 const getTextWorkingWitness = (textData: TextData): Witness => {

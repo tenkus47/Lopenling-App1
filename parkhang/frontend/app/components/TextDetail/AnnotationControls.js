@@ -4,15 +4,16 @@ import classnames from "classnames";
 import AnnotationDetail from "./AnnotationDetail";
 import AnnotationDetailEdit from "./AnnotationDetailEdit";
 import styles from "./AnnotationControls.css";
-import textStyles from "./Text.css";
+import colours from "css/colour.css";
 import User from "lib/User";
 import Witness from "lib/Witness";
-import Annotation from "lib/Annotation";
+import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import AnnotationControlsHeading from "./AnnotationControlsHeading";
-import AddButton from "./AddButton";
 import NoteEditor from "./NoteEditor";
 import { FormattedMessage } from "react-intl";
 import Note from "./Note";
+import Button from "components/UI/Button";
+import PageBreakIcon from "images/page_break_icon.svg";
 
 export const CONTROLS_MARGIN_LEFT = 10;
 
@@ -22,7 +23,7 @@ export type Props = {
     annotationsData: null,
     activeAnnotation: null,
     baseAnnotation: null,
-    availableAnnotations: null,
+    availableAnnotations: Annotation[] | null,
     temporaryAnnotation: null,
     inline: null,
     firstSelectedSegment: null,
@@ -36,10 +37,11 @@ export type Props = {
     editNote: (annotation: Annotation) => void,
     saveAnnotation: (annotation: Annotation, content: string) => void,
     cancelEditAnnotation: (annotation: Annotation) => void,
-    deleteAnnotation: (annotation: Annotation) => void
+    deleteAnnotation: (annotation: Annotation) => void,
+    addPageBreak: () => void
 };
 
-export default class AnnotationControls extends React.PureComponent<Props> {
+export default class AnnotationControls extends React.Component<Props> {
     controls: HTMLDivElement | null;
     arrow: HTMLDivElement | null;
     arrowDs: HTMLDivElement | null;
@@ -158,6 +160,7 @@ export default class AnnotationControls extends React.PureComponent<Props> {
         let variantsHeading = null;
         let nothingSelected = null;
         const isLoggedIn = props.user.isLoggedIn;
+        
         if (props.annotationsData) {
             props.annotationsData.map(annotationData => {
                 let isEditing = false;
@@ -251,6 +254,45 @@ export default class AnnotationControls extends React.PureComponent<Props> {
             );
         }
 
+        let pageBreaksButton = null;
+        if (isLoggedIn && !this.props.selectedWitness.isWorking) {
+            let pageBreaks = [];
+            if (this.props.availableAnnotations) {
+                pageBreaks = this.props.availableAnnotations.filter(
+                    (annotation: Annotation) =>
+                        annotation.type === ANNOTATION_TYPES.pageBreak
+                );
+            }
+
+            if (pageBreaks.length > 0) {
+                pageBreaksButton = (
+                    <div className={styles.breakButtons}>
+                        <Button
+                            title="Page Break"
+                            accessoryType="DELETE"
+                            icon={<PageBreakIcon width={20} height={20} />}
+                            onClick={() => {
+                                this.props.deleteAnnotation(pageBreaks[0])
+                            }}
+                            isActive={true}
+                            colour={colours.activeButton}
+                        />
+                    </div>
+                );
+            } else {
+                pageBreaksButton = (
+                    <div className={styles.breakButtons}>
+                        <Button
+                            title="Add Page Break"
+                            accessoryType="ADD"
+                            icon={<PageBreakIcon width={20} height={20} />}
+                            onClick={this.props.addPageBreak}
+                        />
+                    </div>
+                );
+            }
+        }
+
         let tempNotes = null;
         let tempNoteIds = {};
         if (props.temporaryNotes && props.temporaryNotes.length > 0) {
@@ -321,6 +363,7 @@ export default class AnnotationControls extends React.PureComponent<Props> {
                 {variantsHeading}
                 {temporaryAnnotations}
                 {annotations}
+                {pageBreaksButton}
                 {notesHeading}
                 {tempNotes}
                 {notes}
