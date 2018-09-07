@@ -105,11 +105,12 @@ export default class Annotation {
             ? this.creatorWitness.id
             : 0;
         const creatorUserId = this.creatorUser ? this.creatorUser.id : 0;
+        const witnessId = this.witness ? this.witness.id : 0;
         return getNaturalId(
             this.type,
             creatorUserId,
             creatorWitnessId,
-            this.witness.id,
+            witnessId,
             this.start,
             this.length
         );
@@ -153,7 +154,8 @@ export default class Annotation {
 
     get end(): number {
         let end = this.start;
-        if (this.content.length > 0) end += this.content.length - 1;
+        if (this.content && this.content.length > 0)
+            end += this.content.length - 1;
         return end;
     }
 
