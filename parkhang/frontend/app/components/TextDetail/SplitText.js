@@ -42,7 +42,9 @@ export type Props = {
     annotations: Annotation[],
     activeAnnotations: Annotation[] | null,
     selectedSegmentId: (segmentId: string) => void,
-    selectedWitness: Witness | null
+    selectedWitness: Witness | null,
+    scrolledText: (witnessId: number, scrollPosition: number) => void,
+    scrollPosition: number
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -63,6 +65,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     // Whether the mouse button is down
     _mouseDown: boolean;
     _activeWitness: Witness | null;
+    _listScrolledTimer: TimeoutID | null;
+    _updateScrollPosition: null | (() => void);
+    _didSetInitialScrollPosition: boolean;
     _filteredSelectedAnnotatedSegments: TextSegment[];
     selectedTextIndex: number | null;
     splitTextRect: ClientRect | null;
@@ -84,6 +89,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.selectedNodes = null;
         this._mouseDown = false;
         this._activeWitness = null;
+        this._updateScrollPosition = null;
+        this._didSetInitialScrollPosition = false;
 
         this.processProps(props);
     }
@@ -120,7 +127,25 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
     }
 
+    listScrolled(data: {
+        clientHeight: number,
+        scrollHeight: number,
+        scrollTop: number
+    }) {
+        this._listScrolledTimer && clearTimeout(this._listScrolledTimer);
+        this._listScrolledTimer = setTimeout(() => {
+            if (this.props.selectedWitness) {
+                const selectedWitnessId = this.props.selectedWitness.id;
+                const scrollPosition = data.scrollTop;
+                this._updateScrollPosition = () => {
+                    this.props.scrolledText(selectedWitnessId, scrollPosition);
+                };
+            }
+        }, 100);
+    }
+
     handleSelection(e: Event) {
+        // TODO: fix this - sometimes the selection is not registered
         this.activeSelection = document.getSelection();
         if (!this._mouseDown) {
             // sometimes, this gets called after the mouseDown event handler
@@ -321,6 +346,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 props.selectedWitness.id !== this.props.selectedWitness.id)
         ) {
             changedWitness = true;
+            if (this._updateScrollPosition) this._updateScrollPosition();
+            this._didSetInitialScrollPosition = false;
         }
 
         // make sure there's no numbers in selectedAnnotatedSegments
@@ -408,6 +435,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
             }, 0);
         }
+
+        if (!this._didSetInitialScrollPosition && this.list) {
+            const list = this.list;
+            setTimeout(() => {
+                list.scrollToPosition(this.props.scrollPosition);
+                this._didSetInitialScrollPosition = true;
+            }, 100);
+        }
     }
 
     componentWillUnmount() {
@@ -445,6 +480,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             width={width}
                             overscanRowCount={3}
                             deferredMeasurementCache={cache}
+                            onScroll={this.listScrolled.bind(this)}
                         />
                     )}
                 </AutoSizer>

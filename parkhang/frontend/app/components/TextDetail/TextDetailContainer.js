@@ -15,7 +15,7 @@ import {
     DELETION_KEY
 } from "lib/AnnotatedText";
 import TextDetail from "components/TextDetail";
-import { changedActiveAnnotation } from "actions";
+import { changedActiveAnnotation, changedWitnessScrollPosition } from "actions";
 import {
     showPageImages,
     getAnnotationsForWitnessId,
@@ -33,7 +33,8 @@ import {
     getWitness,
     hasLoadedWitnessAnnotations,
     getRemovedDefaultAnnotationsForWitnessId,
-    hasLoadedWitnessAppliedAnnotations
+    hasLoadedWitnessAppliedAnnotations,
+    getScrollPosition
 } from "reducers";
 import _ from "lodash";
 
@@ -268,6 +269,7 @@ const mapStateToProps = state => {
     let pageBreaks = [];
     let imagesBaseUrl = "";
     let selectedWitness;
+    let scrollPosition = 0;
     // Whether to show the text's page images
     let paginated = false;
     if (
@@ -412,6 +414,8 @@ const mapStateToProps = state => {
             );
         }
 
+        scrollPosition = getScrollPosition(state, selectedWitness.id) || 0;
+
         if (selectedWitness && baseWitness) {
             let witnessPageBreaks = getAnnotationsForWitnessId(
                 state,
@@ -468,7 +472,8 @@ const mapStateToProps = state => {
         imagesBaseUrl: imagesBaseUrl,
         user: user,
         textListVisible,
-        selectedWitness
+        selectedWitness,
+        scrollPosition
     };
 };
 
@@ -639,6 +644,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     );
                 }
             }
+        },
+        scrolledText: (witnessId: number, scrollPosition: number) => {
+            dispatch(changedWitnessScrollPosition(witnessId, scrollPosition));
         }
     };
 };

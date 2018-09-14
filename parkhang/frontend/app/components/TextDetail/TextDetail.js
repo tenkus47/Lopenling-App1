@@ -33,7 +33,9 @@ export type Props = {
     selectedAnnotatedSegments: Array<TextSegment | number>,
     textListVisible: boolean,
     imagesBaseUrl: string,
-    selectedWitness: Witness | null
+    selectedWitness: Witness | null,
+    scrolledText: (witnessId: number, scrollPosition: number) => void,
+    scrollPosition: number
 };
 
 let textDetailId = 0;
@@ -90,6 +92,8 @@ class TextDetail extends React.Component<Props> {
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
                     key={this.key}
+                    scrolledText={this.props.scrolledText}
+                    scrollPosition={this.props.scrollPosition}
                 />
             );
         }
