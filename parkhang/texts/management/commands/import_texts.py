@@ -147,8 +147,8 @@ class Command(BaseCommand):
 
                 text_name = os.path.splitext(filename)[0].replace('_layout', '')
                 # for now, assume page breaks are only for the base witness
-                # base_witness = base_witnesses[text_name]
                 base_origin_witness = base_witnesses[text_name]
+                working_witness = working_witnesses[text_name]
                 with open(filepath, 'r') as file:
                     content = file.read()
 
@@ -157,7 +157,7 @@ class Command(BaseCommand):
                 for page_break in page_breaks:
                     pb_count += 1
                     annotation = Annotation()
-                    annotation.witness = base_origin_witness
+                    annotation.witness = working_witness
                     annotation.start = page_break
                     annotation.length = 0
                     annotation.content = pb_count
