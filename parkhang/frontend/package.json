@@ -30,6 +30,7 @@
     "redux-actions": "^2.3.0",
     "redux-batched-actions": "^0.1.6",
     "redux-saga": "^0.16.0",
+    "tibetan-sort-js": "^1.0.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

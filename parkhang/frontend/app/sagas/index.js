@@ -18,6 +18,7 @@ import User from "lib/User";
 import { updateIntl } from "react-intl-redux";
 import Cookies from "js-cookie";
 import { i18n_cookie_name } from "i18n";
+import { compare as tibetanCompare } from "tibetan-sort-js";
 
 import * as api from "api";
 import { BATCH } from "redux-batched-actions";
@@ -185,6 +186,9 @@ function* watchAppliedDefaultAnnotation() {
 export function* loadTexts(): Saga<void> {
     try {
         const texts = yield call(api.fetchTexts);
+        texts.sort((a: api.TextData, b: api.TextData) =>
+            tibetanCompare(a.name, b.name)
+        );
         yield put(actions.loadedTexts(texts));
     } catch (e) {
         console.log("FAILED loadTexts! %o", e);
