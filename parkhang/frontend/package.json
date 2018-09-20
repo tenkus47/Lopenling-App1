@@ -13,6 +13,7 @@
   "author": "tim@phurba.net",
   "license": "UNLICENSED",
   "dependencies": {
+    "@svgr/webpack": "^2.2.1",
     "axios": "^0.16.2",
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.5",
