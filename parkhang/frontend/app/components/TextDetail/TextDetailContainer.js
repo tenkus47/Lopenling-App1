@@ -428,8 +428,9 @@ const mapStateToProps = state => {
             if (selectedWitness.id !== baseWitness.id) {
                 basePageBreaks = getAnnotationsForWitnessId(
                     state,
-                    baseWitness.id,
-                    ANNOTATION_TYPES.pageBreak
+                    workingWitness.id,
+                    ANNOTATION_TYPES.pageBreak,
+                    baseWitness.id
                 );
             }
 
