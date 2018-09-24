@@ -311,38 +311,20 @@ const mapStateToProps = state => {
             workingWitness.id
         );
 
+        let removedDefaultAnnotations = null;
+
         if (selectedWitness.id !== workingWitness.id) {
             // If we are not viewing the working version,
             // get all the annotations created by the selected witness
             // BUT NOT BY A USER to apply to the base text.
             // User-created annotations need to be in appliedAnnotations.
-            
-            let removedDefaultAnnotations = getRemovedDefaultAnnotationsForWitnessId(
+
+            removedDefaultAnnotations = getRemovedDefaultAnnotationsForWitnessId(
                 state,
                 selectedWitness.id
             );
 
             let selectedWitnessAnnotations = {};
-            let selectedWitnessAnnotationData = getAnnotationsForWitnessId(
-                state,
-                selectedWitness.id
-            );
-
-            for (let key in selectedWitnessAnnotationData) {
-                if (selectedWitnessAnnotationData.hasOwnProperty(key)) {
-                    let annotationData = selectedWitnessAnnotationData[key];
-                    if (
-                        !annotationData.creator_user &&
-                        !removedDefaultAnnotations.hasOwnProperty(
-                            annotationData.unique_id
-                        )
-                    ) {
-                        selectedWitnessAnnotations[
-                            annotationData.unique_id
-                        ] = annotationData;
-                    }
-                }
-            }
 
             for (let key in workingAnnotationList) {
                 if (workingAnnotationList.hasOwnProperty(key)) {
@@ -369,9 +351,7 @@ const mapStateToProps = state => {
                 selectedWitnessAnnotationsList
             );
 
-            workingAnnotationList = _.pickBy(workingAnnotationList, anno => {
-                return anno.creator_witness === selectedWitnessId;
-            });
+            workingAnnotationList = selectedWitnessAnnotations;
 
             // always show images if we are viewing a specific edition
             // i.e. not the working edition.
@@ -423,6 +403,16 @@ const mapStateToProps = state => {
                 ANNOTATION_TYPES.pageBreak,
                 selectedWitness.id
             );
+
+            if (removedDefaultAnnotations) {
+                for (let key in witnessPageBreaks) {
+                    if (witnessPageBreaks.hasOwnProperty(key)) {
+                        if (removedDefaultAnnotations.hasOwnProperty(key)) {
+                            delete witnessPageBreaks[key];
+                        }
+                    }
+                }
+            }
 
             let basePageBreaks = null;
             if (selectedWitness.id !== baseWitness.id) {
