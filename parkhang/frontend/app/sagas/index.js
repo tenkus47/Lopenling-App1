@@ -260,13 +260,6 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 actions.selectedTextWitness(action.text.id, workingWitness.id)
             );
         }
-        if (baseWitnessData) {
-            const baseWitness: Witness = yield (select(
-                reducers.getWitness,
-                baseWitnessData.id
-            ): any);
-            yield call(loadAnnotations, baseWitness.id);
-        }
     } catch (e) {
         console.log("FAILED loadInitialTextData %o", e);
     }
