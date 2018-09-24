@@ -559,16 +559,26 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         deleteAnnotation: (annotation: Annotation) => {
             let selectedWitness = stateProps.selectedWitness;
             let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
-            const deleteAction = actions.deletedAnnotation(
-                annotation,
-                selectedWitness
-            );
-            const removeAppliedAction = actions.removedAppliedAnnotation(
-                annotation.uniqueId,
-                selectedWitnessData
-            );
-
-            const actionsBatch = [deleteAction, removeAppliedAction];
+            let actionsBatch = [];
+            if (annotation.userCreated) {
+                const deleteAction = actions.deletedAnnotation(
+                    annotation,
+                    selectedWitness
+                );
+                const removeAppliedAction = actions.removedAppliedAnnotation(
+                    annotation.uniqueId,
+                    selectedWitnessData
+                );
+                actionsBatch = [deleteAction, removeAppliedAction];
+            } else {
+                // Assume this is a default annotation that was
+                // automatically imported from external data
+                const removeDefaultAnnotation = actions.removedDefaultAnnotation(
+                    annotation.uniqueId,
+                    selectedWitnessData
+                );
+                actionsBatch = [removeDefaultAnnotation];
+            }
 
             dispatch(batchActions(actionsBatch));
         },
