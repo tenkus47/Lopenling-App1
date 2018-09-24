@@ -732,20 +732,22 @@ export function dataFromAnnotation(
 export const getAnnotationsForWitnessId = (
     state: DataState,
     witnessId: number,
-    annotationType: string = ANNOTATION_TYPES.variant,
+    annotationType?: string,
     creatorWitnessId?: number
 ): { [AnnotationUniqueId]: AnnotationData } => {
     let annotations = state.witnessAnnotationsById[witnessId];
-    annotations = _.pickBy(
-        annotations,
-        (annotation: AnnotationData, key: string): boolean => {
-            let include = annotation.type === annotationType;
-            if (include && creatorWitnessId) {
-                include = annotation.creator_witness === creatorWitnessId;
+    if (annotationType != null) {
+        annotations = _.pickBy(
+            annotations,
+            (annotation: AnnotationData, key: string): boolean => {
+                let include = annotation.type === annotationType;
+                if (include && creatorWitnessId) {
+                    include = annotation.creator_witness === creatorWitnessId;
+                }
+                return include;
             }
-            return include;
-        }
-    );
+        );
+    }
 
     return annotations;
 };
