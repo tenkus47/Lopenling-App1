@@ -227,7 +227,6 @@ function getSegmentedWitness(witness: Witness): SegmentedText {
     return _segmentedWitnesses[witness.id];
 }
 
-let _selectedWitness;
 const mapStateToProps = state => {
     const user = getUser(state);
     const loading =
@@ -296,9 +295,6 @@ const mapStateToProps = state => {
             selectedWitness = workingWitness;
             selectedWitnessId = workingWitness.id;
         }
-
-        // set cached witness
-        _selectedWitness = selectedWitness;
 
         let workingAnnotationList = getAnnotationsForWitnessId(
             state,
