@@ -96,7 +96,8 @@ export type WitnessData = {
     is_working: boolean,
     revision: number,
     source: number,
-    text: number
+    text: number,
+    properties: {} | null
 };
 export function fetchTextWitnesses(text: TextData): Promise<WitnessData[]> {
     const url = "/api/texts/" + String(text.id) + "/witnesses/";

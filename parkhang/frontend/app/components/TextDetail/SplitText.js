@@ -29,6 +29,10 @@ import Witness from "lib/Witness";
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
+const IMAGE_URL_PREFIX = "http://iiif.bdrc.io/image/v2/bdr:V23703_I";
+const IMAGE_URL_SUFFIX = ".tif/full/full/0/default.jpg";
+const WITNESS_IMAGE_PROPERTY = "bdrcimg";
+
 export type Props = {
     textListVisible: boolean,
     imagesBaseUrl: string,
@@ -488,6 +492,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         );
     }
 
+    getImageUrl(start: number, pageIndex: number): string {
+        let id = String(start).substr(0, 4);
+        return (
+            IMAGE_URL_PREFIX +
+            id +
+            "::" +
+            (start + pageIndex) +
+            IMAGE_URL_SUFFIX
+        );
+    }
+
     rowRenderer({
         key,
         index,
@@ -502,6 +517,18 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const props = this.props;
         const cache = this.cache;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
+        let imageUrl = "";
+        if (
+            props.selectedWitness &&
+            props.selectedWitness.properties &&
+            props.selectedWitness.properties.hasOwnProperty(
+                WITNESS_IMAGE_PROPERTY
+            )
+        ) {
+            const imageStart =
+                props.selectedWitness.properties[WITNESS_IMAGE_PROPERTY];
+            imageUrl = this.getImageUrl(Number(imageStart), index);
+        }
 
         return (
             <CellMeasurer
@@ -516,14 +543,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                         {props.showImages && (
                             <div className={pechaImageClass}>
                                 <div className={styles.pechaContent}>
-                                    <img
-                                        src={
-                                            props.imagesBaseUrl +
-                                            (index + 1) +
-                                            ".png"
-                                        }
-                                        width="100%"
-                                    />
+                                    <img src={imageUrl} width="100%" />
                                 </div>
                             </div>
                         )}

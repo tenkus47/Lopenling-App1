@@ -32,7 +32,7 @@ class WitnessSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Witness
-        fields = ('id', 'text', 'source', 'is_base', 'is_working', 'revision', 'content')
+        fields = ('id', 'text', 'source', 'is_base', 'is_working', 'revision', 'content', 'properties')
 
 
 class AnnotationSerializer(serializers.ModelSerializer):

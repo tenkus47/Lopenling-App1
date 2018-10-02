@@ -13,6 +13,7 @@ export default class Witness {
     isBase: boolean;
     isWorking: boolean;
     revision: number;
+    properties: { [string]: any } | null;
 
     /**
      * Create new Witness instance.
@@ -31,6 +32,7 @@ export default class Witness {
      * @param {boolean} isBase - Whether this is the base witness for this text
      * @param {boolean} isWorking - Whether this is the working edition
      * @param {number} revision - The revision of this witness
+     * @param {Object} properties - Miscellaneous properties
      */
     constructor(
         id: number,
@@ -39,7 +41,8 @@ export default class Witness {
         content: string | null = null,
         isBase: boolean = false,
         isWorking: boolean = false,
-        revision: number = 1
+        revision: number = 1,
+        properties: {} | null = null
     ) {
         this.id = id;
         this.text = text;
@@ -48,5 +51,6 @@ export default class Witness {
         this.isBase = isBase;
         this.isWorking = isWorking;
         this.revision = revision;
+        this.properties = properties;
     }
 }

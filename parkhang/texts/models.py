@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import JSONField
 
 
 
@@ -60,6 +61,8 @@ class Witness(models.Model):
     revision = models.PositiveIntegerField(default=1)
     """The text content of the witness"""
     content = models.TextField(null=True, blank=True)
+    """Extra properties for a witness"""
+    properties = JSONField(null=True, blank=True)
 
 
 class AnnotationQuerySet(models.QuerySet):

@@ -555,7 +555,9 @@ export const getWitness = (
                 source,
                 witnessData.content,
                 witnessData.is_base,
-                witnessData.is_working
+                witnessData.is_working,
+                witnessData.revision,
+                witnessData.properties
             );
             cachedWitnesses[witnessData.id] = witness;
         } else {
