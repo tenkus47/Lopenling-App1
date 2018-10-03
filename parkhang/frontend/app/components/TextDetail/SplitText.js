@@ -29,7 +29,7 @@ import Witness from "lib/Witness";
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
-const IMAGE_URL_PREFIX = "http://iiif.bdrc.io/image/v2/bdr:V23703_I";
+const IMAGE_URL_PREFIX = "//iiif.bdrc.io/image/v2/bdr:V23703_I";
 const IMAGE_URL_SUFFIX = ".tif/full/full/0/default.jpg";
 const WITNESS_IMAGE_PROPERTY = "bdrcimg";
 
