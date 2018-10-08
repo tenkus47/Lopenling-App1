@@ -32,12 +32,6 @@ const TextsSearch = (props: Props) => {
                     </option>
                 </select>
             </div>
-            <div
-                className={styles.minify}
-                onClick={props.minimiseButtonClicked}
-            >
-                &lt;&lt;
-            </div>
         </div>
     );
 };

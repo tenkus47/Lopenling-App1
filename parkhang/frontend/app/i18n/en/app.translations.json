@@ -6,6 +6,7 @@
         "header.login": "Login",
         "header.signUp": "Sign Up",
         "header.logout": "Logout",
+        "header.toggleTextList": "Toggle Text List",
         "leftbar.search": "Search",
         "leftbar.titles": "Titles",
         "annotation.workingEdition": "Working",

@@ -10,12 +10,17 @@
     padding: 10px 10px 10px 20px;
     display: flex;
     flex-shrink: 0;
+    align-items: center;
 }
 
 .header p {
     margin: 0;
     padding: 0;
     flex-grow: 2;
+}
+
+.navigationButton {
+    margin-right: 10px;
 }
 
 .controls {

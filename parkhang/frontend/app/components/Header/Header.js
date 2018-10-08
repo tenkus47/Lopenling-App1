@@ -6,8 +6,11 @@ import { getUser, getActiveLocale } from "reducers";
 import styles from "./Header.css";
 import User from "lib/User";
 import type { AppState } from "reducers";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import LocaleSwitcher from "components/LocaleSwitcher/LocaleSwitcher";
+import NavigationButton from "components/UI/NavigationButton";
+import { getTextListVisible } from "reducers";
+import { changedTextListVisible } from "actions";
 
 export const LoginControls = () => (
     <div className={classnames(styles.notLoggedIn, styles.controls)}>
@@ -38,7 +41,9 @@ export const LoggedInControls = (props: LoggedInControlsProps) => (
 
 type HeaderProps = {
     user: User,
-    activeLocale: string
+    activeLocale: string,
+    navigationButtonClicked: () => void,
+    intl: { formatMessage: ({ [id: string]: string }) => string }
 };
 
 export const Header = (props: HeaderProps) => {
@@ -49,8 +54,17 @@ export const Header = (props: HeaderProps) => {
         controls = <LoginControls />;
     }
 
+    let toggleTitle = props.intl.formatMessage({
+        id: "header.toggleTextList"
+    });
+
     return (
         <header className={styles.header}>
+            <NavigationButton
+                onClick={props.navigationButtonClicked}
+                className={styles.navigationButton}
+                title={toggleTitle}
+            />
             <p>
                 <FormattedMessage id="header.title" key={props.activeLocale} />
             </p>
@@ -66,10 +80,23 @@ const mapStateToProps = (state: AppState): { user: User } => {
 
     return {
         user: user,
-        activeLocale: activeLocale
+        activeLocale: activeLocale,
+        textListIsVisible: getTextListVisible(state)
     };
 };
 
-const HeaderContainer = connect(mapStateToProps)(Header);
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+    return {
+        ...ownProps,
+        ...stateProps,
+        navigationButtonClicked: () => {
+            dispatchProps.dispatch(
+                changedTextListVisible(!stateProps.textListIsVisible)
+            );
+        }
+    };
+};
 
-export default HeaderContainer;
+const HeaderContainer = connect(mapStateToProps, null, mergeProps)(Header);
+
+export default injectIntl(HeaderContainer);
