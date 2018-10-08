@@ -34,7 +34,6 @@ const App = (props: Props) => {
             <HeaderContainer />
             <div className={classnames(styles.interface, utilStyles.flex)}>
                 <div className={classnames(...textListClassnames)}>
-                    <TextListTabContainer />
                     <TextsSearchContainer />
                     <TextListContainer />
                 </div>
