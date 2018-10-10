@@ -2,7 +2,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import TextsSearch from "./TextsSearch";
-import { changedSearchValue, changedTextListVisible } from "actions";
+import { changedSearchValue } from "actions";
 import type { AppState } from "reducers";
 
 const mapStateToProps = (state: AppState) => {
@@ -16,10 +16,6 @@ const mapDispatchToProps = dispatch => {
         searchChanged: (e: SyntheticEvent<HTMLInputElement>) => {
             const value = e.currentTarget.value;
             dispatch(changedSearchValue(value));
-        },
-        minimiseButtonClicked: () => {
-            const textListIsVisible = false;
-            dispatch(changedTextListVisible(textListIsVisible));
         }
     };
 };

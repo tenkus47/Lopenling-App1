@@ -6,10 +6,10 @@
 }
 
 .tab {
-    width: 200px;
     font-size: 14px;
     text-align: center;
     cursor: pointer;
+    flex-grow: 1;
 }
 
 .selected {
