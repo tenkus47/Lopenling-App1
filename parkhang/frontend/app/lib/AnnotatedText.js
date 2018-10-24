@@ -3,6 +3,7 @@ import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import SegmentedText from "lib/SegmentedText";
 import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
+import Text from "lib/Text";
 import _ from "lodash";
 
 export const BASE_ANNOTATION_ID = -1;
@@ -56,6 +57,10 @@ export default class AnnotatedText {
             this.addAnnotation(annotations[i]);
         }
         this._uniqueId = null;
+    }
+
+    get textInfo(): Text {
+        return this.baseWitness.text;
     }
 
     addAnnotation(annotation: Annotation) {

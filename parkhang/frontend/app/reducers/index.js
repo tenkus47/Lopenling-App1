@@ -270,6 +270,13 @@ export const annotationFromData = (
     return annotation;
 };
 
+export const annotationsFromData = (
+    state: AppState,
+    annotationList: { [string]: AnnotationData } | null
+): Annotation[] => {
+    return data.annotationsFromData(state.data, annotationList);
+};
+
 export const dataFromWitness = (witness: Witness): WitnessData => {
     return data.dataFromWitness(witness);
 };

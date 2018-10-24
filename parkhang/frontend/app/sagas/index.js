@@ -11,6 +11,7 @@ import {
     all
 } from "redux-saga/effects";
 import { delay } from "redux-saga";
+import FileSaver from "file-saver";
 import * as actions from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
@@ -19,6 +20,10 @@ import { updateIntl } from "react-intl-redux";
 import Cookies from "js-cookie";
 import { i18n_cookie_name } from "i18n";
 import { compare as tibetanCompare } from "tibetan-sort-js";
+import getWitnessAnnotatedText from "reducers/getWitnessAnnotatedText";
+import type { TextExporter } from "lib/TextExporter";
+import PlainTextExporter from "lib/PlainTextExporter";
+import DocxExporter from "lib/DocxExporter";
 
 import * as api from "api";
 import { BATCH } from "redux-batched-actions";
@@ -375,6 +380,40 @@ function* watchSelectedLocale() {
     yield takeEvery(actions.SELECTED_LOCALE, selectLocale);
 }
 
+// EXPORT
+
+function* exportWitness(action: actions.ExportWitnessAction) {
+    const witness = yield select(reducers.getWitness, action.witnessId);
+    const format = action.format;
+    const annotatedText = yield select(getWitnessAnnotatedText, witness.id);
+    const text = annotatedText.textInfo;
+
+    let extension;
+    let exporter: TextExporter;
+    switch (format) {
+        case "docx":
+            exporter = new DocxExporter();
+            extension = "docx";
+            break;
+        case "txt":
+        default:
+            exporter = new PlainTextExporter();
+            extension = "txt";
+    }
+    let filename = text.name + " - " + witness.source.name + "." + extension;
+
+    const file = yield call(
+        [exporter, exporter.export],
+        annotatedText,
+        filename
+    );
+    FileSaver.saveAs(file, filename);
+}
+
+function* watchExportWitness() {
+    yield takeEvery(actions.EXPORT_WITNESS, exportWitness);
+}
+
 // BATCHED ACTIONS
 
 function* dispatchedBatch(action): Saga<void> {
@@ -428,6 +467,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchDeletedAnnotation),
         call(watchRequests),
         call(watchSelectedTextWitness),
-        call(watchSelectedLocale)
+        call(watchSelectedLocale),
+        call(watchExportWitness)
     ]);
 }

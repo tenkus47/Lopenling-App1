@@ -72,6 +72,8 @@ export const CHANGED_TEXT_LIST_VISIBLE = "textList/CHANGED_TEXT_LIST_VISIBLE";
 export const CHANGED_WITNESS_SCROLL_POSITION =
     "text/CHANGED_WITNESS_SCROLL_POSITION";
 
+export const EXPORT_WITNESS = "text/EXPORT_WITNESS";
+
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
 
@@ -490,6 +492,22 @@ export function changedWitnessScrollPosition(
         type: CHANGED_WITNESS_SCROLL_POSITION,
         witnessId,
         scrollPosition
+    };
+}
+
+export type ExportWitnessAction = Action & {
+    witnessId: number,
+    format: string
+};
+
+export function exportWitness(
+    witnessId: number,
+    format: string
+): ExportWitnessAction {
+    return {
+        type: EXPORT_WITNESS,
+        witnessId,
+        format
     };
 }
 
