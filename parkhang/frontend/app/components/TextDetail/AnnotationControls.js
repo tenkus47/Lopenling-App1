@@ -160,7 +160,7 @@ export default class AnnotationControls extends React.Component<Props> {
         let variantsHeading = null;
         let nothingSelected = null;
         const isLoggedIn = props.user.isLoggedIn;
-        
+
         if (props.annotationsData) {
             props.annotationsData.map(annotationData => {
                 let isEditing = false;
