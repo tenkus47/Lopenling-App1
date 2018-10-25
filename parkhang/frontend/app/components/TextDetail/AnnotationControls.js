@@ -238,9 +238,9 @@ export default class AnnotationControls extends React.Component<Props> {
                         <FormattedMessage
                             id="annotations.loginMessage"
                             values={{
-                                login: (
+                                loginLink: (
                                     <a href="/accounts/login/">
-                                        <FormattedMessage id="annotations.login" />
+                                        <FormattedMessage id="annotations.loginLink" />
                                     </a>
                                 )
                             }}
