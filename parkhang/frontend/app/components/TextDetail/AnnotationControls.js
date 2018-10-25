@@ -272,7 +272,7 @@ export default class AnnotationControls extends React.Component<Props> {
                             accessoryType="DELETE"
                             icon={<PageBreakIcon width={20} height={20} />}
                             onClick={() => {
-                                this.props.deleteAnnotation(pageBreaks[0])
+                                this.props.deleteAnnotation(pageBreaks[0]);
                             }}
                             isActive={true}
                             colour={colours.activeButton}
