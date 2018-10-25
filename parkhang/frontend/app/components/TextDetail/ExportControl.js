@@ -1,9 +1,11 @@
 import React from "react";
+import { injectIntl } from "react-intl";
 import Button from "components/UI/Button";
 import ExportIcon from "images/export.svg";
 
 type Props = {
-    onClick?: () => void
+    onClick?: () => void,
+    intl: { formatMessage: ({ [id: string]: string }) => string }
 };
 
 class ExportControl extends React.Component<Props> {
@@ -11,8 +13,16 @@ class ExportControl extends React.Component<Props> {
         return (
             <div>
                 <Button
-                    icon={<ExportIcon style={{ fill: "#fff" }} width={15} height={15} />}
-                    title="Export"
+                    icon={
+                        <ExportIcon
+                            style={{ fill: "#fff" }}
+                            width={15}
+                            height={15}
+                        />
+                    }
+                    title={this.props.intl.formatMessage({
+                        id: "header.export"
+                    })}
                     onClick={this.props.onClick}
                 />
             </div>
@@ -20,4 +30,4 @@ class ExportControl extends React.Component<Props> {
     }
 }
 
-export default ExportControl;
+export default injectIntl(ExportControl);
