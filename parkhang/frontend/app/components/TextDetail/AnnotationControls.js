@@ -160,7 +160,7 @@ export default class AnnotationControls extends React.Component<Props> {
         let variantsHeading = null;
         let nothingSelected = null;
         const isLoggedIn = props.user.isLoggedIn;
-        
+
         if (props.annotationsData) {
             props.annotationsData.map(annotationData => {
                 let isEditing = false;
@@ -238,9 +238,9 @@ export default class AnnotationControls extends React.Component<Props> {
                         <FormattedMessage
                             id="annotations.loginMessage"
                             values={{
-                                login: (
+                                loginLink: (
                                     <a href="/accounts/login/">
-                                        <FormattedMessage id="annotations.login" />
+                                        <FormattedMessage id="annotations.loginLink" />
                                     </a>
                                 )
                             }}
@@ -272,7 +272,7 @@ export default class AnnotationControls extends React.Component<Props> {
                             accessoryType="DELETE"
                             icon={<PageBreakIcon width={20} height={20} />}
                             onClick={() => {
-                                this.props.deleteAnnotation(pageBreaks[0])
+                                this.props.deleteAnnotation(pageBreaks[0]);
                             }}
                             isActive={true}
                             colour={colours.activeButton}

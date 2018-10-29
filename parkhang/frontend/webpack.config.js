@@ -3,12 +3,13 @@ var webpack = require("webpack");
 var BundleTracker = require("webpack-bundle-tracker");
 var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
-// var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     context: __dirname,
+
+    mode: "production",
 
     entry: {
         parkhang: ["./app/index", "./website/index"]
@@ -23,10 +24,9 @@ module.exports = {
 
     plugins: [
         new BundleTracker({ filename: "./webpack-stats.json" }),
-        new ExtractTextPlugin("styles-[hash].css"),
-        // new HtmlWebpackPlugin({
-        //     template: './app/index-template.html'
-        // }),
+        new MiniCssExtractPlugin({
+            filename: "styles-[hash].css"
+        }),
         new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: JSON.stringify("production")
@@ -44,7 +44,11 @@ module.exports = {
                     {
                         loader: "babel-loader",
                         options: {
-                            presets: ["react", "env", "flow"]
+                            presets: [
+                                "@babel/preset-react",
+                                "@babel/preset-env",
+                                "@babel/preset-flow"
+                            ]
                         }
                     }
                 ]
@@ -52,65 +56,66 @@ module.exports = {
             {
                 test: /\.css$/,
                 exclude: /accounts\.css/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: [
-                        {
-                            loader: "css-loader",
-                            options: {
-                                sourceMap: true,
-                                importLoaders: 1,
-                                modules: true
-                            }
-                        },
-                        {
-                            loader: "postcss-loader",
-                            options: {
-                                sourceMap: true,
-                                plugins: () => [
-                                    postcssImport({
-                                        addDependencyTo: webpack,
-                                        path: path.resolve("./app")
-                                    }),
-                                    postcssCssnext({
-                                        compress: true
-                                    })
-                                ]
-                            }
+                // fallback: "style-loader",
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader
+                    },
+                    {
+                        loader: "css-loader",
+                        options: {
+                            sourceMap: true,
+                            importLoaders: 1,
+                            modules: true
                         }
-                    ]
-                })
+                    },
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            sourceMap: true,
+                            plugins: () => [
+                                postcssImport({
+                                    addDependencyTo: webpack,
+                                    path: path.resolve("./app")
+                                }),
+                                postcssCssnext({
+                                    compress: true
+                                })
+                            ]
+                        }
+                    }
+                ]
             },
             {
                 test: /accounts\.css/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: [
-                        {
-                            loader: "css-loader",
-                            options: {
-                                sourceMap: true,
-                                importLoaders: 1,
-                                modules: false
-                            }
-                        },
-                        {
-                            loader: "postcss-loader",
-                            options: {
-                                sourceMap: true,
-                                plugins: () => [
-                                    postcssImport({
-                                        addDependencyTo: webpack,
-                                        path: path.resolve("./app")
-                                    }),
-                                    postcssCssnext({
-                                        compress: true
-                                    })
-                                ]
-                            }
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader
+                    },
+                    {
+                        loader: "css-loader",
+                        options: {
+                            sourceMap: true,
+                            importLoaders: 1,
+                            modules: false
                         }
-                    ]
-                })
+                    },
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            sourceMap: true,
+                            plugins: () => [
+                                postcssImport({
+                                    addDependencyTo: webpack,
+                                    path: path.resolve("./app")
+                                }),
+                                postcssCssnext({
+                                    compress: true
+                                })
+                            ]
+                        }
+                    }
+                ]
             },
             {
                 test: /\.svg$/,

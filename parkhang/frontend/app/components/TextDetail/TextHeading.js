@@ -5,12 +5,14 @@ import styles from "./TextHeading.css";
 import TabBar from "./TabBar";
 import Witness from "lib/Witness";
 import type { TextData } from "api";
+import ExportControl from "./ExportControl";
 
 export type Props = {
     witnesses: Witness[],
     selectedText: TextData,
     selectedWitness: Witness,
-    onSelectedWitness: () => void
+    onSelectedWitness: () => void,
+    onExport?: () => void
 };
 
 const TextHeading = (props: Props) => {
@@ -20,7 +22,12 @@ const TextHeading = (props: Props) => {
     }
     return (
         <div className={styles.headingContainer}>
-            <h2 className={styles.textHeading}>{name}</h2>
+            <div className={styles.topRow}>
+                <h2 className={styles.textHeading}>{name}</h2>
+                {props.selectedWitness && (
+                    <ExportControl onClick={props.onExport} />
+                )}
+            </div>
             <TabBar
                 witnesses={props.witnesses}
                 activeWitness={props.selectedWitness}

@@ -708,6 +708,25 @@ export function annotationFromData(
     return annotation;
 }
 
+export const annotationsFromData = (
+    state: DataState,
+    annotationList: { [string]: AnnotationData } | null
+): Annotation[] => {
+    let annotations = [];
+    if (annotationList) {
+        for (let key in annotationList) {
+            if (annotationList.hasOwnProperty(key)) {
+                let annotationData = annotationList[key];
+                let annotation = annotationFromData(state, annotationData);
+                if (annotation) {
+                    annotations.push(annotation);
+                }
+            }
+        }
+    }
+    return annotations;
+};
+
 export function dataFromAnnotation(
     annotation: Annotation
 ): AnnotationData | null {

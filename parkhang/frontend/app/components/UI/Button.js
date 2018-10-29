@@ -33,7 +33,9 @@ export default class Button extends React.Component<Props> {
                 className={className}
                 onClick={this.props.onClick}
             >
-                <div className={styles.icon}>{this.props.icon}</div>
+                {this.props.icon && (
+                    <div className={styles.icon}>{this.props.icon}</div>
+                )}
                 <span className={styles.title}>{this.props.title}</span>
                 {this.props.accessoryType && (
                     <Accessory type={this.props.accessoryType} />

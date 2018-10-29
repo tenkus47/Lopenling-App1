@@ -4,7 +4,11 @@ import { connect } from "react-redux";
 import { batchActions } from "redux-batched-actions";
 import TextHeading from "./TextHeading";
 import type { Props } from "./TextHeading";
-import { selectedTextWitness, changedActiveAnnotation } from "actions";
+import {
+    selectedTextWitness,
+    changedActiveAnnotation,
+    exportWitness
+} from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
 import type { AppState } from "reducers";
@@ -44,6 +48,9 @@ const mergeProps = (stateProps: Props, dispatchProps, ownProps): {} => {
         ...ownProps,
         onSelectedWitness: (witness: Witness) => {
             dispatch(selectedTextWitness(selectedText.id, witness.id));
+        },
+        onExport: () => {
+            dispatch(exportWitness(stateProps.selectedWitness.id, "docx"));
         }
     };
 };
