@@ -21,7 +21,9 @@ import { enableBatching } from "redux-batched-actions";
 import rootReducer from "reducers";
 
 // Sagas
-import "babel-polyfill";
+import "core-js/fn/string/pad-start";
+import "core-js/fn/string/pad-end";
+import "regenerator-runtime/runtime";
 import rootSaga from "sagas";
 
 // i18n
