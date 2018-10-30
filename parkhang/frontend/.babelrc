@@ -10,7 +10,7 @@
     "@babel/preset-flow"
   ],
   "plugins": [
-    "transform-object-rest-spread",
+    "@babel/plugin-proposal-object-rest-spread",
     "lodash"
   ],
   "env": {
