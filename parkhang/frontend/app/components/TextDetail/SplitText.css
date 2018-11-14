@@ -37,6 +37,10 @@
     flex-shrink: 0;
 }
 
+.pechaImage img {
+    object-fit: contain;
+}
+
 .controlsPlaceholder {
     flex-grow: 1;
     flex-shrink: 0;

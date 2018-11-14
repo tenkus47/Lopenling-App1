@@ -5,6 +5,7 @@
     --controlsWidth: 290px;
     --controlsPadding: 20px;
     --controlsMargin: 10px;
+    --arrowHeight: 10px;
 }
 
 :export {
@@ -14,8 +15,6 @@
 .annotationControls {
     background-color: #eee;
     padding: var(--controlsPadding);
-    margin-left: var(--controlsMargin);
-    margin-right: var(--controlsMargin);
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -23,10 +22,39 @@
     align-self: flex-start;
     width: var(--controlsWidth);
     top: 0;
-    right: 0;
+    left: 0;
     border-left: 1px solid #ddd;
-    position: relative;
+    position: absolute;
     transition: right 0.25s ease-in-out;
+}
+
+.arrowTop {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-right: var(--arrowHeight) solid transparent;
+    border-left: var(--arrowHeight) solid transparent;
+    border-bottom: var(--arrowHeight) solid #eee;
+}
+
+.arrowLeft {
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: - var(--arrowHeight);
+    border-top: var(--arrowHeight) solid transparent;
+    border-right: var(--arrowHeight) solid #eee;
+    border-bottom: var(--arrowHeight) solid transparent;
+}
+
+.arrowRight {
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: - var(--arrowHeight);
+    border-top: var(--arrowHeight) solid transparent;
+    border-left: var(--arrowHeight) solid #eee;
+    border-bottom: var(--arrowHeight) solid transparent;
 }
 
 .inline {

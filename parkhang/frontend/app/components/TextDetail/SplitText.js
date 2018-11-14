@@ -77,6 +77,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     splitTextRect: ClientRect | null;
     firstSelectedSegment: TextSegment | null;
     selectedElementId: string | null;
+    selectedElementIds: string[] | null;
 
     constructor(props: Props) {
         super(props);
@@ -235,7 +236,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         selectedTextIndex: number,
         firstSelectedSegment: TextSegment,
         selectedElementId: string,
-        splitTextRect: ClientRect
+        splitTextRect: ClientRect,
+        selectedElementIds: string[]
     } | null {
         if (!this.splitText) {
             return null;
@@ -245,6 +247,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let firstSelectedSegment = null;
         let selectedElementId = null;
         let splitTextRect = null;
+        let segmentIdFunction: null | ((segment: TextSegment) => string) = null;
+        let selectedElementIds = [];
         if (props.activeAnnotation) {
             const [
                 startPos
@@ -277,11 +281,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }
             if (firstSelectedSegment) {
                 selectedElementId = idForSegment(firstSelectedSegment);
+                segmentIdFunction = idForSegment;
             }
         } else if (props.activeAnnotation) {
             if (props.activeAnnotation.isDeletion) {
                 let segment = new TextSegment(props.activeAnnotation.start, "");
                 selectedElementId = idForDeletedSegment(segment);
+                segmentIdFunction = idForDeletedSegment;
             } else if (props.activeAnnotation.isInsertion) {
                 const [
                     start
@@ -291,6 +297,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 if (start) {
                     let segment = new TextSegment(start, "");
                     selectedElementId = idForInsertion(segment);
+                    segmentIdFunction = idForInsertion;
+                }
+            }
+        }
+        if (segmentIdFunction) {
+            for (let i = 0; i < props.selectedAnnotatedSegments.length; i++) {
+                let segment = props.selectedAnnotatedSegments[i];
+                if (segment instanceof TextSegment) {
+                    const segmentId = segmentIdFunction(segment);
+                    selectedElementIds.push(segmentId);
                 }
             }
         }
@@ -304,7 +320,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 selectedTextIndex: selectedTextIndex,
                 firstSelectedSegment: firstSelectedSegment,
                 selectedElementId: selectedElementId,
-                splitTextRect: splitTextRect
+                splitTextRect: splitTextRect,
+                selectedElementIds: selectedElementIds
             };
         } else {
             return null;
@@ -371,6 +388,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 controlsMeasurements.firstSelectedSegment;
             this.splitTextRect = controlsMeasurements.splitTextRect;
             this.selectedElementId = controlsMeasurements.selectedElementId;
+            this.selectedElementIds = controlsMeasurements.selectedElementIds;
         }
 
         if (props.textListVisible !== this.textListVisible) {
@@ -542,9 +560,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     <div className={styles.splitTextRowContent}>
                         {props.showImages && (
                             <div className={pechaImageClass}>
-                                <div className={styles.pechaContent}>
-                                    <img src={imageUrl} width="100%" />
-                                </div>
+                                <img
+                                    src={imageUrl}
+                                    width="100%"
+                                    height="100%"
+                                />
                             </div>
                         )}
                         <Text
@@ -576,13 +596,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 selectedElementId={this.selectedElementId}
                                 pechaImageClass={pechaImageClass}
                                 splitText={props.splitText}
+                                selectedElementIds={this.selectedElementIds}
+                                list={this.list}
                             />
                         )}
-                    {(this.selectedTextIndex !== index ||
-                        !this.props.activeAnnotation) && (
-                        <div className={styles.controlsPlaceholder} />
-                    )}
-                    <div className={styles.pageNumber}>{index + 1}</div>
                 </div>
             </CellMeasurer>
         );
