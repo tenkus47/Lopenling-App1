@@ -17,7 +17,7 @@
         "annotation.cancel": "ཕྱིར་འཐེན།",
         "annotations.login": "ནང་འཛུལ།",
         "annotations.loginLink": "ནང་འཛུལ",
-        "annotations.loginMessage": "བཟོ་བཅོས་གཏོང་ཆེད་{loginLink}བྱ་དགོས།",
+        "annotations.loginMessage": "བཟོ་བཅོས་གཏོང་ཆེད་{loginLink}་བྱ་དགོས།",
         "annotations.variantsHeading": "དག་ཆའི་ཁྱད་པར།",
         "annotation.notesHeading": "མཆན།",
         "annotation.addNoteHelp": "མཆན་འཁོད།",
