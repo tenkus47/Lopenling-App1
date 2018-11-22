@@ -20,6 +20,19 @@
     @apply --button;
 }
 
+.buttonNoBezel {
+    @apply --button;
+    border-radius: 0;
+    box-shadow: none;
+    flex-basis: 0;
+    flex-grow: 1;
+}
+
+.button:disabled,
+.buttonNoBezel:disabled {
+    opacity: 0.2;
+}
+
 .active {
     box-shadow: none;
 }

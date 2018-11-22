@@ -1,0 +1,12 @@
+.header {
+    display: flex;
+}
+
+.header button {
+    padding: 10px;
+    border-right: 1px solid #fff;
+}
+
+.header button:nth-last-of-type(1) {
+    border-right: 0;
+}

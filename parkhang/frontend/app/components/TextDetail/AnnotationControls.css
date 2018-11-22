@@ -1,11 +1,13 @@
 @import 'css/type.css';
+@import 'css/colour.css';
 
 :root {
     --inlineWidth: 280px;
     --controlsWidth: 290px;
-    --controlsPadding: 20px;
+    --controlsPadding: 0px;
     --controlsMargin: 10px;
     --arrowHeight: 10px;
+    --arrowColor: #eee;
 }
 
 :export {
@@ -23,9 +25,11 @@
     width: var(--controlsWidth);
     top: 0;
     left: 0;
-    border-left: 1px solid #ddd;
     position: absolute;
-    transition: right 0.25s ease-in-out;
+}
+
+.annotationContent {
+    padding: 0 5px 5px 5px;
 }
 
 .arrowTop {
@@ -34,7 +38,7 @@
     height: 0;
     border-right: var(--arrowHeight) solid transparent;
     border-left: var(--arrowHeight) solid transparent;
-    border-bottom: var(--arrowHeight) solid #eee;
+    border-bottom: var(--arrowHeight) solid var(--main-tint);
 }
 
 .arrowLeft {
@@ -43,7 +47,7 @@
     height: 0;
     left: - var(--arrowHeight);
     border-top: var(--arrowHeight) solid transparent;
-    border-right: var(--arrowHeight) solid #eee;
+    border-right: var(--arrowHeight) solid var(--arrowColor);
     border-bottom: var(--arrowHeight) solid transparent;
 }
 
@@ -53,12 +57,12 @@
     height: 0;
     left: - var(--arrowHeight);
     border-top: var(--arrowHeight) solid transparent;
-    border-left: var(--arrowHeight) solid #eee;
+    border-left: var(--arrowHeight) solid var(--arrowColor);
     border-bottom: var(--arrowHeight) solid transparent;
 }
 
 .inline {
-    box-shadow: 0px 1px 2px rgba(0,0,0,0.5);
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.8);
     z-index: 1;
 }
 
@@ -68,7 +72,7 @@
     height: 0;
     left: -20px;
     border-top: 20px solid transparent;
-    border-right: 20px solid #eee;
+    border-right: 20px solid var(--arrowColor);
     border-bottom: 20px solid transparent;
 }
 
@@ -83,14 +87,12 @@
     border-bottom: 20px solid transparent;
 }
 
-.annotationControls > h3 {
+.annotationContent > h3 {
     font-family: var(--fonts);
-    font-size: 21px;
+    font-size: 18px;
     width: 100%;
-    border-bottom: 1px solid #bbb;
     padding: 0 0 5px 0;
-    margin: 0 0 20px 0;
-    /*padding-bottom: 5px;*/
+    margin: 0 0 5px 0;
     font-weight: normal;
     color: #444;
 }
@@ -123,9 +125,10 @@
 
 .breakButtons {
     display: flex;
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
 }
 
 .breakButtons > button {
+    margin-top: 5px;
     flex-grow: 1;
 }

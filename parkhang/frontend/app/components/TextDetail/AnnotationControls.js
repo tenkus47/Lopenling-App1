@@ -15,6 +15,7 @@ import Note from "./Note";
 import Button from "components/UI/Button";
 import PageBreakIcon from "images/page_break_icon.svg";
 import { List } from "react-virtualized/dist/es/List";
+import AnnotationControlsHeader from "./AnnotationControlsHeader";
 
 export const CONTROLS_MARGIN_LEFT = 10;
 
@@ -289,7 +290,6 @@ export default class AnnotationControls extends React.Component<Props> {
         let annotations = [];
         let temporaryAnnotations = [];
         let anonymousUserMessage = null;
-        let variantsHeading = null;
         let nothingSelected = null;
         const isLoggedIn = props.user.isLoggedIn;
 
@@ -358,10 +358,6 @@ export default class AnnotationControls extends React.Component<Props> {
                 }
             }, this);
 
-            variantsHeading = (
-                <AnnotationControlsHeading titleId="annotations.variantsHeading" />
-            );
-
             if (!props.user.isLoggedIn) {
                 // NOTE: FormattedMessage cannot take a child when using
                 // the values option, so need to wrap it in a div
@@ -387,6 +383,7 @@ export default class AnnotationControls extends React.Component<Props> {
         }
 
         let pageBreaksButton = null;
+        let allowPageBreak = true;
         if (isLoggedIn && !this.props.selectedWitness.isWorking) {
             let pageBreaks = [];
             if (this.props.availableAnnotations) {
@@ -411,17 +408,7 @@ export default class AnnotationControls extends React.Component<Props> {
                         />
                     </div>
                 );
-            } else {
-                pageBreaksButton = (
-                    <div className={styles.breakButtons}>
-                        <Button
-                            title="Add Page Break"
-                            accessoryType="ADD"
-                            icon={<PageBreakIcon width={20} height={20} />}
-                            onClick={this.props.addPageBreak}
-                        />
-                    </div>
-                );
+                allowPageBreak = false;
             }
         }
 
@@ -462,22 +449,6 @@ export default class AnnotationControls extends React.Component<Props> {
             });
         }
 
-        const noNotes = (
-            <div className={styles.noNotes}>
-                <FormattedMessage id="annotation.noNotes" />
-            </div>
-        );
-
-        const notesHeading = (
-            <AnnotationControlsHeading
-                titleId="annotation.notesHeading"
-                buttonOnClick={
-                    isLoggedIn && !tempNotes ? () => props.addNote() : null
-                }
-                buttonTitleId="annotation.addNoteHelp"
-            />
-        );
-
         let classes = [styles.annotationControls];
         if (props.inline) {
             classes.push(styles.inline);
@@ -490,16 +461,25 @@ export default class AnnotationControls extends React.Component<Props> {
                     (this.controls = controls)
                 }
             >
-                {anonymousUserMessage}
-                {nothingSelected}
-                {variantsHeading}
-                {temporaryAnnotations}
-                {annotations}
-                {pageBreaksButton}
-                {notesHeading}
-                {tempNotes}
-                {notes}
-                {!tempNotes && !notes && noNotes}
+                {!anonymousUserMessage && (
+                    <AnnotationControlsHeader
+                        allowPageBreak={allowPageBreak}
+                        addNote={
+                            isLoggedIn && !tempNotes
+                                ? () => props.addNote()
+                                : null
+                        }
+                    />
+                )}
+                <div className={styles.annotationContent}>
+                    {anonymousUserMessage}
+                    {nothingSelected}
+                    {temporaryAnnotations}
+                    {annotations}
+                    {pageBreaksButton}
+                    {tempNotes}
+                    {notes}
+                </div>
                 <div className={styles.arrow} ref={div => (this.arrow = div)} />
             </div>
         );
