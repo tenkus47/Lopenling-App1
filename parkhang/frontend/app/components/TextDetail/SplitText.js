@@ -255,7 +255,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             ] = props.splitText.annotatedText.getPositionOfAnnotation(
                 props.activeAnnotation
             );
-            if (!startPos) {
+            if (startPos === null) {
                 console.warn("No startPos in getControlsMeasurements");
                 return null;
             }
