@@ -343,8 +343,12 @@ const mapStateToProps = state => {
                 selectedWitnessAnnotations
             );
 
-            appliedAnnotations = appliedAnnotations.concat(
-                selectedWitnessAnnotationsList
+            appliedAnnotations = _.unionWith(
+                selectedWitnessAnnotationsList,
+                appliedAnnotations,
+                (val1: Annotation, val2: Annotation) => {
+                    return val1.id === val2.id;
+                }
             );
 
             workingAnnotationList = selectedWitnessAnnotations;
