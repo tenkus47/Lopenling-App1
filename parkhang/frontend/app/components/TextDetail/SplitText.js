@@ -473,8 +473,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     getBaseAnnotation(annotation: Annotation): Annotation {
+        let [
+            start
+        ] = this.props.splitText.annotatedText.getPositionOfAnnotation(
+            annotation
+        );
+        if (start === null) start = 0;
         return this.props.splitText.annotatedText.getBaseAnnotation(
-            annotation.start,
+            start,
             annotation.content.length
         );
     }
