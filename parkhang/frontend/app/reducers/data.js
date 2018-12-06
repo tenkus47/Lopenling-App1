@@ -327,6 +327,15 @@ function removedDefaultAnnotation(
     let annotationId = action.annotationId;
     let witnessId = action.witnessData.id;
     state = setupWitnessOperations({ ...state }, witnessId);
+    if (
+        state.witnessAnnotationOperationsById[witnessId][
+            api.appliedOp
+        ].hasOwnProperty(annotationId)
+    ) {
+        delete state.witnessAnnotationOperationsById[witnessId][api.appliedOp][
+            annotationId
+        ];
+    }
     return {
         ...state,
         witnessAnnotationOperationsById: {
