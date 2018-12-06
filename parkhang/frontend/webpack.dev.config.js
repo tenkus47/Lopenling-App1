@@ -12,10 +12,7 @@ module.exports = {
     mode: "development",
 
     entry: {
-        parkhang: [
-            "./app/index",
-            "./website/index"
-        ]
+        parkhang: ["./app/index", "./website/index"]
     },
 
     output: {
