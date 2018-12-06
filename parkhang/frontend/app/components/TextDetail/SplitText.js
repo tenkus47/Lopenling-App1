@@ -249,10 +249,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let splitTextRect = null;
         let segmentIdFunction: null | ((segment: TextSegment) => string) = null;
         let selectedElementIds = [];
+        let startPos = 0;
         if (props.activeAnnotation) {
-            const [
-                startPos
-            ] = props.splitText.annotatedText.getPositionOfAnnotation(
+            [startPos] = props.splitText.annotatedText.getPositionOfAnnotation(
                 props.activeAnnotation
             );
             if (startPos === null) {
@@ -285,9 +284,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }
         } else if (props.activeAnnotation) {
             if (props.activeAnnotation.isDeletion) {
-                let segment = new TextSegment(props.activeAnnotation.start, "");
+                let segment = new TextSegment(startPos, "");
                 selectedElementId = idForDeletedSegment(segment);
                 segmentIdFunction = idForDeletedSegment;
+                firstSelectedSegment = segment;
             } else if (props.activeAnnotation.isInsertion) {
                 const [
                     start
@@ -298,6 +298,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     let segment = new TextSegment(start, "");
                     selectedElementId = idForInsertion(segment);
                     segmentIdFunction = idForInsertion;
+                    firstSelectedSegment = segment;
                 }
             }
         }
