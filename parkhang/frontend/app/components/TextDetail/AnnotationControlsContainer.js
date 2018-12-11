@@ -617,19 +617,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         addPageBreak: () => {
             const location = ownProps.activeAnnotation;
-            const pageIndex = ownProps.splitText.getTextIndexOfPosition(
-                location.start
-            );
-            // pageNumber is 1-indexed, so add one to get current page.
-            // Then, add one again as pageBreak stores the start of a page.
-            const pageNumber = pageIndex + 2;
 
             const pageBreak = new Annotation(
                 null,
                 location.witness,
                 location.start,
                 0,
-                String(pageNumber),
+                null,
                 ANNOTATION_TYPES.pageBreak,
                 stateProps.selectedWitness,
                 stateProps.user
