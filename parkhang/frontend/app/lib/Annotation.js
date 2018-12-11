@@ -184,7 +184,9 @@ export default class Annotation {
 
     get isDeletion(): boolean {
         return (
-            !this.isInsertion && (!this.content || this.content.length === 0)
+            !this.isInsertion &&
+            this.isVariant &&
+            (!this.content || this.content.length === 0)
         );
     }
 
