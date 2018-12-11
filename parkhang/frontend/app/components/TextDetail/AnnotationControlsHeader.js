@@ -6,7 +6,7 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import NoteIcon from "images/note.svg";
 
 type Props = {
-    allowPageBreak: boolean,
+    addPageBreak: null | (() => void),
     addNote: null | (() => void)
 };
 
@@ -16,6 +16,7 @@ class AnnotationControlsHeader extends React.Component<Props> {
     }
 
     render() {
+        const allowPageBreak = this.props.addPageBreak != null;
         return (
             <div className={styles.header}>
                 <Button
@@ -36,8 +37,9 @@ class AnnotationControlsHeader extends React.Component<Props> {
                     title="Page Break"
                     noBezel={true}
                     icon={<PageBreakIcon width={15} height={15} />}
-                    accessoryType={this.props.allowPageBreak ? "ADD" : null}
-                    disabled={!this.props.allowPageBreak}
+                    accessoryType={allowPageBreak ? "ADD" : null}
+                    onClick={this.props.addPageBreak}
+                    disabled={!allowPageBreak}
                 />
             </div>
         );

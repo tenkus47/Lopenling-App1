@@ -463,7 +463,9 @@ export default class AnnotationControls extends React.Component<Props> {
             >
                 {!anonymousUserMessage && (
                     <AnnotationControlsHeader
-                        allowPageBreak={allowPageBreak}
+                        addPageBreak={
+                            allowPageBreak ? props.addPageBreak : null
+                        }
                         addNote={
                             isLoggedIn && !tempNotes
                                 ? () => props.addNote()
