@@ -81,9 +81,7 @@ export default class AnnotationControls extends React.Component<Props> {
             !this.props.inline ||
             !this.controls ||
             !this.arrow ||
-            !measurements ||
-            measurements.viewPortTop === null ||
-            measurements.viewPortBottom === null
+            !measurements
         ) {
             return;
         }
@@ -92,6 +90,7 @@ export default class AnnotationControls extends React.Component<Props> {
         const width = controls.offsetWidth;
         const arrow = this.arrow;
         const bottomGap = measurements.bottomGap;
+        const offScreen = bottomGap < 0 || bottomGap > height;
 
         let top = measurements.top;
         const viewPortWidth = measurements.viewPortWidth || 0;
@@ -116,7 +115,7 @@ export default class AnnotationControls extends React.Component<Props> {
         let anchorPoint = anchorPoints.bottom;
         let moveToSide = false;
         let moveRight = 0;
-        if (bottomGap < height) {
+        if (!offScreen && bottomGap < height) {
             moveToSide = true;
         }
 
@@ -207,8 +206,6 @@ export default class AnnotationControls extends React.Component<Props> {
         width: number,
         height: number,
         bottomGap: number,
-        viewPortTop: number | null,
-        viewPortBottom: number | null,
         viewPortWidth: number | null
     } | null {
         if (!this.props.selectedElementId) {
@@ -243,8 +240,6 @@ export default class AnnotationControls extends React.Component<Props> {
                 width: 1,
                 height: 1,
                 bottomGap: 0,
-                viewPortTop: 0,
-                viewPortBottom: 0,
                 viewPortWidth: 1
             };
         }
@@ -255,19 +250,13 @@ export default class AnnotationControls extends React.Component<Props> {
         const height = firstElement.offsetHeight;
         let rowTop = top;
 
-        let viewPortTop = null;
-        let viewPortBottom = null;
         let viewPortWidth = null;
-        let elViewPortTop = null;
         let bottomGap = 0;
         if (firstElement && splitTextRect) {
             const elRect = firstElement.getBoundingClientRect();
 
-            elViewPortTop = elRect.top - splitTextRect.top;
             bottomGap =
                 splitTextRect.height + splitTextRect.top - elRect.bottom;
-            viewPortTop = firstElement.offsetTop - elViewPortTop;
-            viewPortBottom = splitTextRect.top + splitTextRect.height;
             viewPortWidth = splitTextRect.width;
         }
 
@@ -279,8 +268,6 @@ export default class AnnotationControls extends React.Component<Props> {
             width: width,
             height: height,
             bottomGap: bottomGap,
-            viewPortTop: viewPortTop,
-            viewPortBottom: viewPortBottom,
             viewPortWidth: viewPortWidth
         };
     }
