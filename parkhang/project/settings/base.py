@@ -172,6 +172,11 @@ REST_FRAMEWORK = {
 
 LOGIN_REDIRECT_URL = '/'
 
+# Email server - used by allauth
+# Defaults to outputting to the console. Override for production.
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # WEBPACK
 WEBPACK_LOADER = {
     'MAIN': {
