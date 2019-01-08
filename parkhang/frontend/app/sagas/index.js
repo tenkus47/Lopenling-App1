@@ -191,9 +191,11 @@ function* watchAppliedDefaultAnnotation() {
 export function* loadTexts(): Saga<void> {
     try {
         const texts = yield call(api.fetchTexts);
-        texts.sort((a: api.TextData, b: api.TextData) =>
-            tibetanCompare(a.name, b.name)
-        );
+        if (texts) {
+            texts.sort((a: api.TextData, b: api.TextData) =>
+                tibetanCompare(a.name, b.name)
+            );
+        }
         yield put(actions.loadedTexts(texts));
     } catch (e) {
         console.log("FAILED loadTexts! %o", e);
