@@ -104,6 +104,7 @@ describe("AnnotationControls", () => {
                 availableAnnotations={availableAnnotations}
                 user={user}
                 temporaryAnnotation={null}
+                selectedWitness={baseWitness}
             />
         );
 
@@ -117,7 +118,7 @@ describe("AnnotationControls", () => {
 test("Editing annotation", () => {
     const activeAnnotation = temporaryAnnotation;
     const availableAnnotations = [
-        temporaryAnnotation.baseAnnotation,
+        temporaryAnnotation.basedOn,
         annotation1,
         annotation2
     ];
@@ -135,6 +136,7 @@ test("Editing annotation", () => {
             availableAnnotations={availableAnnotations}
             user={user}
             temporaryAnnotation={temporaryAnnotation}
+            selectedWitness={baseWitness}
         />
     );
 

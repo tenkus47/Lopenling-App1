@@ -1,13 +1,7 @@
 import React from "react";
-import { Provider } from "react-redux";
-import AnnotationControlsContainer, {
+import {
     mapStateToProps
 } from "./AnnotationControlsContainer";
-import AnnotatedText from "lib/AnnotatedText";
-import Text from "lib/Text";
-import Source from "lib/Source";
-import Witness from "lib/Witness";
-import Annotation from "lib/Annotation";
 import { getAnonymousUser } from "lib/User";
 
 test("mapStateToProps with no activeAnnotation", () => {
@@ -19,11 +13,34 @@ test("mapStateToProps with no activeAnnotation", () => {
                     id: 1,
                     name: "Test"
                 }
+            },
+            witnessesById: {
+                1: {
+                    id: 1,
+                    text: 1,
+                    source: 1,
+                    content: "",
+                    is_base: false,
+                    is_working: true,
+                    revision: 1,
+                    properties: null
+                }
+            },
+            sourcesById: {
+                1: {
+                    id: 1,
+                    name: "test",
+                    is_base: true,
+                    is_working: true
+                }
             }
         },
         ui: {
             selectedText: {
                 id: 1
+            },
+            selectedTextWitness: {
+                1: 1
             }
         },
         user: {

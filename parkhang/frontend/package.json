@@ -13,11 +13,11 @@
   "author": "tim@phurba.net",
   "license": "UNLICENSED",
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
+    "@babel/polyfill": "^7.2",
     "@svgr/webpack": "^3.1.0",
     "axios": "^0.16.2",
     "classnames": "^2.2.6",
-    "core-js": "^2.5.7",
+    "core-js": "^2.6.1",
     "docx": "^4.3.0",
     "file-saver": "^2.0.0-rc.4",
     "grapheme-splitter": "git+https://github.com/orling/grapheme-splitter.git",
@@ -38,20 +38,22 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/cli": "^7.2",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+    "@babel/preset-env": "^7.2",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0",
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
     "babel-plugin-lodash": "^3.3.4",
     "css-loader": "^1.0",
     "documentation": "^6.3.2",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.6.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.7.1",
     "enzyme-react-intl": "^2.0.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
@@ -94,6 +96,9 @@
     "moduleDirectories": [
       "node_modules",
       "app"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!react-virtualized).+\\.js$"
     ]
   }
 }
