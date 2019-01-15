@@ -318,7 +318,7 @@ export default class AnnotatedText {
         }
         if (origLength !== content.length) {
             console.warn(
-                "Base annotations has different content length to length"
+                "Base annotation has different content length to length"
             );
         }
         let annotation = new Annotation(
