@@ -20,6 +20,14 @@ export default class AnnotatedText {
     baseWitness: Witness;
     activeWitness: Witness;
     _generatedText: SegmentedText | null;
+    /**
+     * Each key represents the position in the original text the AnnotatedText is
+     * based upon.
+     *
+     * First {number} index is position in current text;
+     * Second {boolean} is whether original character has been deleted.
+     *
+     * */
     _orginalCurrentSegmentPositions: {
         [position: string | number]: [number, boolean]
     };
