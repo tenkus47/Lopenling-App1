@@ -10,10 +10,10 @@ const closeAnnotationControls = (
     state: AppState,
     dispatch: (action: actions.Action) => void
 ) => {
-    const activeAnnotation = reducers.getActiveAnnotation(state);
+    const activeAnnotation = reducers.getActiveTextAnnotation(state);
     if (activeAnnotation) {
-        const dismissAnnotation = actions.changedActiveAnnotation(null);
-        dispatch(dismissAnnotation);
+        const dismissTextAnnotation = actions.changedActiveTextAnnotation(null);
+        dispatch(dismissTextAnnotation);
     }
 };
 
@@ -22,7 +22,7 @@ const addPageBreak = (
     dispatch: (action: actions.Action) => void
 ) => {
     const selectedWitness = reducers.getSelectedTextWitness(state);
-    const activeAnnotation = reducers.getActiveAnnotation(state);
+    const activeAnnotation = reducers.getActiveTextAnnotation(state);
     const user = reducers.getUser(state);
     if (activeAnnotation && selectedWitness && user) {
         const pageBreak = new Annotation(
