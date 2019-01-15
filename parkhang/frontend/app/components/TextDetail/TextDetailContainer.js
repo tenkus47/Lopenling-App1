@@ -734,7 +734,7 @@ const getSegmentsRange = (
         }
         let annotationEnd = null;
         if (activeAnnotations.indexOf(annotation) !== -1) {
-            annotationEnd = annotation.start + annotation.content.length - 1;
+            annotationEnd = annotation.contentEnd;
         } else {
             annotationEnd = annotation.end;
         }
