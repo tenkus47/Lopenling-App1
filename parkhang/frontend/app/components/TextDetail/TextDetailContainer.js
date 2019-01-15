@@ -15,12 +15,17 @@ import {
     DELETION_KEY
 } from "lib/AnnotatedText";
 import TextDetail from "components/TextDetail";
-import { changedActiveAnnotation, changedWitnessScrollPosition } from "actions";
+import {
+    changedActiveAnnotation,
+    changedActiveTextAnnotation,
+    changedWitnessScrollPosition
+} from "actions";
 import {
     showPageImages,
     getAnnotationsForWitnessId,
     getActiveAnnotationsForWitnessId,
     getActiveAnnotation,
+    getActiveTextAnnotation,
     getBaseWitness,
     getWorkingWitness,
     getSelectedText,
@@ -227,6 +232,8 @@ function getSegmentedWitness(witness: Witness): SegmentedText {
     return _segmentedWitnesses[witness.id];
 }
 
+let _selectedWitness = null;
+
 const mapStateToProps = state => {
     const user = getUser(state);
     const loading =
@@ -262,7 +269,7 @@ const mapStateToProps = state => {
     let annotationPositions = {};
     let annotations = [];
     let annotatedText = null;
-    let activeAnnotation = getActiveAnnotation(state);
+    let activeAnnotation = getActiveTextAnnotation(state);
     let selectedAnnotatedSegments = [];
     let appliedAnnotations = [];
     let pageBreaks = [];
@@ -283,12 +290,6 @@ const mapStateToProps = state => {
         );
         if (selectedWitnessId) {
             selectedWitness = getWitness(state, selectedWitnessId);
-            if (selectedWitness) {
-                activeAnnotation = getActiveAnnotation(
-                    state,
-                    selectedWitness.id
-                );
-            }
         }
 
         if (!selectedWitness) {
@@ -389,9 +390,22 @@ const mapStateToProps = state => {
         // Get the segments that are part of the current active annotation.
         // These are used by Text to highlight the currently selected segment.
         if (activeAnnotation) {
-            selectedAnnotatedSegments = annotatedText.segmentsForAnnotation(
-                activeAnnotation
-            );
+            // If we've just switched witnesses, make sure we select the
+            // correct part of the text by getting a new annotation.
+            if (
+                !_selectedWitness ||
+                _selectedWitness.id !== selectedWitness.id
+            ) {
+                activeAnnotation = annotatedText.getAnnotation(
+                    activeAnnotation.start,
+                    activeAnnotation.length
+                );
+            }
+            if (activeAnnotation) {
+                selectedAnnotatedSegments = annotatedText.segmentsForAnnotation(
+                    activeAnnotation
+                );
+            }
         }
 
         scrollPosition = getScrollPosition(state, selectedWitness.id) || 0;
@@ -445,6 +459,8 @@ const mapStateToProps = state => {
             }
         }
     }
+
+    _selectedWitness = selectedWitness;
 
     return {
         text: selectedText,
@@ -504,8 +520,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             // get base annotation of just the segment
             activeAnnotation = annotatedText.getBaseAnnotation(start, length);
         }
-
-        dispatch(changedActiveAnnotation(activeAnnotation));
+        
+        dispatch(changedActiveTextAnnotation(activeAnnotation));
     };
 
     const isInsertion = id => {
@@ -609,7 +625,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             } else {
                 activeAnnotation = baseAnnotation;
             }
-            dispatch(changedActiveAnnotation(activeAnnotation));
+            dispatch(changedActiveTextAnnotation(activeAnnotation));
         },
         selectedSegmentId: segmentId => {
             if (isInsertion(segmentId)) {

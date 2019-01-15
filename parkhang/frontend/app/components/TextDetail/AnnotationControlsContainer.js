@@ -19,6 +19,7 @@ import Witness from "lib/Witness";
 import TextSegment from "lib/TextSegment";
 import SplitText from "lib/SplitText";
 import _ from "lodash";
+import { changedActiveTextAnnotation } from "actions";
 
 const TEMPORARY_ANNOTATION_ID = -3;
 const BASE_NAME = "Working";
@@ -456,7 +457,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 }
 
                 actionsBatch.push(
-                    actions.changedActiveAnnotation(selectedAnnotation)
+                    actions.changedActiveTextAnnotation(selectedAnnotation)
                 );
 
                 dispatch(batchActions(actionsBatch));
@@ -537,7 +538,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             );
             if (newAnnotation.type === ANNOTATION_TYPES.variant) {
                 actionsBatch.push(
-                    actions.changedActiveAnnotation(newAnnotation)
+                    actions.changedActiveTextAnnotation(newAnnotation)
                 );
             }
             dispatch(batchActions(actionsBatch));
