@@ -319,6 +319,91 @@ export default class AnnotatedText {
     }
 
     /**
+     * Get an annotation that represents the content in the generated text.
+     *
+     * If any annotations have been applied, it should return the applied
+     * annotation.
+     *
+     * @param start - Start position in original text
+     * @param length - Length in original text
+     * @returns {Annotation}
+     */
+    getAnnotation(start: number, length: number): Annotation | null {
+        let [startPos, deleted] = this._orginalCurrentSegmentPositions[start];
+        let annotation = null;
+        if (startPos === undefined) {
+        } else if (length === 0) {
+        } else {
+            let annotations: Annotation[] = [];
+            for (let i = startPos; i < startPos + length; i++) {
+                annotations = annotations.concat(
+                    this.annotationsForPosition(i)
+                );
+            }
+            if (annotations.length > 0) {
+                let content = "";
+                let creatorUser = null;
+                let creatorWitness = this.activeWitness;
+                // Figure out who created the annotation
+                // and set creatorUser accordingly.
+                let foundVariant = null;
+                for (let i = 0; i < annotations.length; i++) {
+                    let foundAnnotation = annotations[i];
+                    if (
+                        foundAnnotation.type === ANNOTATION_TYPES.variant &&
+                        foundAnnotation.id !== BASE_ANNOTATION_ID
+                    ) {
+                        //console.log("found annotation: %o", foundAnnotation);
+                        creatorWitness = foundAnnotation.creatorWitness;
+                        creatorUser = foundAnnotation.creatorUser;
+                        if (!foundVariant) {
+                            foundVariant = foundAnnotation;
+                        } else {
+                            if (
+                                foundAnnotation.creatorWitness !==
+                                    creatorWitness &&
+                                foundAnnotation.creatorUser !== creatorUser
+                            ) {
+                                console.warn(
+                                    "Found second variant",
+                                    annotations
+                                );
+                            }
+                        }
+                    }
+                }
+                if (foundVariant !== null) {
+                    let segments = this.segmentsForAnnotation(foundVariant);
+                    content = segments.reduce(
+                        (
+                            previousValue: string,
+                            currentValue: TextSegment | number
+                        ) => {
+                            let value = previousValue;
+                            if (currentValue instanceof TextSegment) {
+                                value += currentValue.text;
+                            }
+                            return value;
+                        },
+                        ""
+                    );
+                    if (content !== foundVariant.content) {
+                        console.warn(
+                            "foundVariant content != generated content"
+                        );
+                    }
+                    annotation = foundVariant;
+                }
+            }
+        }
+
+        if (annotation == null && startPos) {
+            annotation = this.getBaseAnnotation(startPos, length);
+        }
+
+        return annotation;
+    }
+    /**
      * Return segments for the given annotation in the current version of the text
      *
      * The annotation should be referring to positions in the base text.

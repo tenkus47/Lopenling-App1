@@ -484,6 +484,31 @@ describe("AnnotatedText", () => {
         );
     });
 
+    test("Get Annotation", () => {
+        let expectedBaseAnnotation = new Annotation(
+            BASE_ANNOTATION_ID,
+            annotatedText.baseWitness,
+            147,
+            4,
+            "བླ་མ",
+            ANNOTATION_TYPES.variant,
+            annotatedText.baseWitness
+        );
+
+        expect(annotatedText.getAnnotation(147, 4)).toEqual(
+            expectedBaseAnnotation
+        );
+
+        let testStart = 204;
+        let expectedVariant = annotations.filter((annotation: Annotation) => {
+            return annotation.start === testStart;
+        })[0];
+
+        expect(annotatedText.getAnnotation(testStart, 1)).toEqual(
+            expectedVariant
+        );
+    });
+
     test("Annotations for position", () => {
         let expectedAnnotation1 = new Annotation(
             1,
