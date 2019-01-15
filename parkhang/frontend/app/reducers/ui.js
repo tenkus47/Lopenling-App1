@@ -2,7 +2,6 @@
 import * as actions from "actions";
 import Annotation, { TemporaryAnnotation } from "lib/Annotation";
 import * as api from "api";
-import { CHANGED_WITNESS_SCROLL_POSITION } from "../actions";
 
 export type UIState = {
     selectedText: api.TextData | null,
@@ -10,6 +9,7 @@ export type UIState = {
     searchValue: string,
     showPageImages: boolean,
     activeAnnotations: { [witnessId: number]: Annotation },
+    activeTextAnnotations: { [textId: number]: Annotation },
     textListVisible: boolean,
     temporaryAnnotations: {
         [witnessId: number]: {
@@ -27,6 +27,7 @@ export const initialUIState = {
     searchValue: "",
     showPageImages: false,
     activeAnnotations: {},
+    activeTextAnnotations: {},
     textListVisible: true,
     temporaryAnnotations: {},
     scrollPositions: {}
@@ -107,6 +108,25 @@ function changedActiveAnnotation(
         activeAnnotations: {
             ...state.activeAnnotations,
             [activeWitnessId]: action.annotation
+        }
+    };
+}
+
+function changedActiveTextAnnotation(
+    state: UIState,
+    action: actions.AnnotationAction
+): UIState {
+    if (!state.selectedText) {
+        console.warn("changedActiveAnnotation without selectedText");
+        return state;
+    }
+
+    const activeTextId = state.selectedText.id;
+    return {
+        ...state,
+        activeTextAnnotations: {
+            ...state.activeTextAnnotations,
+            [activeTextId]: action.annotation
         }
     };
 }
@@ -202,6 +222,9 @@ uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
 uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
 // uiReducers[actions.CHANGED_SELECTED_SEGMENT] = changedSelectedSegment;
 uiReducers[actions.CHANGED_ACTIVE_ANNOTATION] = changedActiveAnnotation;
+uiReducers[
+    actions.CHANGED_ACTIVE_TEXT_ANNOTATION
+] = changedActiveTextAnnotation;
 uiReducers[actions.CHANGED_TEXT_LIST_VISIBLE] = textListVisibleChanged;
 uiReducers[actions.ADDED_TEMPORARY_ANNOTATION] = addedTemporaryAnnotation;
 uiReducers[actions.REMOVED_TEMPORARY_ANNOTATION] = removedTemporaryAnnotation;
@@ -233,6 +256,23 @@ export const getActiveAnnotation = (
         }
         if (witnessId) {
             return state.activeAnnotations[witnessId];
+        }
+        return null;
+    } else {
+        return null;
+    }
+};
+
+export const getActiveTextAnnotation = (
+    state: UIState,
+    textId?: number
+): Annotation | null => {
+    if (state.selectedText) {
+        if (!textId) {
+            textId = state.selectedText.id;
+        }
+        if (textId) {
+            return state.activeTextAnnotations[textId];
         }
         return null;
     } else {

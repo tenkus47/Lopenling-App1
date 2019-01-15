@@ -66,6 +66,8 @@ export const CHANGED_SELECTED_SEGMENT = "text/CHANGED_SELECTED_SEGMENT";
 export const DESELECTED_SEGMENT = "text/DESELECTED_SEGMENT";
 
 export const CHANGED_ACTIVE_ANNOTATION = "text/CHANGED_ACTIVE_ANNOTATION";
+export const CHANGED_ACTIVE_TEXT_ANNOTATION =
+    "text/CHANGED_ACTIVE_TEXT_ANNOTATION";
 
 export const CHANGED_TEXT_LIST_VISIBLE = "textList/CHANGED_TEXT_LIST_VISIBLE";
 
@@ -463,6 +465,15 @@ export function changedActiveAnnotation(
 ): ChangedActiveAnnotationAction {
     return {
         type: CHANGED_ACTIVE_ANNOTATION,
+        annotation
+    };
+}
+
+export function changedActiveTextAnnotation(
+    annotation: Annotation | null
+): ChangedActiveAnnotationAction {
+    return {
+        type: CHANGED_ACTIVE_TEXT_ANNOTATION,
         annotation
     };
 }

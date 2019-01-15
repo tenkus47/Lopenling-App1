@@ -131,6 +131,13 @@ export const getActiveAnnotation = (
     return ui.getActiveAnnotation(state.ui, witnessId);
 };
 
+export const getActiveTextAnnotation = (
+    state: AppState,
+    textId?: number
+): Annotation | null => {
+    return ui.getActiveTextAnnotation(state.ui, textId);
+};
+
 export const getTextListVisible = (state: AppState): boolean => {
     return ui.getTextListVisible(state.ui);
 };
