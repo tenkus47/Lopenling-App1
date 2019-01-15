@@ -137,11 +137,17 @@ export default class AnnotatedText {
         return this.segmentedText.getText();
     }
 
+    /**
+     * Return list of annotations for the given position in the generated text.
+     *
+     * @param {number} position - position in the generated text
+     * @returns {Annotation<>[]}
+     */
     annotationsForPosition(position: number): Annotation[] {
         this.segmentedText;
         return this.variants.filter(annotation => {
             let start = annotation.start;
-            let end = annotation.end;
+            let end = annotation.contentEnd;
             if (annotation.isInsertion) {
                 start = String(start) + INSERTION_KEY;
                 end = start;
