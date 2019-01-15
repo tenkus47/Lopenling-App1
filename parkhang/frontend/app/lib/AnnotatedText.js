@@ -220,8 +220,10 @@ export default class AnnotatedText {
             const startSegment = this.segmentedText.segmentAtPosition(startPos);
             let endSegment;
             if (isActive || annotation.id === WORKING_VERSION_ANNOTATION_ID) {
+                let contentLength = annotation.content.length;
+                if (contentLength > 0) contentLength -= 1;
                 endSegment = this.segmentedText.segmentAtPosition(
-                    startPos + annotation.content.length - 1
+                    startPos + contentLength
                 );
             } else {
                 endSegment = this.segmentAtOriginalPosition(annotation.end);
