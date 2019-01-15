@@ -152,10 +152,16 @@ export default class Annotation {
         }
     }
 
-    get end(): number {
+    get contentEnd(): number {
         let end = this.start;
         if (this.content && this.content.length > 0)
             end += this.content.length - 1;
+        return end;
+    }
+
+    get end(): number {
+        let end = this.start;
+        if (this.length > 0) end += this.length - 1;
         return end;
     }
 
@@ -163,10 +169,10 @@ export default class Annotation {
         const rangeEnd = start + length - 1;
         if (
             (this.start <= start &&
-                this.end >= start &&
-                this.end <= rangeEnd) ||
-            (this.start >= start && this.end <= rangeEnd) ||
-            (this.start <= rangeEnd && this.end >= rangeEnd)
+                this.contentEnd >= start &&
+                this.contentEnd <= rangeEnd) ||
+            (this.start >= start && this.contentEnd <= rangeEnd) ||
+            (this.start <= rangeEnd && this.contentEnd >= rangeEnd)
         ) {
             return true;
         } else {

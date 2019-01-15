@@ -37,8 +37,8 @@ const insertion = new Annotation(
 
 describe("Annotation", () => {
     test("End of annotation", () => {
-        expect(pageBreak.end).toEqual(23);
-        expect(insertion.end).toEqual(11);
+        expect(pageBreak.contentEnd).toEqual(23);
+        expect(insertion.contentEnd).toEqual(11);
     });
 
     test("Is an insertion", () => {
