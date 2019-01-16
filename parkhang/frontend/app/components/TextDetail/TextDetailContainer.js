@@ -145,8 +145,6 @@ const annotationsFromData = (
     return annotations;
 };
 
-let _activeAnnotationsList;
-let _activeAnnotations;
 const getActiveAnnotations = (
     state: AppState,
     witnessId,
@@ -166,11 +164,6 @@ const getActiveAnnotations = (
     if (!activeAnnotationList) {
         return [];
     }
-    if (activeAnnotationList === _activeAnnotationsList) {
-        return _activeAnnotations;
-    } else {
-        _activeAnnotationsList = activeAnnotationList;
-    }
 
     let activeAnnotationDataList = {};
     for (let activeAnnotationId in activeAnnotationList) {
@@ -188,8 +181,7 @@ const getActiveAnnotations = (
         }
     }
 
-    _activeAnnotations = annotationsFromData(state, activeAnnotationDataList);
-    return _activeAnnotations;
+    return annotationsFromData(state, activeAnnotationDataList);
 };
 
 let _annotatedTextsCache: {
