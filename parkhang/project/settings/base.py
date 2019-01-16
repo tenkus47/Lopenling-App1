@@ -140,7 +140,8 @@ USE_L10N = True
 USE_TZ = True
 
 LOCALE_PATHS = [
-    '%s/locale' % (BASE_DIR)
+    '%s/locale' % (BASE_DIR),
+    '%s/translations/allauth' % (BASE_DIR),
 ]
 
 LANGUAGES = [
