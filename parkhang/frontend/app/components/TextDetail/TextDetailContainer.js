@@ -267,7 +267,6 @@ const mapStateToProps = state => {
     let pageBreaks = [];
     let imagesBaseUrl = "";
     let selectedWitness;
-    let scrollPosition = 0;
     // Whether to show the text's page images
     let paginated = false;
     if (
@@ -400,8 +399,6 @@ const mapStateToProps = state => {
             }
         }
 
-        scrollPosition = getScrollPosition(state, selectedWitness.id) || 0;
-
         if (selectedWitness && baseWitness) {
             let witnessPageBreaks = getAnnotationsForWitnessId(
                 state,
@@ -471,8 +468,7 @@ const mapStateToProps = state => {
         imagesBaseUrl: imagesBaseUrl,
         user: user,
         textListVisible,
-        selectedWitness,
-        scrollPosition
+        selectedWitness
     };
 };
 
@@ -643,9 +639,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     );
                 }
             }
-        },
-        scrolledText: (witnessId: number, scrollPosition: number) => {
-            dispatch(changedWitnessScrollPosition(witnessId, scrollPosition));
         }
     };
 };

@@ -46,9 +46,7 @@ export type Props = {
     annotations: Annotation[],
     activeAnnotations: Annotation[] | null,
     selectedSegmentId: (segmentId: string) => void,
-    selectedWitness: Witness | null,
-    scrolledText: (witnessId: number, scrollPosition: number) => void,
-    scrollPosition: number
+    selectedWitness: Witness | null
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -69,8 +67,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     // Whether the mouse button is down
     _mouseDown: boolean;
     _activeWitness: Witness | null;
-    _listScrolledTimer: TimeoutID | null;
-    _updateScrollPosition: null | (() => void);
     _didSetInitialScrollPosition: boolean;
     _filteredSelectedAnnotatedSegments: TextSegment[];
     selectedTextIndex: number | null;
@@ -94,7 +90,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.selectedNodes = null;
         this._mouseDown = false;
         this._activeWitness = null;
-        this._updateScrollPosition = null;
         this._didSetInitialScrollPosition = false;
 
         this.processProps(props);
@@ -130,23 +125,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.props.didSelectSegmentIds(segmentIds);
             this.activeSelection = null;
         }
-    }
-
-    listScrolled(data: {
-        clientHeight: number,
-        scrollHeight: number,
-        scrollTop: number
-    }) {
-        this._listScrolledTimer && clearTimeout(this._listScrolledTimer);
-        this._listScrolledTimer = setTimeout(() => {
-            if (this.props.selectedWitness) {
-                const selectedWitnessId = this.props.selectedWitness.id;
-                const scrollPosition = data.scrollTop;
-                this._updateScrollPosition = () => {
-                    this.props.scrolledText(selectedWitnessId, scrollPosition);
-                };
-            }
-        }, 100);
     }
 
     handleSelection(e: Event) {
@@ -368,7 +346,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 props.selectedWitness.id !== this.props.selectedWitness.id)
         ) {
             changedWitness = true;
-            if (this._updateScrollPosition) this._updateScrollPosition();
             this._didSetInitialScrollPosition = false;
         }
 
@@ -461,16 +438,37 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         if (!this._didSetInitialScrollPosition && this.list) {
             const list = this.list;
-            setTimeout(() => {
-                list.scrollToPosition(this.props.scrollPosition);
-                this._didSetInitialScrollPosition = true;
-            }, 100);
+            if (this.props.activeAnnotation) {
+                let selectedTextIndex = this.getSelectedTextIndex();
+                setTimeout(() => {
+                    list.scrollToRow(selectedTextIndex);
+                }, 100);
+            }
+            this._didSetInitialScrollPosition = true;
         }
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.resizeHandler);
         document.removeEventListener("selectionchange", this.selectionHandler);
+    }
+
+    getSelectedTextIndex(): number {
+        let selectedTextIndex = 0;
+        if (this.props.activeAnnotation) {
+            let [
+                startPos
+            ] = this.props.splitText.annotatedText.getPositionOfAnnotation(
+                this.props.activeAnnotation
+            );
+            if (startPos) {
+                selectedTextIndex = this.props.splitText.getTextIndexOfPosition(
+                    startPos
+                );
+            }
+        }
+
+        return selectedTextIndex;
     }
 
     getBaseAnnotation(annotation: Annotation): Annotation {
@@ -509,7 +507,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             width={width}
                             overscanRowCount={3}
                             deferredMeasurementCache={cache}
-                            onScroll={this.listScrolled.bind(this)}
                         />
                     )}
                 </AutoSizer>
