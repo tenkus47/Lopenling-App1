@@ -184,12 +184,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     getNodeSegmentSpan(node: Node): Element | null {
         let currentNode = node;
         let span = null;
+        const test = /^(i|s|ds)_/;
         while (!span && currentNode.parentNode) {
-            currentNode = currentNode.parentNode;
-            const test = /^(i|s|ds)_/;
             if (currentNode instanceof Element && test.test(currentNode.id)) {
                 span = currentNode;
             }
+            currentNode = currentNode.parentNode;
         }
 
         return span;
