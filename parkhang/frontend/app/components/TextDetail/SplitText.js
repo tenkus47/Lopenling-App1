@@ -128,7 +128,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     handleSelection(e: Event) {
-        // TODO: fix this - sometimes the selection is not registered
         this.activeSelection = document.getSelection();
         if (!this._mouseDown) {
             // sometimes, this gets called after the mouseDown event handler
@@ -157,6 +156,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
 
         let nodes = this.getRangeNodes(range, startSpan.parentNode);
+        // Check if the selection starts after the end of a node, and
+        // if so remove that node.
+        if (nodes.length > 0) {
+            let firstNode = nodes[0];
+            if (range.startOffset === firstNode.textContent.length) {
+                nodes.shift();
+            }
+        }
 
         const end = range.endContainer;
         const endSpan = this.getNodeSegmentSpan(end);
@@ -168,6 +175,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             // We assume a selection can only run across a maximum
             // of two Texts.
             nodes = nodes.concat(this.getRangeNodes(range, endSpan.parentNode));
+        } else {
+            // Check if the selection ends before the start of a node, and
+            // if so remove that node.
+            if (range.endOffset === 0) {
+                nodes.pop();
+            }
         }
         this.selectedNodes = nodes;
         let nodeIds = [];
