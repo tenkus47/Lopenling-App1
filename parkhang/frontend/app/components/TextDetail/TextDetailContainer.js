@@ -46,6 +46,9 @@ import _ from "lodash";
 import AnnotatedText from "lib/AnnotatedText";
 import segmentTibetanText from "lib/segmentTibetanText";
 import SegmentedText from "lib/SegmentedText";
+import * as actions from "actions";
+
+const DISMISS_CONTROLS_ON_CLICK = true;
 
 function getInsertionKey(annotation) {
     return [annotation.start, annotation.length].join("-");
@@ -508,7 +511,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             // get base annotation of just the segment
             activeAnnotation = annotatedText.getBaseAnnotation(start, length);
         }
-        
+
         dispatch(changedActiveTextAnnotation(activeAnnotation));
     };
 
@@ -616,27 +619,39 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             dispatch(changedActiveTextAnnotation(activeAnnotation));
         },
         selectedSegmentId: segmentId => {
+            let start = idFromSegmentId(segmentId);
+            let positionKey = start;
             if (isInsertion(segmentId)) {
-                const start = idFromSegmentId(segmentId);
-                const length = 0;
-                const positionKey = INSERTION_KEY + start;
-                didSelectSegmentPosition(positionKey, start, length);
+                positionKey = INSERTION_KEY + start;
             } else if (isDeletion(segmentId)) {
-                const start = idFromSegmentId(segmentId);
-                const length = 0;
-                const positionKey = DELETION_KEY + start;
-                didSelectSegmentPosition(positionKey, start, length);
-            } else {
-                let segmentPosition = Number(idFromSegmentId(segmentId));
-                let textSegment = annotatedText.segmentedText.segmentAtPosition(
-                    segmentPosition
-                );
-                if (textSegment) {
-                    didSelectSegmentPosition(
-                        textSegment.start,
-                        textSegment.start,
-                        textSegment.length
+                positionKey = DELETION_KEY + start;
+            }
+
+            let segmentAnnotations = annotationPositions[positionKey];
+            if (DISMISS_CONTROLS_ON_CLICK && !segmentAnnotations) {
+                const activeAnnotation = stateProps.activeAnnotation;
+                if (activeAnnotation) {
+                    const dismissTextAnnotation = actions.changedActiveTextAnnotation(
+                        null
                     );
+                    dispatch(dismissTextAnnotation);
+                }
+            } else {
+                if (isInsertion(segmentId) || isDeletion(segmentId)) {
+                    const length = 0;
+                    didSelectSegmentPosition(positionKey, start, length);
+                } else {
+                    let segmentPosition = Number(idFromSegmentId(segmentId));
+                    let textSegment = annotatedText.segmentedText.segmentAtPosition(
+                        segmentPosition
+                    );
+                    if (textSegment) {
+                        didSelectSegmentPosition(
+                            textSegment.start,
+                            textSegment.start,
+                            textSegment.length
+                        );
+                    }
                 }
             }
         }
