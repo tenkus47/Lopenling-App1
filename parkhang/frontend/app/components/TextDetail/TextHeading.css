@@ -24,3 +24,16 @@
     align-items: center;
     padding: 10px 10px;
 }
+
+.textHeadingloader {
+    position: relative;
+    right: 10px;
+}
+
+.textHeadingloader :global(.loader) {
+    position: relative;
+    left: 0;
+    top: 0;
+    background: 0;
+    padding: 0;
+}

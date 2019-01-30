@@ -75,6 +75,7 @@ export const CHANGED_WITNESS_SCROLL_POSITION =
     "text/CHANGED_WITNESS_SCROLL_POSITION";
 
 export const EXPORT_WITNESS = "text/EXPORT_WITNESS";
+export const EXPORTED_WITNESS = "text/EXPORTED_WITNESS";
 
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
@@ -517,6 +518,17 @@ export function exportWitness(
 ): ExportWitnessAction {
     return {
         type: EXPORT_WITNESS,
+        witnessId,
+        format
+    };
+}
+
+export function exportedWitness(
+    witnessId: number,
+    format: string
+): ExportWitnessAction {
+    return {
+        type: EXPORTED_WITNESS,
         witnessId,
         format
     };

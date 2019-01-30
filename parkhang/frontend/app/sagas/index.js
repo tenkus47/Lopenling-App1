@@ -410,6 +410,8 @@ function* exportWitness(action: actions.ExportWitnessAction) {
         filename
     );
     FileSaver.saveAs(file, filename);
+
+    yield put(actions.exportedWitness(witness.id, format));
 }
 
 function* watchExportWitness() {

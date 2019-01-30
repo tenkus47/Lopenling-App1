@@ -159,6 +159,13 @@ export const getScrollPosition = (
     return ui.getScrollPosition(state.ui, witnessId);
 };
 
+export const getExportingWitness = (
+    state: AppState,
+    witnessId: number
+): boolean => {
+    return ui.getExportingWitness(state.ui, witnessId);
+};
+
 // data
 
 export const getText = (state: AppState, textId: number): Text | null => {

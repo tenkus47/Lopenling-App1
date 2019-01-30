@@ -18,6 +18,9 @@ export type UIState = {
     },
     scrollPositions: {
         [witnessId: number]: number
+    },
+    exportingWitness: {
+        [witnessId: number]: boolean
     }
 };
 
@@ -30,7 +33,8 @@ export const initialUIState = {
     activeTextAnnotations: {},
     textListVisible: true,
     temporaryAnnotations: {},
-    scrollPositions: {}
+    scrollPositions: {},
+    exportingWitness: {}
 };
 
 function selectedText(
@@ -215,6 +219,31 @@ function changedScrollPosition(
     };
 }
 
+function exportingWitness(
+    state: UIState,
+    action: actions.ExportWitnessAction
+): UIState {
+    return {
+        ...state,
+        exportingWitness: {
+            ...state.exportingWitness,
+            [action.witnessId]: true
+        }
+    };
+}
+
+function exportedWitness(
+    state: UIState,
+    action: actions.ExportWitnessAction
+): UIState {
+    state = {
+        ...state
+    };
+
+    delete state.exportingWitness[action.witnessId];
+    return state;
+}
+
 const uiReducers = {};
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
@@ -229,6 +258,8 @@ uiReducers[actions.CHANGED_TEXT_LIST_VISIBLE] = textListVisibleChanged;
 uiReducers[actions.ADDED_TEMPORARY_ANNOTATION] = addedTemporaryAnnotation;
 uiReducers[actions.REMOVED_TEMPORARY_ANNOTATION] = removedTemporaryAnnotation;
 uiReducers[actions.CHANGED_WITNESS_SCROLL_POSITION] = changedScrollPosition;
+uiReducers[actions.EXPORT_WITNESS] = exportingWitness;
+uiReducers[actions.EXPORTED_WITNESS] = exportedWitness;
 export default uiReducers;
 
 export const getSelectedText = (state: UIState): api.TextData | null => {
@@ -310,4 +341,11 @@ export const getScrollPosition = (
     witnessId: number
 ): number | null => {
     return state.scrollPositions[witnessId] || null;
+};
+
+export const getExportingWitness = (
+    state: UIState,
+    witnessId: number
+): boolean => {
+    return state.exportingWitness.hasOwnProperty(witnessId);
 };

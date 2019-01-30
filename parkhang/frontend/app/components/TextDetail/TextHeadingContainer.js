@@ -16,6 +16,7 @@ import type { AppState } from "reducers";
 const mapStateToProps = (state: AppState): {} => {
     const selectedText = reducers.getSelectedText(state);
     let witnesses = [];
+    let exportingWitness = false;
     let selectedWitness;
     if (selectedText) {
         witnesses = reducers.getTextWitnesses(state, selectedText.id);
@@ -25,6 +26,10 @@ const mapStateToProps = (state: AppState): {} => {
         );
         if (selectedWitnessId) {
             selectedWitness = reducers.getWitness(state, selectedWitnessId);
+            exportingWitness = reducers.getExportingWitness(
+                state,
+                selectedWitnessId
+            );
         } else {
             selectedWitness = reducers.getWorkingWitness(
                 state,
@@ -36,7 +41,8 @@ const mapStateToProps = (state: AppState): {} => {
     return {
         witnesses,
         selectedText,
-        selectedWitness
+        selectedWitness,
+        exportingWitness
     };
 };
 
