@@ -18,6 +18,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "static/bundles/"),
         filename: "[name]-[hash].js",
+        chunkFilename: "[name]-[chunkhash].js",
         library: "parkhang",
         publicPath: "/static/bundles/"
     },
