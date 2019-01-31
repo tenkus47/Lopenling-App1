@@ -17,3 +17,5 @@ parkhang/frontend/coverage
 /data
 parkhang/static/images/texts
 .vscode
+vendors~docx-dev.js
+vendors~docx-dev.js.map
