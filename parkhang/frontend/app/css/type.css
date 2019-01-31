@@ -1,12 +1,20 @@
 :root {
     --fonts: "arial", "sans-serif";
-    --tibetan-fonts: "Tibetan", "Himalaya-J", "Jomolhari", "Ximalaya", "Kokonor", "Monlam Uni OuChan2";
+    --tibetan-fonts: "Tibetan", "Himalaya", "Kokonor";
 }
 
 @font-face {
-    font-family: 'Tibetan';
+    font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2"),
-         url("/static/fonts/monlam_bodyig-webfont.woff");
+    src: local("arial");
+}
+
+@font-face {
+    font-family: "Tibetan";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
+         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    unicode-range: U+0F00-0FFF;
 }
