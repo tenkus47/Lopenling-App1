@@ -94,7 +94,6 @@ class Annotation(models.Model):
     creator_witness = models.ForeignKey(Witness, null=True, blank=True, related_name="creator_witness", on_delete=models.SET_NULL)
     """Set if created by a user"""
     creator_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
-    """Set to False if annotation is simply a note"""
     type = models.CharField(max_length=1, choices=TYPE_CHOICES, default=AnnotationType.variant.value)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
