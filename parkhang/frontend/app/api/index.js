@@ -89,6 +89,19 @@ export function fetchTexts(): Promise<TextData[]> {
     return request(GET, url);
 }
 
+export type TextSearchResultData = {
+    results: [[number, string]],
+    total: number
+};
+export function searchTexts(
+    searchTerm: string,
+    maxResults: number = 0
+): Promise<TextSearchResultData[]> {
+    const url =
+        "/api/texts/search/" + searchTerm + "?max_results=" + maxResults;
+    return request(GET, url);
+}
+
 export type WitnessData = {
     id: number,
     content: string | null,
