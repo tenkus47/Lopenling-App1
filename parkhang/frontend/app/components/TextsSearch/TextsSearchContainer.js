@@ -13,9 +13,9 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        searchChanged: (e: SyntheticEvent<HTMLInputElement>) => {
-            const value = e.currentTarget.value;
-            dispatch(changedSearchValue(value));
+        searchChanged: (searchTerm: string) => {
+            // const value = e.currentTarget.value;
+            dispatch(changedSearchValue(searchTerm));
         }
     };
 };

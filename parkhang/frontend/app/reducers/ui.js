@@ -6,6 +6,11 @@ import * as api from "api";
 export type UIState = {
     selectedText: api.TextData | null,
     selectedTextWitness: { [textId: number]: number },
+    selectedSearchResult: {
+        textId: number,
+        start: number,
+        length: number
+    } | null,
     searchValue: string,
     showPageImages: boolean,
     activeAnnotations: { [witnessId: number]: Annotation },
@@ -27,6 +32,7 @@ export type UIState = {
 export const initialUIState = {
     selectedText: null,
     selectedTextWitness: {},
+    selectedSearchResult: null,
     searchValue: "",
     showPageImages: false,
     activeAnnotations: {},
@@ -41,10 +47,19 @@ function selectedText(
     state: UIState,
     action: actions.SelectedTextAction
 ): UIState {
-    return {
+    state = {
         ...state,
         selectedText: action.text
     };
+
+    if (
+        state.selectedSearchResult &&
+        state.selectedSearchResult.textId !== action.text.id
+    ) {
+        state = clearSearchResult(state);
+    }
+
+    return state;
 }
 
 function selectedTextWitness(
@@ -72,6 +87,37 @@ function changedSearchValue(
         ...state,
         searchValue: searchValue
     };
+}
+
+function selectedSearchResult(
+    state: UIState,
+    action: actions.SelectedSearchResultAction
+): UIState {
+    let resultState = null;
+    if (
+        action.textId !== null &&
+        action.start !== null &&
+        action.length !== null
+    ) {
+        resultState = {
+            textId: action.textId,
+            start: action.start,
+            length: action.length
+        };
+    }
+    state = {
+        ...state,
+        selectedSearchResult: resultState
+    };
+
+    if (action.textId) {
+        const resetActiveTextAnnotation = actions.changedActiveTextAnnotation(
+            null
+        );
+        state = changedActiveTextAnnotation(state, resetActiveTextAnnotation);
+    }
+
+    return state;
 }
 
 function changedShowPageImages(
@@ -118,7 +164,7 @@ function changedActiveAnnotation(
 
 function changedActiveTextAnnotation(
     state: UIState,
-    action: actions.AnnotationAction
+    action: actions.ChangedActiveAnnotationAction
 ): UIState {
     if (!state.selectedText) {
         console.warn("changedActiveAnnotation without selectedText");
@@ -126,13 +172,24 @@ function changedActiveTextAnnotation(
     }
 
     const activeTextId = state.selectedText.id;
-    return {
+    state = {
         ...state,
         activeTextAnnotations: {
             ...state.activeTextAnnotations,
             [activeTextId]: action.annotation
         }
     };
+
+    if (action.annotation) {
+        state = clearSearchResult(state);
+    }
+
+    return state;
+}
+
+function clearSearchResult(state): UIState {
+    const clearSearchResult = actions.selectedSearchResult(null, null, null);
+    return selectedSearchResult(state, clearSearchResult);
 }
 
 function textListVisibleChanged(
@@ -248,6 +305,7 @@ const uiReducers = {};
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
+uiReducers[actions.SELECTED_SEARCH_RESULT] = selectedSearchResult;
 uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
 // uiReducers[actions.CHANGED_SELECTED_SEGMENT] = changedSelectedSegment;
 uiReducers[actions.CHANGED_ACTIVE_ANNOTATION] = changedActiveAnnotation;
@@ -348,4 +406,14 @@ export const getExportingWitness = (
     witnessId: number
 ): boolean => {
     return state.exportingWitness.hasOwnProperty(witnessId);
+};
+
+export const getSearchValue = (state: UIState): string => {
+    return state.searchValue;
+};
+
+export const getSelectedSearchResult = (
+    state: UIState
+): null | { textId: number, start: number, length: number } => {
+    return state.selectedSearchResult;
 };

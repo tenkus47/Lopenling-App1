@@ -39,7 +39,9 @@ import {
     hasLoadedWitnessAnnotations,
     getRemovedDefaultAnnotationsForWitnessId,
     hasLoadedWitnessAppliedAnnotations,
-    getScrollPosition
+    getScrollPosition,
+    getSelectedSearchResult,
+    getSearchValue
 } from "reducers";
 import _ from "lodash";
 
@@ -260,7 +262,7 @@ const mapStateToProps = state => {
         workingWitness = getWorkingWitness(state, selectedText.id);
         baseWitness = getBaseWitness(state, selectedText.id);
     }
-
+    let selectedSearchResult = getSelectedSearchResult(state);
     let annotationPositions = {};
     let annotations = [];
     let annotatedText = null;
@@ -270,6 +272,7 @@ const mapStateToProps = state => {
     let pageBreaks = [];
     let imagesBaseUrl = "";
     let selectedWitness;
+    let searchValue = getSearchValue(state);
     // Whether to show the text's page images
     let paginated = false;
     if (
@@ -471,7 +474,9 @@ const mapStateToProps = state => {
         imagesBaseUrl: imagesBaseUrl,
         user: user,
         textListVisible,
-        selectedWitness
+        selectedWitness,
+        selectedSearchResult,
+        searchValue
     };
 };
 

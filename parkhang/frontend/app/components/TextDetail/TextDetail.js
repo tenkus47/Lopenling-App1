@@ -33,7 +33,13 @@ export type Props = {
     selectedAnnotatedSegments: Array<TextSegment | number>,
     textListVisible: boolean,
     imagesBaseUrl: string,
-    selectedWitness: Witness | null
+    selectedWitness: Witness | null,
+    selectedSearchResult: {
+        textId: number,
+        start: number,
+        length: number
+    } | null,
+    searchValue: string | null
 };
 
 let textDetailId = 0;
@@ -90,6 +96,8 @@ class TextDetail extends React.Component<Props> {
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
                     key={this.key}
+                    selectedSearchResult={this.props.selectedSearchResult}
+                    searchValue={this.props.searchValue}
                 />
             );
         }

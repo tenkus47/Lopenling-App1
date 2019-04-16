@@ -14,6 +14,7 @@ import Text, {
     idForInsertion
 } from "./Text";
 import SplitText from "lib/SplitText";
+import SegmentedText from "lib/SegmentedText";
 import shallowEqual from "lib/shallowEqual";
 import { CONTROLS_MARGIN_LEFT } from "./AnnotationControls";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
@@ -25,6 +26,7 @@ import _ from "lodash";
 import TextSegment from "lib/TextSegment";
 import Annotation from "lib/Annotation";
 import Witness from "lib/Witness";
+import GraphemeSplitter from "grapheme-splitter";
 
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
@@ -32,6 +34,14 @@ const MIN_SPACE_RIGHT =
 const IMAGE_URL_PREFIX = "//iiif.bdrc.io/image/v2/bdr:V23703_I";
 const IMAGE_URL_SUFFIX = ".tif/full/full/0/default.jpg";
 const WITNESS_IMAGE_PROPERTY = "bdrcimg";
+
+let _searchResultsCache: {
+    [splitTextUniqueId: string]: {
+        [searchTerm: string]: {
+            [index: number]: { [position: number]: [number, number] }
+        }
+    }
+} = {};
 
 export type Props = {
     textListVisible: boolean,
@@ -46,7 +56,13 @@ export type Props = {
     annotations: Annotation[],
     activeAnnotations: Annotation[] | null,
     selectedSegmentId: (segmentId: string) => void,
-    selectedWitness: Witness | null
+    selectedWitness: Witness | null,
+    selectedSearchResult: {
+        textId: number,
+        start: number,
+        length: number
+    } | null,
+    searchValue: string | null
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -362,6 +378,21 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this._didSetInitialScrollPosition = false;
         }
 
+        if (
+            props.selectedSearchResult &&
+            (!this.props.selectedSearchResult ||
+                props.selectedSearchResult.start !==
+                    this.props.selectedSearchResult.start ||
+                props.selectedSearchResult.textId !==
+                    this.props.selectedSearchResult.textId)
+        ) {
+            console.log("resetting scroll position from search result");
+            this._didSetInitialScrollPosition = false;
+        }
+
+        // TODO: check if new selectedSearchResult and if so
+        // set this._didSetInitialScrollPosition = false
+
         // make sure there's no numbers in selectedAnnotatedSegments
         // as we want to pass it to Text which only expects TextSegments
         this._filteredSelectedAnnotatedSegments = props.selectedAnnotatedSegments.reduce(
@@ -451,7 +482,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         if (!this._didSetInitialScrollPosition && this.list) {
             const list = this.list;
-            if (this.props.activeAnnotation) {
+            if (
+                this.props.activeAnnotation ||
+                this.props.selectedSearchResult
+            ) {
                 let selectedTextIndex = this.getSelectedTextIndex();
                 setTimeout(() => {
                     list.scrollToRow(selectedTextIndex);
@@ -468,17 +502,27 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
     getSelectedTextIndex(): number {
         let selectedTextIndex = 0;
+        let startPos = null;
         if (this.props.activeAnnotation) {
             let [
                 startPos
             ] = this.props.splitText.annotatedText.getPositionOfAnnotation(
                 this.props.activeAnnotation
             );
-            if (startPos) {
-                selectedTextIndex = this.props.splitText.getTextIndexOfPosition(
-                    startPos
-                );
+        } else if (this.props.selectedSearchResult) {
+            let segment = this.props.splitText.annotatedText.segmentAtOriginalPosition(
+                this.props.selectedSearchResult.start
+            );
+            if (segment instanceof TextSegment) {
+                startPos = segment.start;
+            } else if (typeof segment === "number") {
+                startPos = segment;
             }
+        }
+        if (startPos) {
+            selectedTextIndex = this.props.splitText.getTextIndexOfPosition(
+                startPos
+            );
         }
 
         return selectedTextIndex;
@@ -538,6 +582,80 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         );
     }
 
+    getStringPositions(
+        text: SegmentedText,
+        string: string,
+        index: number
+    ): { [position: number]: [number, number] } {
+        const uniqueId = this.props.splitText.annotatedText.getUniqueId();
+
+        if (!_searchResultsCache.hasOwnProperty(uniqueId)) {
+            _searchResultsCache = {
+                [uniqueId]: {}
+            };
+        }
+
+        if (!_searchResultsCache[uniqueId].hasOwnProperty(string)) {
+            _searchResultsCache[uniqueId] = {
+                [string]: {}
+            };
+        }
+
+        if (_searchResultsCache[uniqueId][string].hasOwnProperty(index)) {
+            return _searchResultsCache[uniqueId][string][index];
+        }
+
+        const splitter = new GraphemeSplitter();
+        const content = text.getText();
+        const firstSegment = text.segments[0];
+        const startingPosition = firstSegment.start;
+        let positions = [];
+        let position = content.indexOf(string);
+        while (position !== -1) {
+            positions.push(position);
+            position = content.indexOf(string, position + 1);
+        }
+
+        // Position needs to be position in complete text
+        let verifiedPositions: { [position: number]: [number, number] } = {};
+        if (positions.length > 0) {
+            const graphemes = splitter.splitGraphemes(content);
+            let position = 0;
+            let activePosition = null;
+            for (let i = 0; i < graphemes.length; i++) {
+                const grapheme = graphemes[i];
+                const graphemeEnd = position + (grapheme.length - 1);
+                if (activePosition !== null) {
+                    let expectedEnd = activePosition + (string.length - 1);
+                    if (graphemeEnd >= expectedEnd) {
+                        verifiedPositions[activePosition + startingPosition] = [
+                            activePosition + startingPosition,
+                            graphemeEnd + startingPosition
+                        ];
+                        activePosition = null;
+                    }
+                } else if (positions.indexOf(position) !== -1) {
+                    if (string.length === grapheme.length) {
+                        verifiedPositions[position + startingPosition] = [
+                            position + startingPosition,
+                            graphemeEnd + startingPosition
+                        ];
+                    } else if (string.length > grapheme.length) {
+                        activePosition = position;
+                    }
+                } else {
+                    activePosition = null;
+                }
+
+                position += grapheme.length;
+            }
+        }
+
+        _searchResultsCache[uniqueId][string][index] = verifiedPositions;
+
+        return verifiedPositions;
+    }
+
     rowRenderer({
         key,
         index,
@@ -563,6 +681,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             const imageStart =
                 props.selectedWitness.properties[WITNESS_IMAGE_PROPERTY];
             imageUrl = this.getImageUrl(Number(imageStart), index);
+        }
+
+        let searchStringPositions = {};
+        let searchValue = this.props.searchValue;
+        if (searchValue && searchValue.length > 0 && props.splitText) {
+            searchStringPositions = this.getStringPositions(
+                props.splitText.texts[index],
+                searchValue,
+                index
+            );
         }
 
         return (
@@ -599,6 +727,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 this
                             )}
                             activeWitness={this.props.selectedWitness}
+                            searchValue={searchValue}
+                            selectedSearchResult={
+                                this.props.selectedSearchResult
+                            }
+                            searchStringPositions={searchStringPositions}
                         />
                     </div>
                     {this.selectedTextIndex === index &&

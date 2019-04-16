@@ -2,35 +2,43 @@
 import React from "react";
 import styles from "./TextsSearch.css";
 import { injectIntl } from "react-intl";
+import Button from "components/UI/Button";
 
 type Props = {
     searchValue: string,
-    searchChanged: (e: SyntheticEvent<HTMLInputElement>) => void,
+    searchChanged: (searchTerm: string) => void,
     selectedSearchOption?: (e: SyntheticEvent<HTMLSelectElement>) => void,
     minimiseButtonClicked: () => void,
     intl: { formatMessage: ({ [id: string]: string }) => string }
 };
 
 const TextsSearch = (props: Props) => {
+    let textInput: { current: null | HTMLInputElement } = React.createRef();
+    const initiateSearch = (e: SyntheticEvent<HTMLElement>) => {
+        e.preventDefault();
+        if (textInput.current instanceof HTMLInputElement) {
+            const searchTerm = textInput.current.value;
+            props.searchChanged(searchTerm);
+        }
+    };
     return (
         <div className={styles.textsSearchContainer}>
             <div className={styles.textsSearch}>
-                <input
-                    type="search"
-                    id="textSearchInput"
-                    value={props.searchValue}
-                    onChange={props.searchChanged}
-                    placeholder={props.intl.formatMessage({
-                        id: "leftbar.search"
-                    })}
-                />
-                <select onChange={props.selectedSearchOption}>
-                    <option>
-                        {props.intl.formatMessage({
-                            id: "leftbar.titles"
+                <form onSubmit={initiateSearch}>
+                    <input
+                        type="search"
+                        id="textSearchInput"
+                        placeholder={props.intl.formatMessage({
+                            id: "leftbar.search"
                         })}
-                    </option>
-                </select>
+                        ref={textInput}
+                    />
+                    <Button
+                        onClick={initiateSearch}
+                        title="Search"
+                        noBezel={true}
+                    />
+                </form>
             </div>
         </div>
     );

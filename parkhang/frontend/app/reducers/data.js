@@ -40,7 +40,12 @@ export type DataState = {
     loadedWitnesses: boolean,
     loadingAnnotations: boolean,
     loadedAnnotations: boolean,
-    loadedAnnotationOperations: boolean
+    loadedAnnotationOperations: boolean,
+    searchResults: {
+        [searchTerm: string]: {
+            [textId: number]: api.TextSearchResultData
+        }
+    }
 };
 
 // Data
@@ -65,7 +70,8 @@ export const initialDataState: DataState = {
     loadedWitnesses: false,
     loadingAnnotations: false,
     loadedAnnotations: false,
-    loadedAnnotationOperations: false
+    loadedAnnotationOperations: false,
+    searchResults: {}
 };
 
 function loadingInitialData(state: DataState): DataState {
@@ -477,6 +483,21 @@ function savedAnnotation(
     };
 }
 
+// TODO: add handler of updating search results
+// Need to create new action as well.
+function updatedSearchResults(
+    state: DataState,
+    action: actions.UpdatedSearchResultsAction
+): DataState {
+    return {
+        ...state,
+        searchResults: {
+            ...state.searchResults,
+            [action.searchValue]: action.searchResults
+        }
+    };
+}
+
 const dataReducers = {};
 dataReducers[actions.LOADING_INITIAL_DATA] = loadingInitialData;
 dataReducers[actions.LOADED_INITIAL_DATA] = loadedInitialData;
@@ -499,6 +520,7 @@ dataReducers[actions.CREATED_ANNOTATION] = createdAnnotation;
 dataReducers[actions.UPDATED_ANNOTATION] = updatedAnnotation;
 dataReducers[actions.DELETED_ANNOTATION] = deletedAnnotation;
 dataReducers[actions.SAVED_ANNOTATION] = savedAnnotation;
+dataReducers[actions.UPDATED_SEARCH_RESULTS] = updatedSearchResults;
 export default dataReducers;
 
 // Selectors
@@ -597,7 +619,8 @@ export const dataFromWitness = (witness: Witness): WitnessData => {
         is_working: witness.isWorking,
         revision: witness.revision,
         source: witness.source.id,
-        text: witness.text.id
+        text: witness.text.id,
+        properties: witness.properties
     };
 };
 
@@ -881,4 +904,15 @@ export const annotationOriginallyUserCreated = (
     }
 
     return isUserCreated;
+};
+
+export const getSearchResults = (
+    state: DataState,
+    searchTerm: string
+): api.TextSearchResultData[] | null => {
+    if (state.searchResults.hasOwnProperty(searchTerm)) {
+        return state.searchResults[searchTerm];
+    } else {
+        return null;
+    }
 };

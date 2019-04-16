@@ -419,6 +419,34 @@ export default class AnnotatedText {
 
         return annotation;
     }
+
+    getContentForRange(start: number, length: number): string {
+        let startPos = this._currentOriginalSegmentPositions[start];
+        let content = "";
+        if (startPos === undefined) {
+        } else if (length === 0) {
+        } else {
+            let segments: TextSegment[] = [];
+            for (let i = start; i < start + length; i++) {
+                let segment = this.segmentAtOriginalPosition(i);
+                if (
+                    segment instanceof TextSegment &&
+                    segments.indexOf(segment) !== -1
+                ) {
+                    segments.push(segment);
+                }
+            }
+            content = segments.reduce(
+                (previousValue: string, currentValue: TextSegment) => {
+                    return previousValue + currentValue.text;
+                },
+                ""
+            );
+        }
+
+        return content;
+    }
+
     /**
      * Return segments for the given annotation in the current version of the text
      *

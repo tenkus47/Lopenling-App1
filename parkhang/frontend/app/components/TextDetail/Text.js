@@ -6,7 +6,8 @@ import TextSegment from "lib/TextSegment";
 import { INSERTION_KEY, DELETION_KEY } from "lib/AnnotatedText";
 import _ from "lodash";
 import SegmentedText from "lib/SegmentedText";
-import Annotation from "../../lib/Annotation";
+import Annotation from "lib/Annotation";
+import GraphemeSplitter from "grapheme-splitter";
 
 export function idForSegment(segment: TextSegment): string {
     return "s_" + segment.start;
@@ -28,7 +29,14 @@ export type Props = {
     getBaseAnnotation: (annotation: Annotation) => Annotation,
     selectedAnnotatedSegments: TextSegment[],
     row: number,
-    activeAnnotation: Annotation | null
+    activeAnnotation: Annotation | null,
+    searchValue: string | null,
+    selectedSearchResult: {
+        textId: number,
+        start: number,
+        length: number
+    } | null,
+    searchStringPositions: { [position: number]: [number, number] }
 };
 
 export type State = {
@@ -114,6 +122,9 @@ export default class Text extends React.Component<Props, State> {
             }
         }
 
+        let highlightClass = styles.highlight;
+        let activeHighlightClass = styles.activeHighlight;
+        let activeSearchResultEnd = null;
         for (let i = 0; i < segments.length; i++) {
             let segment = segments[i];
             let classAttribute = "";
@@ -224,6 +235,51 @@ export default class Text extends React.Component<Props, State> {
                 classAttribute = 'class="' + className + '"';
             }
 
+            let segmentContent = segment.text;
+
+            // Add search result highlight if required.
+            if (renderProps.searchStringPositions) {
+                let segmentStart = segment.start;
+                let position = segmentStart;
+                segmentContent = "";
+                for (let j = 0; j < segment.text.length; j++) {
+                    let char = segment.text.charAt(j);
+                    position = segmentStart + j;
+                    if (activeSearchResultEnd) {
+                        let [start, end] = activeSearchResultEnd;
+                        if (position === end) {
+                            segmentContent += char + "</span>";
+                            activeSearchResultEnd = null;
+                        } else if (j === segment.text.length - 1) {
+                            segmentContent += char + "</span>";
+                        } else {
+                            segmentContent += char;
+                        }
+                    } else if (position in renderProps.searchStringPositions) {
+                        let [start, end] = renderProps.searchStringPositions[
+                            position
+                        ];
+                        let highlight = highlightClass;
+                        if (
+                            renderProps.selectedSearchResult &&
+                            renderProps.selectedSearchResult.start === position
+                        ) {
+                            highlight = activeHighlightClass;
+                        }
+                        segmentContent +=
+                            '<span class="' + highlight + '">' + char;
+                        if (j === segment.text.length - 1 || position === end) {
+                            segmentContent += "</span>";
+                        }
+                        if (position < end) {
+                            activeSearchResultEnd = [start, end];
+                        }
+                    } else {
+                        segmentContent += char;
+                    }
+                }
+            }
+
             segmentHTML +=
                 "<span id=" +
                 id +
@@ -232,7 +288,7 @@ export default class Text extends React.Component<Props, State> {
                 " " +
                 classAttribute +
                 ">" +
-                segment.text +
+                segmentContent +
                 "</span>";
         }
 

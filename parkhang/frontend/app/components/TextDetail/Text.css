@@ -80,3 +80,11 @@
     @apply --removedText;
     text-decoration: line-through green;
 }
+
+.highlight {
+    background-color: yellow;
+}
+
+.activeHighlight {
+    background-color: orange;
+}

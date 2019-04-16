@@ -58,6 +58,8 @@ export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const CHANGED_SEARCH_VALUE = "textList/CHANGED_SEARCH_VALUE";
+export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
+export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
 
 export const SELECTED_WITNESS = "text/SELECTED_WITNESS";
 export const CHANGED_SHOW_PAGE_IMAGES = "text/CHANGED_SHOW_PAGE_IMAGES";
@@ -400,6 +402,39 @@ export function changedSearchValue(
     return {
         type: CHANGED_SEARCH_VALUE,
         searchValue
+    };
+}
+
+export type UpdatedSearchResultsAction = Action & {
+    searchValue: string,
+    searchResults: api.TextSearchResultData[]
+};
+export function updatedSearchResults(
+    searchValue: string,
+    searchResults: api.TextSearchResultData[]
+): UpdatedSearchResultsAction {
+    return {
+        type: UPDATED_SEARCH_RESULTS,
+        searchValue,
+        searchResults
+    };
+}
+
+export type SelectedSearchResultAction = Action & {
+    textId: number | null,
+    start: number | null,
+    length: number | null
+};
+export function selectedSearchResult(
+    textId: number | null,
+    start: number | null,
+    length: number | null
+): SelectedSearchResultAction {
+    return {
+        type: SELECTED_SEARCH_RESULT,
+        textId,
+        start,
+        length
     };
 }
 

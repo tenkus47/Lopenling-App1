@@ -13,6 +13,11 @@
     flex-grow: 1;
 }
 
+.textsSearch form {
+    display: flex;
+    flex-grow: 1;
+}
+
 .textsSearch input {
     font-size: 1em;
     margin-right: 10px;

@@ -418,6 +418,18 @@ function* watchExportWitness() {
     yield takeEvery(actions.EXPORT_WITNESS, exportWitness);
 }
 
+// SEARCH
+
+function* searchTexts(action: actions.ChangedSearchValueAction) {
+    yield delay(500);
+    const results = yield call(api.searchTexts, action.searchValue, 10);
+    yield put(actions.updatedSearchResults(action.searchValue, results));
+}
+
+function* watchChangedSearchValue() {
+    yield takeLatest(actions.CHANGED_SEARCH_VALUE, searchTexts);
+}
+
 // BATCHED ACTIONS
 
 function* dispatchedBatch(action): Saga<void> {
@@ -451,7 +463,8 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.CREATED_ANNOTATION]: reqAction(createAnnotation),
     [actions.UPDATED_ANNOTATION]: reqAction(updateAnnotation),
     [actions.DELETED_ANNOTATION]: reqAction(deleteAnnotation),
-    [actions.SELECTED_WITNESS]: reqAction(selectedWitness)
+    [actions.SELECTED_WITNESS]: reqAction(selectedWitness),
+    [actions.SELECTED_TEXT]: selectedText
 };
 
 /** Root **/
@@ -472,6 +485,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchRequests),
         call(watchSelectedTextWitness),
         call(watchSelectedLocale),
-        call(watchExportWitness)
+        call(watchExportWitness),
+        call(watchChangedSearchValue)
     ]);
 }

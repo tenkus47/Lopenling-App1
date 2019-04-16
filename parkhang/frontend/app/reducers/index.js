@@ -14,6 +14,7 @@ import Source from "lib/Source";
 import Text from "lib/Text";
 import type { WitnessData, AnnotationData, TextData } from "api";
 import { appliedOp, removedOp } from "api";
+import type { TextSearchResultData } from "api";
 import User from "lib/User";
 
 // i18n
@@ -166,6 +167,16 @@ export const getExportingWitness = (
     return ui.getExportingWitness(state.ui, witnessId);
 };
 
+export const getSearchValue = (state: AppState): string => {
+    return ui.getSearchValue(state.ui);
+};
+
+export const getSelectedSearchResult = (
+    state: AppState
+): null | { textId: number, start: number, length: number } => {
+    return ui.getSelectedSearchResult(state.ui);
+};
+
 // data
 
 export const getText = (state: AppState, textId: number): Text | null => {
@@ -313,6 +324,13 @@ export const annotationOriginallyUserCreated = (
         witnessId,
         annotationId
     );
+};
+
+export const getSearchResults = (
+    state: AppState,
+    searchTerm: string
+): TextSearchResultData[] | null => {
+    return data.getSearchResults(state.data, searchTerm);
 };
 
 // Root
