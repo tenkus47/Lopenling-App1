@@ -1,5 +1,8 @@
+import re
+import json
+
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -55,6 +58,66 @@ class TextDetail(APIView):
         text = get_text(text_id)
         serializer = TextSerializer(text)
         return Response(serializer.data)
+
+
+class TextSearch(APIView):
+
+    def get(self, request, search_term):
+        """
+        Return texts with at least one witness containing the given search_term
+        :param request:
+        :param search_term: string
+        :return:
+        """
+
+        # Use simple LIKE search for now until proper FTS is setup
+        witnesses = Witness.objects.filter(content__contains=search_term)
+        texts = []
+        results = {}
+        extract_length = 60
+        left = int((extract_length - len(search_term)) / 2)
+        max_results = 0
+        delimiters = '།་ '
+        delimiter_regex = re.compile(rf'[{delimiters}]')
+        if 'max_results' in request.GET:
+            max_results = int(request.GET['max_results'])
+        for witness in witnesses:
+            texts.append(witness.text)
+            content_length = len(witness.content)
+            for m in re.finditer(search_term, witness.content):
+                if witness.text.id not in results:
+                    results[witness.text.id] = {
+                        'results': [],
+                        'total': 0
+                    }
+                if max_results is 0 or (max_results > 0 and results[witness.text.id]['total'] < max_results):
+                    start = m.start() - left
+                    if start < 0:
+                        start = 0
+                    end = start + extract_length
+                    if end > content_length:
+                        end = content_length
+                    extract = witness.content[start:end]
+                    delimter_matches = list(delimiter_regex.finditer(extract))
+                    start = 0
+                    if len(delimter_matches) > 0:
+                        first_match = delimter_matches[0]
+                        start = first_match.start()
+
+                    if len(delimter_matches) > 1:
+                        last_match = delimter_matches[-1]
+                        end = last_match.end()
+                    else:
+                        end = len(extract)
+
+                    extract = extract[start:end]
+
+                    results[witness.text.id]['results'].append((m.start(), extract))
+                results[witness.text.id]['total'] += 1
+                if results[witness.text.id]['total'] > max_results:
+                    break
+
+        return JsonResponse(results)
 
 
 class SourceList(APIView):

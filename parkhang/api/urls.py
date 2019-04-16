@@ -1,10 +1,11 @@
 from django.conf.urls import url, include
 
-from .views import UserDetail, SourceList, TextList, TextDetail, WitnessList, AnnotationList, AnnotationDetail, UserAnnotationOperations, UserAnnotationOperationDetail
+from .views import UserDetail, SourceList, TextList, TextDetail, TextSearch, WitnessList, AnnotationList, AnnotationDetail, UserAnnotationOperations, UserAnnotationOperationDetail
 
 urlpatterns = [
     url(r'users/(?P<user_id>[0-9]+)/?$', UserDetail.as_view()),
     url(r'sources/$', SourceList.as_view()),
+    url(r'texts/search/(?P<search_term>[^/]+)/?$', TextSearch.as_view()),
     url(r'texts/$', TextList.as_view()),
     url(r'texts/(?P<text_id>[0-9]+)/?$', TextDetail.as_view()),
     url(r'texts/(?P<text_id>[0-9]+)/witnesses/$', WitnessList.as_view()),
