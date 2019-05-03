@@ -31,9 +31,11 @@ import GraphemeSplitter from "grapheme-splitter";
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
-const IMAGE_URL_PREFIX = "//iiif.bdrc.io/image/v2/bdr:V23703_I";
-const IMAGE_URL_SUFFIX = ".tif/full/full/0/default.jpg";
-const WITNESS_IMAGE_PROPERTY = "bdrcimg";
+const IMAGE_URL_PREFIX = "//iiif.bdrc.io/";
+const IMAGE_URL_SUFFIX = "/full/full/0/default.jpg";
+const IMAGE_START_PRE_KEY = "bdrcimg_pre";
+const IMAGE_START_NUMBER_KEY = "bdrcimg_number";
+const IMAGE_START_SUFFIX_KEY = "bdrcimg_suffix";
 
 let _searchResultsCache: {
     [splitTextUniqueId: string]: {
@@ -571,15 +573,18 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         );
     }
 
-    getImageUrl(start: number, pageIndex: number): string {
-        let id = String(start).substr(0, 4);
-        return (
-            IMAGE_URL_PREFIX +
-            id +
-            "::" +
-            (start + pageIndex) +
-            IMAGE_URL_SUFFIX
-        );
+    getImageUrl(pageIndex: number): string {
+        if (
+            !this.props.selectedWitness ||
+            !this.props.selectedWitness.properties
+        )
+            return "";
+        let witnessProperties = this.props.selectedWitness.properties;
+        let prefix = witnessProperties[IMAGE_START_PRE_KEY];
+        let start = witnessProperties[IMAGE_START_NUMBER_KEY];
+        let suffix = witnessProperties[IMAGE_START_SUFFIX_KEY];
+        let id = Number(start) + pageIndex;
+        return IMAGE_URL_PREFIX + prefix + id + "." + suffix + IMAGE_URL_SUFFIX;
     }
 
     getStringPositions(
@@ -675,12 +680,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             props.selectedWitness &&
             props.selectedWitness.properties &&
             props.selectedWitness.properties.hasOwnProperty(
-                WITNESS_IMAGE_PROPERTY
+                IMAGE_START_PRE_KEY
             )
         ) {
-            const imageStart =
-                props.selectedWitness.properties[WITNESS_IMAGE_PROPERTY];
-            imageUrl = this.getImageUrl(Number(imageStart), index);
+            imageUrl = this.getImageUrl(index);
         }
 
         let searchStringPositions = {};
