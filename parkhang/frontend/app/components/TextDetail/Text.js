@@ -244,12 +244,27 @@ export default class Text extends React.Component<Props, State> {
                 let segmentStart = segment.start;
                 let position = segmentStart;
                 segmentContent = "";
+
+                let highlight = highlightClass;
+                if (
+                    renderProps.selectedSearchResult &&
+                    renderProps.selectedSearchResult.start <= position &&
+                    renderProps.selectedSearchResult.start +
+                        renderProps.selectedSearchResult.length >
+                        position
+                ) {
+                    highlight = activeHighlightClass;
+                }
+
                 for (let j = 0; j < segment.text.length; j++) {
                     let char = segment.text.charAt(j);
                     position = segmentStart + j;
                     if (activeSearchResultEnd) {
                         let [start, end] = activeSearchResultEnd;
-                        if (position === end) {
+                        if (j === 0) {
+                            segmentContent +=
+                                '<span class="' + highlight + '">' + char;
+                        } else if (position === end) {
                             segmentContent += char + "</span>";
                             activeSearchResultEnd = null;
                         } else if (j === segment.text.length - 1) {
@@ -257,17 +272,13 @@ export default class Text extends React.Component<Props, State> {
                         } else {
                             segmentContent += char;
                         }
+                        if (j === segment.text.length - 1 || position === end) {
+                            segmentContent += "</span>";
+                        }
                     } else if (position in renderProps.searchStringPositions) {
                         let [start, end] = renderProps.searchStringPositions[
                             position
                         ];
-                        let highlight = highlightClass;
-                        if (
-                            renderProps.selectedSearchResult &&
-                            renderProps.selectedSearchResult.start === position
-                        ) {
-                            highlight = activeHighlightClass;
-                        }
                         segmentContent +=
                             '<span class="' + highlight + '">' + char;
                         if (j === segment.text.length - 1 || position === end) {
