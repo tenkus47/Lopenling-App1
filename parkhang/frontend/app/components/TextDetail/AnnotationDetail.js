@@ -15,6 +15,8 @@ export type Props = {
     editAnnotationHandler: () => void
 };
 
+const MAXIMUM_TEXT_LENGTH = 250;
+
 const AnnotationDetail = (props: Props) => {
     let desc = (
         <p>
@@ -23,7 +25,10 @@ const AnnotationDetail = (props: Props) => {
     );
     let content = props.annotationData.content;
     if (content.trim() !== "") {
-        desc = <p>{props.annotationData.content}</p>;
+        if (content.length > MAXIMUM_TEXT_LENGTH) {
+            content = content.substr(0, MAXIMUM_TEXT_LENGTH) + "…";
+        }
+        desc = <p>{content}</p>;
     }
 
     let classes = [styles.annotationDetail];
