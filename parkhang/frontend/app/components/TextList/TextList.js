@@ -9,10 +9,11 @@ import {
 import "react-virtualized/styles.css"; // only needs to be imported once
 import { List } from "react-virtualized/dist/es/List";
 import * as api from "api";
-import GraphemeSplitter from "grapheme-splitter";
 import addTibetanShay from "lib/addTibetanShay";
 import styles from "./TextList.css";
 import Loader from "react-loader";
+import TextName from "./TextName";
+import ResultCount from "./ResultCount";
 
 type Props = {
     selectedText: api.TextData,
@@ -79,7 +80,6 @@ class TextList extends React.Component<Props> {
         const onSelectedText = this.props.onSelectedText;
         const onSelectedSearchResult = this.props.onSelectedSearchResult;
         const searchTerm = this.props.searchTerm;
-        const splitter = new GraphemeSplitter();
         const searchResults = this.props.searchResults;
 
         let className = styles.textListRow;
@@ -88,41 +88,23 @@ class TextList extends React.Component<Props> {
             className = classnames(className, styles.selectedRow);
         }
         let name = addTibetanShay(text.name);
+        let nameHtml = name;
         let textSearchResults = [];
+        let resultsCount = null;
 
         if (searchTerm.length > 0) {
-            const graphemes = splitter.splitGraphemes(name);
-            const start = name.indexOf(searchTerm);
-            const end = start + searchTerm.length;
-            let position = 0;
-            let foundGraphemes = "";
-            if (start > -1) {
-                for (let i = 0; i < graphemes.length; i++) {
-                    let grapheme = graphemes[i];
-                    if (position >= start && position < end) {
-                        foundGraphemes += grapheme;
-                    }
-                    position += grapheme.length;
-                }
-            }
-
-            if (foundGraphemes.length > 0) {
-                const graphemeSpan =
-                    "<span class=" +
-                    styles.highlight +
-                    ">" +
-                    foundGraphemes +
-                    "</span>";
-                name = name.replace(foundGraphemes, graphemeSpan);
-            }
+            nameHtml = <TextName name={name} searchTerm={searchTerm} />;
             if (searchResults.hasOwnProperty(text.id)) {
                 textSearchResults = searchResults[text.id].results;
+                let extraRemaining = searchResults[text.id].extra;
+                resultsCount = (
+                    <ResultCount
+                        count={searchResults[text.id].total}
+                        extra={extraRemaining}
+                    />
+                );
             }
         }
-
-        const html = {
-            __html: name
-        };
 
         const cache = this.cache;
 
@@ -169,12 +151,13 @@ class TextList extends React.Component<Props> {
             >
                 <div key={key} style={style} className={className}>
                     <div
-                        className={styles.textName}
-                        dangerouslySetInnerHTML={html}
+                        className={styles.textNameRow}
                         onClick={() => {
                             onSelectedText(texts[index]);
                         }}
-                    />
+                    >
+                        {nameHtml} {resultsCount}
+                    </div>
                     {textSearchResults.length > 0 && (
                         <div className={styles.searchResults}>
                             {textSearchResultRows}
@@ -213,7 +196,7 @@ class TextList extends React.Component<Props> {
                     </div>
                 ) : (
                     <ul className="textList">
-                        <li>(no texts)</li>
+                        <li />
                     </ul>
                 )}
             </div>

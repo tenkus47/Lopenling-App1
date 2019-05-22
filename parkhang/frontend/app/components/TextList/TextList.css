@@ -35,7 +35,7 @@
     color: black;
 }
 
-.textName {
+.textNameRow {
     text-overflow: ellipsis;
     overflow-x: hidden;
     display: flex;
@@ -43,6 +43,13 @@
     flex-grow: 1;
     flex-shrink: 0;
     padding: 0 10px;
+}
+
+.textName {
+    flex-grow: 1;
+    /*flex-shrink: 0;*/
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .highlight {
@@ -68,6 +75,22 @@
 .selectedSearchResult {
     background-color: #aaa;
     padding-left: 10px;
+}
+
+.searchTotal {
+    background-color: white;
+    color: #222;
+    border-radius: 9px;
+    padding: 0 4px;
+    font-size: 11px;
+    min-width: 18px;
+    height: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--fonts);
 }
 
 .textListLoader {
