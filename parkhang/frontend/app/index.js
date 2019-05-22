@@ -39,6 +39,9 @@ const locales = {
     bo: bo
 };
 
+// App Constants
+export const MAX_SEARCH_RESULTS = 10;
+
 addLocaleData([...boLocaleData]);
 
 // For react-intl - prevents FormattedMessage from always

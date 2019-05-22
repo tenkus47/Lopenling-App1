@@ -28,6 +28,8 @@ import DocxExporter from "lib/DocxExporter";
 import * as api from "api";
 import { BATCH } from "redux-batched-actions";
 
+import { MAX_SEARCH_RESULTS } from "../index";
+
 import type { Saga } from "redux-saga";
 
 /**
@@ -422,7 +424,11 @@ function* watchExportWitness() {
 
 function* searchTexts(action: actions.ChangedSearchValueAction) {
     yield delay(500);
-    const results = yield call(api.searchTexts, action.searchValue, 10);
+    const results = yield call(
+        api.searchTexts,
+        action.searchValue,
+        MAX_SEARCH_RESULTS
+    );
     yield put(actions.updatedSearchResults(action.searchValue, results));
 }
 
