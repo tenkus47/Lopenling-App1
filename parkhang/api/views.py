@@ -88,7 +88,8 @@ class TextSearch(APIView):
                 if witness.text.id not in results:
                     results[witness.text.id] = {
                         'results': [],
-                        'total': 0
+                        'total': 0,
+                        'extra': False
                     }
                 if max_results is 0 or (max_results > 0 and results[witness.text.id]['total'] < max_results):
                     start = m.start() - left
@@ -113,8 +114,10 @@ class TextSearch(APIView):
                     extract = extract[start:end]
 
                     results[witness.text.id]['results'].append((m.start(), extract))
-                results[witness.text.id]['total'] += 1
-                if results[witness.text.id]['total'] > max_results:
+                    results[witness.text.id]['total'] += 1
+
+                if results[witness.text.id]['total'] == max_results:
+                    results[witness.text.id]['extra'] = True
                     break
 
         return JsonResponse(results)

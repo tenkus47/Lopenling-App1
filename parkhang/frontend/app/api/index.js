@@ -91,7 +91,8 @@ export function fetchTexts(): Promise<TextData[]> {
 
 export type TextSearchResultData = {
     results: [[number, string]],
-    total: number
+    total: number,
+    extra: boolean
 };
 export function searchTexts(
     searchTerm: string,
