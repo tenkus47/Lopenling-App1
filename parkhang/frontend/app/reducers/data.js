@@ -909,7 +909,7 @@ export const annotationOriginallyUserCreated = (
 export const getSearchResults = (
     state: DataState,
     searchTerm: string
-): api.TextSearchResultData[] | null => {
+): { [number]: api.TextSearchResultData } | null => {
     if (state.searchResults.hasOwnProperty(searchTerm)) {
         return state.searchResults[searchTerm];
     } else {
