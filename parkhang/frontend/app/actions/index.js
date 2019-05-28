@@ -423,11 +423,11 @@ export function searchedText(
 
 export type UpdatedSearchResultsAction = Action & {
     searchValue: string,
-    searchResults: api.TextSearchResultData[]
+    searchResults: { [text_id: number]: api.TextSearchResultData }
 };
 export function updatedSearchResults(
     searchValue: string,
-    searchResults: api.TextSearchResultData[]
+    searchResults: { [number]: api.TextSearchResultData }
 ): UpdatedSearchResultsAction {
     return {
         type: UPDATED_SEARCH_RESULTS,
