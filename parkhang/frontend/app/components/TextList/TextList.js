@@ -14,6 +14,7 @@ import styles from "./TextList.css";
 import Loader from "react-loader";
 import TextName from "./TextName";
 import ResultCount from "./ResultCount";
+import LoadMore from "./LoadMore";
 
 type Props = {
     selectedText: api.TextData,
@@ -25,6 +26,7 @@ type Props = {
         length: number,
         selectedText: api.TextData
     ) => void,
+    onSearchText: (text: api.TextData, searchTerm: string) => void,
     searchTerm: string,
     searchResults: { [number]: api.TextSearchResultData },
     selectedSearchResult: null | {
@@ -91,12 +93,15 @@ class TextList extends React.Component<Props> {
         let nameHtml = name;
         let textSearchResults = [];
         let resultsCount = null;
+        let extraRemaining = false;
+        let loadingResults = false;
 
         if (searchTerm.length > 0) {
             nameHtml = <TextName name={name} searchTerm={searchTerm} />;
             if (searchResults.hasOwnProperty(text.id)) {
                 textSearchResults = searchResults[text.id].results;
-                let extraRemaining = searchResults[text.id].extra;
+                extraRemaining = searchResults[text.id].extra;
+                loadingResults = searchResults[text.id].loading;
                 resultsCount = (
                     <ResultCount
                         count={searchResults[text.id].total}
@@ -141,6 +146,10 @@ class TextList extends React.Component<Props> {
             });
         }
 
+        const searchText = () => {
+            this.props.onSearchText(text, searchTerm);
+        };
+
         return (
             <CellMeasurer
                 columnIndex={0}
@@ -161,6 +170,11 @@ class TextList extends React.Component<Props> {
                     {textSearchResults.length > 0 && (
                         <div className={styles.searchResults}>
                             {textSearchResultRows}
+                        </div>
+                    )}
+                    {extraRemaining && (
+                        <div className={styles.loadMore} onClick={searchText}>
+                            <LoadMore loading={loadingResults} />
                         </div>
                     )}
                 </div>

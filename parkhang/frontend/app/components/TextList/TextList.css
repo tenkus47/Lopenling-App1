@@ -1,6 +1,9 @@
 @import 'css/type.css';
 @import 'css/colour.css';
 
+:root {
+    --padding-left: 10px;
+}
 
 .textList {
     height: 100%;
@@ -42,7 +45,7 @@
     align-items: center;
     flex-grow: 1;
     flex-shrink: 0;
-    padding: 0 10px;
+    padding: 0 var(--padding-left);
 }
 
 .textName {
@@ -69,7 +72,7 @@
 }
 
 .searchResult {
-    padding-left: 10px;
+    padding-left: var(--padding-left);
 }
 
 .selectedSearchResult {
@@ -111,4 +114,9 @@
 
 .searching {
     text-align: center;
+}
+
+.loadMore {
+    padding-left: var(--padding-left);
+    margin: 5px 0;
 }

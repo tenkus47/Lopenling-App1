@@ -92,7 +92,8 @@ export function fetchTexts(): Promise<TextData[]> {
 export type TextSearchResultData = {
     results: [[number, string]],
     total: number,
-    extra: boolean
+    extra: boolean,
+    loading?: boolean
 };
 export function searchTexts(
     searchTerm: string,
@@ -100,6 +101,20 @@ export function searchTexts(
 ): Promise<TextSearchResultData[]> {
     const url =
         "/api/texts/search/" + searchTerm + "?max_results=" + maxResults;
+    return request(GET, url);
+}
+
+export function searchText(
+    textId: number,
+    searchTerm: string
+): Promise<TextSearchResultData> {
+    const url =
+        "/api/texts/search/text/" +
+        textId +
+        "/" +
+        searchTerm +
+        "?max_results=" +
+        0;
     return request(GET, url);
 }
 

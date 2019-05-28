@@ -436,6 +436,18 @@ function* watchChangedSearchValue() {
     yield takeLatest(actions.CHANGED_SEARCH_VALUE, searchTexts);
 }
 
+function* searchedText(action: actions.SearchedTextAction) {
+    const results = yield call(
+        api.searchText,
+        action.textId,
+        action.searchValue
+    );
+    yield put(actions.updatedSearchResults(action.searchValue, results));
+}
+function* watchSearchedText() {
+    yield takeLatest(actions.SEARCHED_TEXT, searchedText);
+}
+
 // BATCHED ACTIONS
 
 function* dispatchedBatch(action): Saga<void> {
@@ -492,6 +504,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchSelectedTextWitness),
         call(watchSelectedLocale),
         call(watchExportWitness),
-        call(watchChangedSearchValue)
+        call(watchChangedSearchValue),
+        call(watchSearchedText)
     ]);
 }

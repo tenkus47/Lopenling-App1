@@ -58,6 +58,7 @@ export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const CHANGED_SEARCH_VALUE = "textList/CHANGED_SEARCH_VALUE";
+export const SEARCHED_TEXT = "textList/SEARCHED_TEXT";
 export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
 
@@ -401,6 +402,21 @@ export function changedSearchValue(
 ): ChangedSearchValueAction {
     return {
         type: CHANGED_SEARCH_VALUE,
+        searchValue
+    };
+}
+
+export type SearchedTextAction = Action & {
+    textId: number,
+    searchValue: string
+};
+export function searchedText(
+    textId: number,
+    searchValue: string
+): ChangedSearchValueAction {
+    return {
+        type: SEARCHED_TEXT,
+        textId,
         searchValue
     };
 }

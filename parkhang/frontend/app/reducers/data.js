@@ -483,19 +483,60 @@ function savedAnnotation(
     };
 }
 
-// TODO: add handler of updating search results
-// Need to create new action as well.
+function searchedText(
+    state: DataState,
+    action: actions.SearchedTextAction
+): DataState {
+    if (
+        action.searchValue in state.searchResults &&
+        action.textId in state.searchResults[action.searchValue]
+    ) {
+        let searchResults = {
+            ...state.searchResults[action.searchValue]
+        };
+        searchResults[action.textId] = {
+            ...searchResults[action.textId],
+            loading: true
+        };
+        return {
+            ...state,
+            searchResults: {
+                ...state.searchResults,
+                [action.searchValue]: searchResults
+            }
+        };
+    } else {
+        return state;
+    }
+}
+
 function updatedSearchResults(
     state: DataState,
     action: actions.UpdatedSearchResultsAction
 ): DataState {
-    return {
-        ...state,
-        searchResults: {
-            ...state.searchResults,
-            [action.searchValue]: action.searchResults
+    if (action.searchValue in state.searchResults) {
+        let searchResults = {
+            ...state.searchResults[action.searchValue]
+        };
+        for (let textId in action.searchResults) {
+            searchResults[textId] = action.searchResults[Number(textId)];
         }
-    };
+        return {
+            ...state,
+            searchResults: {
+                ...state.searchResults,
+                [action.searchValue]: searchResults
+            }
+        };
+    } else {
+        return {
+            ...state,
+            searchResults: {
+                ...state.searchResults,
+                [action.searchValue]: action.searchResults
+            }
+        };
+    }
 }
 
 const dataReducers = {};
@@ -521,6 +562,7 @@ dataReducers[actions.UPDATED_ANNOTATION] = updatedAnnotation;
 dataReducers[actions.DELETED_ANNOTATION] = deletedAnnotation;
 dataReducers[actions.SAVED_ANNOTATION] = savedAnnotation;
 dataReducers[actions.UPDATED_SEARCH_RESULTS] = updatedSearchResults;
+dataReducers[actions.SEARCHED_TEXT] = searchedText;
 export default dataReducers;
 
 // Selectors

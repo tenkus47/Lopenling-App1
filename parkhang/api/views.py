@@ -62,16 +62,20 @@ class TextDetail(APIView):
 
 class TextSearch(APIView):
 
-    def get(self, request, search_term):
+    def get(self, request, search_term, text_id=None):
         """
         Return texts with at least one witness containing the given search_term
         :param request:
         :param search_term: string
+        :param text_id: int
         :return:
         """
 
         # Use simple LIKE search for now until proper FTS is setup
         witnesses = Witness.objects.filter(content__contains=search_term)
+        if text_id:
+            text_id = int(text_id)
+            witnesses = witnesses.filter(text_id=text_id)
         texts = []
         results = {}
         extract_length = 60

@@ -58,6 +58,9 @@ const mapDispatchToProps = dispatch => {
             } else {
                 dispatch(actions.selectedSearchResult(text.id, start, length));
             }
+        },
+        onSearchText: (text: api.TextData, searchTerm: string) => {
+            dispatch(actions.searchedText(text.id, searchTerm));
         }
     };
 };
