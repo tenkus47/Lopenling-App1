@@ -10,6 +10,8 @@
         "header.export": "Export",
         "leftbar.search": "འཚོལ།",
         "leftbar.titles": "མཚན་བྱང་།",
+        "leftbar.loadMore": "Load More…",
+        "leftbar.loading": "Loading…",
         "annotation.workingEdition": "མཉམ་འབྲེལ་པར་མ།",
         "annotation.edit": "བཟོ་བཅོས།",
         "annotation.delete": "སུབ།",

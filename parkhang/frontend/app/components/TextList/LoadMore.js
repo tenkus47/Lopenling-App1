@@ -1,5 +1,6 @@
 // @flow
 import React from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./LoadMore.css";
 
 type Props = {
@@ -9,9 +10,17 @@ type Props = {
 export default function LoadMore(props: Props) {
     let content;
     if (props.loading) {
-        content = <span>Loading…</span>;
+        content = (
+            <span>
+                <FormattedMessage id="leftbar.loading" />
+            </span>
+        );
     } else {
-        content = <span>Load More…</span>;
+        content = (
+            <span>
+                <FormattedMessage id="leftbar.loadMore" />
+            </span>
+        );
     }
     return <div className={styles.container}>{content}</div>;
 }

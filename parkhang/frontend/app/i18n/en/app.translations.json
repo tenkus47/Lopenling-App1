@@ -10,6 +10,8 @@
         "header.export": "Export",
         "leftbar.search": "Search",
         "leftbar.titles": "Titles",
+        "leftbar.loadMore": "Load More…",
+        "leftbar.loading": "Loading…",
         "annotation.workingEdition": "Working",
         "annotation.edit": "Edit",
         "annotation.delete": "delete",
