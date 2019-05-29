@@ -12,7 +12,7 @@ import * as api from "api";
 import addTibetanShay from "lib/addTibetanShay";
 import styles from "./TextList.css";
 import Loader from "react-loader";
-import TextName from "./TextName";
+import HighlightedString from "./HighlightedString";
 import ResultCount from "./ResultCount";
 import LoadMore from "./LoadMore";
 
@@ -97,7 +97,14 @@ class TextList extends React.Component<Props> {
         let loadingResults = false;
 
         if (searchTerm.length > 0) {
-            nameHtml = <TextName name={name} searchTerm={searchTerm} />;
+            nameHtml = (
+                <HighlightedString
+                    string={name}
+                    stringClass={styles.textName}
+                    highlightClass={styles.highlight}
+                    searchTerm={searchTerm}
+                />
+            );
             if (searchResults.hasOwnProperty(text.id)) {
                 textSearchResults = searchResults[text.id].results;
                 extraRemaining = searchResults[text.id].extra;
@@ -140,7 +147,11 @@ class TextList extends React.Component<Props> {
                         }}
                         className={className}
                     >
-                        {result[1]}
+                        <HighlightedString
+                            string={result[1]}
+                            highlightClass={styles.highlight}
+                            searchTerm={searchTerm}
+                        />
                     </div>
                 );
             });

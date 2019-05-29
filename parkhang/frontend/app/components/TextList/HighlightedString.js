@@ -2,26 +2,28 @@
 import * as React from "react";
 import GraphemeSplitter from "grapheme-splitter";
 import reactStringReplace from "react-string-replace";
-import styles from "./TextList.css";
 
 type Props = {
-    name: string,
+    string: string,
+    highlightClass: string,
+    stringClass?: string,
     searchTerm?: string
 };
 
-export default class TextName extends React.Component<Props> {
+export default class HighlightedString extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
     }
 
     render() {
-        const name = this.props.name;
-        let nameHtml = name;
+        const string = this.props.string;
+        let nameHtml = string;
+        let stringClass = this.props.stringClass || "";
         if (this.props.searchTerm) {
             const searchTerm = this.props.searchTerm;
             const splitter = new GraphemeSplitter();
-            const graphemes = splitter.splitGraphemes(name);
-            const start = name.indexOf(searchTerm);
+            const graphemes = splitter.splitGraphemes(string);
+            const start = string.indexOf(searchTerm);
             const end = start + searchTerm.length;
             let position = 0;
             let foundGraphemes = "";
@@ -36,14 +38,16 @@ export default class TextName extends React.Component<Props> {
             }
             if (foundGraphemes.length > 0) {
                 nameHtml = reactStringReplace(
-                    name,
+                    string,
                     foundGraphemes,
                     (match, i) => (
-                        <span className={styles.highlight}>{match}</span>
+                        <span className={this.props.highlightClass}>
+                            {match}
+                        </span>
                     )
                 );
             }
         }
-        return <span className={styles.textName}>{nameHtml}</span>;
+        return <span className={stringClass}>{nameHtml}</span>;
     }
 }
