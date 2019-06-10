@@ -220,9 +220,7 @@ class TextList extends React.Component<Props> {
                         <p className={styles.searching}>Searching…</p>
                     </div>
                 ) : (
-                    <ul className="textList">
-                        <li />
-                    </ul>
+                    <ul className="textList" />
                 )}
             </div>
         );
