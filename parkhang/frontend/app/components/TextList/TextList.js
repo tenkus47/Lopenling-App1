@@ -90,7 +90,7 @@ class TextList extends React.Component<Props> {
             className = classnames(className, styles.selectedRow);
         }
         let name = addTibetanShay(text.name);
-        let nameHtml = name;
+        let nameHtml = <span className={styles.textName}>{name}</span>;
         let textSearchResults = [];
         let resultsCount = null;
         let extraRemaining = false;
