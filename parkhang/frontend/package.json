@@ -29,6 +29,7 @@
     "react-intl-redux": "^2.0.2",
     "react-loader": "^2.4.5",
     "react-redux": "^5.0.7",
+    "react-string-replace": "^0.4.4",
     "react-virtualized": "^9.21.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.6.3",
