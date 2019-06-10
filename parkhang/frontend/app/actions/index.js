@@ -73,6 +73,7 @@ export const CHANGED_ACTIVE_TEXT_ANNOTATION =
     "text/CHANGED_ACTIVE_TEXT_ANNOTATION";
 
 export const CHANGED_TEXT_LIST_VISIBLE = "textList/CHANGED_TEXT_LIST_VISIBLE";
+export const CHANGED_TEXT_LIST_WIDTH = "textList/CHANGED_TEXT_LIST_WIDTH";
 
 export const CHANGED_WITNESS_SCROLL_POSITION =
     "text/CHANGED_WITNESS_SCROLL_POSITION";
@@ -451,6 +452,16 @@ export function selectedSearchResult(
         textId,
         start,
         length
+    };
+}
+
+export type ChangedTextListWidth = Action & {
+    width: number
+};
+export function changedTextListWidth(width: number): ChangedTextListWidth {
+    return {
+        type: CHANGED_TEXT_LIST_WIDTH,
+        width
     };
 }
 

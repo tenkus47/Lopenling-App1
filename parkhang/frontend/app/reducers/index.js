@@ -143,6 +143,10 @@ export const getTextListVisible = (state: AppState): boolean => {
     return ui.getTextListVisible(state.ui);
 };
 
+export const getTextListWidth = (state: AppState): number => {
+    return ui.getTextListWidth(state.ui);
+};
+
 export const getTemporaryAnnotations = (
     state: AppState,
     witnessId: number,

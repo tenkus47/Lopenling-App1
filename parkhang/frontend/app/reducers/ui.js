@@ -16,6 +16,7 @@ export type UIState = {
     activeAnnotations: { [witnessId: number]: Annotation },
     activeTextAnnotations: { [textId: number]: Annotation },
     textListVisible: boolean,
+    textListWidth: number,
     temporaryAnnotations: {
         [witnessId: number]: {
             [tempAnnotationKey: string]: TemporaryAnnotation[]
@@ -38,6 +39,7 @@ export const initialUIState = {
     activeAnnotations: {},
     activeTextAnnotations: {},
     textListVisible: true,
+    textListWidth: 240,
     temporaryAnnotations: {},
     scrollPositions: {},
     exportingWitness: {}
@@ -202,6 +204,16 @@ function textListVisibleChanged(
     };
 }
 
+function textListWidthChanged(
+    state: UIState,
+    action: actions.ChangedTextListWidth
+): UIState {
+    return {
+        ...state,
+        textListWidth: action.width
+    };
+}
+
 function getTemporaryAnnotationKey(start: number, length: number): string {
     return [start, length].join("-");
 }
@@ -313,6 +325,7 @@ uiReducers[
     actions.CHANGED_ACTIVE_TEXT_ANNOTATION
 ] = changedActiveTextAnnotation;
 uiReducers[actions.CHANGED_TEXT_LIST_VISIBLE] = textListVisibleChanged;
+uiReducers[actions.CHANGED_TEXT_LIST_WIDTH] = textListWidthChanged;
 uiReducers[actions.ADDED_TEMPORARY_ANNOTATION] = addedTemporaryAnnotation;
 uiReducers[actions.REMOVED_TEMPORARY_ANNOTATION] = removedTemporaryAnnotation;
 uiReducers[actions.CHANGED_WITNESS_SCROLL_POSITION] = changedScrollPosition;
@@ -371,6 +384,10 @@ export const getActiveTextAnnotation = (
 
 export const getTextListVisible = (state: UIState): boolean => {
     return state.textListVisible;
+};
+
+export const getTextListWidth = (state: UIState): number => {
+    return state.textListWidth;
 };
 
 export const getTemporaryAnnotations = (

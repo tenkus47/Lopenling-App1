@@ -1,9 +1,5 @@
 @import 'css/type.css';
 
-:root {
-    --listWidth: 300px;
-}
-
 html {
     box-sizing: border-box;
 }
@@ -32,16 +28,15 @@ body {
 .listContainer {
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
     transition: width 0.25s ease-in-out;
-    width: var(--listWidth);
     position: relative;
 }
 
-.hideListContainer {
-    width: 0;
-}
-
-.showListContainer {
-    width: var(--listWidth);
+:global(.Resizer.vertical) {
+    width: 10px;
+    cursor: col-resize;
+    z-index: 1;
+    background-color: #ffffff;
 }

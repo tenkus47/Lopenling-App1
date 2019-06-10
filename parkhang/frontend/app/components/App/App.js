@@ -2,6 +2,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
+import SplitPane from "react-split-pane";
 
 import HeaderContainer from "components/Header";
 import TextsSearchContainer from "components/TextsSearch/TextsSearchContainer";
@@ -10,6 +11,7 @@ import TextDetailContainer from "components/TextDetail/TextDetailContainer";
 import TextListTabContainer from "components/TextList/TextListTabContainer";
 import type { AppState } from "reducers";
 import * as actions from "actions";
+import * as constants from "app_constants";
 
 import styles from "./App.css";
 import utilStyles from "css/util.css";
@@ -18,15 +20,23 @@ import { handleKeyDown } from "../../shortcuts";
 
 type Props = {
     textListIsVisible: boolean,
+    textListWidth: number,
     state: AppState,
-    dispatch: (action: actions.Action) => void
+    dispatch: (action: actions.Action) => void,
+    onChangedTextWidth: (width: number) => void,
+    onChangedTextListVisible: (isVisible: boolean) => void
 };
 
 const App = (props: Props) => {
     let textListClassnames = [styles.listContainer];
+
+    let minSize = constants.MIN_TEXT_LIST_WIDTH;
+    let defaultSize = constants.DEFAULT_TEXT_LIST_WIDTH;
+    let size = props.textListWidth;
     if (props.textListIsVisible) {
         textListClassnames.push(styles.showListContainer);
     } else {
+        size = 0;
         textListClassnames.push(styles.hideListContainer);
     }
     return (
@@ -42,20 +52,33 @@ const App = (props: Props) => {
         >
             <HeaderContainer />
             <div className={classnames(styles.interface, utilStyles.flex)}>
-                <div className={classnames(...textListClassnames)}>
-                    <TextsSearchContainer />
-                    <TextListContainer />
-                </div>
-                <TextDetailContainer />
+                <SplitPane
+                    split="vertical"
+                    minSize={minSize}
+                    defaultSize={defaultSize}
+                    size={size}
+                    paneStyle={{
+                        display: "flex"
+                    }}
+                    onDragFinished={(width: number) => {
+                        if (width > 0) {
+                            props.onChangedTextWidth(width);
+                            if (!props.textListIsVisible) {
+                                props.onChangedTextListVisible(true);
+                            }
+                        }
+                        window.dispatchEvent(new Event("resize"));
+                    }}
+                >
+                    <div className={classnames(...textListClassnames)}>
+                        <TextsSearchContainer />
+                        <TextListContainer />
+                    </div>
+                    <TextDetailContainer />
+                </SplitPane>
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        state: state
-    };
-};
-
-export default connect(mapStateToProps, null, null)(App);
+export default App;

@@ -28,7 +28,7 @@ import DocxExporter from "lib/DocxExporter";
 import * as api from "api";
 import { BATCH } from "redux-batched-actions";
 
-import { MAX_SEARCH_RESULTS } from "../index";
+import * as constants from "app_constants";
 
 import type { Saga } from "redux-saga";
 
@@ -427,7 +427,7 @@ function* searchTexts(action: actions.ChangedSearchValueAction) {
     const results = yield call(
         api.searchTexts,
         action.searchValue,
-        MAX_SEARCH_RESULTS
+        constants.MAX_SEARCH_RESULTS
     );
     yield put(actions.updatedSearchResults(action.searchValue, results));
 }
@@ -446,6 +446,17 @@ function* searchedText(action: actions.SearchedTextAction) {
 }
 function* watchSearchedText() {
     yield takeLatest(actions.SEARCHED_TEXT, searchedText);
+}
+
+// SETTINGS
+
+function* changedTextListWidth(action: actions.ChangedTextListWidth) {
+    const width = action.width;
+    yield call(Cookies.set, constants.TEXT_LIST_WIDTH_COOKIE, width);
+}
+
+function* watchChangedTextListWidth() {
+    yield takeLatest(actions.CHANGED_TEXT_LIST_WIDTH, changedTextListWidth);
 }
 
 // BATCHED ACTIONS
@@ -482,7 +493,9 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.UPDATED_ANNOTATION]: reqAction(updateAnnotation),
     [actions.DELETED_ANNOTATION]: reqAction(deleteAnnotation),
     [actions.SELECTED_WITNESS]: reqAction(selectedWitness),
-    [actions.SELECTED_TEXT]: selectedText
+    [actions.SELECTED_TEXT]: selectedText,
+    [actions.SELECTED_LOCALE]: selectLocale,
+    [actions.CHANGED_TEXT_LIST_WIDTH]: changedTextListWidth
 };
 
 /** Root **/
@@ -505,6 +518,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchSelectedLocale),
         call(watchExportWitness),
         call(watchChangedSearchValue),
-        call(watchSearchedText)
+        call(watchSearchedText),
+        call(watchChangedTextListWidth)
     ]);
 }

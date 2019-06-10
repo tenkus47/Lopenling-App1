@@ -1,16 +1,28 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { getTextListVisible } from "reducers";
-
+import * as reducers from "reducers";
+import * as actions from "actions";
 import App from "components/App";
 
 const mapStateToProps = state => {
     return {
-        textListIsVisible: getTextListVisible(state)
+        textListIsVisible: reducers.getTextListVisible(state),
+        textListWidth: reducers.getTextListWidth(state)
     };
 };
 
-const AppContainer = connect(mapStateToProps)(App);
+const matchDispatchToProps = dispatch => {
+    return {
+        onChangedTextWidth: (width: number) => {
+            dispatch(actions.changedTextListWidth(width));
+        },
+        onChangedTextListVisible: (isVisible: boolean) => {
+            dispatch(actions.changedTextListVisible(isVisible));
+        }
+    };
+};
+
+const AppContainer = connect(mapStateToProps, matchDispatchToProps)(App);
 
 export default AppContainer;

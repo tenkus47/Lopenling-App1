@@ -3,11 +3,12 @@
 
 :root {
     --padding-left: 10px;
+    --text-list-colour: #555;
 }
 
 .textList {
     height: 100%;
-    background-color: white;
+    background-color: var(--text-list-colour);
     display: flex;
     flex-grow: 1;
 }
@@ -24,7 +25,7 @@
     flex-shrink: 0;
     flex-direction: column;
     justify-content: center;
-    background-color: #555;
+    background-color: var(--text-list-colour);
     color: white;
     padding: 0;
     cursor: pointer;

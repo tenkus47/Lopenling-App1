@@ -9,6 +9,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 // Redux
 import { createStore, applyMiddleware } from "redux";
 import { Provider, connect } from "react-redux";
+import { batchActions } from "redux-batched-actions";
 
 // Saga
 import createSagaMiddleware from "redux-saga";
@@ -29,7 +30,7 @@ import rootSaga from "sagas";
 // i18n
 import { addLocaleData } from "react-intl";
 import { IntlProvider, updateIntl } from "react-intl-redux";
-import { updateLocales, selectedLocale } from "actions";
+import * as actions from "actions";
 import { i18n_cookie_name } from "i18n";
 import boLocaleData from "react-intl/locale-data/bo";
 import en from "i18n/en/app.translations.json";
@@ -40,7 +41,7 @@ const locales = {
 };
 
 // App Constants
-export const MAX_SEARCH_RESULTS = 10;
+import * as constants from "app_constants";
 
 addLocaleData([...boLocaleData]);
 
@@ -69,7 +70,7 @@ sagaMiddleware.run(rootSaga);
 
 // TODO: use batch dispatcher?
 store.dispatch(
-    updateLocales({
+    actions.updateLocales({
         en: en,
         bo: bo
     })
@@ -83,8 +84,14 @@ if (USER_LOGGED_IN) {
         USER_LOCALE = cookieLang;
     }
 }
-store.dispatch(selectedLocale(USER_LOCALE));
-store.dispatch(updateIntl(locales[USER_LOCALE]));
+let batchedActions = [];
+
+const textListWidth = Cookies.get(constants.TEXT_LIST_WIDTH_COOKIE);
+if (!textListWidth) textListWidth = constants.DEFAULT_TEXT_LIST_WIDTH;
+batchedActions.push(actions.changedTextListWidth(Number(textListWidth)));
+batchedActions.push(actions.selectedLocale(USER_LOCALE));
+batchedActions.push(updateIntl(locales[USER_LOCALE]));
+store.dispatch(batchActions(batchedActions));
 
 function intlSelector(state) {
     return {
