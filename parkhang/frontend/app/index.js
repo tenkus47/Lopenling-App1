@@ -86,7 +86,7 @@ if (USER_LOGGED_IN) {
 }
 let batchedActions = [];
 
-const textListWidth = Cookies.get(constants.TEXT_LIST_WIDTH_COOKIE);
+let textListWidth = Cookies.get(constants.TEXT_LIST_WIDTH_COOKIE);
 if (!textListWidth) textListWidth = constants.DEFAULT_TEXT_LIST_WIDTH;
 batchedActions.push(actions.changedTextListWidth(Number(textListWidth)));
 batchedActions.push(actions.selectedLocale(USER_LOCALE));
