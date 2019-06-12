@@ -14,6 +14,7 @@ import * as actions from "actions";
 import * as constants from "app_constants";
 
 import styles from "./App.css";
+import headerStyles from "components/Header/Header.css";
 import utilStyles from "css/util.css";
 
 import { handleKeyDown } from "../../shortcuts";
@@ -39,6 +40,7 @@ const App = (props: Props) => {
         size = 0;
         textListClassnames.push(styles.hideListContainer);
     }
+    const bodyHeight = "calc(100vh - " + headerStyles.headerHeight + ")";
     return (
         <div
             className={classnames(
@@ -59,6 +61,9 @@ const App = (props: Props) => {
                     size={size}
                     paneStyle={{
                         display: "flex"
+                    }}
+                    style={{
+                        height: bodyHeight
                     }}
                     onDragFinished={(width: number) => {
                         if (width > 0) {
