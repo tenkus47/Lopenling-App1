@@ -1,13 +1,23 @@
 @import "css/type.css";
 @import "css/colour.css";
 
+@value header-height: 65px;
+
+:root {
+    --header-height: header-height;
+}
+
+:export {
+    headerHeight: header-height;
+}
 
 .header {
     background-color: var(--main-tint);
     font-family: var(--fonts);
     font-size: 30px;
     color: white;
-    padding: 10px 10px 10px 20px;
+    padding: 0px 10px 0px 20px;
+    height: var(--header-height);
     display: flex;
     flex-shrink: 0;
     align-items: center;
