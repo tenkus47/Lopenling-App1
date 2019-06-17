@@ -1,5 +1,6 @@
 :root {
-    --inputHeight: 21px;
+    --inputHeight: 30px;
+    --searchButtonMinWidth: 80px;
 }
 
 .textsSearchContainer {
@@ -22,7 +23,12 @@
     font-size: 1em;
     margin-right: 10px;
     flex-grow: 1;
-    height: var(--inputHeight);
+    min-height: var(--inputHeight);
+}
+
+.textsSearch button {
+    min-width: var(--searchButtonMinWidth);
+    text-align: center;
 }
 
 .textsSearch select {
