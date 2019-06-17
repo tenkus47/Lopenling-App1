@@ -21,7 +21,6 @@ type Props = {
 export default class Button extends React.Component<Props> {
     render() {
         let bgColour = this.props.colour || colours.mainTint;
-        let alignment = this.props.align || "left";
         let classNames = this.props.noBezel
             ? [styles.buttonNoBezel]
             : [styles.button];
@@ -29,12 +28,14 @@ export default class Button extends React.Component<Props> {
         if (this.props.isActive) classNames.push(styles.active);
         const className = classnames(...classNames);
 
+        let style = {
+            backgroundColor: bgColour
+        };
+        if (this.props.align) style.textAlign = this.props.align;
+
         return (
             <button
-                style={{
-                    backgroundColor: bgColour,
-                    textAlign: alignment
-                }}
+                style={style}
                 className={className}
                 onClick={this.props.onClick}
                 disabled={this.props.disabled}
