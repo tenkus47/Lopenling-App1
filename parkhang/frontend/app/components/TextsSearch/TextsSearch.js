@@ -35,7 +35,9 @@ const TextsSearch = (props: Props) => {
                     />
                     <Button
                         onClick={initiateSearch}
-                        title="Search"
+                        title={props.intl.formatMessage({
+                            id: "leftbar.search"
+                        })}
                         noBezel={true}
                     />
                 </form>
