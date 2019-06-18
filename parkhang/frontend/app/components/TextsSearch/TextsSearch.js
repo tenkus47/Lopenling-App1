@@ -26,7 +26,7 @@ const TextsSearch = (props: Props) => {
             <div className={styles.textsSearch}>
                 <form onSubmit={initiateSearch}>
                     <input
-                        type="search"
+                        type="text"
                         id="textSearchInput"
                         placeholder={props.intl.formatMessage({
                             id: "leftbar.search"
