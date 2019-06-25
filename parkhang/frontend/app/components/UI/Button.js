@@ -7,9 +7,10 @@ import Accessory from "./Accessory";
 export type Alignment = "left" | "center" | "right";
 
 type Props = {
-    colour?: string,
-    icon?: any,
     title: string,
+    color?: string,
+    backgroundColor?: string,
+    icon?: any,
     align?: Alignment,
     isActive?: boolean,
     accessoryType?: AccessoryType,
@@ -20,7 +21,8 @@ type Props = {
 
 export default class Button extends React.Component<Props> {
     render() {
-        let bgColour = this.props.colour || colours.mainTint;
+        let color = this.props.color || "#ffffff";
+        let bgColour = this.props.backgroundColor || colours.mainTint;
         let classNames = this.props.noBezel
             ? [styles.buttonNoBezel]
             : [styles.button];
@@ -29,6 +31,7 @@ export default class Button extends React.Component<Props> {
         const className = classnames(...classNames);
 
         let style = {
+            color: color,
             backgroundColor: bgColour
         };
         if (this.props.align) style.textAlign = this.props.align;

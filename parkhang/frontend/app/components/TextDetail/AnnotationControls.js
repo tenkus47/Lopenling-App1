@@ -391,7 +391,7 @@ export default class AnnotationControls extends React.Component<Props> {
                                 this.props.deleteAnnotation(pageBreaks[0]);
                             }}
                             isActive={true}
-                            colour={colours.activeButton}
+                            backgroundColor={colours.activeButton}
                         />
                     </div>
                 );
