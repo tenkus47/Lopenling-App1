@@ -81,6 +81,8 @@ export const CHANGED_WITNESS_SCROLL_POSITION =
 export const EXPORT_WITNESS = "text/EXPORT_WITNESS";
 export const EXPORTED_WITNESS = "text/EXPORTED_WITNESS";
 
+export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
+
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
 
@@ -593,6 +595,18 @@ export function exportedWitness(
         type: EXPORTED_WITNESS,
         witnessId,
         format
+    };
+}
+
+export type ChangedAccountOverlayAction = Action & {
+    isVisible: boolean
+};
+export function changedAccountOverlay(
+    isVisible: boolean
+): ChangedAccountOverlayAction {
+    return {
+        type: CHANGED_ACCOUNT_OVERLAY,
+        isVisible
     };
 }
 

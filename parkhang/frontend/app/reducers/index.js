@@ -181,6 +181,10 @@ export const getSelectedSearchResult = (
     return ui.getSelectedSearchResult(state.ui);
 };
 
+export const getAccountOverlayVisible = (state: AppState): boolean => {
+    return ui.getAccountOverlayVisible(state.ui);
+};
+
 // data
 
 export const getText = (state: AppState, textId: number): Text | null => {

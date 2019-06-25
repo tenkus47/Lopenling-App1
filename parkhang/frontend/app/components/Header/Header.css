@@ -37,6 +37,7 @@
     font-size: 18px;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .controls a:link,

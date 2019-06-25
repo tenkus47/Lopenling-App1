@@ -27,7 +27,8 @@ export type UIState = {
     },
     exportingWitness: {
         [witnessId: number]: boolean
-    }
+    },
+    showAccountOverlay: boolean
 };
 
 export const initialUIState = {
@@ -42,7 +43,8 @@ export const initialUIState = {
     textListWidth: 240,
     temporaryAnnotations: {},
     scrollPositions: {},
-    exportingWitness: {}
+    exportingWitness: {},
+    showAccountOverlay: false
 };
 
 function selectedText(
@@ -313,6 +315,18 @@ function exportedWitness(
     return state;
 }
 
+function changedAccountOverlay(
+    state: UIState,
+    action: actions.ChangedAccountOverlayAction
+): UIState {
+    state = {
+        ...state,
+        showAccountOverlay: action.isVisible
+    };
+
+    return state;
+}
+
 const uiReducers = {};
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
@@ -331,6 +345,7 @@ uiReducers[actions.REMOVED_TEMPORARY_ANNOTATION] = removedTemporaryAnnotation;
 uiReducers[actions.CHANGED_WITNESS_SCROLL_POSITION] = changedScrollPosition;
 uiReducers[actions.EXPORT_WITNESS] = exportingWitness;
 uiReducers[actions.EXPORTED_WITNESS] = exportedWitness;
+uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
 export default uiReducers;
 
 export const getSelectedText = (state: UIState): api.TextData | null => {
@@ -433,4 +448,8 @@ export const getSelectedSearchResult = (
     state: UIState
 ): null | { textId: number, start: number, length: number } => {
     return state.selectedSearchResult;
+};
+
+export const getAccountOverlayVisible = (state: UIState): boolean => {
+    return state.showAccountOverlay;
 };

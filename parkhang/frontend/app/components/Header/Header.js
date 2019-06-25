@@ -9,8 +9,10 @@ import type { AppState } from "reducers";
 import { FormattedMessage, injectIntl } from "react-intl";
 import LocaleSwitcher from "components/LocaleSwitcher/LocaleSwitcher";
 import NavigationButton from "components/UI/NavigationButton";
-import { getTextListVisible } from "reducers";
-import { changedTextListVisible } from "actions";
+import AccountButton from "./AccountButton";
+import AccountOverlay from "./AccountOverlay";
+import { getTextListVisible, getAccountOverlayVisible } from "reducers";
+import * as actions from "actions";
 
 export const LoginControls = () => (
     <div className={classnames(styles.notLoggedIn, styles.controls)}>
@@ -28,28 +30,42 @@ export const LoginControls = () => (
 );
 
 type LoggedInControlsProps = {
-    user: User
+    user: User,
+    overlayVisible: boolean,
+    accountButtonClicked: () => void
 };
 
 export const LoggedInControls = (props: LoggedInControlsProps) => (
     <div className={styles.controls}>
-        {props.user.name} |&nbsp;<a href="/accounts/logout/">
-            <FormattedMessage id="header.logout" />
-        </a>
+        <AccountButton
+            name={props.user.name}
+            onClick={props.accountButtonClicked}
+        />
+        {props.overlayVisible && (
+            <AccountOverlay top={60} right={0} user={props.user} />
+        )}
     </div>
 );
 
 type HeaderProps = {
     user: User,
     activeLocale: string,
+    accountOverlayVisible: boolean,
     navigationButtonClicked: () => void,
-    intl: { formatMessage: ({ [id: string]: string }) => string }
+    intl: { formatMessage: ({ [id: string]: string }) => string },
+    accountButtonClicked: () => void
 };
 
 export const Header = (props: HeaderProps) => {
     let controls = null;
     if (props.user.isLoggedIn) {
-        controls = <LoggedInControls user={props.user} />;
+        controls = (
+            <LoggedInControls
+                user={props.user}
+                overlayVisible={props.accountOverlayVisible}
+                accountButtonClicked={props.accountButtonClicked}
+            />
+        );
     } else {
         controls = <LoginControls />;
     }
@@ -81,7 +97,8 @@ const mapStateToProps = (state: AppState): { user: User } => {
     return {
         user: user,
         activeLocale: activeLocale,
-        textListIsVisible: getTextListVisible(state)
+        textListIsVisible: getTextListVisible(state),
+        accountOverlayVisible: getAccountOverlayVisible(state)
     };
 };
 
@@ -91,7 +108,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...stateProps,
         navigationButtonClicked: () => {
             dispatchProps.dispatch(
-                changedTextListVisible(!stateProps.textListIsVisible)
+                actions.changedTextListVisible(!stateProps.textListIsVisible)
+            );
+        },
+        accountButtonClicked: () => {
+            dispatchProps.dispatch(
+                actions.changedAccountOverlay(!stateProps.accountOverlayVisible)
             );
         }
     };
