@@ -29,6 +29,31 @@ class UserDetail(APIView):
             raise Http404
 
 
+class UserSettings(APIView):
+
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        if user:
+            return Response(user.settings)
+        else:
+            raise Http404
+    
+    def put(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        if user:
+            settings = user.settings
+            if not settings:
+                settings = {}
+            for setting in request.data:
+                settings[setting] = request.data[setting]
+            user.settings = settings
+            user.save()
+
+            return Response(status=204)
+        else:
+            raise Http404
+
+
 class TextList(APIView):
 
     def get(self, request):
