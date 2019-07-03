@@ -20,6 +20,7 @@ import TextSegment from "lib/TextSegment";
 
 export type Props = {
     paginated: boolean,
+    pageImagesVisible: boolean,
     text: TextData | null,
     loading: boolean,
     pageBreaks: number[],
@@ -92,7 +93,7 @@ class TextDetail extends React.Component<Props> {
                         this.props.selectedAnnotatedSegments
                     }
                     textListVisible={this.props.textListVisible}
-                    showImages={this.props.paginated}
+                    showImages={this.props.pageImagesVisible}
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
                     key={this.key}

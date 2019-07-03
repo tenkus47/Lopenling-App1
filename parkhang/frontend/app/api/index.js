@@ -67,6 +67,31 @@ export function setUserLocale(
     return request(PUT, url, data);
 }
 
+export type UserSettings = {
+    showPageImages?: boolean
+};
+
+export function fetchUserSettings(
+    user: User
+): Promise<UserSettings> | InvalidUserError {
+    if (!user.isLoggedIn) {
+        throw new InvalidUserError("The user is not logged in.");
+    }
+    const url = "/api/users/" + user.id + "/settings/";
+    return request(GET, url);
+}
+
+export function setUserSettings(
+    user: User,
+    settings: UserSettings
+): Promise<string> | InvalidUserError {
+    if (!user.isLoggedIn) {
+        throw new InvalidUserError("The user is not logged in.");
+    }
+    const url = "/api/users/" + user.id + "/settings/";
+    return request(PUT, url, settings);
+}
+
 // GET DATA
 
 export type SourceData = {

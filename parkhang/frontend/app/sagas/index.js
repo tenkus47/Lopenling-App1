@@ -450,6 +450,18 @@ function* watchSearchedText() {
 
 // SETTINGS
 
+function* loadUserSettings(action: actions.UserAction) {
+    const user = yield select(reducers.getUser);
+    if (user) {
+        const settings = yield call(api.fetchUserSettings, user);
+        yield put(actions.loadedUserSettings(settings));
+    }
+}
+
+function* watchUserLoggedIn() {
+    yield takeEvery(actions.USER_LOGGED_IN, loadUserSettings);
+}
+
 function* changedTextListWidth(action: actions.ChangedTextListWidth) {
     const width = action.width;
     yield call(Cookies.set, constants.TEXT_LIST_WIDTH_COOKIE, width);
@@ -457,6 +469,19 @@ function* changedTextListWidth(action: actions.ChangedTextListWidth) {
 
 function* watchChangedTextListWidth() {
     yield takeLatest(actions.CHANGED_TEXT_LIST_WIDTH, changedTextListWidth);
+}
+
+function* changedShowPageImages(action: actions.ChangedShowPageImagesAction) {
+    const user = yield select(reducers.getUser);
+    if (user.isLoggedIn) {
+        yield call(api.setUserSettings, user, {
+            showPageImages: action.showPageImages
+        });
+    }
+}
+
+function* watchChangedShowPageImages() {
+    yield takeLatest(actions.CHANGED_SHOW_PAGE_IMAGES, changedShowPageImages);
 }
 
 // BATCHED ACTIONS
@@ -495,7 +520,9 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.SELECTED_WITNESS]: reqAction(selectedWitness),
     [actions.SELECTED_TEXT]: selectedText,
     [actions.SELECTED_LOCALE]: selectLocale,
-    [actions.CHANGED_TEXT_LIST_WIDTH]: changedTextListWidth
+    [actions.CHANGED_TEXT_LIST_WIDTH]: changedTextListWidth,
+    [actions.CHANGED_SHOW_PAGE_IMAGES]: changedShowPageImages,
+    [actions.USER_LOGGED_IN]: loadUserSettings
 };
 
 /** Root **/
@@ -519,6 +546,8 @@ export default function* rootSaga(): Saga<void> {
         call(watchExportWitness),
         call(watchChangedSearchValue),
         call(watchSearchedText),
-        call(watchChangedTextListWidth)
+        call(watchChangedTextListWidth),
+        call(watchChangedShowPageImages),
+        call(watchUserLoggedIn)
     ]);
 }

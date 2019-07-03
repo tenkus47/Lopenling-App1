@@ -37,3 +37,12 @@
     background: 0;
     padding: 0;
 }
+
+.controls {
+    display: flex;
+    margin-right: 2em;
+}
+
+.controls label {
+    margin-right: 5px;
+}

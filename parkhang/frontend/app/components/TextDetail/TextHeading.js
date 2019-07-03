@@ -7,12 +7,15 @@ import Witness from "lib/Witness";
 import type { TextData } from "api";
 import ExportControl from "./ExportControl";
 import Loader from "react-loader";
+import ImageToggle from "./ImageToggle";
 
 export type Props = {
     witnesses: Witness[],
     selectedText: TextData,
     selectedWitness: Witness,
     exportingWitness: boolean,
+    showPageImages: boolean,
+    onToggledPageImages: () => void,
     onSelectedWitness: () => void,
     onExport?: () => void
 };
@@ -26,10 +29,22 @@ const TextHeading = (props: Props) => {
         <div className={styles.headingContainer}>
             <div className={styles.topRow}>
                 <h2 className={styles.textHeading}>{name}</h2>
+
                 {props.selectedWitness &&
                     !props.exportingWitness && (
-                        <ExportControl onClick={props.onExport} />
+                        <React.Fragment>
+                            <div className={styles.controls}>
+                                {!props.selectedWitness.isWorking && (
+                                    <ImageToggle
+                                        showImages={props.showPageImages}
+                                        onChange={props.onToggledPageImages}
+                                    />
+                                )}
+                            </div>
+                            <ExportControl onClick={props.onExport} />
+                        </React.Fragment>
                     )}
+
                 <div className={styles.textHeadingloader}>
                     <Loader loaded={!props.exportingWitness} scale={0.5} />
                 </div>

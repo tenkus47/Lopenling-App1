@@ -36,7 +36,7 @@ export const initialUIState = {
     selectedTextWitness: {},
     selectedSearchResult: null,
     searchValue: "",
-    showPageImages: false,
+    showPageImages: true,
     activeAnnotations: {},
     activeTextAnnotations: {},
     textListVisible: true,
@@ -46,6 +46,19 @@ export const initialUIState = {
     exportingWitness: {},
     showAccountOverlay: false
 };
+
+function loadedUserSettings(
+    state: UIState,
+    action: actions.LoadedUserSettingsAction
+): UIState {
+    const settings = action.settings;
+    state = { ...state };
+    // false is a valid value specifically check for null
+    if (settings.showPageImages != null)
+        state.showPageImages = settings.showPageImages;
+
+    return state;
+}
 
 function selectedText(
     state: UIState,
@@ -328,6 +341,7 @@ function changedAccountOverlay(
 }
 
 const uiReducers = {};
+uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;

@@ -85,6 +85,7 @@ export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
+export const LOADED_USER_SETTINGS = "user/LOADED_USER_SETTINGS";
 
 // I18N
 export const UPDATE_LOCALES = "i18n/UPDATE_LOCALES";
@@ -384,6 +385,18 @@ export function userLoggedIn(
         userId,
         userName,
         userLocale
+    };
+}
+
+export type LoadedUserSettingsAction = Action & {
+    settings: api.UserSettings
+};
+export function loadedUserSettings(
+    settings: api.UserSettings
+): LoadedUserSettingsAction {
+    return {
+        type: LOADED_USER_SETTINGS,
+        settings
     };
 }
 

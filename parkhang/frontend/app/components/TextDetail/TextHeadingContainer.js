@@ -7,7 +7,8 @@ import type { Props } from "./TextHeading";
 import {
     selectedTextWitness,
     changedActiveAnnotation,
-    exportWitness
+    exportWitness,
+    changedShowPageImages
 } from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
@@ -37,12 +38,14 @@ const mapStateToProps = (state: AppState): {} => {
             );
         }
     }
+    let showPageImages = reducers.showPageImages(state);
 
     return {
         witnesses,
         selectedText,
         selectedWitness,
-        exportingWitness
+        exportingWitness,
+        showPageImages
     };
 };
 
@@ -52,6 +55,9 @@ const mergeProps = (stateProps: Props, dispatchProps, ownProps): {} => {
     return {
         ...stateProps,
         ...ownProps,
+        onToggledPageImages: (showImages: boolean) => {
+            dispatch(changedShowPageImages(showImages));
+        },
         onSelectedWitness: (witness: Witness) => {
             dispatch(selectedTextWitness(selectedText.id, witness.id));
         },

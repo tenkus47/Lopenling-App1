@@ -244,6 +244,7 @@ const mapStateToProps = state => {
             annotations: null,
             loading: loading,
             paginated: null,
+            pageImagesVisible: false,
             annotatedText: null,
             selectedAnnotatedSegments: null,
             annotationPositions: null,
@@ -275,6 +276,7 @@ const mapStateToProps = state => {
     let searchValue = getSearchValue(state);
     // Whether to show the text's page images
     let paginated = false;
+    let pageImagesVisible = false;
     if (
         workingWitness &&
         selectedText &&
@@ -354,6 +356,7 @@ const mapStateToProps = state => {
             // always show images if we are viewing a specific edition
             // i.e. not the working edition.
             paginated = true;
+            pageImagesVisible = showPageImages(state);
         }
 
         annotations = annotationsFromData(state, workingAnnotationList);
@@ -465,6 +468,7 @@ const mapStateToProps = state => {
         annotations: annotations,
         loading: loading,
         paginated: paginated,
+        pageImagesVisible: pageImagesVisible,
         annotatedText: annotatedText,
         selectedAnnotatedSegments: selectedAnnotatedSegments,
         annotationPositions: annotationPositions,
