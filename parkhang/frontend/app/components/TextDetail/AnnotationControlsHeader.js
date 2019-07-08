@@ -32,6 +32,7 @@ class AnnotationControlsHeader extends React.Component<Props> {
                     accessoryType={this.props.addNote ? "ADD" : null}
                     onClick={this.props.addNote}
                     disabled={this.props.addNote ? false : true}
+                    align="left"
                 />
                 <Button
                     title="Page Break"
@@ -40,6 +41,7 @@ class AnnotationControlsHeader extends React.Component<Props> {
                     accessoryType={allowPageBreak ? "ADD" : null}
                     onClick={this.props.addPageBreak}
                     disabled={!allowPageBreak}
+                    align="left"
                 />
             </div>
         );

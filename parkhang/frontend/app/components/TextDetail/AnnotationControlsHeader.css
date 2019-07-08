@@ -5,6 +5,7 @@
 .header button {
     padding: 10px;
     border-right: 1px solid #fff;
+    flex-grow: 1;
 }
 
 .header button:nth-last-of-type(1) {
