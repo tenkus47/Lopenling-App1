@@ -40,7 +40,8 @@ export type Props = {
         start: number,
         length: number
     } | null,
-    searchValue: string | null
+    searchValue: string | null,
+    fontSize: number
 };
 
 let textDetailId = 0;
@@ -99,6 +100,7 @@ class TextDetail extends React.Component<Props> {
                     key={this.key}
                     selectedSearchResult={this.props.selectedSearchResult}
                     searchValue={this.props.searchValue}
+                    fontSize={this.props.fontSize}
                 />
             );
         }

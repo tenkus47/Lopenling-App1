@@ -41,7 +41,8 @@ import {
     hasLoadedWitnessAppliedAnnotations,
     getScrollPosition,
     getSelectedSearchResult,
-    getSearchValue
+    getSearchValue,
+    getTextFontSize
 } from "reducers";
 import _ from "lodash";
 
@@ -49,6 +50,7 @@ import AnnotatedText from "lib/AnnotatedText";
 import segmentTibetanText from "lib/segmentTibetanText";
 import SegmentedText from "lib/SegmentedText";
 import * as actions from "actions";
+import * as constants from "app_constants";
 
 const DISMISS_CONTROLS_ON_CLICK = true;
 
@@ -251,7 +253,8 @@ const mapStateToProps = state => {
             activeAnnotations: null,
             activeAnnotation: null,
             user: user,
-            textListVisible
+            textListVisible,
+            fontSize: constants.DEFAULT_TEXT_FONT_SIZE
         };
     }
 
@@ -277,6 +280,7 @@ const mapStateToProps = state => {
     // Whether to show the text's page images
     let paginated = false;
     let pageImagesVisible = false;
+    let fontSize = getTextFontSize(state);
     if (
         workingWitness &&
         selectedText &&
@@ -480,7 +484,8 @@ const mapStateToProps = state => {
         textListVisible,
         selectedWitness,
         selectedSearchResult,
-        searchValue
+        searchValue,
+        fontSize
     };
 };
 

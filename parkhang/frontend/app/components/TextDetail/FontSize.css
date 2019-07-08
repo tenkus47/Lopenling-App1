@@ -1,8 +1,8 @@
-.imageToggle {
+.fontSize {
     display: flex;
     margin-right: 1em;
 }
 
-.imageToggle label {
+.fontSize label {
     font-size: 1em;
 }

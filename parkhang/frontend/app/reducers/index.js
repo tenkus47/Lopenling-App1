@@ -185,6 +185,10 @@ export const getAccountOverlayVisible = (state: AppState): boolean => {
     return ui.getAccountOverlayVisible(state.ui);
 };
 
+export const getTextFontSize = (state: AppState): number => {
+    return ui.getTextFontSize(state.ui);
+}
+
 // data
 
 export const getText = (state: AppState, textId: number): Text | null => {

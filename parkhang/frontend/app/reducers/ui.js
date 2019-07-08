@@ -2,6 +2,7 @@
 import * as actions from "actions";
 import Annotation, { TemporaryAnnotation } from "lib/Annotation";
 import * as api from "api";
+import * as constants from "app_constants";
 
 export type UIState = {
     selectedText: api.TextData | null,
@@ -28,7 +29,8 @@ export type UIState = {
     exportingWitness: {
         [witnessId: number]: boolean
     },
-    showAccountOverlay: boolean
+    showAccountOverlay: boolean,
+    textFontSize: number
 };
 
 export const initialUIState = {
@@ -44,7 +46,8 @@ export const initialUIState = {
     temporaryAnnotations: {},
     scrollPositions: {},
     exportingWitness: {},
-    showAccountOverlay: false
+    showAccountOverlay: false,
+    textFontSize: constants.DEFAULT_TEXT_FONT_SIZE
 };
 
 function loadedUserSettings(
@@ -56,6 +59,7 @@ function loadedUserSettings(
     // false is a valid value specifically check for null
     if (settings.showPageImages != null)
         state.showPageImages = settings.showPageImages;
+    if (settings.textFontSize) state.textFontSize = settings.textFontSize;
 
     return state;
 }
@@ -144,6 +148,16 @@ function changedShowPageImages(
     return {
         ...state,
         showPageImages: action.showPageImages
+    };
+}
+
+function changedTextFontSize(
+    state: UIState,
+    action: actions.ChangedTextFontSizeAction
+): UIState {
+    return {
+        ...state,
+        textFontSize: action.fontSize
     };
 }
 
@@ -347,6 +361,7 @@ uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
 uiReducers[actions.SELECTED_SEARCH_RESULT] = selectedSearchResult;
 uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
+uiReducers[actions.CHANGED_TEXT_FONT_SIZE] = changedTextFontSize;
 // uiReducers[actions.CHANGED_SELECTED_SEGMENT] = changedSelectedSegment;
 uiReducers[actions.CHANGED_ACTIVE_ANNOTATION] = changedActiveAnnotation;
 uiReducers[
@@ -466,4 +481,8 @@ export const getSelectedSearchResult = (
 
 export const getAccountOverlayVisible = (state: UIState): boolean => {
     return state.showAccountOverlay;
+};
+
+export const getTextFontSize = (state: UIState): number => {
+    return state.textFontSize;
 };

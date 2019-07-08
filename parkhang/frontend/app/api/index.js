@@ -68,7 +68,8 @@ export function setUserLocale(
 }
 
 export type UserSettings = {
-    showPageImages?: boolean
+    showPageImages?: boolean,
+    textFontSize?: number
 };
 
 export function fetchUserSettings(

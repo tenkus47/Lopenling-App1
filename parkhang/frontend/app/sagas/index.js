@@ -484,6 +484,19 @@ function* watchChangedShowPageImages() {
     yield takeLatest(actions.CHANGED_SHOW_PAGE_IMAGES, changedShowPageImages);
 }
 
+function* changedTextFontSize(action: actions.ChangedTextFontSizeAction) {
+    const user = yield select(reducers.getUser);
+    if (user.isLoggedIn) {
+        yield call(api.setUserSettings, user, {
+            textFontSize: action.fontSize
+        });
+    }
+}
+
+function* watchChangedTextFontSize() {
+    yield takeLatest(actions.CHANGED_TEXT_FONT_SIZE, changedTextFontSize);
+}
+
 // BATCHED ACTIONS
 
 function* dispatchedBatch(action): Saga<void> {
@@ -522,6 +535,7 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.SELECTED_LOCALE]: selectLocale,
     [actions.CHANGED_TEXT_LIST_WIDTH]: changedTextListWidth,
     [actions.CHANGED_SHOW_PAGE_IMAGES]: changedShowPageImages,
+    [actions.CHANGED_TEXT_FONT_SIZE]: changedTextFontSize,
     [actions.USER_LOGGED_IN]: loadUserSettings
 };
 
@@ -548,6 +562,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchSearchedText),
         call(watchChangedTextListWidth),
         call(watchChangedShowPageImages),
+        call(watchChangedTextFontSize),
         call(watchUserLoggedIn)
     ]);
 }

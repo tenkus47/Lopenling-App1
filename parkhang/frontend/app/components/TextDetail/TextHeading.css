@@ -41,6 +41,7 @@
 .controls {
     display: flex;
     margin-right: 2em;
+    align-items: center;
 }
 
 .controls label {

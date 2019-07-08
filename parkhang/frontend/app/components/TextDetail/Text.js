@@ -36,7 +36,8 @@ export type Props = {
         start: number,
         length: number
     } | null,
-    searchStringPositions: { [position: number]: [number, number] }
+    searchStringPositions: { [position: number]: [number, number] },
+    fontSize?: number
 };
 
 export type State = {
@@ -316,7 +317,9 @@ export default class Text extends React.Component<Props, State> {
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
-        if (
+        if (this.props.fontSize !== nextProps.fontSize) {
+            return true;
+        } else if (
             this._renderedHtml &&
             renderedHtml.__html === this._renderedHtml.__html
         ) {
@@ -348,6 +351,9 @@ export default class Text extends React.Component<Props, State> {
                     className={classnames(...classes)}
                     dangerouslySetInnerHTML={html}
                     onClick={e => this.selectedElement(e.target)}
+                    style={{
+                        fontSize: this.props.fontSize
+                    }}
                 />
             </div>
         );

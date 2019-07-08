@@ -64,7 +64,8 @@ export type Props = {
         start: number,
         length: number
     } | null,
-    searchValue: string | null
+    searchValue: string | null,
+    fontSize: number
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -425,6 +426,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 this.updateList(true);
             } else if (this.pageBreaksChanged(this.props, props)) {
                 this.updateList(true);
+            } else if (this.props.fontSize !== props.fontSize) {
+                this.updateList(true);
             } else if (this.props.activeAnnotation) {
                 this.updateList(true, this.selectedListRow(props));
             } else {
@@ -679,9 +682,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (
             props.selectedWitness &&
             props.selectedWitness.properties &&
-            props.selectedWitness.properties.hasOwnProperty(
-                IMAGE_START_PRE_KEY
-            )
+            props.selectedWitness.properties.hasOwnProperty(IMAGE_START_PRE_KEY)
         ) {
             imageUrl = this.getImageUrl(index);
         }
@@ -735,6 +736,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 this.props.selectedSearchResult
                             }
                             searchStringPositions={searchStringPositions}
+                            fontSize={props.fontSize}
                         />
                     </div>
                     {this.selectedTextIndex === index &&

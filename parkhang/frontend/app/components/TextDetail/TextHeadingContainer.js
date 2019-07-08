@@ -8,7 +8,8 @@ import {
     selectedTextWitness,
     changedActiveAnnotation,
     exportWitness,
-    changedShowPageImages
+    changedShowPageImages,
+    changedTextFontSize
 } from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
@@ -39,13 +40,15 @@ const mapStateToProps = (state: AppState): {} => {
         }
     }
     let showPageImages = reducers.showPageImages(state);
+    let textFontSize = reducers.getTextFontSize(state);
 
     return {
         witnesses,
         selectedText,
         selectedWitness,
         exportingWitness,
-        showPageImages
+        showPageImages,
+        textFontSize
     };
 };
 
@@ -57,6 +60,9 @@ const mergeProps = (stateProps: Props, dispatchProps, ownProps): {} => {
         ...ownProps,
         onToggledPageImages: (showImages: boolean) => {
             dispatch(changedShowPageImages(showImages));
+        },
+        onChangedFontSize: (fontSize: number) => {
+            dispatch(changedTextFontSize(fontSize));
         },
         onSelectedWitness: (witness: Witness) => {
             dispatch(selectedTextWitness(selectedText.id, witness.id));
