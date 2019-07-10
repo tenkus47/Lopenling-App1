@@ -54,10 +54,19 @@ class AnnotationSerializer(serializers.ModelSerializer):
     )
     unique_id = serializers.UUIDField()
 
+    def __init__(self, *args, **kwargs):
+        with_modified = kwargs.pop('with_modified', False)
+
+        super(AnnotationSerializer, self).__init__(*args, **kwargs)
+
+        if not with_modified:
+            self.fields.pop('modified')
+
     class Meta:
         model = Annotation
         fields = ('id', 'unique_id', 'type', 'witness', 'start', 'length', 'content',
-                  'creator_witness', 'creator_user', 'original', 'is_deleted')
+                  'creator_witness', 'creator_user', 'original', 'is_deleted',
+                  'modified')
 
 
 class UserAnnotationOperationsSerializer(serializers.ModelSerializer):

@@ -196,8 +196,11 @@ class AnnotationList(APIView):
                 witness=witness_id,
                 creator_user=None
             )
+        with_modified = False
+        if 'with_modified' in request.query_params:
+            with_modified = True
 
-        serializer = AnnotationSerializer(annotation_list, many=True)
+        serializer = AnnotationSerializer(annotation_list, many=True, with_modified=with_modified)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
