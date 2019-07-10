@@ -178,14 +178,23 @@ export type AnnotationData = {
     name?: string
 };
 export function fetchWitnessAnnotations(
-    witness: WitnessData
+    witness: WitnessData,
+    start?: number,
+    length?: number,
+    type?: string
 ): Promise<AnnotationData[]> {
-    const url =
+    let url =
         "/api/texts/" +
         witness.text +
         "/witnesses/" +
         witness.id +
         "/annotations/";
+    if (start && length) {
+        url += start + "," + length;
+    }
+    if (type) {
+        url += "?type=" + type;
+    }
     return request(GET, url);
 }
 
