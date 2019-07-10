@@ -173,6 +173,7 @@ export type AnnotationData = {
     type: string,
     unique_id: AnnotationUniqueId,
     witness: number,
+    modified?: Date,
     is_saved?: boolean,
     name?: string
 };

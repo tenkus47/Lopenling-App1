@@ -49,6 +49,7 @@ export default class Annotation {
     _uniqueId: AnnotationUniqueId | null;
     basedOn: Annotation | null;
     _isSaved: boolean;
+    modified: ?Date;
 
     /**
      * Text annotation

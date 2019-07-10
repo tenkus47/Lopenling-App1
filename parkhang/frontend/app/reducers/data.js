@@ -778,6 +778,9 @@ export function annotationFromData(
     if (annotationData.is_saved) {
         annotation.save();
     }
+    if (annotationData.modified) {
+        annotation.modified = annotationData.modified;
+    }
 
     return annotation;
 }
