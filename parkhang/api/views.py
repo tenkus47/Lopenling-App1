@@ -199,6 +199,8 @@ class AnnotationList(APIView):
             )
         if start and length:
             annotation_list = annotation_list.filter(start=start,length=length)
+        if 'type' in request.query_params:
+            annotation_list = annotation_list.filter(type=request.query_params['type'])
         with_modified = False
         if 'with_modified' in request.query_params:
             with_modified = True
