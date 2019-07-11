@@ -22,10 +22,23 @@ DATABASES = {
     }
 }
 
-# WEBPACK
 WEBPACK_LOADER = {
     'MAIN': {
         'BUNDLE_DIR_NAME': 'bundles/',
         'STATS_FILE': os.path.join(BASE_DIR, '../frontend/webpack-stats-dev.json'),
     }
 }
+
+# Uncomment WEBPACK_LOADER and STATICFILES_DIRS below to 
+# test the production js/css build.
+
+# WEBPACK_LOADER = {
+#     'MAIN': {
+#         'BUNDLE_DIR_NAME': 'bundles/',
+#         'STATS_FILE': os.path.join(BASE_DIR, '../frontend/webpack-stats.json'),
+#     }
+# }
+
+# STATICFILES_DIRS = STATICFILES_DIRS + [
+#     '%s/../frontend/static/' % (BASE_DIR),
+# ]
