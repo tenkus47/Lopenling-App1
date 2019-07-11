@@ -62,19 +62,6 @@ export default class SegmentedText {
                     "segments not same as sortedSegments, length: %d",
                     segmentsStr.length
                 );
-            } else {
-                console.log(
-                    "segments SAME as sortedSegments, length: %d, \nextracts: %s\nextracts: %s",
-                    segmentsStr.length,
-                    segmentsStr.substr(
-                        0,
-                        segmentsStr.length > 500 ? 500 : segmentsStr.length
-                    ),
-                    sortedSegmentsStr.substr(
-                        0,
-                        segmentsStr.length > 500 ? 500 : segmentsStr.length
-                    )
-                );
             }
         }
 
