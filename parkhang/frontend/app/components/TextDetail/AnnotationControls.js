@@ -42,6 +42,7 @@ export type Props = {
     cancelEditAnnotation: (annotation: Annotation) => void,
     deleteAnnotation: (annotation: Annotation) => void,
     addPageBreak: () => void,
+    addLineBreak: () => void,
     list: List | null
 };
 
@@ -371,12 +372,19 @@ export default class AnnotationControls extends React.Component<Props> {
 
         let pageBreaksButton = null;
         let allowPageBreak = true;
+        let lineBreaksButton = null;
+        let allowLineBreak = true;
         if (isLoggedIn && !this.props.selectedWitness.isWorking) {
             let pageBreaks = [];
+            let lineBreaks = [];
             if (this.props.availableAnnotations) {
                 pageBreaks = this.props.availableAnnotations.filter(
                     (annotation: Annotation) =>
                         annotation.type === ANNOTATION_TYPES.pageBreak
+                );
+                lineBreaks = this.props.availableAnnotations.filter(
+                    (annotation: Annotation) =>
+                        annotation.type === ANNOTATION_TYPES.lineBreak
                 );
             }
 
@@ -397,6 +405,28 @@ export default class AnnotationControls extends React.Component<Props> {
                 );
                 allowPageBreak = false;
             }
+
+            if (lineBreaks.length > 0) {
+                lineBreaksButton = (
+                    <div className={styles.breakButtons}>
+                        <Button
+                            title="Line Break"
+                            accessoryType="DELETE"
+                            icon="&#182;"
+                            onClick={() => {
+                                this.props.deleteAnnotation(lineBreaks[0]);
+                            }}
+                            isActive={true}
+                            backgroundColor={colours.activeButton}
+                        />
+                    </div>
+                );
+                allowLineBreak = false;
+            }
+
+            // Can't have line break and page break in same place.
+            if (!allowPageBreak) allowLineBreak = false;
+            if (!allowLineBreak) allowPageBreak = false;
         }
 
         let tempNotes = null;
@@ -453,6 +483,9 @@ export default class AnnotationControls extends React.Component<Props> {
                         addPageBreak={
                             allowPageBreak ? props.addPageBreak : null
                         }
+                        addLineBreak={
+                            allowLineBreak ? props.addLineBreak : null
+                        }
                         addNote={
                             isLoggedIn && !tempNotes
                                 ? () => props.addNote()
@@ -466,6 +499,7 @@ export default class AnnotationControls extends React.Component<Props> {
                     {temporaryAnnotations}
                     {annotations}
                     {pageBreaksButton}
+                    {lineBreaksButton}
                     {tempNotes}
                     {notes}
                 </div>

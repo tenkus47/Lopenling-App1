@@ -37,6 +37,11 @@
     border-top-right-radius: 4px;
 }
 
+.textLine {
+    margin: 0;
+    padding: 0;
+}
+
 .limitWidth.textFirstRow {
     margin-top: 20px;
 }

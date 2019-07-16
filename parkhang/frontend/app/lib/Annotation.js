@@ -7,7 +7,8 @@ export const ANNOTATION_TYPES: { [string]: string } = {
     variant: "V",
     note: "N",
     marker: "M",
-    pageBreak: "P"
+    pageBreak: "P",
+    lineBreak: "L"
 };
 
 export const TEMPORARY_TYPE: string = "T";
