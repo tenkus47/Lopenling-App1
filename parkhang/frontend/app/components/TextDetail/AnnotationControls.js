@@ -371,20 +371,24 @@ export default class AnnotationControls extends React.Component<Props> {
         }
 
         let pageBreaksButton = null;
-        let allowPageBreak = true;
+        let allowPageBreak = !this.props.selectedWitness.isWorking;
         let lineBreaksButton = null;
-        let allowLineBreak = true;
+        let allowLineBreak = !this.props.selectedWitness.isWorking;
         if (isLoggedIn && !this.props.selectedWitness.isWorking) {
             let pageBreaks = [];
             let lineBreaks = [];
             if (this.props.availableAnnotations) {
                 pageBreaks = this.props.availableAnnotations.filter(
                     (annotation: Annotation) =>
-                        annotation.type === ANNOTATION_TYPES.pageBreak
+                        annotation.type === ANNOTATION_TYPES.pageBreak &&
+                        annotation.creatorWitness.id ===
+                            this.props.selectedWitness.id
                 );
                 lineBreaks = this.props.availableAnnotations.filter(
                     (annotation: Annotation) =>
-                        annotation.type === ANNOTATION_TYPES.lineBreak
+                        annotation.type === ANNOTATION_TYPES.lineBreak &&
+                        annotation.creatorWitness.id ===
+                            this.props.selectedWitness.id
                 );
             }
 

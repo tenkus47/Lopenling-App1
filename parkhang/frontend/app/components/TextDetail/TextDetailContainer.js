@@ -372,6 +372,18 @@ const mapStateToProps = state => {
             }
         );
 
+        annotations = annotations.filter(annotation => {
+            if (
+                selectedWitness &&
+                annotation.type === ANNOTATION_TYPES.lineBreak &&
+                annotation.creatorWitness.id !== selectedWitness.id
+            ) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+
         let segmentedWorkingWitness = getSegmentedWitness(workingWitness);
         annotatedText = new AnnotatedText(
             segmentedWorkingWitness,

@@ -181,10 +181,13 @@ const getAvailableAnnotations = (
             ) {
                 availableAnnotations.push(annotation);
             }
-        } else if (annotation.type === ANNOTATION_TYPES.pageBreak) {
-            availableAnnotations.push(annotation);
-        } else if (annotation.type === ANNOTATION_TYPES.lineBreak) {
-            availableAnnotations.push(annotation);
+        } else if (!annotatedText.activeWitness.isWorking) {
+            if (
+                annotation.type === ANNOTATION_TYPES.pageBreak ||
+                annotation.type === ANNOTATION_TYPES.lineBreak
+            ) {
+                availableAnnotations.push(annotation);
+            }
         }
     }
 
