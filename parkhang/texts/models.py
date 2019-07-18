@@ -77,13 +77,15 @@ class AnnotationType(Enum):
     variant = 'V'
     note = 'N'
     page_break = 'P'
+    line_break = 'L'
 
 
 class Annotation(models.Model):
     TYPE_CHOICES = (
         (AnnotationType.variant.value, 'Variant'),
         (AnnotationType.note.value, 'Note'),
-        (AnnotationType.page_break.value, 'Page Break')
+        (AnnotationType.page_break.value, 'Page Break'),
+        (AnnotationType.line_break.value, 'Line Break')
     )
     unique_id = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
     witness = models.ForeignKey(Witness)

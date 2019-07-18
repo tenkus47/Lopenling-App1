@@ -179,13 +179,14 @@ class WitnessList(APIView):
 
 class AnnotationList(APIView):
 
-    def get(self, request, text_id, witness_id):
+    def get(self, request, text_id, witness_id, start=None, length=None):
         """
         Get list of annotations for the given text.
 
         If the user is logged in, also return any of that
         user's annotations for the text.
         """
+        
         if request.user.is_authenticated:
             annotation_list = Annotation.objects.active().filter(
                 Q(witness=witness_id),
@@ -196,8 +197,15 @@ class AnnotationList(APIView):
                 witness=witness_id,
                 creator_user=None
             )
+        if start and length:
+            annotation_list = annotation_list.filter(start=start,length=length)
+        if 'type' in request.query_params:
+            annotation_list = annotation_list.filter(type=request.query_params['type'])
+        with_modified = False
+        if 'with_modified' in request.query_params:
+            with_modified = True
 
-        serializer = AnnotationSerializer(annotation_list, many=True)
+        serializer = AnnotationSerializer(annotation_list, many=True, with_modified=with_modified)
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):

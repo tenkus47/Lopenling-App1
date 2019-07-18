@@ -8,7 +8,8 @@ import App from "components/App";
 const mapStateToProps = state => {
     return {
         textListIsVisible: reducers.getTextListVisible(state),
-        textListWidth: reducers.getTextListWidth(state)
+        textListWidth: reducers.getTextListWidth(state),
+        state: state
     };
 };
 
@@ -19,7 +20,8 @@ const matchDispatchToProps = dispatch => {
         },
         onChangedTextListVisible: (isVisible: boolean) => {
             dispatch(actions.changedTextListVisible(isVisible));
-        }
+        },
+        dispatch
     };
 };
 

@@ -181,8 +181,13 @@ const getAvailableAnnotations = (
             ) {
                 availableAnnotations.push(annotation);
             }
-        } else if (annotation.type === ANNOTATION_TYPES.pageBreak) {
-            availableAnnotations.push(annotation);
+        } else if (!annotatedText.activeWitness.isWorking) {
+            if (
+                annotation.type === ANNOTATION_TYPES.pageBreak ||
+                annotation.type === ANNOTATION_TYPES.lineBreak
+            ) {
+                availableAnnotations.push(annotation);
+            }
         }
     }
 
@@ -355,6 +360,37 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
+    const addBreak = (breakType: string): (() => void) => {
+        return () => {
+            const location = ownProps.activeAnnotation;
+
+            const breakAnnotation = new Annotation(
+                null,
+                location.witness,
+                location.start,
+                0,
+                null,
+                breakType,
+                stateProps.selectedWitness,
+                stateProps.user
+            );
+            let selectedWitnessData = reducers.dataFromWitness(
+                stateProps.selectedWitness
+            );
+
+            let actionsBatch = [];
+
+            actionsBatch.push(actions.createdAnnotation(breakAnnotation));
+            actionsBatch.push(
+                actions.appliedAnnotation(
+                    breakAnnotation.uniqueId,
+                    selectedWitnessData
+                )
+            );
+
+            dispatch(batchActions(actionsBatch));
+        };
+    };
     return {
         ...stateProps,
         ...ownProps,
@@ -616,35 +652,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 actions.addedTemporaryAnnotation(temporaryAnnotation, true)
             );
         },
-        addPageBreak: () => {
-            const location = ownProps.activeAnnotation;
-
-            const pageBreak = new Annotation(
-                null,
-                location.witness,
-                location.start,
-                0,
-                null,
-                ANNOTATION_TYPES.pageBreak,
-                stateProps.selectedWitness,
-                stateProps.user
-            );
-            let selectedWitnessData = reducers.dataFromWitness(
-                stateProps.selectedWitness
-            );
-
-            let actionsBatch = [];
-
-            actionsBatch.push(actions.createdAnnotation(pageBreak));
-            actionsBatch.push(
-                actions.appliedAnnotation(
-                    pageBreak.uniqueId,
-                    selectedWitnessData
-                )
-            );
-
-            dispatch(batchActions(actionsBatch));
-        }
+        addPageBreak: addBreak(ANNOTATION_TYPES.pageBreak),
+        addLineBreak: addBreak(ANNOTATION_TYPES.lineBreak)
     };
 };
 

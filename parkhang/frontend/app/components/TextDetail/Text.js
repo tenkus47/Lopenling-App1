@@ -7,6 +7,7 @@ import { INSERTION_KEY, DELETION_KEY } from "lib/AnnotatedText";
 import _ from "lodash";
 import SegmentedText from "lib/SegmentedText";
 import Annotation from "lib/Annotation";
+import { ANNOTATION_TYPES } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
 
 export function idForSegment(segment: TextSegment): string {
@@ -107,7 +108,8 @@ export default class Text extends React.Component<Props, State> {
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
         let segments = renderState.segmentedText.segments;
-        let segmentHTML = "";
+        let textLineClass = styles.textLine;
+        let segmentHTML = '<p class="' + textLineClass + '">';
         if (segments.length === 0) return { __html: segmentHTML };
 
         const insertionClass = styles.insertion;
@@ -135,6 +137,7 @@ export default class Text extends React.Component<Props, State> {
             let annotations = this.annotationsForSegment(segment);
             let deletionText = null;
             let selectedCurrentDeletion = false;
+            let hasLineBreak = false;
             if (annotations) {
                 let insertions = [];
                 let activeInsertions = [];
@@ -160,6 +163,11 @@ export default class Text extends React.Component<Props, State> {
                             }
                         } else {
                             remainingAnnotations.push(annotation);
+                            if (
+                                annotation.type === ANNOTATION_TYPES.lineBreak
+                            ) {
+                                hasLineBreak = true;
+                            }
                         }
                     }
                 }
@@ -304,9 +312,13 @@ export default class Text extends React.Component<Props, State> {
                 ">" +
                 segmentContent +
                 "</span>";
+
+            if (hasLineBreak)
+                segmentHTML += '</p><p class="' + textLineClass + '">';
         }
 
         this._renderedSegments = segments;
+        segmentHTML += "</p>";
 
         const html = {
             __html: segmentHTML

@@ -7,6 +7,7 @@ import NoteIcon from "images/note.svg";
 
 type Props = {
     addPageBreak: null | (() => void),
+    addLineBreak: null | (() => void),
     addNote: null | (() => void)
 };
 
@@ -17,6 +18,7 @@ class AnnotationControlsHeader extends React.Component<Props> {
 
     render() {
         const allowPageBreak = this.props.addPageBreak != null;
+        const allowLineBreak = this.props.addLineBreak != null;
         return (
             <div className={styles.header}>
                 <Button
@@ -32,6 +34,15 @@ class AnnotationControlsHeader extends React.Component<Props> {
                     accessoryType={this.props.addNote ? "ADD" : null}
                     onClick={this.props.addNote}
                     disabled={this.props.addNote ? false : true}
+                    align="left"
+                />
+                <Button
+                    title="Line Break"
+                    noBezel={true}
+                    icon="&#182;"
+                    accessoryType={allowLineBreak ? "ADD" : null}
+                    onClick={this.props.addLineBreak}
+                    disabled={!allowLineBreak}
                     align="left"
                 />
                 <Button
