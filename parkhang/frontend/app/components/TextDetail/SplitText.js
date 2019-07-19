@@ -88,6 +88,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     _activeWitness: Witness | null;
     _didSetInitialScrollPosition: boolean;
     _filteredSelectedAnnotatedSegments: TextSegment[];
+    _modifyingSelection: boolean;
     selectedTextIndex: number | null;
     splitTextRect: ClientRect | null;
     firstSelectedSegment: TextSegment | null;
@@ -110,6 +111,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this._mouseDown = false;
         this._activeWitness = null;
         this._didSetInitialScrollPosition = false;
+        this._modifyingSelection = false;
 
         this.processProps(props);
     }
@@ -147,10 +149,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     handleSelection(e: Event) {
-        this.activeSelection = document.getSelection();
-        if (!this._mouseDown) {
-            // sometimes, this gets called after the mouseDown event handler
-            this.mouseUp();
+        if (!this._modifyingSelection) {
+            this.activeSelection = document.getSelection();
+            if (!this._mouseDown) {
+                // sometimes, this gets called after the mouseDown event handler
+                this.mouseUp();
+            }
+        } else {
+            e.stopPropagation();
+            // Need to set this here. If set at callsite, the event will not
+            // have time to propagate.
+            this._modifyingSelection = false;
         }
     }
 
@@ -476,6 +485,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                         selRange.setEnd(endNode, endNode.childNodes.length);
                         let sel = document.getSelection();
                         if (sel) {
+                            this._modifyingSelection = true;
                             sel.removeAllRanges();
                             sel.addRange(selRange);
                             this.selectedNodes = null;
