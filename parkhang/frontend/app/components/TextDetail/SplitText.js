@@ -298,8 +298,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
             }
             if (firstSelectedSegment) {
-                selectedElementId = idForSegment(firstSelectedSegment);
-                segmentIdFunction = idForSegment;
+                if (
+                    firstSelectedSegment.length === 0 &&
+                    props.activeAnnotation &&
+                    props.activeAnnotation.isInsertion
+                ) {
+                    selectedElementId = idForInsertion(firstSelectedSegment);
+                    segmentIdFunction = idForInsertion;
+                } else {
+                    selectedElementId = idForSegment(firstSelectedSegment);
+                    segmentIdFunction = idForSegment;
+                }
             }
         } else if (props.activeAnnotation) {
             if (props.activeAnnotation.isDeletion) {

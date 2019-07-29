@@ -495,6 +495,8 @@ export default class AnnotatedText {
 
                 if (deleted) {
                     segment = pos;
+                } else if (annotation.isInsertion) {
+                    segment = new TextSegment(pos, annotation.content);
                 } else {
                     segment = this.segmentedText.segmentAtPosition(pos);
                 }
