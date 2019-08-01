@@ -35,6 +35,8 @@ export default class AnnotatedText {
     annotations: Annotation[];
     _annotationsByType: { [string]: Annotation[] };
     _uniqueId: string | null;
+    _generatedTextLength: number | null;
+    _originalTextLength: number | null;
 
     /**
      *
@@ -65,6 +67,8 @@ export default class AnnotatedText {
             this.addAnnotation(annotations[i]);
         }
         this._uniqueId = null;
+        this._generatedTextLength = null;
+        this._originalTextLength = null;
     }
 
     get textInfo(): Text {
@@ -483,7 +487,11 @@ export default class AnnotatedText {
                     segments.push(segment);
                 }
             }
-        } else {
+            // check it's not an insertion at the end of the text
+        } else if (
+            !annotation.isInsertion ||
+            annotation.start !== this._originalTextLength
+        ) {
             let start = annotation.start;
             let end = annotation.end;
 
@@ -626,6 +634,7 @@ export default class AnnotatedText {
 
         let processedSegmentAnnotations = {};
         let currentPosition = 0;
+        let originalPosition = 0;
         let updatedSegments = new Array(newSegments.length);
         for (let i = 0, len = newSegments.length; i < len; i++) {
             let segment = newSegments[i];
@@ -649,6 +658,7 @@ export default class AnnotatedText {
                         ] =
                             segment.start;
                     }
+                    originalPosition = segment.start;
                 } else if (!alreadyProcessed && replaced) {
                     const firstReplacedSeg = replaced[0];
                     const replacedLength = replaced.reduce(
@@ -660,6 +670,7 @@ export default class AnnotatedText {
                             segment.start + j
                         ] = [currentPosition, deleted];
                     }
+                    originalPosition = segment.start + replacedLength;
                     for (let m = 0; m < annotation.content.length; m++) {
                         this._currentOriginalSegmentPositions[
                             currentPosition + m
@@ -678,12 +689,15 @@ export default class AnnotatedText {
                     this._currentOriginalSegmentPositions[currentPosition + j] =
                         segmentPos + j;
                 }
+                originalPosition = segment.start + segment.text.length;
             }
 
             segment = new TextSegment(currentPosition, newSegments[i].text);
             updatedSegments[i] = segment;
             currentPosition += segment.length;
         }
+        this._generatedTextLength = currentPosition;
+        this._originalTextLength = originalPosition;
 
         return new SegmentedText(updatedSegments);
     }

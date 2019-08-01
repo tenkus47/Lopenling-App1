@@ -96,6 +96,7 @@ export default class SplitText {
             lastPosition = endPosition;
         }
         if (textIndex === null) {
+            // Likely an insertion at the end of a text
             console.warn("no index for position %d", position);
             textIndex = textsFinalPositions.length - 1;
         }
