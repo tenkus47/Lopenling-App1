@@ -7,7 +7,9 @@
     --controlsPadding: 0px;
     --controlsMargin: 10px;
     --arrowHeight: 10px;
-    --arrowColor: #eee;
+    --controlsBackground: #7c7e7f;
+    --arrowColor: var(--controlsBackground);
+    
 }
 
 :export {
@@ -15,7 +17,7 @@
 }
 
 .annotationControls {
-    background-color: #eee;
+    background-color: var(--controlsBackground);
     padding: var(--controlsPadding);
     display: flex;
     flex-direction: column;
@@ -38,7 +40,7 @@
     height: 0;
     border-right: var(--arrowHeight) solid transparent;
     border-left: var(--arrowHeight) solid transparent;
-    border-bottom: var(--arrowHeight) solid var(--main-tint);
+    border-bottom: var(--arrowHeight) solid var(--arrowColor);
 }
 
 .arrowLeft {
