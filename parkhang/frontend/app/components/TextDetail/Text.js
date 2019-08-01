@@ -193,6 +193,7 @@ export default class Text extends React.Component<Props, State> {
                     let insertionClasses = insertionClass;
                     if (
                         renderProps.activeAnnotation &&
+                        renderProps.activeAnnotation.isInsertion &&
                         renderProps.activeAnnotation.start === insertion.start
                     ) {
                         insertionClasses += " " + styles.selectedAnnotation;
