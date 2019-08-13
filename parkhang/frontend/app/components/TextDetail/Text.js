@@ -295,17 +295,15 @@ export default class Text extends React.Component<Props, State> {
                         let [start, end] = activeSearchResultEnd;
                         if (j === 0) {
                             segmentContent +=
-                                '<span class="' + highlight + '">' + char;
-                        } else if (position === end) {
+                                '<span class="' + highlight + '">';
+                        }
+                        if (position === end) {
                             segmentContent += char + "</span>";
                             activeSearchResultEnd = null;
                         } else if (j === segment.text.length - 1) {
                             segmentContent += char + "</span>";
                         } else {
                             segmentContent += char;
-                        }
-                        if (j === segment.text.length - 1 || position === end) {
-                            segmentContent += "</span>";
                         }
                     } else if (position in renderProps.searchStringPositions) {
                         let [start, end] = renderProps.searchStringPositions[
