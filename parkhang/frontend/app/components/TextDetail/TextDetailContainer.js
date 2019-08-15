@@ -312,6 +312,9 @@ const mapStateToProps = state => {
         );
 
         let removedDefaultAnnotations = null;
+        // Annotations generated for other witnesses,
+        // along default annotation removed by the user.
+        let otherWitnessAnnotations = {};
 
         if (selectedWitness.id !== workingWitness.id) {
             // If we are not viewing the working version,
@@ -336,6 +339,10 @@ const mapStateToProps = state => {
                         )
                     ) {
                         selectedWitnessAnnotations[
+                            annotationData.unique_id
+                        ] = annotationData;
+                    } else {
+                        otherWitnessAnnotations[
                             annotationData.unique_id
                         ] = annotationData;
                     }
@@ -364,6 +371,19 @@ const mapStateToProps = state => {
         }
 
         annotations = annotationsFromData(state, workingAnnotationList);
+        otherWitnessAnnotations = annotationsFromData(
+            state,
+            otherWitnessAnnotations
+        );
+        if (otherWitnessAnnotations.length > 0) {
+            annotations = _.unionWith(
+                annotations,
+                otherWitnessAnnotations,
+                (val1: Annotation, val2: Annotation) => {
+                    return val1.id === val2.id;
+                }
+            );
+        }
         annotations = _.unionWith(
             appliedAnnotations,
             annotations,
