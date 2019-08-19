@@ -349,10 +349,17 @@ export default class AnnotatedText {
      * @returns {Annotation}
      */
     getAnnotation(start: number, length: number): Annotation | null {
-        let [startPos, deleted] = this._orginalCurrentSegmentPositions[start];
+        this.segmentedText;
+        let posKey = start;
+        if (length === 0) posKey = start + INSERTION_KEY;
+        let [startPos, deleted] = this._orginalCurrentSegmentPositions[posKey];
         let annotation = null;
         if (startPos === undefined) {
         } else if (length === 0) {
+            const annotations = this.annotationsForPosition(startPos);
+            if (annotations.length > 0) {
+                annotation = annotations[0];
+            }
         } else {
             let annotations: Annotation[] = [];
             for (let i = startPos; i < startPos + length; i++) {

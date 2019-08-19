@@ -507,6 +507,15 @@ describe("AnnotatedText", () => {
         expect(annotatedText.getAnnotation(testStart, 1)).toEqual(
             expectedVariant
         );
+
+        let insertionStart = 268;
+        let expectedInsertion = annotations.filter((annotation: Annotation) => {
+            return annotation.start === insertionStart;
+        })[0];
+
+        expect(annotatedText.getAnnotation(insertionStart, 0)).toEqual(
+            expectedInsertion
+        );
     });
 
     test("Annotations for position", () => {
