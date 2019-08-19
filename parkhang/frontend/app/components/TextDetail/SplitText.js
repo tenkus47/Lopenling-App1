@@ -285,12 +285,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             );
             splitTextRect = splitTextComponent.getBoundingClientRect();
         }
+        let selectedAnnotatedSegments = [];
         if (
             props.selectedAnnotatedSegments &&
             props.selectedAnnotatedSegments.length > 0
         ) {
-            for (let i = 0; i < props.selectedAnnotatedSegments.length; i++) {
-                let segment = props.selectedAnnotatedSegments[i];
+            selectedAnnotatedSegments = props.selectedAnnotatedSegments;
+            for (let i = 0; i < selectedAnnotatedSegments.length; i++) {
+                let segment = selectedAnnotatedSegments[i];
                 if (
                     firstSelectedSegment === null &&
                     segment instanceof TextSegment
@@ -318,6 +320,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 selectedElementId = idForDeletedSegment(segment);
                 segmentIdFunction = idForDeletedSegment;
                 firstSelectedSegment = segment;
+                selectedAnnotatedSegments = [firstSelectedSegment];
             } else if (props.activeAnnotation.isInsertion) {
                 const [
                     start
@@ -329,12 +332,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     selectedElementId = idForInsertion(segment);
                     segmentIdFunction = idForInsertion;
                     firstSelectedSegment = segment;
+                    selectedAnnotatedSegments = [firstSelectedSegment];
                 }
             }
         }
         if (segmentIdFunction) {
-            for (let i = 0; i < props.selectedAnnotatedSegments.length; i++) {
-                let segment = props.selectedAnnotatedSegments[i];
+            for (let i = 0; i < selectedAnnotatedSegments.length; i++) {
+                let segment = selectedAnnotatedSegments[i];
                 if (segment instanceof TextSegment) {
                     const segmentId = segmentIdFunction(segment);
                     selectedElementIds.push(segmentId);
