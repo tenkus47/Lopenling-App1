@@ -341,7 +341,9 @@ const mapStateToProps = state => {
                         selectedWitnessAnnotations[
                             annotationData.unique_id
                         ] = annotationData;
-                    } else {
+                    } else if (
+                        annotationData.creator_witness === selectedWitness.id
+                    ) {
                         otherWitnessAnnotations[
                             annotationData.unique_id
                         ] = annotationData;
