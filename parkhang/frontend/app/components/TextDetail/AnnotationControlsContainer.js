@@ -38,7 +38,10 @@ const getAnnotationsData = (
     workingSourceName
 ): AnnotationData[] => {
     let annotationsData = [];
-    let baseSources = sources.map(source => source.name);
+    let baseSources = sources.filter(
+        source => source.isWorking || source.isBase
+    );
+    let baseSourceNames = baseSources.map(source => source.name);
     if (annotations) {
         let annotationsById = {};
         for (let i = 0; i < annotations.length; i++) {
@@ -52,7 +55,7 @@ const getAnnotationsData = (
                     isTemporary: true,
                     annotation: annotation
                 };
-                baseSources = baseSources.filter(
+                baseSourceNames = baseSourceNames.filter(
                     a => a !== annotation.getSourceName()
                 );
                 id = TEMPORARY_ANNOTATION_ID;
@@ -60,7 +63,7 @@ const getAnnotationsData = (
                 let existingAnnotation = annotationsById[id];
                 existingAnnotation.name +=
                     " " + addTibetanShay(annotation.getSourceName());
-                baseSources = baseSources.filter(
+                baseSourceNames = baseSourceNames.filter(
                     a => a !== annotation.getSourceName()
                 );
             } else {
@@ -71,7 +74,7 @@ const getAnnotationsData = (
                     userCreated: annotation.userCreated,
                     annotation: annotation
                 };
-                baseSources = baseSources.filter(
+                baseSourceNames = baseSourceNames.filter(
                     a => a !== annotation.getSourceName()
                 );
             }
@@ -85,11 +88,11 @@ const getAnnotationsData = (
             }
         }
         // Make sure Working source is first
-        baseSources.unshift(workingSourceName);
+        baseSourceNames.unshift(workingSourceName);
         annotationsData = Object.keys(annotationsById).reduce((arr, key) => {
             const annotationData = annotationsById[key];
             if (annotationData.isWorking) {
-                annotationData.name = baseSources.reduce(
+                annotationData.name = baseSourceNames.reduce(
                     (prev, cur) => (prev += " " + addTibetanShay(cur, ";")),
                     ""
                 );
