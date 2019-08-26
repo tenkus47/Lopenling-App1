@@ -312,6 +312,10 @@ const mapStateToProps = state => {
         );
 
         let removedDefaultAnnotations = null;
+        // Default annotations removed by the user.
+        // Usually these are available when viewing
+        // a non-working edition.
+        let nonActiveAnnotations = {};
 
         if (selectedWitness.id !== workingWitness.id) {
             // If we are not viewing the working version,
@@ -336,6 +340,12 @@ const mapStateToProps = state => {
                         )
                     ) {
                         selectedWitnessAnnotations[
+                            annotationData.unique_id
+                        ] = annotationData;
+                    } else if (
+                        annotationData.creator_witness === selectedWitness.id
+                    ) {
+                        nonActiveAnnotations[
                             annotationData.unique_id
                         ] = annotationData;
                     }
@@ -364,6 +374,19 @@ const mapStateToProps = state => {
         }
 
         annotations = annotationsFromData(state, workingAnnotationList);
+        nonActiveAnnotations = annotationsFromData(
+            state,
+            nonActiveAnnotations
+        );
+        if (nonActiveAnnotations.length > 0) {
+            annotations = _.unionWith(
+                annotations,
+                nonActiveAnnotations,
+                (val1: Annotation, val2: Annotation) => {
+                    return val1.id === val2.id;
+                }
+            );
+        }
         annotations = _.unionWith(
             appliedAnnotations,
             annotations,
@@ -526,13 +549,16 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         } else if (segmentVariants && segmentVariants.length > 0) {
             // get base text annotation for longest annotation highlighted in text
             let longestAvailable = getLongestAnnotation(segmentVariants);
-            let [start, length] = annotatedText.getPositionOfAnnotation(
+            let [start, textLength] = annotatedText.getPositionOfAnnotation(
                 longestAvailable
             );
             if (longestAvailable && longestAvailable.isInsertion) {
-                length = 0;
+                textLength = 0;
             }
-            activeAnnotation = annotatedText.getBaseAnnotation(start, length);
+            activeAnnotation = annotatedText.getBaseAnnotation(
+                start,
+                textLength
+            );
         } else {
             // get base annotation of just the segment
             activeAnnotation = annotatedText.getBaseAnnotation(start, length);

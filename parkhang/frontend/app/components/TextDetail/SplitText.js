@@ -88,6 +88,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     _activeWitness: Witness | null;
     _didSetInitialScrollPosition: boolean;
     _filteredSelectedAnnotatedSegments: TextSegment[];
+    _modifyingSelection: boolean;
     selectedTextIndex: number | null;
     splitTextRect: ClientRect | null;
     firstSelectedSegment: TextSegment | null;
@@ -110,6 +111,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this._mouseDown = false;
         this._activeWitness = null;
         this._didSetInitialScrollPosition = false;
+        this._modifyingSelection = false;
 
         this.processProps(props);
     }
@@ -147,10 +149,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     handleSelection(e: Event) {
-        this.activeSelection = document.getSelection();
-        if (!this._mouseDown) {
-            // sometimes, this gets called after the mouseDown event handler
-            this.mouseUp();
+        if (!this._modifyingSelection) {
+            this.activeSelection = document.getSelection();
+            if (!this._mouseDown) {
+                // sometimes, this gets called after the mouseDown event handler
+                this.mouseUp();
+            }
+        } else {
+            e.stopPropagation();
+            // Need to set this here. If set at callsite, the event will not
+            // have time to propagate.
+            this._modifyingSelection = false;
         }
     }
 
@@ -261,25 +270,29 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let selectedElementIds = [];
         let startPos = 0;
         if (props.activeAnnotation) {
+            let activeAnnotation = props.activeAnnotation;
             [startPos] = props.splitText.annotatedText.getPositionOfAnnotation(
-                props.activeAnnotation
+                activeAnnotation
             );
             if (startPos === null) {
                 console.warn("No startPos in getControlsMeasurements");
                 return null;
             }
 
+            // Index of text containing end of annotation
             selectedTextIndex = props.splitText.getTextIndexOfPosition(
-                startPos
+                startPos + activeAnnotation.length
             );
             splitTextRect = splitTextComponent.getBoundingClientRect();
         }
+        let selectedAnnotatedSegments = [];
         if (
             props.selectedAnnotatedSegments &&
             props.selectedAnnotatedSegments.length > 0
         ) {
-            for (let i = 0; i < props.selectedAnnotatedSegments.length; i++) {
-                let segment = props.selectedAnnotatedSegments[i];
+            selectedAnnotatedSegments = props.selectedAnnotatedSegments;
+            for (let i = 0; i < selectedAnnotatedSegments.length; i++) {
+                let segment = selectedAnnotatedSegments[i];
                 if (
                     firstSelectedSegment === null &&
                     segment instanceof TextSegment
@@ -289,8 +302,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
             }
             if (firstSelectedSegment) {
-                selectedElementId = idForSegment(firstSelectedSegment);
-                segmentIdFunction = idForSegment;
+                if (
+                    firstSelectedSegment.length === 0 &&
+                    props.activeAnnotation &&
+                    props.activeAnnotation.isInsertion
+                ) {
+                    selectedElementId = idForInsertion(firstSelectedSegment);
+                    segmentIdFunction = idForInsertion;
+                } else {
+                    selectedElementId = idForSegment(firstSelectedSegment);
+                    segmentIdFunction = idForSegment;
+                }
             }
         } else if (props.activeAnnotation) {
             if (props.activeAnnotation.isDeletion) {
@@ -298,6 +320,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 selectedElementId = idForDeletedSegment(segment);
                 segmentIdFunction = idForDeletedSegment;
                 firstSelectedSegment = segment;
+                selectedAnnotatedSegments = [firstSelectedSegment];
             } else if (props.activeAnnotation.isInsertion) {
                 const [
                     start
@@ -309,12 +332,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     selectedElementId = idForInsertion(segment);
                     segmentIdFunction = idForInsertion;
                     firstSelectedSegment = segment;
+                    selectedAnnotatedSegments = [firstSelectedSegment];
                 }
             }
         }
         if (segmentIdFunction) {
-            for (let i = 0; i < props.selectedAnnotatedSegments.length; i++) {
-                let segment = props.selectedAnnotatedSegments[i];
+            for (let i = 0; i < selectedAnnotatedSegments.length; i++) {
+                let segment = selectedAnnotatedSegments[i];
                 if (segment instanceof TextSegment) {
                     const segmentId = segmentIdFunction(segment);
                     selectedElementIds.push(segmentId);
@@ -476,6 +500,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                         selRange.setEnd(endNode, endNode.childNodes.length);
                         let sel = document.getSelection();
                         if (sel) {
+                            this._modifyingSelection = true;
                             sel.removeAllRanges();
                             sel.addRange(selRange);
                             this.selectedNodes = null;

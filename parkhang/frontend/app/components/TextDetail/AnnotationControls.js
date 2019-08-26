@@ -98,16 +98,35 @@ export default class AnnotationControls extends React.Component<Props> {
 
         let selectedLeft = measurements.left;
         let selectedRight = selectedLeft + measurements.width;
+
         if (this.props.selectedElementIds) {
+            let lines = 1;
+            let prevSegmentLeft = 0;
+            let lastLineLeft = 0;
+            let lastLineRight = 0;
+            let lastLineBottom = 0;
             for (let i = 0; i < this.props.selectedElementIds.length; i++) {
                 const segmentId = this.props.selectedElementIds[i];
                 const segment = document.getElementById(segmentId);
                 if (segment) {
                     const segmentLeft = segment.offsetLeft;
                     const segmentRight = segmentLeft + segment.offsetWidth;
+                    if (segmentLeft < prevSegmentLeft) {
+                        lines++;
+                        lastLineLeft = segmentLeft;
+                        lastLineRight = segmentRight;
+                        lastLineBottom =
+                            segment.offsetTop + segment.offsetHeight;
+                        selectedLeft = segmentLeft;
+                        selectedRight = segmentRight;
+                    } else if (segmentRight > lastLineRight) {
+                        lastLineRight = segmentRight;
+                        // selectedRight = segmentRight;
+                    }
                     if (segmentLeft < selectedLeft) selectedLeft = segmentLeft;
                     if (segmentRight > selectedRight)
                         selectedRight = segmentRight;
+                    prevSegmentLeft = segmentLeft;
                 }
             }
         }
@@ -122,7 +141,7 @@ export default class AnnotationControls extends React.Component<Props> {
 
         if (moveToSide) {
             arrow.className = styles.arrowLeft;
-            if (measurements.left - width - arrow.offsetWidth < 0) {
+            if (selectedLeft - width - arrow.offsetWidth < 0) {
                 anchorPoint = anchorPoints.right;
             } else {
                 anchorPoint = anchorPoints.left;
@@ -150,11 +169,7 @@ export default class AnnotationControls extends React.Component<Props> {
             }
             controls.style.top = top + measurements.height + arrowHeight + "px";
             controls.style.left =
-                measurements.left +
-                selectedWidth / 2 -
-                width / 2 +
-                moveRight +
-                "px";
+                selectedLeft + selectedWidth / 2 - width / 2 + moveRight + "px";
         } else if (moveToSide) {
             arrow.className = styles.arrowRight;
             let arrowHeight = arrow.offsetHeight;
@@ -174,16 +189,13 @@ export default class AnnotationControls extends React.Component<Props> {
                 // left side of selection
                 arrow.style.left = width - 2 + "px";
                 controls.style.left =
-                    measurements.left - width - arrow.offsetWidth + "px";
+                    selectedLeft - width - arrow.offsetWidth + "px";
             } else {
                 // right-side of selection
                 arrow.className = styles.arrowLeft;
                 arrow.style.left = -arrow.offsetWidth + "px";
                 controls.style.left =
-                    measurements.left +
-                    selectedWidth +
-                    arrow.offsetWidth +
-                    "px";
+                    selectedLeft + selectedWidth + arrow.offsetWidth + "px";
             }
 
             arrow.style.top =
@@ -206,16 +218,23 @@ export default class AnnotationControls extends React.Component<Props> {
         left: number,
         width: number,
         height: number,
+        topGap: number,
         bottomGap: number,
         viewPortWidth: number | null
     } | null {
-        if (!this.props.selectedElementId) {
+        if (!this.props.selectedElementIds) {
             return null;
         }
 
-        const selectedElementId = this.props.selectedElementId;
+        const lastSelectedElementId = this.props.selectedElementIds[
+            this.props.selectedElementIds.length - 1
+        ];
+        const lastElement = document.getElementById(lastSelectedElementId);
+        const firstSelectedElementId = this.props.selectedElementIds[0];
+        const firstElement = document.getElementById(firstSelectedElementId);
+
         const splitTextRect = this.props.splitTextRect;
-        const firstElement = document.getElementById(selectedElementId);
+
         let extraTop = 0;
         let scrollTop = 0;
 
@@ -228,7 +247,7 @@ export default class AnnotationControls extends React.Component<Props> {
             )[0];
             extraTop = pechaImage.offsetHeight;
         }
-        if (!firstElement) {
+        if (!lastElement) {
             console.warn(
                 "no valid element found in getMeasurements, elementId: %s",
                 this.props.selectedElementId
@@ -240,25 +259,31 @@ export default class AnnotationControls extends React.Component<Props> {
                 left: 0,
                 width: 1,
                 height: 1,
+                topGap: 0,
                 bottomGap: 0,
                 viewPortWidth: 1
             };
         }
-        const top = firstElement.offsetTop + extraTop;
-        const textTop = firstElement.offsetTop;
-        const left = firstElement.offsetLeft;
-        const width = firstElement.offsetWidth;
-        const height = firstElement.offsetHeight;
+        const top = lastElement.offsetTop + extraTop;
+        const textTop = lastElement.offsetTop;
+        const left = lastElement.offsetLeft;
+        const width = lastElement.offsetWidth;
+        const height = lastElement.offsetHeight;
         let rowTop = top;
 
         let viewPortWidth = null;
+        let topGap = 0;
         let bottomGap = 0;
-        if (firstElement && splitTextRect) {
-            const elRect = firstElement.getBoundingClientRect();
+        if (lastElement && splitTextRect) {
+            const elRect = lastElement.getBoundingClientRect();
 
             bottomGap =
                 splitTextRect.height + splitTextRect.top - elRect.bottom;
             viewPortWidth = splitTextRect.width;
+        }
+        if (firstElement && splitTextRect) {
+            const elRect = firstElement.getBoundingClientRect();
+            topGap = splitTextRect.height - elRect.top;
         }
 
         return {
@@ -268,6 +293,7 @@ export default class AnnotationControls extends React.Component<Props> {
             left: left,
             width: width,
             height: height,
+            topGap: topGap,
             bottomGap: bottomGap,
             viewPortWidth: viewPortWidth
         };

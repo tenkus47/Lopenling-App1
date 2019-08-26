@@ -130,6 +130,7 @@ export default class Text extends React.Component<Props, State> {
         let highlightClass = styles.highlight;
         let activeHighlightClass = styles.activeHighlight;
         let activeSearchResultEnd = null;
+        let processedInactiveInsertions = {};
         for (let i = 0; i < segments.length; i++) {
             let segment = segments[i];
             let classAttribute = "";
@@ -139,25 +140,36 @@ export default class Text extends React.Component<Props, State> {
             let selectedCurrentDeletion = false;
             let hasLineBreak = false;
             if (annotations) {
-                let insertions = [];
                 let activeInsertions = [];
                 let inactiveInsertions = [];
                 let remainingAnnotations = [];
-                let deletions = [];
                 let activeDeletions = [];
 
                 for (let j = 0, len = annotations.length; j < len; j++) {
                     let annotation = annotations[j];
                     if (annotation.isInsertion) {
-                        insertions.push(annotation);
                         if (annotation.uniqueId in activeAnnotationIds) {
                             activeInsertions.push(annotation);
                         } else {
-                            inactiveInsertions.push(annotation);
+                            // Only first inactive insertion at a position will
+                            // be shown, so only process first one.
+                            // TODO: need to check if there is an active insertion
+                            // at the same place. If so, ignore inactive insertion
+                            // as they should be shown in the popover.
+                            const annotationKey = annotation.start;
+                            if (
+                                !processedInactiveInsertions.hasOwnProperty(
+                                    annotationKey
+                                )
+                            ) {
+                                inactiveInsertions.push(annotation);
+                                processedInactiveInsertions[
+                                    annotationKey
+                                ] = annotation;
+                            }
                         }
                     } else {
                         if (annotation.isDeletion) {
-                            deletions.push(annotation);
                             if (annotation.uniqueId in activeAnnotationIds) {
                                 activeDeletions.push(annotation);
                             }
@@ -172,9 +184,20 @@ export default class Text extends React.Component<Props, State> {
                     }
                 }
 
-                if (inactiveInsertions.length > 0) {
+                if (
+                    activeInsertions.length === 0 &&
+                    inactiveInsertions.length > 0
+                ) {
                     const insertion = inactiveInsertions[0];
                     const insertionId = idForInsertion(segment);
+                    let insertionClasses = insertionClass;
+                    if (
+                        renderProps.activeAnnotation &&
+                        renderProps.activeAnnotation.isInsertion &&
+                        renderProps.activeAnnotation.start === insertion.start
+                    ) {
+                        insertionClasses += " " + styles.selectedAnnotation;
+                    }
 
                     segmentHTML +=
                         "<span id=" +
@@ -182,7 +205,7 @@ export default class Text extends React.Component<Props, State> {
                         " key=" +
                         insertionId +
                         ' class="' +
-                        insertionClass +
+                        insertionClasses +
                         '">' +
                         insertion.content +
                         "</span>";
@@ -272,17 +295,15 @@ export default class Text extends React.Component<Props, State> {
                         let [start, end] = activeSearchResultEnd;
                         if (j === 0) {
                             segmentContent +=
-                                '<span class="' + highlight + '">' + char;
-                        } else if (position === end) {
+                                '<span class="' + highlight + '">';
+                        }
+                        if (position === end) {
                             segmentContent += char + "</span>";
                             activeSearchResultEnd = null;
                         } else if (j === segment.text.length - 1) {
                             segmentContent += char + "</span>";
                         } else {
                             segmentContent += char;
-                        }
-                        if (j === segment.text.length - 1 || position === end) {
-                            segmentContent += "</span>";
                         }
                     } else if (position in renderProps.searchStringPositions) {
                         let [start, end] = renderProps.searchStringPositions[
