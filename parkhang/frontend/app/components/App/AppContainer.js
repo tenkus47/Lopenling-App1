@@ -7,6 +7,7 @@ import App from "components/App";
 
 const mapStateToProps = state => {
     return {
+        title: reducers.getTranslation(state, "header.title"),
         textListIsVisible: reducers.getTextListVisible(state),
         textListWidth: reducers.getTextListWidth(state),
         state: state
