@@ -20,6 +20,7 @@ import utilStyles from "css/util.css";
 import { handleKeyDown } from "../../shortcuts";
 
 type Props = {
+    title: string,
     textListIsVisible: boolean,
     textListWidth: number,
     state: AppState,
@@ -28,7 +29,13 @@ type Props = {
     onChangedTextListVisible: (isVisible: boolean) => void
 };
 
+function setTitle(title: string) {
+    document.title = title;
+}
+
 const App = (props: Props) => {
+    setTitle(props.title);
+
     let textListClassnames = [styles.listContainer];
 
     let minSize = constants.MIN_TEXT_LIST_WIDTH;
