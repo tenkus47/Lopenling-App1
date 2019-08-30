@@ -179,6 +179,8 @@ LOGIN_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+DEFAULT_FROM_EMAIL = 'Nalanda Works <server@nalanda.works>'
+
 # WEBPACK
 WEBPACK_LOADER = {
     'MAIN': {
