@@ -126,6 +126,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'users.User'
 
+ACCOUNT_EMAIL_REQUIRED = True
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
