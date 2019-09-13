@@ -150,4 +150,58 @@ The API is setup in the `api` app.
 
 ###### Redux
 
-The redux files are s
+The redux files are stored in:
+
+* `actions`
+
+* `reducers`
+
+[Selectors](http://redux.js.org/docs/recipes/ComputingDerivedData.html#connecting-a-selector-to-the-redux-store) are used for accessing state, and are stored in the related reducer file.
+
+[Container](http://redux.js.org/docs/basics/UsageWithReact.html#presentational-and-container-components) components are used to access data from the store and pass them onto child components using the bundled [`connect`](http://redux.js.org/docs/basics/UsageWithReact.html#implementing-container-components) function. These usually have the name Container appended to them. They will also pass on event-handling functions, so that the child components need to need the least possible about the app's state.
+
+###### React
+
+React components are stored in
+
+* `components`
+
+## Code notes
+
+#### Text rendering
+
+Texts are split into numerous substrings and displayed in a list using the [react-virtualized](https://github.com/bvaughn/react-virtualized) library. This enables even long texts to be rendered and updated smoothly, even on mobile devices.
+
+These split texts are represented as instances of [`lib/SplitText.js`](parkhang/frontend/app/lib/SplitText.js) and are rendered using the [`components/TextDetail/SplitText.js`](parkhang/frontend/app/components/TextDetail/SplitText.js) component, which wraps a react-virtualized [List](https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md).
+
+The html generation is performed by the [Text.js](parkhang/frontend/app/components/TextDetail/Text.js) component.
+
+#### [SegmentedText.js](parkhang/frontend/app/lib/SegmentedText.js)
+
+Texts are segmented into syllables before rendering, and are represented as an instance of [SegmentedText](parkhang/frontend/app/lib/SegmentedText.js). Each syllable can then be wrapped by a span with an id related to it's position in the text. This allows the position of a syllable within a text to be known even if markup is added e.g. to highlight certain sections.
+
+This also prevents grapheme clusters (e.g. stacked characters) being split.
+  
+#### [AnnotatedText.js](parkhang/frontend/app/lib/AnnotatedText.js)
+
+This is the main class for generating texts. Annotations can be added, and the text is altered accordingly for display to the user.
+
+#### [Annotation.js](parkhang/frontend/app/lib/Annotation.js)
+
+Annotations have a UUID which is used by the API for CRUD operations related to annotations. This enables the client to generate valid ids without a connection to the server.
+
+## Deployment
+
+### Dokku
+
+#### Setup App
+
+To install on an existing dokku server:
+
+#### Import data
+
+1. `rsync` texts into the apps data dir
+
+        rsync --partial --progress -a ./data/texts/ root@test.nalanda.works:/var/lib/dokku/data/storage/nalanda-works/data/texts/
+        
+# TODO: need to install dwdiff inside container - just copy binary from host? 
