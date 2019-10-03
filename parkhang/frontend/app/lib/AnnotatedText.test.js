@@ -785,7 +785,18 @@ describe("AnnotatedText", () => {
         );
 
         let expectedId = baseWitness.id + "-" + baseWitness.id + "-";
-        expectedId += annotations.reduce(
+        let sortedAnnotations = [...annotations];
+        sortedAnnotations.sort((el1, el2) => {
+            if (el1.uniqueId < el2.uniqueId) {
+                return -1;
+            }
+            if (el1.uniqueId > el2.uniqueId) {
+                return 1;
+            }
+
+            return 0;
+        });
+        expectedId += sortedAnnotations.reduce(
             (acc: string, annotation: Annotation) => {
                 return acc + annotation.uniqueId + annotation.content;
             },

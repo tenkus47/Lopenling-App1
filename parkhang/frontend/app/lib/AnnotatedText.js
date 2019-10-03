@@ -1,5 +1,8 @@
 // @flow
-import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
+import Annotation, {
+    ANNOTATION_TYPES,
+    AnnotationUniqueId
+} from "lib/Annotation";
 import SegmentedText from "lib/SegmentedText";
 import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
@@ -13,6 +16,7 @@ export const INSERTION_KEY = "i";
 export const DELETION_KEY = "d";
 
 type Segmenter = (content: string) => TextSegment[];
+type AnnotationsByUniqueId = { [id: AnnotationUniqueId]: Annotation };
 
 export default class AnnotatedText {
     originalText: SegmentedText;
@@ -32,11 +36,12 @@ export default class AnnotatedText {
         [position: string | number]: [number, boolean]
     };
     _currentOriginalSegmentPositions: { [position: number]: number };
-    annotations: Annotation[];
-    _annotationsByType: { [string]: Annotation[] };
+    _annotations: AnnotationsByUniqueId;
+    _annotationsByType: { [string]: AnnotationsByUniqueId };
     _uniqueId: string | null;
     _generatedTextLength: number | null;
     _originalTextLength: number | null;
+    _version: number;
 
     /**
      *
@@ -61,14 +66,19 @@ export default class AnnotatedText {
         this._generatedText = null;
         this._orginalCurrentSegmentPositions = {};
         this._currentOriginalSegmentPositions = {};
-        this.annotations = [];
         this._annotationsByType = {};
+        this._annotations = {};
         for (let i = 0; i < annotations.length; i++) {
             this.addAnnotation(annotations[i]);
         }
         this._uniqueId = null;
         this._generatedTextLength = null;
         this._originalTextLength = null;
+        this._version = 1;
+    }
+
+    get annotations(): Annotation[] {
+        return (Object.values(this._annotations): any);
     }
 
     get textInfo(): Text {
@@ -76,22 +86,56 @@ export default class AnnotatedText {
     }
 
     addAnnotation(annotation: Annotation) {
-        if (this.annotations.indexOf(annotation) === -1) {
-            this.annotations.push(annotation);
+        if (!this._annotations.hasOwnProperty(annotation.uniqueId)) {
+            this._annotations[annotation.uniqueId] = annotation;
             this._generatedText = null;
-            this._orginalCurrentSegmentPositions = {};
-            this._currentOriginalSegmentPositions = {};
             if (!this._annotationsByType.hasOwnProperty(annotation.type)) {
-                this._annotationsByType[annotation.type] = [];
+                this._annotationsByType[annotation.type] = {};
             }
-            this._annotationsByType[annotation.type].push(annotation);
+            this._annotationsByType[annotation.type][
+                annotation.uniqueId
+            ] = annotation;
 
-            this.resetUniqueId();
+            this.didMutate();
         }
     }
 
+    removeAnnotation(annotation: Annotation) {
+        if (this._annotations.hasOwnProperty(annotation.uniqueId)) {
+            delete this._annotations[annotation.uniqueId];
+            if (this._annotationsByType.hasOwnProperty(annotation.type)) {
+                if (
+                    this._annotationsByType[annotation.type].hasOwnProperty(
+                        annotation.uniqueId
+                    )
+                ) {
+                    delete this._annotationsByType[annotation.type][
+                        annotation.uniqueId
+                    ];
+                }
+            }
+
+            this.didMutate();
+        }
+    }
+
+    didMutate() {
+        this.resetUniqueId();
+        this._version++;
+        this._orginalCurrentSegmentPositions = {};
+        this._currentOriginalSegmentPositions = {};
+    }
+
+    get version(): number {
+        return this._version;
+    }
+
     getAnnotationsOfType(type: string): Annotation[] | null {
-        return this._annotationsByType[type];
+        if (this._annotationsByType.hasOwnProperty(type)) {
+            return (Object.values(this._annotationsByType[type]): any);
+        } else {
+            return null;
+        }
     }
 
     get variants(): Annotation[] {
@@ -116,17 +160,12 @@ export default class AnnotatedText {
     getUniqueId() {
         if (!this._uniqueId) {
             let id = this.baseWitness.id + "-" + this.activeWitness.id + "-";
-            for (let type in this._annotationsByType) {
-                if (this._annotationsByType.hasOwnProperty(type)) {
-                    id += this._annotationsByType[type].reduce(
-                        (acc: string, annotation: Annotation) => {
-                            return (
-                                acc + annotation.uniqueId + annotation.content
-                            );
-                        },
-                        ""
-                    );
-                }
+            let uniqueIds = Object.keys(this._annotations);
+            uniqueIds.sort();
+            for (let i = 0, len = uniqueIds.length; i < len; i++) {
+                const uniqueId = uniqueIds[i];
+                const annotation = this._annotations[uniqueId];
+                id += annotation.uniqueId + annotation.content;
             }
             this._uniqueId = id;
         }
@@ -187,10 +226,7 @@ export default class AnnotatedText {
         this.segmentedText;
 
         let startKey = annotation.start;
-        let isActive = _.some(
-            this.annotations,
-            a => a.uniqueId == annotation.uniqueId
-        );
+        let isActive = this._annotations.hasOwnProperty(annotation.uniqueId);
         if (annotation.isInsertion) {
             // only use insertion key if it is an active annotation
             if (isActive) {
@@ -470,12 +506,7 @@ export default class AnnotatedText {
         this.segmentedText;
         let segments = [];
         let isActive = false;
-        if (
-            _.some(
-                this.annotations,
-                active => annotation.uniqueId == active.uniqueId
-            )
-        ) {
+        if (this._annotations.hasOwnProperty(annotation.uniqueId)) {
             isActive = true;
         }
 
@@ -662,8 +693,7 @@ export default class AnnotatedText {
                     for (let j = 0; j < annotation.content.length; j++) {
                         this._currentOriginalSegmentPositions[
                             currentPosition + j
-                        ] =
-                            segment.start;
+                        ] = segment.start;
                     }
                     originalPosition = segment.start;
                 } else if (!alreadyProcessed && replaced) {
@@ -681,8 +711,7 @@ export default class AnnotatedText {
                     for (let m = 0; m < annotation.content.length; m++) {
                         this._currentOriginalSegmentPositions[
                             currentPosition + m
-                        ] =
-                            firstReplacedSeg.start;
+                        ] = firstReplacedSeg.start;
                     }
                 }
                 processedSegmentAnnotations[annotation.uniqueId] = true;
