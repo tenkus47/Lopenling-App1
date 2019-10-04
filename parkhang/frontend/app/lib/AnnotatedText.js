@@ -34,8 +34,8 @@ export default class AnnotatedText {
      * */
     _orginalCurrentSegmentPositions: {
         [position: string | number]: [number, boolean]
-    };
-    _currentOriginalSegmentPositions: { [position: number]: number };
+    } | null;
+    _currentOriginalSegmentPositions: { [position: number]: number } | null;
     _annotations: AnnotationsByUniqueId;
     _annotationsByType: { [string]: AnnotationsByUniqueId };
     _uniqueId: string | null;
@@ -122,8 +122,35 @@ export default class AnnotatedText {
     didMutate() {
         this.resetUniqueId();
         this._version++;
-        this._orginalCurrentSegmentPositions = {};
-        this._currentOriginalSegmentPositions = {};
+        this._orginalCurrentSegmentPositions = null;
+        this._currentOriginalSegmentPositions = null;
+    }
+
+    get orginalCurrentSegmentPositions(): {
+        [position: string | number]: [number, boolean]
+    } {
+        if (!this._orginalCurrentSegmentPositions) {
+            this.regenerateText();
+        }
+
+        return this._orginalCurrentSegmentPositions || {};
+    }
+
+    get currentOriginalSegmentPositions(): { [position: number]: number } {
+        if (!this._currentOriginalSegmentPositions) {
+            this.regenerateText();
+        }
+
+        return this._currentOriginalSegmentPositions || {};
+    }
+
+    regenerateText(): SegmentedText {
+        this._generatedText = this.generateText(
+            this.originalText,
+            this.variants
+        );
+
+        return this._generatedText;
     }
 
     get version(): number {
@@ -187,7 +214,7 @@ export default class AnnotatedText {
      * @returns {Annotation<>[]}
      */
     annotationsForPosition(position: number): Annotation[] {
-        this.segmentedText;
+        const orginalCurrentSegmentPositions = this.orginalCurrentSegmentPositions;
         return this.variants.filter(annotation => {
             let start = annotation.start;
             let end = annotation.contentEnd;
@@ -196,15 +223,15 @@ export default class AnnotatedText {
                 end = start;
             }
             if (
-                !this._orginalCurrentSegmentPositions[String(start)] ||
-                !this._orginalCurrentSegmentPositions[String(end)]
+                !orginalCurrentSegmentPositions[String(start)] ||
+                !orginalCurrentSegmentPositions[String(end)]
             ) {
                 return false;
             }
-            let [currentStart] = this._orginalCurrentSegmentPositions[
+            let [currentStart] = orginalCurrentSegmentPositions[
                 String(start)
             ];
-            let [currentEnd] = this._orginalCurrentSegmentPositions[
+            let [currentEnd] = orginalCurrentSegmentPositions[
                 String(end)
             ];
 
@@ -221,9 +248,7 @@ export default class AnnotatedText {
     getPositionOfAnnotation(
         annotation: Annotation
     ): [number | null, number | null] {
-        // Make sure generateText has been called.
-        // This ensures this._orginalCurrentSegmentPositions has been updated.
-        this.segmentedText;
+        const orginalCurrentSegmentPositions = this.orginalCurrentSegmentPositions;
 
         let startKey = annotation.start;
         let isActive = this._annotations.hasOwnProperty(annotation.uniqueId);
@@ -234,7 +259,7 @@ export default class AnnotatedText {
             }
         }
         if (
-            this._orginalCurrentSegmentPositions[String(startKey)] == undefined
+            orginalCurrentSegmentPositions[String(startKey)] == undefined
         ) {
             if (this.originalText.getText().length === annotation.start) {
                 // if the annotation is an insertion at the end of the text
@@ -250,7 +275,7 @@ export default class AnnotatedText {
         const [
             startPos,
             startWasDeleted
-        ] = this._orginalCurrentSegmentPositions[String(startKey)];
+        ] = orginalCurrentSegmentPositions[String(startKey)];
         let length = null;
         if (startWasDeleted) {
             length = 0;
@@ -291,8 +316,8 @@ export default class AnnotatedText {
      * the given positions refer to.
      */
     getBaseAnnotation(start: number, length: number): Annotation {
-        this.segmentedText;
-        let startPos = this._currentOriginalSegmentPositions[start];
+        const currentOriginalSegmentPositions = this.currentOriginalSegmentPositions;
+        let startPos = currentOriginalSegmentPositions[start];
         let origLength = 0;
         if (startPos === undefined) {
             // end of text insertion
@@ -308,10 +333,10 @@ export default class AnnotatedText {
                 } else {
                     // Assuming we are getting this for an insertion, so want to get
                     // the original starting position.
-                    startPos = this._currentOriginalSegmentPositions[start];
+                    startPos = currentOriginalSegmentPositions[start];
                 }
             } else {
-                startPos = this._currentOriginalSegmentPositions[start];
+                startPos = currentOriginalSegmentPositions[start];
             }
         } else {
             for (let i = start; i < start + length; i++) {
@@ -340,7 +365,7 @@ export default class AnnotatedText {
                     }
                 } else {
                     if (i === start) {
-                        startPos = this._currentOriginalSegmentPositions[i];
+                        startPos = currentOriginalSegmentPositions[i];
                     }
                     origLength++;
                 }
@@ -388,7 +413,8 @@ export default class AnnotatedText {
         this.segmentedText;
         let posKey = start;
         if (length === 0) posKey = start + INSERTION_KEY;
-        let [startPos, deleted] = this._orginalCurrentSegmentPositions[posKey];
+        const orginalCurrentSegmentPositions = this.orginalCurrentSegmentPositions;
+        let [startPos, deleted] = orginalCurrentSegmentPositions[posKey];
         let annotation = null;
         if (startPos === undefined) {
         } else if (length === 0) {
@@ -416,7 +442,6 @@ export default class AnnotatedText {
                         foundAnnotation.type === ANNOTATION_TYPES.variant &&
                         foundAnnotation.id !== BASE_ANNOTATION_ID
                     ) {
-                        //console.log("found annotation: %o", foundAnnotation);
                         creatorWitness = foundAnnotation.creatorWitness;
                         creatorUser = foundAnnotation.creatorUser;
                         if (!foundVariant) {
@@ -468,7 +493,8 @@ export default class AnnotatedText {
     }
 
     getContentForRange(start: number, length: number): string {
-        let startPos = this._currentOriginalSegmentPositions[start];
+        const currentOriginalSegmentPositions = this.currentOriginalSegmentPositions;
+        let startPos = currentOriginalSegmentPositions[start];
         let content = "";
         if (startPos === undefined) {
         } else if (length === 0) {
@@ -509,13 +535,14 @@ export default class AnnotatedText {
         if (this._annotations.hasOwnProperty(annotation.uniqueId)) {
             isActive = true;
         }
+        const orginalCurrentSegmentPositions = this.orginalCurrentSegmentPositions;
 
         if (isActive) {
             let key = annotation.start;
             if (annotation.isInsertion) {
                 key += INSERTION_KEY;
             }
-            let [start, deleted] = this._orginalCurrentSegmentPositions[
+            let [start, deleted] = orginalCurrentSegmentPositions[
                 String(key)
             ];
             let end = start + annotation.content.length;
@@ -535,7 +562,7 @@ export default class AnnotatedText {
 
             for (let i = start; i <= end; i++) {
                 let segment = null;
-                let [pos, deleted] = this._orginalCurrentSegmentPositions[
+                let [pos, deleted] = orginalCurrentSegmentPositions[
                     String(i)
                 ];
 
@@ -674,6 +701,8 @@ export default class AnnotatedText {
         let currentPosition = 0;
         let originalPosition = 0;
         let updatedSegments = new Array(newSegments.length);
+        this._orginalCurrentSegmentPositions = {};
+        this._currentOriginalSegmentPositions = {};
         for (let i = 0, len = newSegments.length; i < len; i++) {
             let segment = newSegments[i];
             if (segment._annotation) {
@@ -747,18 +776,18 @@ export default class AnnotatedText {
      * at in the current text.
      */
     segmentAtOriginalPosition(position: number): TextSegment | number | null {
-        const newText = this.segmentedText;
+        const orginalCurrentSegmentPositions = this.orginalCurrentSegmentPositions;
         let newPos, wasDeleted;
         try {
-            [newPos, wasDeleted] = this._orginalCurrentSegmentPositions[
+            [newPos, wasDeleted] = orginalCurrentSegmentPositions[
                 String(position)
             ];
         } catch (e) {
             console.warn(
-                "Error getting _orginalCurrentSegmentPositions, position: %o",
+                "Error getting orginalCurrentSegmentPositions, position: %o",
                 position
             );
-            //debugger;
+
             return null;
         }
 
@@ -766,7 +795,7 @@ export default class AnnotatedText {
             if (wasDeleted) {
                 return newPos;
             } else {
-                return newText.segmentAtPosition(newPos);
+                return this.segmentedText.segmentAtPosition(newPos);
             }
         } else {
             console.warn("Could not get segment at position: %d", position);
@@ -782,7 +811,7 @@ export default class AnnotatedText {
      * @return {TextSegment|null}
      */
     originalSegmentAtPosition(position: number) {
-        const pos = this._currentOriginalSegmentPositions[position];
+        const pos = this.currentOriginalSegmentPositions[position];
         if (pos !== undefined) {
             return this.originalText.segmentAtPosition(pos);
         } else {
