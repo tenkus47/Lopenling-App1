@@ -129,7 +129,7 @@ export default class AnnotatedText {
     get orginalCurrentSegmentPositions(): {
         [position: string | number]: [number, boolean]
     } {
-        if (!this._orginalCurrentSegmentPositions) {
+        if (!this._generatedText || !this._orginalCurrentSegmentPositions) {
             this.regenerateText();
         }
 
@@ -137,7 +137,7 @@ export default class AnnotatedText {
     }
 
     get currentOriginalSegmentPositions(): { [position: number]: number } {
-        if (!this._currentOriginalSegmentPositions) {
+        if (!this._generatedText || !this._currentOriginalSegmentPositions) {
             this.regenerateText();
         }
 
