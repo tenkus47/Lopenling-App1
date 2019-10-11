@@ -20,4 +20,4 @@ module.name_mapper='app_constants/?\(.*\)' -> '<PROJECT_ROOT>/app/app_constants/
 module.name_mapper='state_helpers/?\(.*\)' -> '<PROJECT_ROOT>/app/state_helpers/\1'
 
 [version]
-^0.100
+^0.108
