@@ -17,6 +17,7 @@ module.name_mapper='css/?\(.*\)' -> '<PROJECT_ROOT>/app/css/\1'
 module.name_mapper='i18n/?\(.*\)' -> '<PROJECT_ROOT>/app/i18n/\1'
 module.name_mapper='images/?\(.*\)' -> '<PROJECT_ROOT>/app/images/\1'
 module.name_mapper='app_constants/?\(.*\)' -> '<PROJECT_ROOT>/app/app_constants/\1'
+module.name_mapper='state_helpers/?\(.*\)' -> '<PROJECT_ROOT>/app/state_helpers/\1'
 
 [version]
 ^0.100
