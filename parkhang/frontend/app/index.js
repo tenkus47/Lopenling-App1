@@ -21,6 +21,9 @@ import { enableBatching } from "redux-batched-actions";
 // Reducers
 import rootReducer from "reducers";
 
+// Redux state helpers
+import textMiddleware from "state_helpers/textMiddleware";
+
 // Sagas
 import "core-js/fn/string/pad-start";
 import "core-js/fn/string/pad-end";
@@ -54,7 +57,7 @@ function Fragment(props) {
 
 const sagaMiddleware = createSagaMiddleware();
 
-const middlewares = [sagaMiddleware];
+const middlewares = [sagaMiddleware, textMiddleware];
 let store = createStore(
     enableBatching(rootReducer),
     applyMiddleware(...middlewares)
