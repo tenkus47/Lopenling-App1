@@ -8,9 +8,9 @@ import {
     takeEvery,
     takeLatest,
     select,
-    all
+    all,
+    delay
 } from "redux-saga/effects";
-import { delay } from "redux-saga";
 import FileSaver from "file-saver";
 import * as actions from "actions";
 import * as reducers from "reducers";
