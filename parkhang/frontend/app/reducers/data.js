@@ -856,10 +856,35 @@ export const getAnnotation = (
     annotationUniqueId: AnnotationUniqueId
 ) => {
     const annotations = state.witnessAnnotationsById[witnessId];
-    const data = annotations[annotationUniqueId];
+    let data = annotations[annotationUniqueId];
     if (data) {
         return annotationFromData(state, data);
     } else {
+        const witnessData = state.witnessesById[witnessId];
+        if (witnessData) {
+            const textId = witnessData.text;
+            const textWitnesses = state.textWitnessesById[textId];
+            if (textWitnesses) {
+                for (var textWitnessId in textWitnesses) {
+                    if (textWitnesses.hasOwnProperty(textWitnessId)) {
+                        if (
+                            state.witnessAnnotationsById.hasOwnProperty(
+                                textWitnessId
+                            )
+                        ) {
+                            data =
+                                state.witnessAnnotationsById[
+                                    Number(textWitnessId)
+                                ][annotationUniqueId];
+                            if (data) {
+                                console.log("found annotation: %o", data);
+                                return annotationFromData(state, data);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return null;
     }
 };
