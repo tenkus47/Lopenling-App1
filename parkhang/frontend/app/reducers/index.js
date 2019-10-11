@@ -326,6 +326,14 @@ export const getAnnotationData = (
     return data.getAnnotationData(state.data, witnessId, annotationId);
 };
 
+export const getAnnotation = (
+    state: AppState,
+    witnessId: number,
+    annotationId: AnnotationUniqueId
+): Annotation | null => {
+    return data.getAnnotation(state.data, witnessId, annotationId);
+};
+
 export const annotationOriginallyUserCreated = (
     state: AppState,
     witnessId: number,
