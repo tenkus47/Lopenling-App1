@@ -460,7 +460,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
     }
 
-    componentWillReceiveProps(props: Props) {
+    UNSAFE_componentWillReceiveProps(props: Props) {
         this.processProps(props);
     }
 

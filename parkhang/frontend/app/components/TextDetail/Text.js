@@ -60,7 +60,7 @@ export default class Text extends React.Component<Props, State> {
         this._renderedHtml = null;
     }
 
-    componentWillReceiveProps(nextProps: Props) {
+    UNSAFE_componentWillReceiveProps(nextProps: Props) {
         this.setState((prevState: State, props: Props) => {
             return {
                 ...prevState,
