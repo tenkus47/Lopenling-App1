@@ -30,7 +30,10 @@ export default middleware;
 const textReducer = (state, action) => {};
 
 const actionHandlers = {
-    [actions.APPLIED_ANNOTATION]: (state, action) => {
+    [actions.APPLIED_ANNOTATION]: (
+        state: reducers.AppState,
+        action: actions.AppliedAnnotationAction
+    ) => {
         const annotation = reducers.getAnnotation(
             state,
             action.witnessData.id,
@@ -43,26 +46,26 @@ const actionHandlers = {
                 annotation
             );
         } else {
-            console.log('store: APPLIED_ANNOTATION no annotation found for %o', action);
+            console.log(
+                "store: APPLIED_ANNOTATION no annotation found for %o",
+                action
+            );
         }
     },
-    [actions.REMOVED_APPLIED_ANNOTATION]: (state, action) => {
-        const annotation = reducers.getAnnotation(
+    [actions.REMOVED_APPLIED_ANNOTATION]: (
+        state: reducers.AppState,
+        action: actions.RemovedAppliedAnnotationAction
+    ) => {
+        textStore.removeTextAnnotation(
             state,
             action.witnessData.id,
             action.annotationId
         );
-        if (annotation) {
-            textStore.removeTextAnnotation(
-                state,
-                action.witnessData.id,
-                annotation
-            );
-        } else {
-            console.log('store: REMOVED_APPLIED_ANNOTATION no annotation found for %o', action);
-        }
     },
-    [actions.APPLIED_DEFAULT_ANNOTATION]: (state, action) => {
+    [actions.APPLIED_DEFAULT_ANNOTATION]: (
+        state: reducers.AppState,
+        action: actions.AppliedDefaultAnnotationAction
+    ) => {
         const annotation = reducers.getAnnotation(
             state,
             action.witnessData.id,
@@ -75,23 +78,30 @@ const actionHandlers = {
                 annotation
             );
         } else {
-            console.log('store: APPLIED_DEFAULT_ANNOTATION no annotation found for %o', action);
+            console.log(
+                "store: APPLIED_DEFAULT_ANNOTATION no annotation found for %o",
+                action
+            );
         }
     },
-    [actions.REMOVED_DEFAULT_ANNOTATION]: (state, action) => {
-        const annotation = reducers.getAnnotation(
+    [actions.REMOVED_DEFAULT_ANNOTATION]: (
+        state: reducers.AppState,
+        action: actions.RemovedDefaultAnnotationAction
+    ) => {
+        textStore.removeTextAnnotation(
             state,
             action.witnessData.id,
             action.annotationId
         );
-        if (annotation) {
-            textStore.removeTextAnnotation(
-                state,
-                action.witnessData.id,
-                annotation
-            );
-        } else {
-            console.log('store: REMOVED_DEFAULT_ANNOTATION no annotation found for %o', action);
-        }
+    },
+    [actions.DELETED_ANNOTATION]: (
+        state: reducers.AppState,
+        action: actions.DeletedAnnotationAction
+    ) => {
+        textStore.deleteTextAnnotation(
+            state,
+            action.witness.id,
+            action.annotation.uniqueId
+        );
     }
 };
