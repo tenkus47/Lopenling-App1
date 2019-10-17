@@ -100,17 +100,18 @@ export default class AnnotatedText {
         }
     }
 
-    removeAnnotation(annotation: Annotation) {
-        if (this._annotations.hasOwnProperty(annotation.uniqueId)) {
-            delete this._annotations[annotation.uniqueId];
+    removeAnnotation(annotationId: AnnotationUniqueId) {
+        if (this._annotations.hasOwnProperty(annotationId)) {
+            const annotation = this._annotations[annotationId];
+            delete this._annotations[annotationId];
             if (this._annotationsByType.hasOwnProperty(annotation.type)) {
                 if (
                     this._annotationsByType[annotation.type].hasOwnProperty(
-                        annotation.uniqueId
+                        annotationId
                     )
                 ) {
                     delete this._annotationsByType[annotation.type][
-                        annotation.uniqueId
+                        annotationId
                     ];
                 }
             }
