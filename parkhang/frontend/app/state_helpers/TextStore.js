@@ -89,6 +89,37 @@ export const removeTextAnnotation = (
     }
 };
 
+export const deleteTextAnnotation = (
+    state: AppState,
+    witnessId: number,
+    annotationId: AnnotationUniqueId
+) => {
+    const text = getWitnessText(state, witnessId);
+    if (text) {
+        text.removeAnnotation(annotationId);
+    }
+    if (annotationStore.hasOwnProperty(witnessId)) {
+        if (
+            annotationStore[witnessId].allAnnotations.hasOwnProperty(
+                annotationId
+            )
+        ) {
+            delete annotationStore[witnessId].allAnnotations[
+                annotationId
+            ];
+        }
+        if (
+            annotationStore[witnessId].appliedAnnotations.hasOwnProperty(
+                annotationId
+            )
+        ) {
+            delete annotationStore[witnessId].appliedAnnotations[
+                annotationId
+            ];
+        }
+    }
+}
+
 let annotationStore: {
     [witnessId: number]: {
         appliedAnnotations: { [AnnotationUniqueId]: Annotation },
