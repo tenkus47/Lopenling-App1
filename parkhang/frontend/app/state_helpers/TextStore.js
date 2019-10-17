@@ -70,20 +70,20 @@ export const addTextAnnotation = (
 export const removeTextAnnotation = (
     state: AppState,
     witnessId: number,
-    annotation: Annotation
+    annotationId: AnnotationUniqueId
 ) => {
     const text = getWitnessText(state, witnessId);
     if (text) {
-        text.removeAnnotation(annotation);
+        text.removeAnnotation(annotationId);
     }
     if (annotationStore.hasOwnProperty(witnessId)) {
         if (
             annotationStore[witnessId].appliedAnnotations.hasOwnProperty(
-                annotation.uniqueId
+                annotationId
             )
         ) {
             delete annotationStore[witnessId].appliedAnnotations[
-                annotation.uniqueId
+                annotationId
             ];
         }
     }
