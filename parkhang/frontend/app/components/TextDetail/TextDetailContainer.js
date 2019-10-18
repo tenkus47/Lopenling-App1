@@ -51,6 +51,7 @@ import segmentTibetanText from "lib/segmentTibetanText";
 import SegmentedText from "lib/SegmentedText";
 import * as actions from "actions";
 import * as constants from "app_constants";
+import * as TextStore from "state_helpers/TextStore";
 
 const DISMISS_CONTROLS_ON_CLICK = true;
 
@@ -132,105 +133,6 @@ const getAnnotationPositions = (
     return positions;
 };
 
-let _annotationsFromData = null;
-const annotationsFromData = (
-    state: AppState,
-    annotationList: { [string]: AnnotationData } | null
-): Annotation[] => {
-    let annotations = [];
-    if (annotationList) {
-        for (let key in annotationList) {
-            if (annotationList.hasOwnProperty(key)) {
-                let annotationData = annotationList[key];
-                let annotation = annotationFromData(state, annotationData);
-                if (annotation) {
-                    annotations.push(annotation);
-                }
-            }
-        }
-    }
-    return annotations;
-};
-
-const getActiveAnnotations = (
-    state: AppState,
-    witnessId,
-    baseWitnessId
-): Annotation[] => {
-    const loadedAppliedAnnotations = hasLoadedWitnessAppliedAnnotations(
-        state,
-        witnessId
-    );
-    if (!loadedAppliedAnnotations) {
-        return [];
-    }
-    const activeAnnotationList = getActiveAnnotationsForWitnessId(
-        state,
-        witnessId
-    );
-    if (!activeAnnotationList) {
-        return [];
-    }
-
-    let activeAnnotationDataList = {};
-    for (let activeAnnotationId in activeAnnotationList) {
-        if (activeAnnotationList.hasOwnProperty(activeAnnotationId)) {
-            let activeAnnotationData = getAnnotationData(
-                state,
-                baseWitnessId,
-                activeAnnotationId
-            );
-            if (activeAnnotationData) {
-                activeAnnotationDataList[
-                    activeAnnotationData.unique_id
-                ] = activeAnnotationData;
-            }
-        }
-    }
-
-    return annotationsFromData(state, activeAnnotationDataList);
-};
-
-let _annotatedTextsCache: {
-    textId: number | null,
-    texts: { [id: string]: AnnotatedText }
-} = {
-    textId: null,
-    texts: {}
-};
-function getCachedAnnotatedText(
-    text: AnnotatedText,
-    witness: Witness
-): AnnotatedText {
-    let textId = witness.text.id;
-    if (_annotatedTextsCache.textId === textId) {
-        if (_annotatedTextsCache.texts.hasOwnProperty(text.getUniqueId())) {
-            return _annotatedTextsCache.texts[text.getUniqueId()];
-        } else {
-            _annotatedTextsCache.texts[text.getUniqueId()] = text;
-            return text;
-        }
-    } else {
-        _annotatedTextsCache.textId = textId;
-        _annotatedTextsCache.texts = {
-            [text.getUniqueId()]: text
-        };
-        return text;
-    }
-}
-
-// TODO: clear cache when changing texts
-let _segmentedWitnesses: { [number]: SegmentedText } = {};
-function getSegmentedWitness(witness: Witness): SegmentedText {
-    if (!_segmentedWitnesses[witness.id]) {
-        _segmentedWitnesses[witness.id] = segmentTibetanText(
-            witness.content || ""
-        );
-    }
-
-    return _segmentedWitnesses[witness.id];
-}
-
 let _selectedWitness = null;
 
 const mapStateToProps = state => {
@@ -300,135 +202,29 @@ const mapStateToProps = state => {
             selectedWitnessId = workingWitness.id;
         }
 
-        let workingAnnotationList = getAnnotationsForWitnessId(
-            state,
-            workingWitness.id
-        );
-
-        appliedAnnotations = getActiveAnnotations(
-            state,
-            selectedWitness.id,
-            workingWitness.id
-        );
-
-        let removedDefaultAnnotations = null;
-        // Default annotations removed by the user.
-        // Usually these are available when viewing
-        // a non-working edition.
-        let nonActiveAnnotations = {};
-
         if (selectedWitness.id !== workingWitness.id) {
-            // If we are not viewing the working version,
-            // get all the annotations created by the selected witness
-            // BUT NOT BY A USER to apply to the base text.
-            // User-created annotations need to be in appliedAnnotations.
-
-            removedDefaultAnnotations = getRemovedDefaultAnnotationsForWitnessId(
-                state,
-                selectedWitness.id
-            );
-
-            let selectedWitnessAnnotations = {};
-
-            for (let key in workingAnnotationList) {
-                if (workingAnnotationList.hasOwnProperty(key)) {
-                    let annotationData = workingAnnotationList[key];
-                    if (
-                        annotationData.creator_witness === selectedWitness.id &&
-                        !removedDefaultAnnotations.hasOwnProperty(
-                            annotationData.unique_id
-                        )
-                    ) {
-                        selectedWitnessAnnotations[
-                            annotationData.unique_id
-                        ] = annotationData;
-                    } else if (
-                        annotationData.creator_witness === selectedWitness.id
-                    ) {
-                        nonActiveAnnotations[
-                            annotationData.unique_id
-                        ] = annotationData;
-                    }
-                }
-            }
-
-            let selectedWitnessAnnotationsList = annotationsFromData(
-                state,
-                selectedWitnessAnnotations
-            );
-
-            appliedAnnotations = _.unionWith(
-                selectedWitnessAnnotationsList,
-                appliedAnnotations,
-                (val1: Annotation, val2: Annotation) => {
-                    return val1.id === val2.id;
-                }
-            );
-
-            workingAnnotationList = selectedWitnessAnnotations;
-
-            // always show images if we are viewing a specific edition
-            // i.e. not the working edition.
             paginated = true;
             pageImagesVisible = showPageImages(state);
         }
 
-        annotations = annotationsFromData(state, workingAnnotationList);
-        nonActiveAnnotations = annotationsFromData(
+        annotatedText = TextStore.getWitnessText(state, selectedWitness.id);
+
+        let [appliedAnnotations, annotations] = TextStore.getWitnessAnnotations(
             state,
-            nonActiveAnnotations
+            selectedWitness,
+            workingWitness
         );
-        if (nonActiveAnnotations.length > 0) {
-            annotations = _.unionWith(
-                annotations,
-                nonActiveAnnotations,
-                (val1: Annotation, val2: Annotation) => {
-                    return val1.id === val2.id;
-                }
+        
+        if (annotatedText) {
+            annotationPositions = getAnnotationPositions(
+                annotatedText,
+                (Object.values(annotations): any)
             );
         }
-        annotations = _.unionWith(
-            appliedAnnotations,
-            annotations,
-            (first, second) => {
-                return first.uniqueId == second.uniqueId;
-            }
-        );
-
-        annotations = annotations.filter(annotation => {
-            if (
-                selectedWitness &&
-                annotation.type === ANNOTATION_TYPES.lineBreak &&
-                annotation.creatorWitness.id !== selectedWitness.id
-            ) {
-                return false;
-            } else {
-                return true;
-            }
-        });
-
-        let segmentedWorkingWitness = getSegmentedWitness(workingWitness);
-        annotatedText = new AnnotatedText(
-            segmentedWorkingWitness,
-            appliedAnnotations,
-            text => {
-                return segmentTibetanText(text).segments;
-            },
-            workingWitness,
-            selectedWitness
-        );
-        // A cached text will already have it text generated
-        // so it's more performant than doing so again.
-        annotatedText = getCachedAnnotatedText(annotatedText, selectedWitness);
-
-        annotationPositions = getAnnotationPositions(
-            annotatedText,
-            annotations
-        );
 
         // Get the segments that are part of the current active annotation.
         // These are used by Text to highlight the currently selected segment.
-        if (activeAnnotation) {
+        if (activeAnnotation && annotatedText) {
             // If we've just switched witnesses, make sure we select the
             // correct part of the text by getting a new annotation.
             if (
@@ -447,23 +243,10 @@ const mapStateToProps = state => {
             }
         }
 
-        if (selectedWitness && baseWitness) {
-            let witnessPageBreaks = getAnnotationsForWitnessId(
-                state,
-                workingWitness.id,
-                ANNOTATION_TYPES.pageBreak,
-                selectedWitness.id
-            );
-
-            if (removedDefaultAnnotations) {
-                for (let key in witnessPageBreaks) {
-                    if (witnessPageBreaks.hasOwnProperty(key)) {
-                        if (removedDefaultAnnotations.hasOwnProperty(key)) {
-                            delete witnessPageBreaks[key];
-                        }
-                    }
-                }
-            }
+        if (selectedWitness && baseWitness && annotatedText) {
+            let witnessPageBreaks = annotatedText.getAnnotationsOfType(
+                ANNOTATION_TYPES.pageBreak
+            ) || {};
 
             let basePageBreaks = null;
             if (selectedWitness.id !== baseWitness.id) {
@@ -711,7 +494,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 };
 
 const getPageBreaks = (
-    witnessPageBreaks: { [AnnotationUniqueId]: AnnotationData },
+    witnessPageBreaks: { [AnnotationUniqueId]: Annotation },
     basePageBreaks: { [AnnotationUniqueId]: AnnotationData } | null
 ): number[] => {
     let witnessStarts = [];
@@ -825,8 +608,10 @@ const getLongestAnnotation = (annotations: Annotation[]): Annotation | null => {
     return longest;
 };
 
-const TextDetailContainer = connect(mapStateToProps, null, mergeProps)(
-    TextDetail
-);
+const TextDetailContainer = connect(
+    mapStateToProps,
+    null,
+    mergeProps
+)(TextDetail);
 
 export default TextDetailContainer;
