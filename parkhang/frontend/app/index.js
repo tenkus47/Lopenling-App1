@@ -31,11 +31,19 @@ import "regenerator-runtime/runtime";
 import rootSaga from "sagas";
 
 // i18n
-import { addLocaleData } from "react-intl";
 import { IntlProvider, updateIntl } from "react-intl-redux";
 import * as actions from "actions";
 import { i18n_cookie_name } from "i18n";
-import boLocaleData from "react-intl/locale-data/bo";
+// Support for Intl in Safari 12 and below
+if (!Intl.PluralRules) {
+    require("@formatjs/intl-pluralrules/polyfill");
+    require("@formatjs/intl-pluralrules/dist/locale-data/bo");
+}
+if (!Intl.RelativeTimeFormat) {
+    require("@formatjs/intl-relativetimeformat/polyfill");
+    require("@formatjs/intl-relativetimeformat/dist/locale-data/bo");
+}
+
 import en from "i18n/en/app.translations.json";
 import bo from "i18n/bo/app.translations.json";
 const locales = {
@@ -45,8 +53,6 @@ const locales = {
 
 // App Constants
 import * as constants from "app_constants";
-
-addLocaleData([...boLocaleData]);
 
 // For react-intl - prevents FormattedMessage from always
 // outputting a <span>
