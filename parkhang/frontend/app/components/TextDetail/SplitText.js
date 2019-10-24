@@ -452,12 +452,27 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 this.updateList(true);
             } else if (this.props.fontSize !== props.fontSize) {
                 this.updateList(true);
-            } else if (this.props.activeAnnotation) {
+            } else if (
+                this.props.activeAnnotation &&
+                props.activeAnnotation &&
+                this.annotationsInSameLocation(
+                    this.props.activeAnnotation,
+                    props.activeAnnotation
+                )
+            ) {
                 this.updateList(true, this.selectedListRow(props));
             } else {
                 this.updateList(this.shouldResetListCache(this.props, props));
             }
         }
+    }
+
+    annotationsInSameLocation(anno1: Annotation, anno2: Annotation): boolean {
+        if (anno1.start === anno2.start && anno1.length === anno2.length) {
+            return true;
+        }
+
+        return false;
     }
 
     UNSAFE_componentWillReceiveProps(props: Props) {
