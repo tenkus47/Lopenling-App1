@@ -877,7 +877,6 @@ export const getAnnotation = (
                                     Number(textWitnessId)
                                 ][annotationUniqueId];
                             if (data) {
-                                console.log("found annotation: %o", data);
                                 return annotationFromData(state, data);
                             }
                         }
