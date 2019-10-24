@@ -534,7 +534,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let selectedTextIndex = 0;
         let startPos = null;
         if (this.props.activeAnnotation) {
-            let [
+            [
                 startPos
             ] = this.props.splitText.annotatedText.getPositionOfAnnotation(
                 this.props.activeAnnotation
