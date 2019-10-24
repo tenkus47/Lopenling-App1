@@ -527,6 +527,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 let selectedTextIndex = this.getSelectedTextIndex();
                 setTimeout(() => {
                     list.scrollToRow(selectedTextIndex);
+                    // scrollToRow often positions the annotation at the
+                    // bottom of the screen, so scroll up a bit
+                    setTimeout(() => {
+                        list.scrollToPosition(list.props.scrollTop - 100);
+                    }, 0);
                 }, 100);
             }
             this._didSetInitialScrollPosition = true;
