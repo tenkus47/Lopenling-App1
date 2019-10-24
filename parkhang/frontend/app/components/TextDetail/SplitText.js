@@ -477,8 +477,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         document.addEventListener("selectionchange", this.selectionHandler);
 
-        document.addEventListener("mousedown", this.mouseDown.bind(this));
-        document.addEventListener("mouseup", this.mouseUp.bind(this));
+        document.addEventListener("mousedown", this.mouseDown.bind(this), true);
+        document.addEventListener("mouseup", this.mouseUp.bind(this), true);
     }
 
     componentDidUpdate() {
