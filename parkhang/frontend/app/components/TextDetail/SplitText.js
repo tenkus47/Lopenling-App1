@@ -116,12 +116,22 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.processProps(props);
     }
 
-    updateList(resetCache: boolean = true, resetRow: number | null = null) {
+    updateList(
+        resetCache: boolean = true,
+        resetRows: number | number[] | null = null
+    ) {
         if (this.list) {
             const list = this.list;
             if (resetCache) {
-                if (resetRow !== null) {
-                    this.cache.clear(resetRow);
+                if (resetRows !== null) {
+                    if (!Array.isArray(resetRows) && resetRows) {
+                        this.cache.clear(resetRows);
+                    } else if (Array.isArray(resetRows)) {
+                        for (let i = 0; i < resetRows.length; i++) {
+                            let resetRow = resetRows[i];
+                            this.cache.clear(resetRow);
+                        }
+                    }
                 } else {
                     this.cache.clearAll();
                     list.measureAllRows();
@@ -449,7 +459,26 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             if (changedWitness) {
                 this.updateList(true);
             } else if (this.pageBreaksChanged(this.props, props)) {
-                this.updateList(true);
+                let selectedRows = null;
+                let currentSelectedRow = this.selectedListRow(this.props);
+                let newSelectedRow = this.selectedListRow(props);
+                if (currentSelectedRow && newSelectedRow) {
+                    let firstChangedRow =
+                        currentSelectedRow > newSelectedRow
+                            ? newSelectedRow
+                            : currentSelectedRow;
+
+                    let splitRowTexts = this.props.splitText.texts;
+                    selectedRows = [];
+                    for (
+                        let i = firstChangedRow, len = splitRowTexts.length;
+                        i < len;
+                        i++
+                    ) {
+                        selectedRows.push(i);
+                    }
+                }
+                this.updateList(true, selectedRows);
             } else if (this.props.fontSize !== props.fontSize) {
                 this.updateList(true);
             } else if (
