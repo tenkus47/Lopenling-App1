@@ -620,6 +620,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 actionsBatch = [removeDefaultAnnotation];
             }
 
+            if (stateProps.activeAnnotation.uniqueId === annotation.uniqueId) {
+                actionsBatch.push(actions.changedActiveTextAnnotation(null));
+            }
+
             dispatch(batchActions(actionsBatch));
         },
         addNote: () => {
