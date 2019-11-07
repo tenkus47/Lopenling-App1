@@ -73,7 +73,9 @@ export default class AnnotationControls extends React.Component<Props> {
     }
 
     componentDidUpdate() {
-        this.updatePosition();
+        // Need to delay calling this because the browser
+        // may not have finished rendering when first called.
+        setTimeout(this.updatePosition.bind(this), 0);
     }
 
     updatePosition() {
