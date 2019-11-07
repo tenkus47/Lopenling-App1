@@ -62,13 +62,15 @@ function getInsertionKey(annotation) {
 let _posAnnotatedText;
 let _posAnnotations;
 let _positions;
+let _posVersion;
 const getAnnotationPositions = (
     annotatedText: AnnotatedText,
     annotations: Annotation[]
 ): { [string]: Annotation[] } => {
     if (
         annotatedText === _posAnnotatedText &&
-        annotations === _posAnnotations
+        annotations === _posAnnotations &&
+        annotatedText.version === _posVersion
     ) {
         return _positions;
     }
