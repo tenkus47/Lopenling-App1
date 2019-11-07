@@ -158,9 +158,11 @@ export default class AnnotatedText {
         return this._version;
     }
 
-    getAnnotationsOfType(type: string): Annotation[] | null {
+    getAnnotationsOfType(
+        type: string
+    ): { [AnnotationUniqueId]: Annotation } | null {
         if (this._annotationsByType.hasOwnProperty(type)) {
-            return (Object.values(this._annotationsByType[type]): any);
+            return this._annotationsByType[type];
         } else {
             return null;
         }
@@ -170,6 +172,8 @@ export default class AnnotatedText {
         let variants = this.getAnnotationsOfType(ANNOTATION_TYPES.variant);
         if (!variants) {
             variants = [];
+        } else {
+            variants = (Object.values(variants): any);
         }
         return variants;
     }
