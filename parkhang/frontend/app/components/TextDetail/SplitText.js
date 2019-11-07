@@ -290,8 +290,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }
 
             // Index of text containing end of annotation
+            let positionEnd = startPos + activeAnnotation.length;
+            if (activeAnnotation.length > 0) positionEnd -= 1;
             selectedTextIndex = props.splitText.getTextIndexOfPosition(
-                startPos + activeAnnotation.length
+                positionEnd
             );
             splitTextRect = splitTextComponent.getBoundingClientRect();
         }
