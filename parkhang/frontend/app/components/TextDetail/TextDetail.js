@@ -105,22 +105,7 @@ class TextDetail extends React.Component<Props> {
             );
         }
 
-        let annotationControls = null;
-        if (this.props.text) {
-            annotationControls = (
-                <AnnotationControlsContainer
-                    annotationPositions={this.props.annotationPositions}
-                    annotatedText={this.props.annotatedText}
-                    activeAnnotation={this.props.activeAnnotation}
-                    splitText={splitText}
-                />
-            );
-        }
-
         let textComponents = [textComponent];
-        if (!inlineControls && annotationControls) {
-            textComponents.push(annotationControls);
-        }
 
         return (
             <div
