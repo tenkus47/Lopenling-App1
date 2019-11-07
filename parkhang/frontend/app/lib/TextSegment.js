@@ -26,7 +26,9 @@ export default class TextSegment {
     }
 
     get end(): number {
-        return this._start + this._text.length - 1;
+        let end = this._start + this._text.length;
+        if (this._text.length > 0) end -= 1;
+        return end;
     }
 
     get text(): string {
