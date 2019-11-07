@@ -251,11 +251,9 @@ export default class AnnotatedText {
 
         let startKey = annotation.start;
         let isActive = this._annotations.hasOwnProperty(annotation.uniqueId);
-        if (annotation.isInsertion) {
+        if (annotation.isInsertion && isActive) {
             // only use insertion key if it is an active annotation
-            if (isActive) {
-                startKey = String(annotation.start) + INSERTION_KEY;
-            }
+            startKey = String(annotation.start) + INSERTION_KEY;
         }
         if (orginalCurrentSegmentPositions[String(startKey)] == undefined) {
             if (this.originalText.getText().length === annotation.start) {
