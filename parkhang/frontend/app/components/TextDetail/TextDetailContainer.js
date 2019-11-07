@@ -465,7 +465,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
 
             let segmentAnnotations = annotationPositions[positionKey];
-            if (DISMISS_CONTROLS_ON_CLICK && !segmentAnnotations) {
+            if (DISMISS_CONTROLS_ON_CLICK && stateProps.activeAnnotation) {
                 const activeAnnotation = stateProps.activeAnnotation;
                 if (activeAnnotation) {
                     const dismissTextAnnotation = actions.changedActiveTextAnnotation(
