@@ -67,7 +67,7 @@ class TextDetail extends React.Component<Props> {
         let textComponent = null;
         let splitText = null;
 
-        if (!this.props.text || this.props.loading) {
+        if (!this.props.annotatedText || !this.props.text || this.props.loading) {
             textComponent = <div key={this.key} />;
         } else {
             let limitWidth = false;
