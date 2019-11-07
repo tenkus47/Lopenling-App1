@@ -12,7 +12,8 @@ import type { AnnotationData, TextData } from "api";
 import {
     WORKING_VERSION_ANNOTATION_ID,
     INSERTION_KEY,
-    DELETION_KEY
+    DELETION_KEY,
+    PAGE_BREAK_KEY
 } from "lib/AnnotatedText";
 import TextDetail from "components/TextDetail";
 import {
@@ -102,6 +103,9 @@ const getAnnotationPositions = (
             if (annotation.isDeletion && annotation.length > 0) {
                 // active deletion
                 startPos = DELETION_KEY + startPos;
+            }
+            if (annotation.type === ANNOTATION_TYPES.pageBreak) {
+                startPos = PAGE_BREAK_KEY + startPos;
             }
             if (positions[startPos] === undefined) {
                 positions[startPos] = [];
@@ -217,7 +221,7 @@ const mapStateToProps = state => {
             selectedWitness,
             workingWitness
         );
-        
+
         if (annotatedText) {
             annotationPositions = getAnnotationPositions(
                 annotatedText,
@@ -247,9 +251,10 @@ const mapStateToProps = state => {
         }
 
         if (selectedWitness && baseWitness && annotatedText) {
-            let witnessPageBreaks = annotatedText.getAnnotationsOfType(
-                ANNOTATION_TYPES.pageBreak
-            ) || {};
+            let witnessPageBreaks =
+                annotatedText.getAnnotationsOfType(
+                    ANNOTATION_TYPES.pageBreak
+                ) || {};
 
             let basePageBreaks = null;
             if (selectedWitness.id !== baseWitness.id) {
@@ -317,14 +322,19 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const didSelectSegmentPosition = (segmentPosition, start, length) => {
         let segmentAnnotations = annotationPositions[segmentPosition];
         let segmentVariants = [];
+        let segmentPageBreaks = [];
         if (segmentAnnotations) {
             segmentVariants = segmentAnnotations.filter(
                 (annotation: Annotation) =>
                     annotation.type === ANNOTATION_TYPES.variant
             );
+            segmentPageBreaks = segmentAnnotations.filter(
+                (annotation: Annotation) =>
+                    annotation.type === ANNOTATION_TYPES.pageBreak
+            ); 
         }
         let activeAnnotations = _.intersectionWith(
-            segmentVariants,
+            segmentVariants.concat(segmentPageBreaks),
             annotatedText.annotations,
             (a, b) => a.toString() == b.toString()
         );
@@ -359,6 +369,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
     const isDeletion = id => {
         return id.indexOf("ds_") !== -1;
+    };
+
+    const isPageBreak = id => {
+        return id.indexOf("p_") !== -1;
     };
 
     const idFromSegmentId = id => {
@@ -463,6 +477,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 positionKey = INSERTION_KEY + start;
             } else if (isDeletion(segmentId)) {
                 positionKey = DELETION_KEY + start;
+            } else if (isPageBreak(segmentId)) {
+                positionKey = PAGE_BREAK_KEY + start;
             }
 
             let segmentAnnotations = annotationPositions[positionKey];
@@ -475,7 +491,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     dispatch(dismissTextAnnotation);
                 }
             } else {
-                if (isInsertion(segmentId) || isDeletion(segmentId)) {
+                if (
+                    isInsertion(segmentId) ||
+                    isDeletion(segmentId) ||
+                    isPageBreak(segmentId)
+                ) {
                     const length = 0;
                     didSelectSegmentPosition(positionKey, start, length);
                 } else {

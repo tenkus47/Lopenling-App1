@@ -370,7 +370,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             const breakAnnotation = new Annotation(
                 null,
                 location.witness,
-                location.start,
+                location.end + 1,
                 0,
                 null,
                 breakType,
@@ -389,6 +389,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     breakAnnotation.uniqueId,
                     selectedWitnessData
                 )
+            );
+            actionsBatch.push(
+                actions.changedActiveTextAnnotation(breakAnnotation)
             );
 
             dispatch(batchActions(actionsBatch));

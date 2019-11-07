@@ -11,7 +11,8 @@ import "react-virtualized/styles.css";
 import Text, {
     idForSegment,
     idForDeletedSegment,
-    idForInsertion
+    idForInsertion,
+    idForPageBreak
 } from "./Text";
 import SplitText from "lib/SplitText";
 import SegmentedText from "lib/SegmentedText";
@@ -24,7 +25,7 @@ import textStyles from "./Text.css";
 import controlStyles from "./AnnotationControls.css";
 import _ from "lodash";
 import TextSegment from "lib/TextSegment";
-import Annotation from "lib/Annotation";
+import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 
@@ -288,6 +289,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 console.warn("No startPos in getControlsMeasurements");
                 return null;
             }
+            if (activeAnnotation.type === ANNOTATION_TYPES.pageBreak) {
+                startPos -= 1;
+            }
 
             // Index of text containing end of annotation
             let positionEnd = startPos + activeAnnotation.length;
@@ -346,6 +350,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     firstSelectedSegment = segment;
                     selectedAnnotatedSegments = [firstSelectedSegment];
                 }
+            } else if (props.activeAnnotation.type === ANNOTATION_TYPES.pageBreak) {
+                let segment = new TextSegment(startPos + 1, "");
+                let prevSegment = new TextSegment(startPos, "");
+                selectedElementId = idForPageBreak(prevSegment);
+                firstSelectedSegment = segment;
+                selectedAnnotatedSegments = [segment];
+                selectedElementIds = [selectedElementId];
             }
         }
         if (segmentIdFunction) {
