@@ -132,6 +132,7 @@ const getAnnotationPositions = (
     _posAnnotatedText = annotatedText;
     _posAnnotations = annotations;
     _positions = positions;
+    _posVersion = annotatedText.version;
     return positions;
 };
 
