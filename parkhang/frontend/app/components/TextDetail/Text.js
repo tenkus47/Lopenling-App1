@@ -58,6 +58,9 @@ export type State = {
     segmentedText: SegmentedText
 };
 
+const PARA_SYMBOL = String.fromCharCode(182);
+const LINE_BREAK_SYMBOL = String.fromCharCode(172);
+
 export default class Text extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
     _renderedHtml: { __html: string } | null;
@@ -395,26 +398,26 @@ export default class Text extends React.Component<Props, State> {
                 "</span>";
 
             if (pageBreakAnnotation) {
-                let pageBreakClassAttribute = "";
+                let pageBreakClasses = [styles.pageBreak];
                 if (selectedCurrentPageBreak) {
-                    pageBreakClassAttribute =
-                        ' class="' + styles.selectedAnnotation + '" ';
+                    pageBreakClasses.push(styles.selectedAnnotation);
                 }
+                const pageBreakClassAttribute = ' class="' + pageBreakClasses.join(" ") + '" ';
                 segmentHTML +=
                     "<span id=" +
                     idForPageBreak(segment) +
                     " key=" +
                     idForPageBreak(segment) +
                     pageBreakClassAttribute +
-                    ">[PB]</span>";
+                    ">" + PARA_SYMBOL + "</span>";
             }
 
             if (lineBreakAnnotation) {
-                let lineBreakClassAttribute = "";
+                let lineBreakClasses = [styles.lineBreak];
                 if (selectedCurrentLineBreak) {
-                    lineBreakClassAttribute =
-                        ' class="' + styles.selectedAnnotation + '" ';
+                    lineBreakClasses.push(styles.selectedAnnotation);
                 }
+                const lineBreakClassAttribute = ' class="' + lineBreakClasses.join(" ") + '" ';
 
                 segmentHTML +=
                     "<span id=" +
@@ -422,7 +425,7 @@ export default class Text extends React.Component<Props, State> {
                     " key=" +
                     idForLineBreak(segment) +
                     lineBreakClassAttribute +
-                    ">[LB]</span>";
+                    ">" + LINE_BREAK_SYMBOL + "</span>";
 
                 segmentHTML += '</p><p class="' + textLineClass + '">';
             }

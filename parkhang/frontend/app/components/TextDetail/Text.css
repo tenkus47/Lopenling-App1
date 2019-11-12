@@ -96,3 +96,15 @@
 .activeHighlight {
     background-color: orange;
 }
+
+.lineBreak {
+    color: #aaa;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.pageBreak {
+    color: #aaa;
+    cursor: pointer;
+    margin-left: 5px;
+}
