@@ -125,7 +125,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             const list = this.list;
             if (resetCache) {
                 if (resetRows !== null) {
-                    if (!Array.isArray(resetRows) && resetRows) {
+                    if (!Array.isArray(resetRows)) {
                         this.cache.clear(resetRows);
                     } else if (Array.isArray(resetRows)) {
                         for (let i = 0; i < resetRows.length; i++) {
