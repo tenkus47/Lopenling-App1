@@ -3,7 +3,12 @@ import React from "react";
 import classnames from "classnames";
 import styles from "./Text.css";
 import TextSegment from "lib/TextSegment";
-import { INSERTION_KEY, DELETION_KEY, PAGE_BREAK_KEY } from "lib/AnnotatedText";
+import {
+    INSERTION_KEY,
+    DELETION_KEY,
+    PAGE_BREAK_KEY,
+    LINE_BREAK_KEY
+} from "lib/AnnotatedText";
 import _ from "lodash";
 import SegmentedText from "lib/SegmentedText";
 import Annotation from "lib/Annotation";
@@ -24,6 +29,10 @@ export function idForInsertion(segment: TextSegment): string {
 
 export function idForPageBreak(segment: TextSegment): string {
     return "p_" + (segment.end + 1);
+}
+
+export function idForLineBreak(segment: TextSegment): string {
+    return "l_" + (segment.end + 1);
 }
 
 export type Props = {
@@ -89,8 +98,17 @@ export default class Text extends React.Component<Props, State> {
             this.props.annotationPositions[
                 PAGE_BREAK_KEY + (segment.end + 1)
             ] || [];
+        const lineBreaks =
+            this.props.annotationPositions[
+                LINE_BREAK_KEY + (segment.end + 1)
+            ] || [];
 
-        return annotations.concat(insertions, deletions, pageBreaks);
+        return annotations.concat(
+            insertions,
+            deletions,
+            pageBreaks,
+            lineBreaks
+        );
     }
 
     segmentsContainSegment(segments: TextSegment[], segment: TextSegment) {
@@ -130,6 +148,10 @@ export default class Text extends React.Component<Props, State> {
             const endSegment = new TextSegment(endPosition, "");
             segments.push(endSegment);
         }
+        if (renderProps.annotationPositions[LINE_BREAK_KEY + endPosition]) {
+            const endSegment = new TextSegment(endPosition, "");
+            segments.push(endSegment);
+        }
 
         let activeAnnotationIds = {};
         if (renderProps.activeAnnotations) {
@@ -151,7 +173,8 @@ export default class Text extends React.Component<Props, State> {
             let deletionText = null;
             let selectedCurrentDeletion = false;
             let selectedCurrentPageBreak = false;
-            let hasLineBreak = false;
+            let selectedCurrentLineBreak = false;
+            let lineBreakAnnotation = false;
             let pageBreakAnnotation = null;
             if (annotations) {
                 let activeInsertions = [];
@@ -191,13 +214,10 @@ export default class Text extends React.Component<Props, State> {
                             annotation.type === ANNOTATION_TYPES.pageBreak
                         ) {
                             pageBreakAnnotation = annotation;
+                        } else if (annotation.type === ANNOTATION_TYPES.lineBreak) {
+                            lineBreakAnnotation = annotation;
                         } else {
                             remainingAnnotations.push(annotation);
-                            if (
-                                annotation.type === ANNOTATION_TYPES.lineBreak
-                            ) {
-                                hasLineBreak = true;
-                            }
                         }
                     }
                 }
@@ -256,6 +276,17 @@ export default class Text extends React.Component<Props, State> {
                     ) {
                         selectedCurrentPageBreak = true;
                         console.log("got selected pageBreak");
+                    }
+                }
+
+                if (lineBreakAnnotation) {
+                    if (
+                        renderProps.activeAnnotation &&
+                        renderProps.activeAnnotation.uniqueId ===
+                            lineBreakAnnotation.uniqueId
+                    ) {
+                        selectedCurrentLineBreak = true;
+                        console.log("got selected lineBreak");
                     }
                 }
 
@@ -378,8 +409,23 @@ export default class Text extends React.Component<Props, State> {
                     ">[PB]</span>";
             }
 
-            if (hasLineBreak)
+            if (lineBreakAnnotation) {
+                let lineBreakClassAttribute = "";
+                if (selectedCurrentLineBreak) {
+                    lineBreakClassAttribute =
+                        ' class="' + styles.selectedAnnotation + '" ';
+                }
+
+                segmentHTML +=
+                    "<span id=" +
+                    idForLineBreak(segment) +
+                    " key=" +
+                    idForLineBreak(segment) +
+                    lineBreakClassAttribute +
+                    ">[LB]</span>";
+
                 segmentHTML += '</p><p class="' + textLineClass + '">';
+            }
         }
 
         this._renderedSegments = segments;

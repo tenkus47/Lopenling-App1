@@ -12,7 +12,8 @@ import Text, {
     idForSegment,
     idForDeletedSegment,
     idForInsertion,
-    idForPageBreak
+    idForPageBreak,
+    idForLineBreak
 } from "./Text";
 import SplitText from "lib/SplitText";
 import SegmentedText from "lib/SegmentedText";
@@ -292,6 +293,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             if (activeAnnotation.type === ANNOTATION_TYPES.pageBreak) {
                 startPos -= 1;
             }
+            if (activeAnnotation.type === ANNOTATION_TYPES.lineBreak) {
+                startPos -= 1;
+            }
 
             // Index of text containing end of annotation
             let positionEnd = startPos + activeAnnotation.length;
@@ -350,10 +354,21 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     firstSelectedSegment = segment;
                     selectedAnnotatedSegments = [firstSelectedSegment];
                 }
-            } else if (props.activeAnnotation.type === ANNOTATION_TYPES.pageBreak) {
+            } else if (
+                props.activeAnnotation.type === ANNOTATION_TYPES.pageBreak
+            ) {
                 let segment = new TextSegment(startPos + 1, "");
                 let prevSegment = new TextSegment(startPos, "");
                 selectedElementId = idForPageBreak(prevSegment);
+                firstSelectedSegment = segment;
+                selectedAnnotatedSegments = [segment];
+                selectedElementIds = [selectedElementId];
+            } else if (
+                props.activeAnnotation.type === ANNOTATION_TYPES.lineBreak
+            ) {
+                let segment = new TextSegment(startPos + 1, "");
+                let prevSegment = new TextSegment(startPos, "");
+                selectedElementId = idForLineBreak(prevSegment);
                 firstSelectedSegment = segment;
                 selectedAnnotatedSegments = [segment];
                 selectedElementIds = [selectedElementId];
@@ -405,6 +420,27 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (oldTextBreaks.length !== newTextBreaks.length) return true;
 
         return JSON.stringify(oldTextBreaks) !== JSON.stringify(newTextBreaks);
+    }
+
+    lineBreaksChanges(oldProps: Props, newProps: Props) {
+        let oldActiveAnnotationIsLineBreak =
+            oldProps.activeAnnotation &&
+            oldProps.activeAnnotation.isType(ANNOTATION_TYPES.lineBreak);
+        let newActiveAnnotationIsLineBreak =
+            newProps.activeAnnotation &&
+            newProps.activeAnnotation.isType(ANNOTATION_TYPES.lineBreak);
+
+        let hasChanged = false;
+        if (oldActiveAnnotationIsLineBreak && !newActiveAnnotationIsLineBreak) {
+            hasChanged = true;
+        } else if (
+            !oldActiveAnnotationIsLineBreak &&
+            newActiveAnnotationIsLineBreak
+        ) {
+            hasChanged = true;
+        }
+
+        return hasChanged;
     }
 
     selectedListRow(props: Props): number | null {
@@ -492,6 +528,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }
                 }
                 this.updateList(true, selectedRows);
+            } else if (this.lineBreaksChanges(this.props, props)) {
+                this.updateList(true, this.selectedListRow(props));
             } else if (this.props.fontSize !== props.fontSize) {
                 this.updateList(true);
             } else if (

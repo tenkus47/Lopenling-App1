@@ -15,6 +15,7 @@ export const WORKING_VERSION_ANNOTATION_ID = -2;
 export const INSERTION_KEY = "i";
 export const DELETION_KEY = "d";
 export const PAGE_BREAK_KEY = "p";
+export const LINE_BREAK_KEY = "l";
 
 type Segmenter = (content: string) => TextSegment[];
 type AnnotationsByUniqueId = { [id: AnnotationUniqueId]: Annotation };
@@ -281,6 +282,8 @@ export default class AnnotatedText {
         } else if (annotation.isInsertion && !isActive) {
             length = 0;
         } else if (annotation.type === ANNOTATION_TYPES.pageBreak && isActive) {
+            length = 0;
+        } else if (annotation.type === ANNOTATION_TYPES.lineBreak && isActive) {
             length = 0;
         } else {
             const startSegment = this.segmentedText.segmentAtPosition(startPos);

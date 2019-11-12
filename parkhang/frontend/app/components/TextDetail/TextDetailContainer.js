@@ -13,7 +13,8 @@ import {
     WORKING_VERSION_ANNOTATION_ID,
     INSERTION_KEY,
     DELETION_KEY,
-    PAGE_BREAK_KEY
+    PAGE_BREAK_KEY,
+    LINE_BREAK_KEY
 } from "lib/AnnotatedText";
 import TextDetail from "components/TextDetail";
 import {
@@ -106,6 +107,9 @@ const getAnnotationPositions = (
             }
             if (annotation.type === ANNOTATION_TYPES.pageBreak) {
                 startPos = PAGE_BREAK_KEY + startPos;
+            }
+            if (annotation.type === ANNOTATION_TYPES.lineBreak) {
+                startPos = LINE_BREAK_KEY + startPos;
             }
             if (positions[startPos] === undefined) {
                 positions[startPos] = [];
@@ -323,6 +327,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         let segmentAnnotations = annotationPositions[segmentPosition];
         let segmentVariants = [];
         let segmentPageBreaks = [];
+        let segmentLineBreaks = [];
         if (segmentAnnotations) {
             segmentVariants = segmentAnnotations.filter(
                 (annotation: Annotation) =>
@@ -331,10 +336,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             segmentPageBreaks = segmentAnnotations.filter(
                 (annotation: Annotation) =>
                     annotation.type === ANNOTATION_TYPES.pageBreak
-            ); 
+            );
+            segmentLineBreaks = segmentAnnotations.filter(
+                (annotation: Annotation) =>
+                    annotation.type === ANNOTATION_TYPES.lineBreak
+            );
         }
         let activeAnnotations = _.intersectionWith(
-            segmentVariants.concat(segmentPageBreaks),
+            segmentVariants.concat(segmentPageBreaks, segmentLineBreaks),
             annotatedText.annotations,
             (a, b) => a.toString() == b.toString()
         );
@@ -373,6 +382,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
     const isPageBreak = id => {
         return id.indexOf("p_") !== -1;
+    };
+
+    const isLineBreak = id => {
+        return id.indexOf("l_") !== -1;
     };
 
     const idFromSegmentId = id => {
@@ -479,6 +492,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 positionKey = DELETION_KEY + start;
             } else if (isPageBreak(segmentId)) {
                 positionKey = PAGE_BREAK_KEY + start;
+            } else if (isLineBreak(segmentId)) {
+                positionKey = LINE_BREAK_KEY + start;
             }
 
             let segmentAnnotations = annotationPositions[positionKey];
@@ -494,7 +509,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 if (
                     isInsertion(segmentId) ||
                     isDeletion(segmentId) ||
-                    isPageBreak(segmentId)
+                    isPageBreak(segmentId) ||
+                    isLineBreak(segmentId)
                 ) {
                     const length = 0;
                     didSelectSegmentPosition(positionKey, start, length);

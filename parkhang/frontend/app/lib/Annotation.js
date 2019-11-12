@@ -198,6 +198,10 @@ export default class Annotation {
         );
     }
 
+    isType(type: string) {
+        return this.type === type;
+    }
+
     get userCreated(): boolean {
         return !(this.creatorUser === null);
     }
