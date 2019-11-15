@@ -308,6 +308,14 @@ export default class AnnotationControls extends React.Component<Props> {
         let anonymousUserMessage = null;
         let nothingSelected = null;
         const isLoggedIn = props.user.isLoggedIn;
+        let breakSelected = false;
+        if (
+            props.activeAnnotation &&
+            (props.activeAnnotation.isType(ANNOTATION_TYPES.pageBreak) ||
+                props.activeAnnotation.isType(ANNOTATION_TYPES.lineBreak))
+        ) {
+            breakSelected = true;
+        }
 
         if (props.annotationsData) {
             props.annotationsData.map(annotationData => {
@@ -503,6 +511,9 @@ export default class AnnotationControls extends React.Component<Props> {
             classes.push(styles.inline);
         }
 
+        let showHeader = true;
+        if (anonymousUserMessage || breakSelected) showHeader = false;
+
         return (
             <div
                 className={classnames(...classes)}
@@ -510,7 +521,7 @@ export default class AnnotationControls extends React.Component<Props> {
                     (this.controls = controls)
                 }
             >
-                {!anonymousUserMessage && (
+                {showHeader && (
                     <AnnotationControlsHeader
                         addPageBreak={
                             allowPageBreak ? props.addPageBreak : null
@@ -528,8 +539,8 @@ export default class AnnotationControls extends React.Component<Props> {
                 <div className={styles.annotationContent}>
                     {anonymousUserMessage}
                     {nothingSelected}
-                    {temporaryAnnotations}
-                    {annotations}
+                    {!breakSelected && temporaryAnnotations}
+                    {!breakSelected && annotations}
                     {pageBreaksButton}
                     {lineBreaksButton}
                     {tempNotes}
