@@ -185,7 +185,7 @@ const mapStateToProps = state => {
     let annotatedText = null;
     let activeAnnotation = getActiveTextAnnotation(state);
     let selectedAnnotatedSegments = [];
-    let appliedAnnotations = [];
+    let appliedAnnotations = {};
     let pageBreaks = [];
     let imagesBaseUrl = "";
     let selectedWitness;
