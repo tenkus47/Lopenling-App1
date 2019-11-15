@@ -220,7 +220,7 @@ const mapStateToProps = state => {
 
         annotatedText = TextStore.getWitnessText(state, selectedWitness.id);
 
-        let [appliedAnnotations, annotations] = TextStore.getWitnessAnnotations(
+        [appliedAnnotations, annotations] = TextStore.getWitnessAnnotations(
             state,
             selectedWitness,
             workingWitness
