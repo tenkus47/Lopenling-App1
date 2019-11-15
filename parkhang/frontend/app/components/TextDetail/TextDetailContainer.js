@@ -306,7 +306,7 @@ const mapStateToProps = state => {
         annotatedText: annotatedText,
         selectedAnnotatedSegments: selectedAnnotatedSegments,
         annotationPositions: annotationPositions,
-        activeAnnotations: appliedAnnotations,
+        activeAnnotations: { ...appliedAnnotations },
         activeAnnotation: activeAnnotation,
         pageBreaks: pageBreaks,
         imagesBaseUrl: imagesBaseUrl,
