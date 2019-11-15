@@ -424,19 +424,28 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     lineBreaksChanges(oldProps: Props, newProps: Props) {
-        let oldActiveAnnotationIsLineBreak =
-            oldProps.activeAnnotation &&
-            oldProps.activeAnnotation.isType(ANNOTATION_TYPES.lineBreak);
-        let newActiveAnnotationIsLineBreak =
-            newProps.activeAnnotation &&
-            newProps.activeAnnotation.isType(ANNOTATION_TYPES.lineBreak);
-
+        let oldActiveAnnotation = oldProps.activeAnnotation;
+        let newActiveAnnotation = newProps.activeAnnotation;
         let hasChanged = false;
-        if (oldActiveAnnotationIsLineBreak && !newActiveAnnotationIsLineBreak) {
+
+        if (
+            oldActiveAnnotation &&
+            oldActiveAnnotation.isType(ANNOTATION_TYPES.lineBreak) &&
+            newProps.activeAnnotations &&
+            !newProps.activeAnnotations.hasOwnProperty(
+                oldActiveAnnotation.uniqueId
+            )
+        ) {
             hasChanged = true;
-        } else if (
-            !oldActiveAnnotationIsLineBreak &&
-            newActiveAnnotationIsLineBreak
+        }
+
+        if (
+            newActiveAnnotation &&
+            newActiveAnnotation.isType(ANNOTATION_TYPES.lineBreak) &&
+            oldProps.activeAnnotations && 
+            !oldProps.activeAnnotations.hasOwnProperty(
+                newActiveAnnotation.uniqueId
+            )
         ) {
             hasChanged = true;
         }
@@ -530,7 +539,20 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
                 this.updateList(true, selectedRows);
             } else if (this.lineBreaksChanges(this.props, props)) {
-                this.updateList(true, this.selectedListRow(props));
+                let selectedRow = this.selectedListRow(props);
+                if (!selectedRow) selectedRow = this.selectedListRow(this.props);
+                let splitRowTexts = this.props.splitText.texts;
+                let selectedRows = [];
+                if (selectedRow !== null) {
+                    for (
+                        let i = selectedRow, len = splitRowTexts.length;
+                        i < len;
+                        i++
+                    ) {
+                        selectedRows.push(i);
+                    }
+                    this.updateList(true, selectedRows);
+                }
             } else if (this.props.fontSize !== props.fontSize) {
                 this.updateList(true);
             } else if (
