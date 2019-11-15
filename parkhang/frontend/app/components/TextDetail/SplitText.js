@@ -27,6 +27,7 @@ import controlStyles from "./AnnotationControls.css";
 import _ from "lodash";
 import TextSegment from "lib/TextSegment";
 import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
+import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 
@@ -58,7 +59,7 @@ export type Props = {
     showImages: boolean,
     annotationPositions: { [string]: Annotation[] },
     annotations: Annotation[],
-    activeAnnotations: Annotation[] | null,
+    activeAnnotations: { [AnnotationUniqueId]: Annotation } | null,
     selectedSegmentId: (segmentId: string) => void,
     selectedWitness: Witness | null,
     selectedSearchResult: {
