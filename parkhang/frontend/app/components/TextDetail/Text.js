@@ -13,6 +13,7 @@ import _ from "lodash";
 import SegmentedText from "lib/SegmentedText";
 import Annotation from "lib/Annotation";
 import { ANNOTATION_TYPES } from "lib/Annotation";
+import type { AnnotationUniqueId } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
 
 export function idForSegment(segment: TextSegment): string {
@@ -39,7 +40,7 @@ export type Props = {
     segmentedText: SegmentedText,
     annotationPositions: { [string]: Annotation[] },
     selectedSegmentId: (id: string) => void,
-    activeAnnotations: Annotation[] | null,
+    activeAnnotations: {[AnnotationUniqueId]: Annotation} | null,
     getBaseAnnotation: (annotation: Annotation) => Annotation,
     selectedAnnotatedSegments: TextSegment[],
     row: number,
@@ -156,13 +157,7 @@ export default class Text extends React.Component<Props, State> {
             segments.push(endSegment);
         }
 
-        let activeAnnotationIds = {};
-        if (renderProps.activeAnnotations) {
-            for (let i = 0; i < renderProps.activeAnnotations.length; i++) {
-                let annotation = renderProps.activeAnnotations[i];
-                activeAnnotationIds[annotation.uniqueId] = annotation;
-            }
-        }
+        let activeAnnotations = renderProps.activeAnnotations || {};
 
         let highlightClass = styles.highlight;
         let activeHighlightClass = styles.activeHighlight;
@@ -188,7 +183,7 @@ export default class Text extends React.Component<Props, State> {
                 for (let j = 0, len = annotations.length; j < len; j++) {
                     let annotation = annotations[j];
                     if (annotation.isInsertion) {
-                        if (annotation.uniqueId in activeAnnotationIds) {
+                        if (annotation.uniqueId in activeAnnotations) {
                             activeInsertions.push(annotation);
                         } else {
                             // Only first inactive insertion at a position will
@@ -210,7 +205,7 @@ export default class Text extends React.Component<Props, State> {
                         }
                     } else {
                         if (annotation.isDeletion) {
-                            if (annotation.uniqueId in activeAnnotationIds) {
+                            if (annotation.uniqueId in activeAnnotations) {
                                 activeDeletions.push(annotation);
                             }
                         } else if (
