@@ -41,7 +41,7 @@ export type Props = {
     segmentedText: SegmentedText,
     annotationPositions: { [string]: Annotation[] },
     selectedSegmentId: (id: string) => void,
-    activeAnnotations: {[AnnotationUniqueId]: Annotation} | null,
+    activeAnnotations: { [AnnotationUniqueId]: Annotation } | null,
     getBaseAnnotation: (annotation: Annotation) => Annotation,
     selectedAnnotatedSegments: TextSegment[],
     row: number,
@@ -61,10 +61,12 @@ export type State = {
     segmentedText: SegmentedText
 };
 
-import ReactDOMServer from 'react-dom/server';
+import ReactDOMServer from "react-dom/server";
 import PageBreakIcon from "images/page_break_icon.svg";
 const PARA_SYMBOL = String.fromCharCode(182);
-const pageBreakIconString = ReactDOMServer.renderToStaticMarkup(<PageBreakIcon />);
+const pageBreakIconString = ReactDOMServer.renderToStaticMarkup(
+    <PageBreakIcon />
+);
 
 export default class Text extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
@@ -405,14 +407,17 @@ export default class Text extends React.Component<Props, State> {
                 if (selectedCurrentPageBreak) {
                     pageBreakClasses.push(styles.selectedAnnotation);
                 }
-                const pageBreakClassAttribute = ' class="' + pageBreakClasses.join(" ") + '" ';
+                const pageBreakClassAttribute =
+                    ' class="' + pageBreakClasses.join(" ") + '" ';
                 segmentHTML +=
                     "<span id=" +
                     idForPageBreak(segment) +
                     " key=" +
                     idForPageBreak(segment) +
                     pageBreakClassAttribute +
-                    ">" + pageBreakIconString + "</span>";
+                    ">" +
+                    pageBreakIconString +
+                    "</span>";
             }
 
             if (lineBreakAnnotation) {
@@ -420,14 +425,17 @@ export default class Text extends React.Component<Props, State> {
                 if (selectedCurrentLineBreak) {
                     lineBreakClasses.push(styles.selectedAnnotation);
                 }
-                const lineBreakClassAttribute = ' class="' + lineBreakClasses.join(" ") + '" ';
+                const lineBreakClassAttribute =
+                    ' class="' + lineBreakClasses.join(" ") + '" ';
                 segmentHTML +=
                     "<span id=" +
                     idForLineBreak(segment) +
                     " key=" +
                     idForLineBreak(segment) +
                     lineBreakClassAttribute +
-                    ">" + PARA_SYMBOL + "</span>";
+                    ">" +
+                    PARA_SYMBOL +
+                    "</span>";
 
                 segmentHTML += '</p><p class="' + textLineClass + '">';
             }
