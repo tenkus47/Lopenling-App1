@@ -12,6 +12,7 @@ import {
 import _ from "lodash";
 import SegmentedText from "lib/SegmentedText";
 import Annotation from "lib/Annotation";
+import Witness from "lib/Witness";
 import { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
@@ -52,7 +53,8 @@ export type Props = {
         length: number
     } | null,
     searchStringPositions: { [position: number]: [number, number] },
-    fontSize?: number
+    fontSize?: number,
+    activeWitness: Witness
 };
 
 export type State = {
@@ -211,10 +213,14 @@ export default class Text extends React.Component<Props, State> {
                                 activeDeletions.push(annotation);
                             }
                         } else if (
-                            annotation.type === ANNOTATION_TYPES.pageBreak
+                            annotation.type === ANNOTATION_TYPES.pageBreak &&
+                            !renderProps.activeWitness.isWorking
                         ) {
                             pageBreakAnnotation = annotation;
-                        } else if (annotation.type === ANNOTATION_TYPES.lineBreak) {
+                        } else if (
+                            annotation.type === ANNOTATION_TYPES.lineBreak &&
+                            !renderProps.activeWitness.isWorking
+                        ) {
                             lineBreakAnnotation = annotation;
                         } else {
                             remainingAnnotations.push(annotation);
