@@ -59,8 +59,10 @@ export type State = {
     segmentedText: SegmentedText
 };
 
+import ReactDOMServer from 'react-dom/server';
+import PageBreakIcon from "images/page_break_icon.svg";
 const PARA_SYMBOL = String.fromCharCode(182);
-const LINE_BREAK_SYMBOL = String.fromCharCode(172);
+const pageBreakIconString = ReactDOMServer.renderToStaticMarkup(<PageBreakIcon />);
 
 export default class Text extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
@@ -404,7 +406,7 @@ export default class Text extends React.Component<Props, State> {
                     " key=" +
                     idForPageBreak(segment) +
                     pageBreakClassAttribute +
-                    ">" + PARA_SYMBOL + "</span>";
+                    ">" + pageBreakIconString + "</span>";
             }
 
             if (lineBreakAnnotation) {
@@ -413,14 +415,13 @@ export default class Text extends React.Component<Props, State> {
                     lineBreakClasses.push(styles.selectedAnnotation);
                 }
                 const lineBreakClassAttribute = ' class="' + lineBreakClasses.join(" ") + '" ';
-
                 segmentHTML +=
                     "<span id=" +
                     idForLineBreak(segment) +
                     " key=" +
                     idForLineBreak(segment) +
                     lineBreakClassAttribute +
-                    ">" + LINE_BREAK_SYMBOL + "</span>";
+                    ">" + PARA_SYMBOL + "</span>";
 
                 segmentHTML += '</p><p class="' + textLineClass + '">';
             }
