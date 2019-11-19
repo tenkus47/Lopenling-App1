@@ -3,6 +3,8 @@
 import type { AppState } from "reducers";
 import * as actions from "actions";
 import * as reducers from "reducers";
+import * as TextStore from "state_helpers/TextStore";
+import AnnotatedText from "lib/AnnotatedText";
 import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import { batchActions } from "redux-batched-actions";
 
@@ -17,68 +19,100 @@ const closeAnnotationControls = (
     }
 };
 
-// TODO: need to check no existing page break is at location
 const addPageBreak = (
     state: AppState,
     dispatch: (action: actions.Action) => void
 ) => {
-    const selectedWitness = reducers.getSelectedTextWitness(state);
-    const activeAnnotation = reducers.getActiveTextAnnotation(state);
-    const user = reducers.getUser(state);
-    if (activeAnnotation && selectedWitness && user) {
-        const pageBreak = new Annotation(
-            null,
-            activeAnnotation.witness,
-            activeAnnotation.start,
-            0,
-            null,
-            ANNOTATION_TYPES.pageBreak,
-            selectedWitness,
-            user
-        );
-        let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
-
-        let actionsBatch = [];
-
-        actionsBatch.push(actions.createdAnnotation(pageBreak));
-        actionsBatch.push(
-            actions.appliedAnnotation(pageBreak.uniqueId, selectedWitnessData)
-        );
-
-        dispatch(batchActions(actionsBatch));
-    }
+    addBreak(state, dispatch, ANNOTATION_TYPES.pageBreak);
 };
 
-// TODO: need to check no existing line break is at location
 const addLineBreak = (
     state: AppState,
     dispatch: (action: actions.Action) => void
 ) => {
+    addBreak(state, dispatch, ANNOTATION_TYPES.lineBreak);
+};
+
+const addBreak = (
+    state: AppState,
+    dispatch: (action: actions.Action) => void,
+    breakType: string
+) => {
     const selectedWitness = reducers.getSelectedTextWitness(state);
     const activeAnnotation = reducers.getActiveTextAnnotation(state);
+    if (
+        !activeAnnotation ||
+        activeAnnotation.isType(ANNOTATION_TYPES.pageBreak) ||
+        activeAnnotation.isType(ANNOTATION_TYPES.lineBreak)
+    ) {
+        return;
+    }
+    let annotatedText = null;
+    if (selectedWitness) {
+        annotatedText = TextStore.getWitnessText(state, selectedWitness.id);
+    }
+
     const user = reducers.getUser(state);
-    if (activeAnnotation && selectedWitness && user) {
-        const lineBreak = new Annotation(
+    if (activeAnnotation && selectedWitness && annotatedText && user) {
+        const breakAnnotation = new Annotation(
             null,
             activeAnnotation.witness,
-            activeAnnotation.start,
+            activeAnnotation.end + 1,
             0,
             null,
-            ANNOTATION_TYPES.lineBreak,
+            breakType,
             selectedWitness,
             user
         );
-        let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
 
-        let actionsBatch = [];
-
-        actionsBatch.push(actions.createdAnnotation(lineBreak));
-        actionsBatch.push(
-            actions.appliedAnnotation(lineBreak.uniqueId, selectedWitnessData)
-        );
-
-        dispatch(batchActions(actionsBatch));
+        if (!breakExists(annotatedText, breakAnnotation)) {
+            let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
+            let actionsBatch = [];
+            actionsBatch.push(actions.createdAnnotation(breakAnnotation));
+            actionsBatch.push(
+                actions.appliedAnnotation(
+                    breakAnnotation.uniqueId,
+                    selectedWitnessData
+                )
+            );
+            dispatch(batchActions(actionsBatch));
+        }
     }
+};
+
+const breakExists = (
+    annotatedText: AnnotatedText,
+    breakAnnotation: Annotation
+): boolean => {
+    return (
+        annotationTypeExists(
+            annotatedText,
+            ANNOTATION_TYPES.pageBreak,
+            breakAnnotation.start
+        ) ||
+        annotationTypeExists(
+            annotatedText,
+            ANNOTATION_TYPES.lineBreak,
+            breakAnnotation.start
+        )
+    );
+};
+
+const annotationTypeExists = (
+    annotatedText: AnnotatedText,
+    type: string,
+    position: number
+): boolean => {
+    const annotations = annotatedText.getAnnotationsOfType(type);
+    for (let id in annotations) {
+        if (annotations.hasOwnProperty(id)) {
+            const annotation = annotations[id];
+            if (position === annotation.start) {
+                return true;
+            }
+        }
+    }
+    return false;
 };
 
 const shortcuts = {
