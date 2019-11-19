@@ -75,6 +75,9 @@ const addBreak = (
                     selectedWitnessData
                 )
             );
+            actionsBatch.push(
+                actions.changedActiveTextAnnotation(breakAnnotation)
+            );
             dispatch(batchActions(actionsBatch));
         }
     }
