@@ -102,16 +102,18 @@
     color: #aaa;
     cursor: pointer;
     margin-left: 5px;
+    font-size: 0.8em;
 }
 
 .pageBreak {
     color: #aaa;
     cursor: pointer;
     margin-left: 5px;
+    font-size: 0.8em;
+    display: flex;
 }
 
 .pageBreak > svg {
-    width: 20px;
-    height: 20px;
+    width: 0.8em;
     pointer-events: none;
 }
