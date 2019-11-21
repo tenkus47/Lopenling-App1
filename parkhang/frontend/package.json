@@ -20,7 +20,7 @@
     "axios": "^0.16.2",
     "classnames": "^2.2.6",
     "core-js": "^2.6.1",
-    "docx": "^4.3.0",
+    "docx": "4.3",
     "file-saver": "^2.0.0-rc.4",
     "grapheme-splitter": "git+https://github.com/orling/grapheme-splitter.git",
     "js-cookie": "^2.2.0",
