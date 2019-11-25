@@ -160,7 +160,7 @@ class Command(BaseCommand):
                     annotation.witness = working_witness
                     annotation.start = page_break
                     annotation.length = 0
-                    annotation.content = pb_count
+                    annotation.content = ""
                     annotation.creator_witness = base_origin_witness
                     annotation.type = AnnotationType.page_break.value
                     annotation.save()
