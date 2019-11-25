@@ -283,7 +283,6 @@ export default class Text extends React.Component<Props, State> {
                             pageBreakAnnotation.uniqueId
                     ) {
                         selectedCurrentPageBreak = true;
-                        console.log("got selected pageBreak");
                     }
                 }
 
@@ -294,7 +293,6 @@ export default class Text extends React.Component<Props, State> {
                             lineBreakAnnotation.uniqueId
                     ) {
                         selectedCurrentLineBreak = true;
-                        console.log("got selected lineBreak");
                     }
                 }
 
