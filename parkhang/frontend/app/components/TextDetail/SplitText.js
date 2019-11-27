@@ -97,6 +97,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     firstSelectedSegment: TextSegment | null;
     selectedElementId: string | null;
     selectedElementIds: string[] | null;
+    imageWidth: number | null;
+    imageHeight: number | null;
+    calculatedImageHeight: number | null;
 
     constructor(props: Props) {
         super(props);
@@ -115,7 +118,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this._activeWitness = null;
         this._didSetInitialScrollPosition = false;
         this._modifyingSelection = false;
-
+        this.imageHeight = null;
+        this.imageWidth = null;
+        this.calculatedImageHeight = null;
+        
         this.processProps(props);
     }
 
@@ -123,6 +129,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         resetCache: boolean = true,
         resetRows: number | number[] | null = null
     ) {
+        if (
+            this.props.showImages &&
+            !this.calculatedImageHeight &&
+            this.imageHeight &&
+            this.imageWidth
+        ) {
+            this.calculatedImageHeight = this.calculateImageHeight();
+        }
         if (this.list) {
             const list = this.list;
             if (resetCache) {
@@ -442,7 +456,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (
             newActiveAnnotation &&
             newActiveAnnotation.isType(ANNOTATION_TYPES.lineBreak) &&
-            oldProps.activeAnnotations && 
+            oldProps.activeAnnotations &&
             !oldProps.activeAnnotations.hasOwnProperty(
                 newActiveAnnotation.uniqueId
             )
@@ -540,7 +554,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 this.updateList(true, selectedRows);
             } else if (this.lineBreaksChanges(this.props, props)) {
                 let selectedRow = this.selectedListRow(props);
-                if (!selectedRow) selectedRow = this.selectedListRow(this.props);
+                if (!selectedRow)
+                    selectedRow = this.selectedListRow(this.props);
                 let splitRowTexts = this.props.splitText.texts;
                 let selectedRows = [];
                 if (selectedRow !== null) {
@@ -584,6 +599,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
     componentDidMount() {
         this.resizeHandler = _.throttle(() => {
+            this.calculatedImageHeight = null;
             this.updateList();
         }, 500).bind(this);
 
@@ -659,6 +675,22 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     componentWillUnmount() {
         window.removeEventListener("resize", this.resizeHandler);
         document.removeEventListener("selectionchange", this.selectionHandler);
+    }
+
+    calculateImageHeight() {
+        let height = null;
+        if (this.imageHeight && this.imageWidth) {
+            const ratio = this.imageWidth / this.imageHeight;
+            const pechaImageClass = styles.pechaImage;
+            const pechaImageContainers = document.getElementsByClassName(
+                pechaImageClass
+            );
+            if (pechaImageContainers.length > 0) {
+                let container = pechaImageContainers[0];
+                height = container.offsetWidth / ratio;
+            }
+        }
+        return height;
     }
 
     getSelectedTextIndex(): number {
@@ -833,6 +865,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }): React.Element<CellMeasurer> {
         const props = this.props;
         const cache = this.cache;
+        const component = this;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
         let imageUrl = "";
         if (
@@ -853,6 +886,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             );
         }
 
+        let pechaStyles = {};
+        let imageHeight = null;
+        if (props.showImages && pechaImageClass && this.calculatedImageHeight) {
+            pechaStyles["height"] = this.calculatedImageHeight + "px";
+        }
+
         return (
             <CellMeasurer
                 columnIndex={0}
@@ -864,11 +903,32 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 <div key={key} style={style} className={styles.splitTextRow}>
                     <div className={styles.splitTextRowContent}>
                         {props.showImages && (
-                            <div className={pechaImageClass}>
+                            <div
+                                className={pechaImageClass}
+                                style={pechaStyles}
+                            >
                                 <img
                                     src={imageUrl}
                                     width="100%"
                                     height="100%"
+                                    onLoad={e => {
+                                        if (
+                                            component.imageWidth === null &&
+                                            e.target
+                                        ) {
+                                            component.imageWidth =
+                                                e.target.naturalWidth;
+                                            component.imageHeight =
+                                                e.target.naturalHeight;
+                                            component.calculatedImageHeight = null;
+                                            window.setTimeout(
+                                                component.updateList.bind(
+                                                    component
+                                                ),
+                                                0
+                                            );
+                                        }
+                                    }}
                                 />
                             </div>
                         )}
