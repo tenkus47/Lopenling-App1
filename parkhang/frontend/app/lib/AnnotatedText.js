@@ -225,7 +225,7 @@ export default class AnnotatedText {
             .orginalCurrentSegmentPositions;
         return this.variants.filter(annotation => {
             let start = annotation.start;
-            let end = annotation.contentEnd;
+            let end = annotation.end;
             if (annotation.isInsertion) {
                 start = String(start) + INSERTION_KEY;
                 end = start;

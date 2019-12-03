@@ -566,6 +566,8 @@ describe("AnnotatedText", () => {
             expectedAnnotation5
         ]);
 
+        expect(annotatedText.annotationsForPosition(175)).toEqual([]);
+
         expect(annotatedText.annotationsForPosition(227)).toEqual([]);
 
         let deletedAnnotation = new Annotation(
