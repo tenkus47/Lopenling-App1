@@ -266,6 +266,25 @@ describe("AnnotatedText", () => {
             insertionSegment,
             insertionSegment2
         ]);
+
+        let segmentPlusInsertion = new Annotation(
+            WORKING_VERSION_ANNOTATION_ID,
+            baseWitness,
+            263,
+            7,
+            "ཁྱིམ་དང",
+            ANNOTATION_TYPES.variant,
+            otherWitness,
+            getAnonymousUser()
+        )
+
+        let segmentPlusInsertionSegment = new TextSegment(231, "ཁྱིམ");
+        let segmentPlusInsertionSegment2 = new TextSegment(235, "་");
+        expect(annotatedText.segmentsForAnnotation(segmentPlusInsertion)).toEqual([
+            segmentPlusInsertionSegment,
+            segmentPlusInsertionSegment2,
+            insertionSegment
+        ]);
     });
 
     test("Get original segments from amended version", () => {

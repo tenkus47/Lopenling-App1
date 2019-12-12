@@ -545,7 +545,7 @@ export default class AnnotatedText {
         const orginalCurrentSegmentPositions = this
             .orginalCurrentSegmentPositions;
 
-        if (isActive) {
+        if (isActive || annotation.id === WORKING_VERSION_ANNOTATION_ID) {
             let key = annotation.start;
             if (annotation.isInsertion) {
                 key += INSERTION_KEY;
