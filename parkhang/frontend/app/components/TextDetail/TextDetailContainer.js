@@ -439,7 +439,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             const range = getSegmentsRange(
                 segments,
                 activeAnnotations,
-                segmentAnnotations
+                segmentAnnotations,
+                stateProps.annotatedText
             );
             if (!range) {
                 console.warn(
