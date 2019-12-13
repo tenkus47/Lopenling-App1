@@ -626,10 +626,18 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     componentDidUpdate() {
         if (this.selectedNodes && this.selectedNodes.length > 0) {
             const selectedNodes = this.selectedNodes;
+            const selectedSegments = this.props.selectedAnnotatedSegments;
             setTimeout(() => {
                 let selRange = document.createRange();
                 let startNode = selectedNodes[0];
                 let endNode = selectedNodes[selectedNodes.length - 1];
+                let lastSegment = selectedSegments[selectedSegments.length - 1];
+                if (lastSegment instanceof TextSegment) {
+                    let lastElement = document.getElementById(
+                        idForSegment(lastSegment)
+                    );
+                    if (lastElement) endNode = lastElement;
+                }
 
                 if (
                     startNode instanceof Element &&

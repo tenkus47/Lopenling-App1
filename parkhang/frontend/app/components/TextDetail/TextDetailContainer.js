@@ -585,9 +585,10 @@ const getTextWorkingWitness = (textData: TextData): Witness => {
 };
 
 const getSegmentsRange = (
-    segments,
-    activeAnnotations,
-    annotations
+    segments: TextSegment[],
+    activeAnnotations: Annotation[],
+    annotations: Annotation[],
+    annotatedText: AnnotatedText
 ): { start: number, length: number, annotation: Annotation | null } | null => {
     if (segments.length === 0) {
         return null;
@@ -602,26 +603,39 @@ const getSegmentsRange = (
     let endAnnotation = null;
     for (let i = 0; i < annotations.length; i++) {
         const annotation = annotations[i];
-        if (annotation.start < start) {
-            start = annotation.start;
-            startAnnotation = annotation;
-        }
-        let annotationEnd = null;
-        if (activeAnnotations.indexOf(annotation) !== -1) {
-            annotationEnd = annotation.contentEnd;
-        } else {
-            annotationEnd = annotation.end;
-        }
+        let annotationStart,
+            annotationLength,
+            annotationEnd = null;
+        [
+            annotationStart,
+            annotationLength
+        ] = annotatedText.getPositionOfAnnotation(annotation);
 
-        if (annotationEnd > end) {
-            end = annotationEnd;
-            endAnnotation = annotationEnd;
+        if (activeAnnotations.indexOf(annotation) !== -1) {
+            if (annotationStart && annotationStart < start) {
+                start = annotationStart;
+                startAnnotation = annotation;
+            }
+
+            annotationEnd = annotationStart + annotationLength - 1;
+
+            if (annotationEnd && annotationEnd > end) {
+                end = annotationEnd;
+                endAnnotation = annotationEnd;
+            }
+        } else {
+            // For inactive annotions - we want to select the whole
+            // length of text the annotation refers to.
+            annotationEnd = annotationStart + annotationLength - 1;
+            if (annotationEnd > end) {
+                end = annotationEnd;
+            }
         }
     }
 
     // Set if the whole range is encompassed by a single annotation
     let rangeAnnotation = null;
-    if (startAnnotation === endAnnotation) {
+    if (startAnnotation && endAnnotation && startAnnotation === endAnnotation) {
         rangeAnnotation = startAnnotation;
     }
 
