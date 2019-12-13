@@ -457,10 +457,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             if (range.annotation) {
                 activeAnnotation = range.annotation;
             } else if (activeAnnotations.length > 0) {
-                const content = segments.reduce(
-                    (content, segment) => content + segment.text,
-                    ""
-                );
+                const content = annotatedText.segmentedText
+                    .segmentsInRange(range.start, range.length)
+                    .reduce((content, segment) => content + segment.text, "");
                 // TODO: test this when editing non-working edition.
                 // Check if getTextWorkingWitness works as required
                 if (!stateProps.selectedWitness) {
