@@ -23,6 +23,24 @@ class Text(models.Model):
     """
 
     name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    """BDRC code for text"""
+    code = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+    topics = models.ManyToManyField('Topic')
+    author = models.ForeignKey('Author', on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Topic(models.Model):
+    name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
+
+    def __str__(self):
+        return self.name
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
 
     def __str__(self):
         return self.name
