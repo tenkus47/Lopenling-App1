@@ -191,8 +191,8 @@ export const getTextFontSize = (state: AppState): number => {
 
 // data
 
-export const getText = (state: AppState, textId: number): Text | null => {
-    return data.getText(state.data, textId);
+export const getText = (state: AppState, textId: number, asData:boolean=false): Text | TextData | null => {
+    return data.getText(state.data, textId, asData);
 };
 
 export const getSources = (state: AppState): Source[] => {
@@ -237,6 +237,13 @@ export const getWorkingWitness = (
 ): Witness | null => {
     return data.getWorkingWitness(state.data, textId);
 };
+
+export const hasLoadedWitness = (
+    state: AppState,
+    witnessId: number
+): boolean => {
+    return state.data.witnessesById.hasOwnProperty(witnessId);
+}
 
 export const hasLoadedWitnessAnnotations = (
     state: AppState,
@@ -355,12 +362,14 @@ export const getSearchResults = (
 
 // Root
 
-const rootReducer = combineReducers({
+export const allReducers = {
     data: dataReducer,
     ui: uiReducer,
     user: userReducer,
     intl: intlReducer,
     locales: localesReducer
-});
+};
+
+const rootReducer = combineReducers(allReducers);
 
 export default rootReducer;

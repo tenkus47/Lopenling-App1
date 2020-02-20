@@ -92,6 +92,10 @@ export const LOADED_USER_SETTINGS = "user/LOADED_USER_SETTINGS";
 export const UPDATE_LOCALES = "i18n/UPDATE_LOCALES";
 export const SELECTED_LOCALE = "i18n/SELECT_LOCALE";
 
+// URLS
+export const TEXT_URL = "urls/TEXT";
+export const USER_URL = "urls/USER";
+
 /** Action creators **/
 
 export type Action = {
@@ -654,4 +658,22 @@ export function selectedLocale(locale: string): Action {
         type: SELECTED_LOCALE,
         payload: locale
     };
+}
+
+/* URLS */
+export type TextUrlAction = {
+    type: string,
+    payload: {
+        textId: number,
+        witnessId?: number
+    }
+}
+
+export function enteredUrl(url: string, ) {
+    return {
+        type: TEXT_URL,
+        payload: {
+
+        }
+    }
 }

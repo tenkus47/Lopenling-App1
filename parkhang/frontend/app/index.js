@@ -7,7 +7,7 @@ import AppContainer from "components/App/AppContainer";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 // Redux
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 import { Provider, connect } from "react-redux";
 import { batchActions } from "redux-batched-actions";
 
@@ -19,10 +19,14 @@ import { loadInitialData, userLoggedIn } from "actions";
 import { enableBatching } from "redux-batched-actions";
 
 // Reducers
-import rootReducer from "reducers";
+import { combineReducers } from "redux";
+import rootReducer, { allReducers } from "reducers";
 
 // Redux state helpers
 import textMiddleware from "state_helpers/textMiddleware";
+
+// URL management
+import { connectRoutes } from "redux-first-router";
 
 // Sagas
 import "core-js/fn/string/pad-start";
@@ -63,19 +67,39 @@ function Fragment(props) {
 
 const sagaMiddleware = createSagaMiddleware();
 
-const middlewares = [sagaMiddleware, textMiddleware];
+// redux-first-router
+const routesMap = {
+    HOME: "/",
+    [actions.TEXT_URL]: "/texts/:textId/witnesses/:witnessId",
+    USER: "/user/:id"
+};
+const routes = connectRoutes(routesMap, {
+    initialDispatch: false
+});
+let locationRootReducer = combineReducers({
+    ...allReducers,
+    location: routes.reducer
+});
+
+const middlewares = [routes.middleware, sagaMiddleware, textMiddleware];
 let store = createStore(
-    enableBatching(rootReducer),
+    enableBatching(locationRootReducer),
     applyMiddleware(...middlewares)
 );
 if (process.env.NODE_ENV === "development") {
     store = createStore(
-        enableBatching(rootReducer),
-        composeWithDevTools(applyMiddleware(...middlewares))
+        enableBatching(locationRootReducer),
+        composeWithDevTools(
+            compose(
+                routes.enhancer,
+                applyMiddleware(...middlewares)
+            )
+        )
     );
 }
 
 sagaMiddleware.run(rootSaga);
+routes.initialDispatch();
 
 // TODO: use batch dispatcher?
 store.dispatch(

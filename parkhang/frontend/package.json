@@ -37,7 +37,9 @@
     "redux": "^4.0",
     "redux-actions": "^2.6.3",
     "redux-batched-actions": "^0.4.1",
+    "redux-first-router": "^2.1.5",
     "redux-saga": "^1",
+    "rudy-match-path": "^0.3.0",
     "tibetan-sort-js": "^1.0.1",
     "uuid": "^3.3.2"
   },

@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include('api.urls')),
-    url(r'^$', HomeView.as_view())
+    url(r'^[^.]*$', HomeView.as_view())
 ]
 
 # If we are devloping, load frontend static files via runserver

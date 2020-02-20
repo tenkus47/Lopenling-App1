@@ -283,6 +283,14 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     if (!hasLoadedAnnotations) {
         yield call(loadWitnessAnnotations, action);
     }
+    let urlAction = {
+        type: actions.TEXT_URL,
+        payload: {
+            textId: action.textId,
+            witnessId: action.witnessId
+        }
+    };
+    yield put(urlAction);
 }
 
 function* watchSelectedTextWitness() {
@@ -513,6 +521,39 @@ function* watchBatchedActions() {
     yield takeEvery(BATCH, dispatchedBatch);
 }
 
+// URLS
+// loadedTextUrl should only be called when first loading
+let _loadedTextUrl = false;
+function* loadedTextUrl(action: actions.TextUrlAction) {
+    if (_loadedTextUrl) {
+        return;
+    }
+    _loadedTextUrl = true;
+    if (action.payload.witnessId) {
+        const textId = action.payload.textId;
+        const witnessId = action.payload.witnessId;
+        let textData;
+        do {
+            textData = yield select(reducers.getText, textId, true);
+            if (!textData) yield delay(500);
+        } while (textData === null);
+        
+        const selectedTextAction = actions.selectedText(textData);
+        yield put(selectedTextAction);
+        let textWitnesses;
+        do {
+            textWitnesses = yield select(reducers.getTextWitnesses, textId);
+            if (textWitnesses.length === 0) yield delay(500);
+        } while (textWitnesses.length === 0);
+        let selectedWitnessAction = actions.selectedTextWitness(textId, witnessId);
+        yield put(selectedWitnessAction);
+    }
+}
+
+function* watchTextUrlActions() {
+    yield takeEvery(actions.TEXT_URL, loadedTextUrl)
+}
+
 /**
  * Stores functions by action type.
  * Used primarily to allow batched actions to be handled
@@ -536,7 +577,8 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.CHANGED_TEXT_LIST_WIDTH]: changedTextListWidth,
     [actions.CHANGED_SHOW_PAGE_IMAGES]: changedShowPageImages,
     [actions.CHANGED_TEXT_FONT_SIZE]: changedTextFontSize,
-    [actions.USER_LOGGED_IN]: loadUserSettings
+    [actions.USER_LOGGED_IN]: loadUserSettings,
+    [actions.TEXT_URL]: loadedTextUrl
 };
 
 /** Root **/
@@ -563,6 +605,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchChangedTextListWidth),
         call(watchChangedShowPageImages),
         call(watchChangedTextFontSize),
-        call(watchUserLoggedIn)
+        call(watchUserLoggedIn),
+        call(watchTextUrlActions)
     ]);
 }

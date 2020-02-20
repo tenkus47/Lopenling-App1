@@ -567,11 +567,15 @@ export default dataReducers;
 
 // Selectors
 
-export const getText = (state: DataState, textId: number): Text | null => {
+export const getText = (state: DataState, textId: number, asData: boolean): Text | TextData | null => {
     const textData = state.textsById[textId];
     let text = null;
     if (textData) {
-        text = new Text(textData.id, textData.name);
+        if (asData) {
+            text = textData
+        } else {
+            text = new Text(textData.id, textData.name);
+        }
     }
     return text;
 };
