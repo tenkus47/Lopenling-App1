@@ -363,7 +363,10 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
-    const addBreak = (breakType: string): (() => void) => {
+    const addBreak = (
+        breakType: string,
+        selectBreak: boolean = false
+    ): (() => void) => {
         return () => {
             const location = ownProps.activeAnnotation;
 
@@ -390,9 +393,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     selectedWitnessData
                 )
             );
-            actionsBatch.push(
-                actions.changedActiveTextAnnotation(breakAnnotation)
-            );
+            if (selectBreak) {
+                actionsBatch.push(
+                    actions.changedActiveTextAnnotation(breakAnnotation)
+                );
+            } else {
+                actionsBatch.push(
+                    actions.changedActiveTextAnnotation(null)
+                );
+            }
 
             dispatch(batchActions(actionsBatch));
         };

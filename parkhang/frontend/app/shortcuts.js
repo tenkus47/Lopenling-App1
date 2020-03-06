@@ -41,7 +41,8 @@ const addLineBreak = (
 const addBreak = (
     state: AppState,
     dispatch: (action: actions.Action) => void,
-    breakType: string
+    breakType: string,
+    selectBreak: boolean = false
 ) => {
     const selectedWitness = reducers.getSelectedTextWitness(state);
     const activeAnnotation = reducers.getActiveTextAnnotation(state);
@@ -80,9 +81,15 @@ const addBreak = (
                     selectedWitnessData
                 )
             );
-            actionsBatch.push(
-                actions.changedActiveTextAnnotation(breakAnnotation)
-            );
+            if (selectBreak) {
+                actionsBatch.push(
+                    actions.changedActiveTextAnnotation(breakAnnotation)
+                );
+            } else {
+                actionsBatch.push(
+                    actions.changedActiveTextAnnotation(null)
+                );
+            }
             dispatch(batchActions(actionsBatch));
         }
     }
