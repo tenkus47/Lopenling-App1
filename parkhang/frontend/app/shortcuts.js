@@ -239,7 +239,10 @@ const selectPreviousSegment = (
         let prevAnnotation = annotatedText.annotationsForPosition(prevSegment);
         let segments = annotatedText.segmentsForAnnotation(activeAnnotation);
         if (segments.length > 0) {
-            prevPos = typeof segments[0] == "number" ? segments[0] : segments[0].start;
+            prevPos =
+                typeof segments[0] == "number"
+                    ? segments[0]
+                    : segments[0].start;
         }
     }
 
@@ -255,11 +258,19 @@ const selectPreviousSegment = (
     let newActiveAnnotation = null;
     if (existingAnnotations.length > 0) {
         newActiveAnnotation = existingAnnotations[0];
-        if (newActiveAnnotation.isDeletion && prevSegment && prevSegment instanceof TextSegment) {
+        if (
+            newActiveAnnotation.isDeletion &&
+            prevSegment &&
+            prevSegment instanceof TextSegment
+        ) {
             newActiveAnnotation = null;
         }
     }
-    if (!newActiveAnnotation && prevSegment && prevSegment instanceof TextSegment) {
+    if (
+        !newActiveAnnotation &&
+        prevSegment &&
+        prevSegment instanceof TextSegment
+    ) {
         let baseAnnotation = annotatedText.getBaseAnnotation(
             prevPos,
             prevSegment.length

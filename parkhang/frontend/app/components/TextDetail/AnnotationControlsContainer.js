@@ -676,8 +676,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     };
 };
 
-const AnnotationControlsContainer = connect(mapStateToProps, null, mergeProps)(
-    AnnotationControls
-);
+const AnnotationControlsContainer = connect(
+    mapStateToProps,
+    null,
+    mergeProps
+)(AnnotationControls);
 
 export default AnnotationControlsContainer;
