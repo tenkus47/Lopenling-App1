@@ -187,11 +187,15 @@ export const getAccountOverlayVisible = (state: AppState): boolean => {
 
 export const getTextFontSize = (state: AppState): number => {
     return ui.getTextFontSize(state.ui);
-}
+};
 
 // data
 
-export const getText = (state: AppState, textId: number, asData:boolean=false): Text | TextData | null => {
+export const getText = (
+    state: AppState,
+    textId: number,
+    asData: boolean = false
+): Text | TextData | null => {
     return data.getText(state.data, textId, asData);
 };
 
@@ -243,7 +247,7 @@ export const hasLoadedWitness = (
     witnessId: number
 ): boolean => {
     return state.data.witnessesById.hasOwnProperty(witnessId);
-}
+};
 
 export const hasLoadedWitnessAnnotations = (
     state: AppState,
@@ -339,6 +343,18 @@ export const getAnnotation = (
     annotationId: AnnotationUniqueId
 ): Annotation | null => {
     return data.getAnnotation(state.data, witnessId, annotationId);
+};
+
+export const getAnnotationWithIdFragment = (
+    state: AppState,
+    witnessId: number,
+    annotationUniqueIdFragment: string
+): Annotation | null => {
+    return data.getAnnotationWithIdFragment(
+        state.data,
+        witnessId,
+        annotationUniqueIdFragment
+    );
 };
 
 export const annotationOriginallyUserCreated = (

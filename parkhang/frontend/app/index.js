@@ -70,7 +70,7 @@ const sagaMiddleware = createSagaMiddleware();
 // redux-first-router
 const routesMap = {
     HOME: "/",
-    [actions.TEXT_URL]: "/texts/:textId/witnesses/:witnessId",
+    [actions.TEXT_URL]: "/texts/:textId/witnesses/:witnessId/:annotation?",
     USER: "/user/:id"
 };
 const routes = connectRoutes(routesMap, {

@@ -567,12 +567,16 @@ export default dataReducers;
 
 // Selectors
 
-export const getText = (state: DataState, textId: number, asData: boolean): Text | TextData | null => {
+export const getText = (
+    state: DataState,
+    textId: number,
+    asData: boolean
+): Text | TextData | null => {
     const textData = state.textsById[textId];
     let text = null;
     if (textData) {
         if (asData) {
-            text = textData
+            text = textData;
         } else {
             text = new Text(textData.id, textData.name);
         }
@@ -890,6 +894,25 @@ export const getAnnotation = (
         }
         return null;
     }
+};
+
+export const getAnnotationWithIdFragment = (
+    state: DataState,
+    witnessId: number,
+    annotationUniqueIdFragment: string
+): Annotation | null => {
+    const annotations = state.witnessAnnotationsById[witnessId];
+    let annotation = null;
+    if (annotations) {
+        for (let uniqueId in annotations) {
+            if (uniqueId.indexOf(annotationUniqueIdFragment) === 0) {
+                let annotationData = annotations[uniqueId];
+                annotation = annotationFromData(state, annotationData);
+                break;
+            }
+        }
+    }
+    return annotation;
 };
 
 export const getActiveAnnotationsForWitnessId = (

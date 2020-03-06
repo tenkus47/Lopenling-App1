@@ -16,6 +16,11 @@ import * as actions from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
 import User from "lib/User";
+import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
+import AnnotatedText, {
+    WORKING_VERSION_ANNOTATION_ID
+} from "lib/AnnotatedText";
+import * as TextStore from "state_helpers/TextStore";
 import { updateIntl } from "react-intl-redux";
 import Cookies from "js-cookie";
 import { i18n_cookie_name } from "i18n";
@@ -220,7 +225,7 @@ function* loadInitialData(): Saga<void> {
 }
 
 export function* watchLoadInitialData(): any {
-    yield takeLatest(
+    yield takeEvery(
         actions.LOAD_INITIAL_DATA,
         typeCalls[actions.LOAD_INITIAL_DATA]
     );
@@ -235,7 +240,7 @@ function* selectedText(action: actions.SelectedTextAction): Saga<void> {
 }
 
 function* watchSelectedText(): Saga<void> {
-    yield takeLatest(actions.SELECTED_TEXT, selectedText);
+    yield takeEvery(actions.SELECTED_TEXT, selectedText);
 }
 
 // WITNESSES
@@ -283,6 +288,7 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     if (!hasLoadedAnnotations) {
         yield call(loadWitnessAnnotations, action);
     }
+
     let urlAction = {
         type: actions.TEXT_URL,
         payload: {
@@ -290,11 +296,16 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
             witnessId: action.witnessId
         }
     };
+    let witness = yield select(reducers.getWitness, witnessId);
+    let activeAnnotation = yield select(reducers.getActiveTextAnnotation);
+    if (activeAnnotation && activeAnnotation.witness.text.id === witness.text.id) {
+        urlAction.payload.annotation = getAnnotationSlug(activeAnnotation);
+    }
     yield put(urlAction);
 }
 
 function* watchSelectedTextWitness() {
-    yield takeLatest(actions.SELECTED_WITNESS, selectedWitness);
+    yield takeEvery(actions.SELECTED_WITNESS, selectedWitness);
 }
 
 // ANNOTATIONS
@@ -330,7 +341,7 @@ function* loadWitnessAnnotations(action: actions.WitnessAction) {
 }
 
 function* watchLoadAnnotations() {
-    yield takeLatest(actions.LOAD_WITNESS_ANNOTATIONS, loadWitnessAnnotations);
+    yield takeEvery(actions.LOAD_WITNESS_ANNOTATIONS, loadWitnessAnnotations);
 }
 
 function createAnnotation(action) {
@@ -364,6 +375,39 @@ function* watchDeletedAnnotation() {
         actions.DELETED_ANNOTATION,
         typeCalls[actions.DELETED_ANNOTATION]
     );
+}
+
+function* changeActiveAnnotation(
+    action: actions.ChangedActiveAnnotationAction
+) {
+    if (!action.annotation) return;
+    let annotation = action.annotation;
+    let annotationSlug = getAnnotationSlug(annotation);
+    const selectedWitness = yield select(reducers.getSelectedTextWitness);
+    let urlAction = {
+        type: actions.TEXT_URL,
+        payload: {
+            textId: selectedWitness.text.id,
+            witnessId: selectedWitness.id,
+            annotation: annotationSlug
+        }
+    };
+    yield put(urlAction);
+}
+
+function* watchChangedActiveAnnotation() {
+    yield takeEvery(
+        actions.CHANGED_ACTIVE_TEXT_ANNOTATION,
+        typeCalls[actions.CHANGED_ACTIVE_TEXT_ANNOTATION]
+    );
+}
+
+function getAnnotationSlug(annotation: Annotation): string {
+    let annotationSlug = annotation.start + "-" + annotation.length;
+    if (annotation.isSaved) {
+        annotationSlug += "-" + action.annotation.uniqueId.substr(0, 8);
+    }
+    return annotationSlug;
 }
 
 // I18N
@@ -532,26 +576,123 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
     if (action.payload.witnessId) {
         const textId = action.payload.textId;
         const witnessId = action.payload.witnessId;
-        let textData;
+        let textData: api.TextData;
         do {
             textData = yield select(reducers.getText, textId, true);
-            if (!textData) yield delay(500);
+            if (!textData) yield delay(100);
         } while (textData === null);
-        
+
         const selectedTextAction = actions.selectedText(textData);
+        const selectedWitnessAction = actions.selectedTextWitness(
+            textId,
+            witnessId
+        );
+
         yield put(selectedTextAction);
-        let textWitnesses;
+        let textWitnesses: Array<Witness> = [];
         do {
             textWitnesses = yield select(reducers.getTextWitnesses, textId);
-            if (textWitnesses.length === 0) yield delay(500);
+            if (textWitnesses.length === 0) yield delay(100);
         } while (textWitnesses.length === 0);
-        let selectedWitnessAction = actions.selectedTextWitness(textId, witnessId);
+
+        // Wait until the initial text witness has been selected.
+        // Otherwise a race condition can happen when the initial witness
+        // gets selected after the url-defined witness.
+        let selectedWitnessId;
+        do {
+            selectedWitnessId = yield select(
+                reducers.getSelectedTextWitnessId,
+                textId
+            );
+            if (!selectedWitnessId) yield delay(100);
+        } while (!selectedWitnessId);
+
         yield put(selectedWitnessAction);
+
+        if (action.payload.annotation) {
+            let matches = /([0-9]+)-([0-9]+)-?(.+)?/.exec(
+                action.payload.annotation
+            );
+            let start, length, uniqueIdSegment;
+            if (matches) {
+                if (matches[1]) start = Number(matches[1]);
+                if (matches[2]) length = Number(matches[2]);
+                if (matches[3]) uniqueIdSegment = matches[3];
+
+                if (!start || !length) return;
+
+                let loadedAnnotations;
+                let loadedAppliedAnnotations;
+                do {
+                    loadedAnnotations = yield select(
+                        reducers.hasLoadedWitnessAnnotations,
+                        witnessId
+                    );
+                    loadedAppliedAnnotations = yield select(
+                        reducers.hasLoadedWitnessAppliedAnnotations,
+                        witnessId
+                    );
+                    if (!loadedAnnotations || !loadedAppliedAnnotations) {
+                        yield delay(100);
+                    }
+                } while (
+                    loadedAnnotations === false ||
+                    loadedAppliedAnnotations === false
+                );
+
+                let user = yield select(reducers.getUser);
+                const selectedWitness = yield select(
+                    reducers.getSelectedTextWitness
+                );
+                let workingWitness = yield select(
+                    reducers.getWorkingWitness,
+                    textId
+                );
+
+                let annotation;
+                if (uniqueIdSegment) {
+                    annotation = yield select(
+                        reducers.getAnnotationWithIdFragment,
+                        witnessId,
+                        uniqueIdSegment
+                    );
+                }
+                if (!annotation && user) {
+                    let annotatedText = yield select(
+                        TextStore.getWitnessText,
+                        selectedWitness.id
+                    );
+                    if (annotatedText) {
+                        annotation = annotatedText.getAnnotation(start, length);
+                    }
+
+                    if (!annotation) {
+                        annotation = new Annotation(
+                            WORKING_VERSION_ANNOTATION_ID,
+                            workingWitness,
+                            start,
+                            length,
+                            "",
+                            ANNOTATION_TYPES.variant,
+                            selectedWitness,
+                            user
+                        );
+                    }
+                }
+
+                if (annotation) {
+                    let changedAnnotationAction = actions.changedActiveTextAnnotation(
+                        annotation
+                    );
+                    yield put(changedAnnotationAction);
+                }
+            }
+        }
     }
 }
 
 function* watchTextUrlActions() {
-    yield takeEvery(actions.TEXT_URL, loadedTextUrl)
+    yield takeEvery(actions.TEXT_URL, loadedTextUrl);
 }
 
 /**
@@ -572,6 +713,7 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.UPDATED_ANNOTATION]: reqAction(updateAnnotation),
     [actions.DELETED_ANNOTATION]: reqAction(deleteAnnotation),
     [actions.SELECTED_WITNESS]: reqAction(selectedWitness),
+    [actions.CHANGED_ACTIVE_TEXT_ANNOTATION]: changeActiveAnnotation,
     [actions.SELECTED_TEXT]: selectedText,
     [actions.SELECTED_LOCALE]: selectLocale,
     [actions.CHANGED_TEXT_LIST_WIDTH]: changedTextListWidth,
@@ -606,6 +748,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchChangedShowPageImages),
         call(watchChangedTextFontSize),
         call(watchUserLoggedIn),
-        call(watchTextUrlActions)
+        call(watchTextUrlActions),
+        call(watchChangedActiveAnnotation)
     ]);
 }

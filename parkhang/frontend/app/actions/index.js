@@ -665,7 +665,8 @@ export type TextUrlAction = {
     type: string,
     payload: {
         textId: number,
-        witnessId?: number
+        witnessId?: number,
+        annotation?: string
     }
 }
 
