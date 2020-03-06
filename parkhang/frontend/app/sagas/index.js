@@ -380,18 +380,20 @@ function* watchDeletedAnnotation() {
 function* changeActiveAnnotation(
     action: actions.ChangedActiveAnnotationAction
 ) {
-    if (!action.annotation) return;
-    let annotation = action.annotation;
-    let annotationSlug = getAnnotationSlug(annotation);
     const selectedWitness = yield select(reducers.getSelectedTextWitness);
     let urlAction = {
         type: actions.TEXT_URL,
         payload: {
             textId: selectedWitness.text.id,
-            witnessId: selectedWitness.id,
-            annotation: annotationSlug
+            witnessId: selectedWitness.id
         }
     };
+    if (action.annotation) {
+        let annotation = action.annotation;
+        let annotationSlug = getAnnotationSlug(annotation);
+        urlAction.payload.annotation = annotationSlug;
+    }
+    
     yield put(urlAction);
 }
 
@@ -405,7 +407,7 @@ function* watchChangedActiveAnnotation() {
 function getAnnotationSlug(annotation: Annotation): string {
     let annotationSlug = annotation.start + "-" + annotation.length;
     if (annotation.isSaved) {
-        annotationSlug += "-" + action.annotation.uniqueId.substr(0, 8);
+        annotationSlug += "-" + annotation.uniqueId.substr(0, 8);
     }
     return annotationSlug;
 }
