@@ -84,7 +84,10 @@ let locationRootReducer = combineReducers({
 const middlewares = [routes.middleware, sagaMiddleware, textMiddleware];
 let store = createStore(
     enableBatching(locationRootReducer),
-    applyMiddleware(...middlewares)
+    compose(
+        routes.enhancer,
+        applyMiddleware(...middlewares)
+    )
 );
 if (process.env.NODE_ENV === "development") {
     store = createStore(
