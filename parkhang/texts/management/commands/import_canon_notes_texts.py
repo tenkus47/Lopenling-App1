@@ -119,7 +119,7 @@ class Command(BaseCommand):
                 try:
                     source_witness = Witness.object.get(text=text, source=source)
                 except:
-                    source_witness = create_witness(text, source, source_content)
+                    source_witness = create_witness(text, source, "")
                 
                 # Annotations
                 command_args = f'--start-delete="|-" --stop-delete="-/" --aggregate-changes -d "ཿ།།༌་ \n" "{base_text_path}" "{source_file_path}"'
