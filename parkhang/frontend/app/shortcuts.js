@@ -11,7 +11,6 @@ import Source, { WORKING_VERSION_SOURCE_NAME } from "lib/Source";
 import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import TextSegment from "lib/TextSegment";
 import { batchActions } from "redux-batched-actions";
-import { getTextWorkingWitness } from "components/TextDetail/TextDetailContainer";
 
 const closeAnnotationControls = (
     state: AppState,
