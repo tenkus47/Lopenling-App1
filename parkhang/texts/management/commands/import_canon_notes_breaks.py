@@ -42,14 +42,9 @@ class Command(BaseCommand):
 
         data_files = next(os.walk(source_dir))[2]
         for data_filename in data_files:
-            # print(data_filename)
             if not re.match(r'[A-Z][0-9]+\.txt', data_filename):
                 continue
             text_code = re.search(r'([A-Z][0-9]+)', data_filename).group(0).lower()
-            if text_code != 'd3871':
-                continue
-            else:
-                print("Got D3871")
 
             try:
                 text = Text.objects.get(code=text_code)
