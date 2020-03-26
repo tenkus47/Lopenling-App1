@@ -285,6 +285,29 @@ describe("AnnotatedText", () => {
             segmentPlusInsertionSegment2,
             insertionSegment
         ]);
+
+        let crossAnnotation = new Annotation(
+            WORKING_VERSION_ANNOTATION_ID,
+            baseWitness,
+            201,
+            4,
+            "རོ་ན་ལ",
+            ANNOTATION_TYPES.variant,
+            otherWitness
+        );
+
+        let crossAnnotationSegment1 = new TextSegment(169, "རོ");
+        let crossAnnotationSegment2 = new TextSegment(171, "་");
+        let crossAnnotationSegment3 = new TextSegment(172, "ན");
+        let crossAnnotationSegment4 = new TextSegment(173, "་");
+        let crossAnnotationSegment5 = new TextSegment(174, "ལ");
+        expect(annotatedText.segmentsForAnnotation(crossAnnotation)).toEqual([
+            crossAnnotationSegment1,
+            crossAnnotationSegment2,
+            crossAnnotationSegment3,
+            crossAnnotationSegment4,
+            crossAnnotationSegment5
+        ]);
     });
 
     test("Get original segments from amended version", () => {
@@ -534,6 +557,25 @@ describe("AnnotatedText", () => {
 
         expect(annotatedText.getAnnotation(insertionStart, 0)).toEqual(
             expectedInsertion
+        );
+
+        let crossAnnotation = new Annotation(
+            null,
+            baseWitness,
+            201,
+            4,
+            "རོ་ན་ལ",
+            ANNOTATION_TYPES.variant,
+            baseWitness,
+            null,
+            null
+        );
+        let gotCrossAnnotation = annotatedText.getAnnotation(201, 4);
+        if (gotCrossAnnotation) {
+            gotCrossAnnotation._uniqueId = null;
+        }
+        expect(gotCrossAnnotation).toEqual(
+            crossAnnotation
         );
     });
 
