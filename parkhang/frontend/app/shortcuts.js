@@ -85,9 +85,7 @@ const addBreak = (
                     actions.changedActiveTextAnnotation(breakAnnotation)
                 );
             } else {
-                actionsBatch.push(
-                    actions.changedActiveTextAnnotation(null)
-                );
+                actionsBatch.push(actions.changedActiveTextAnnotation(null));
             }
             dispatch(batchActions(actionsBatch));
         }
