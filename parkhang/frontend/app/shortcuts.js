@@ -295,12 +295,125 @@ const selectPreviousSegment = (
     }
 };
 
+const extendSelectionRight = (
+    state: AppState,
+    dispatch: (action: actions.Action) => void
+) => {
+    const selectedWitness = reducers.getSelectedTextWitness(state);
+    const activeAnnotation = reducers.getActiveTextAnnotation(state);
+    let annotatedText = null;
+    if (selectedWitness) {
+        annotatedText = TextStore.getWitnessText(state, selectedWitness.id);
+    }
+    if (!selectedWitness || !activeAnnotation || !annotatedText) return;
+    // Don't support deletions yet
+    if (activeAnnotation.isDeletion) {
+        return;
+    }
+
+    let segments = annotatedText.segmentsForAnnotation(activeAnnotation);
+    let start =
+        typeof segments[0] == "number" ? segments[0] : segments[0].start;
+    let length = activeAnnotation.content.length;
+    let nextPos = start + length;
+    if (nextPos === undefined) {
+        console.warn("Can't get next segment after %o", activeAnnotation);
+        return;
+    }
+    let existingAnnotations = annotatedText.annotationsForPosition(nextPos);
+
+    let nextAnnotation = null;
+    if (existingAnnotations.length > 0) {
+        nextAnnotation = existingAnnotations[0];
+    } else {
+        let segment = annotatedText.segmentedText.segmentAtPosition(nextPos);
+        if (segment) {
+            let baseAnnotation = annotatedText.getBaseAnnotation(
+                nextPos,
+                segment.length
+            );
+            let workingWitness = reducers.getWorkingWitness(
+                state,
+                selectedWitness.text.id
+            );
+            let user = reducers.getUser(state);
+            if (baseAnnotation && workingWitness && user && segment) {
+                nextAnnotation = new Annotation(
+                    WORKING_VERSION_ANNOTATION_ID,
+                    workingWitness,
+                    baseAnnotation.start,
+                    baseAnnotation.length,
+                    segment.text,
+                    ANNOTATION_TYPES.variant,
+                    selectedWitness,
+                    user
+                );
+            }
+        }
+    }
+    if (nextAnnotation) {
+        let newAnnotation = new Annotation(
+            WORKING_VERSION_ANNOTATION_ID,
+            nextAnnotation.witness,
+            activeAnnotation.start,
+            activeAnnotation.length + nextAnnotation.length,
+            activeAnnotation.content + nextAnnotation.content,
+            activeAnnotation.type,
+            activeAnnotation.creatorWitness,
+            activeAnnotation.creatorUser
+        );
+        dispatch(actions.changedActiveTextAnnotation(newAnnotation));
+    }
+};
+
+const reduceSelectionLeft = (
+    state: AppState,
+    dispatch: (action: actions.Action) => void
+) => {
+    const selectedWitness = reducers.getSelectedTextWitness(state);
+    const activeAnnotation = reducers.getActiveTextAnnotation(state);
+    let annotatedText = null;
+    if (selectedWitness) {
+        annotatedText = TextStore.getWitnessText(state, selectedWitness.id);
+    }
+    if (!selectedWitness || !activeAnnotation || activeAnnotation.isSaved || !annotatedText) return;
+    // Don't support deletions yet
+    if (activeAnnotation.isDeletion) {
+        return;
+    }
+
+    let segments = annotatedText.segmentsForAnnotation(activeAnnotation);
+    // Last segment, can't reduce further
+    if (segments.length === 1) return;
+
+    segments.pop();
+    let content = segments.reduce((acc, current) => {
+        if (current instanceof TextSegment) {
+            acc += current.text;
+        }
+        return acc;
+    }, '');
+    let newAnnotation = new Annotation(
+        WORKING_VERSION_ANNOTATION_ID,
+        activeAnnotation.witness,
+        activeAnnotation.start,
+        content.length,
+        content,
+        activeAnnotation.type,
+        activeAnnotation.creatorWitness,
+        activeAnnotation.creatorUser
+    );
+    dispatch(actions.changedActiveTextAnnotation(newAnnotation));
+};
+
 const shortcuts = {
     Escape: closeAnnotationControls,
     ["shift-Enter"]: addPageBreak,
     ["Enter"]: addLineBreak,
     ["ArrowLeft"]: selectPreviousSegment,
-    ["ArrowRight"]: selectNextSegment
+    ["ArrowRight"]: selectNextSegment,
+    ["shift-ArrowRight"]: extendSelectionRight,
+    ["shift-ArrowLeft"]: reduceSelectionLeft
 };
 
 const getShortcutKey = (e: SyntheticKeyboardEvent<*>) => {
