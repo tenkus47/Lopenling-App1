@@ -14,13 +14,23 @@ import AccountOverlay from "./AccountOverlay";
 import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 import * as actions from "actions";
 
-export const LoginControls = () => (
+type LoginProps = {
+    successRedirect: string,
+    csrfToken: string
+};
+
+export const LoginControls = (props: LoginProps) => (
     <div className={classnames(styles.notLoggedIn, styles.controls)}>
-        <div className={classnames(styles.login, styles.textLink)}>
-            <a href="/accounts/login/">
+        <form method="post" action="/discourse/login_redirect/">
+            <button
+                className={classnames(styles.loginButton)}
+                type="submit"
+            >
                 <FormattedMessage id="header.login" />
-            </a>
-        </div>
+            </button>
+            <input type="hidden" name="csrfmiddlewaretoken" value={props.csrfToken} />
+            <input type="hidden" name="success_redirect" value={props.successRedirect} />
+        </form>
         <div className={classnames(styles.signUp, styles.buttonLink)}>
             <a href="/accounts/signup/">
                 <FormattedMessage id="header.signUp" />
@@ -53,7 +63,9 @@ type HeaderProps = {
     accountOverlayVisible: boolean,
     navigationButtonClicked: () => void,
     intl: { formatMessage: ({ [id: string]: string }) => string },
-    accountButtonClicked: () => void
+    accountButtonClicked: () => void,
+    successRedirect: string,
+    csrfToken: string
 };
 
 export const Header = (props: HeaderProps) => {
@@ -67,7 +79,10 @@ export const Header = (props: HeaderProps) => {
             />
         );
     } else {
-        controls = <LoginControls />;
+        controls = <LoginControls 
+                    successRedirect={props.successRedirect} 
+                    csrfToken={props.csrfToken}
+                    />;
     }
 
     let toggleTitle = props.intl.formatMessage({
@@ -93,12 +108,17 @@ export const Header = (props: HeaderProps) => {
 const mapStateToProps = (state: AppState): { user: User } => {
     const user = getUser(state);
     const activeLocale = getActiveLocale(state);
+    const successRedirect = document.location.pathname;
+    // TODO: move global CSRF_TOKEN into redux
+    const csrfToken = CSRF_TOKEN;
 
     return {
         user: user,
         activeLocale: activeLocale,
         textListIsVisible: getTextListVisible(state),
-        accountOverlayVisible: getAccountOverlayVisible(state)
+        accountOverlayVisible: getAccountOverlayVisible(state),
+        successRedirect: successRedirect,
+        csrfToken: csrfToken
     };
 };
 
@@ -119,6 +139,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     };
 };
 
-const HeaderContainer = connect(mapStateToProps, null, mergeProps)(Header);
+const HeaderContainer = connect(
+    mapStateToProps,
+    null,
+    mergeProps
+)(Header);
 
 export default injectIntl(HeaderContainer);

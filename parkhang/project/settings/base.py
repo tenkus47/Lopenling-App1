@@ -41,10 +41,6 @@ PREREQ_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.postgres',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.weixin',
     'rest_framework',
     'webpack_loader',
 ]
@@ -52,6 +48,7 @@ PREREQ_APPS = [
 PROJECT_APPS = [
     'texts',
     'users',
+    'discourse'
 ]
 
 INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
@@ -101,9 +98,6 @@ DATABASES = {
 AUTHENTICATION_BACKENDS = [
     # default
     'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 # Password validation
@@ -190,3 +184,8 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, '../frontend/webpack-stats.json'),
     }
 }
+
+# Discourse SSO
+DISCOURSE_SSO_KEY = config('DISCOURSE_SSO_KEY')
+DISCOURSE_SSO_REDIRECT = config('DISCOURSE_SSO_REDIRECT')
+DISCOURSE_SSO_URL = config('DISCOURSE_SSO_URL')

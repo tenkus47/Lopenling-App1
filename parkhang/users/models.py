@@ -46,6 +46,15 @@ class User(AbstractBaseUser, PermissionsMixin):
             'unique': _("A user with that username already exists."),
         },
     )
+    sso_username = models.CharField(
+        _('sso username'), 
+        max_length=200,
+        blank=True, 
+        null=True, 
+        help_text=_(
+            'The extenal username if using sso.'
+        )
+    )
     name = models.CharField(_('name'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
