@@ -1,7 +1,7 @@
 @import "css/type.css";
 @import "css/colour.css";
 
-@value header-height: 65px;
+@value header-height: 70px;
 
 :root {
     --header-height: header-height;
@@ -12,21 +12,30 @@
 }
 
 .header {
-    background-color: var(--main-tint);
+    background-color: #ffffff;
     font-family: var(--fonts);
     font-size: 30px;
-    color: white;
+    color: #888;
     padding: 0px 10px 0px 20px;
     height: var(--header-height);
     display: flex;
     flex-shrink: 0;
     align-items: center;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.18); /* Same as lopenling header */
+    z-index: 1;
 }
 
 .header p {
     margin: 0;
     padding: 0;
     flex-grow: 2;
+}
+
+.logo {
+    margin: 0 0 0 20px;
+    padding: 0;
+    flex-grow: 2;
+    display: flex;
 }
 
 .navigationButton {
@@ -48,7 +57,7 @@
 
 .loginButton {
     font-size: 18px;
-    color: white;
+    color: var(--green-tint);
     margin-right: 20px;
     border: 0;
     background-color: transparent;
@@ -60,12 +69,12 @@
 }
 
 .buttonLink {
-    background-color: white;
+    background-color: var(--green-tint);
     border-radius: 4px;
     padding: 5px 20px;
 }
 
 .buttonLink a:link,
 .buttonLink a:visited {
-    color: var(--main-tint);
+    color: #ffffff;
 }

@@ -13,6 +13,7 @@ import AccountButton from "./AccountButton";
 import AccountOverlay from "./AccountOverlay";
 import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 import * as actions from "actions";
+import lopenlingLogo from "images/lopenling_logo.png";
 
 type LoginProps = {
     successRedirect: string,
@@ -96,9 +97,9 @@ export const Header = (props: HeaderProps) => {
                 className={styles.navigationButton}
                 title={toggleTitle}
             />
-            <p>
-                <FormattedMessage id="header.title" key={props.activeLocale} />
-            </p>
+            <div className={styles.logo}>
+                <img src={lopenlingLogo} height="40" />
+            </div>
             <LocaleSwitcher />
             {controls}
         </header>
