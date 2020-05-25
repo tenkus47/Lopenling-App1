@@ -14,6 +14,7 @@ import AccountOverlay from "./AccountOverlay";
 import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo.png";
+import UserIcon from "images/discourse_user.svg";
 
 type LoginProps = {
     successRedirect: string,
@@ -32,6 +33,7 @@ export const LoginControls = (props: LoginProps) => (
                 className={classnames(styles.loginButton)}
                 type="submit"
             >
+                <UserIcon width="11" />
                 <FormattedMessage id="header.login" />
             </button>
             <input type="hidden" name="csrfmiddlewaretoken" value={props.csrfToken} />
