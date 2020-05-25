@@ -22,7 +22,6 @@ from project.views import HomeView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^discourse/', include('discourse.urls')),
-    url(r'^accounts/', include('allauth.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^[^.]*$', HomeView.as_view())
 ]
