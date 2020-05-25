@@ -31,7 +31,7 @@ class SSOProviderRedirect(View):
         payload_hmac = hmac.new(bytes(settings.DISCOURSE_SSO_KEY, encoding='utf-8'), payload_base64, digestmod=hashlib.sha256)
         signature = payload_hmac.hexdigest()
         query_string = parse.urlencode({'sso': payload_base64, 'sig': signature})
-        redirect = f'{settings.DISCOURSE_SSO_URL}?{query_string}'
+        redirect = f'{settings.DISCOURSE_SSO_LOGIN_URL}?{query_string}'
 
         if 'success_redirect' in request.POST:
             request.session['success_redirect'] = request.POST['success_redirect']

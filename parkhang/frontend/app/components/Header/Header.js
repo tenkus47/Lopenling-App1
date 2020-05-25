@@ -22,6 +22,11 @@ type LoginProps = {
 
 export const LoginControls = (props: LoginProps) => (
     <div className={classnames(styles.notLoggedIn, styles.controls)}>
+        <div className={classnames(styles.signUp, styles.buttonLink)}>
+            <a href={SSO_SIGNUP_URL}>
+                <FormattedMessage id="header.signUp" />
+            </a>
+        </div>
         <form method="post" action="/discourse/login_redirect/">
             <button
                 className={classnames(styles.loginButton)}
@@ -32,11 +37,6 @@ export const LoginControls = (props: LoginProps) => (
             <input type="hidden" name="csrfmiddlewaretoken" value={props.csrfToken} />
             <input type="hidden" name="success_redirect" value={props.successRedirect} />
         </form>
-        <div className={classnames(styles.signUp, styles.buttonLink)}>
-            <a href="/accounts/signup/">
-                <FormattedMessage id="header.signUp" />
-            </a>
-        </div>
     </div>
 );
 
