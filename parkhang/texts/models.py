@@ -96,6 +96,7 @@ class AnnotationType(Enum):
     note = 'N'
     page_break = 'P'
     line_break = 'L'
+    question = 'Q'
 
 
 class Annotation(models.Model):
@@ -177,4 +178,7 @@ class DefaultWitnessAnnotations(models.Model):
     annotation = models.ForeignKey(Annotation)
 
 
+class Question(models.Model):
+    annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE)
+    topic_id = models.IntegerField()
 

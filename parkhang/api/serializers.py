@@ -1,6 +1,6 @@
 from rest_framework import routers, serializers, viewsets
 
-from texts.models import Text, Source, Witness, Annotation, UserAnnotationOperation, DefaultWitnessAnnotations
+from texts.models import Text, Source, Witness, Annotation, UserAnnotationOperation, DefaultWitnessAnnotations, Question
 from users.models import User
 
 
@@ -77,3 +77,13 @@ class UserAnnotationOperationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAnnotationOperation
         fields = ('id', 'annotation', 'witness', 'operation', 'annotation_unique_id')
+
+
+class QuestionPostSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    username = serializers.CharField()
+    content_html = serializers.CharField()
+    created = serializers.DateTimeField()
+    is_question = serializers.BooleanField()
+    is_accepted_answer = serializers.BooleanField()

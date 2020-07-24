@@ -3,6 +3,7 @@ import json
 
 from django.db.models import Q
 from django.http import Http404, JsonResponse
+from django.conf import settings
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -10,9 +11,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ParseError, ValidationError, NotFound, PermissionDenied
 
-from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer, UserAnnotationOperationsSerializer
-from texts.models import Text, Source, Witness, Annotation, UserAnnotationOperation
+from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer, UserAnnotationOperationsSerializer, QuestionPostSerializer
+from texts.models import Text, Source, Witness, Annotation, UserAnnotationOperation, Question
 from users.models import User
+from discourse.api import DiscourseAPI
 
 
 class UserDetail(APIView):
@@ -412,3 +414,47 @@ class UserAnnotationOperationDetail(APIView):
         user_annotation_operation.delete()
 
         return Response('', status=status.HTTP_204_NO_CONTENT)
+
+
+class QuestionList(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, witness_id):
+        """
+        Add a new post to discourse Q&A site related
+        to the given annotation.
+        """
+
+        user = request.user
+
+        serializer = AnnotationSerializer(data=request.data)
+        if serializer.is_valid():
+            annotation = serializer.save()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        question_title = request.data['question_title']
+        question_content = request.data['question_content']
+        target_topic_id = settings.DISCOURSE_QA_TOPIC_ID
+
+        api = DiscourseAPI(settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY)
+        topic_data = api.add_topic(user.sso_username, settings.DISCOURSE_QA_TOPIC_ID, question_title, question_content)
+
+        question = Question()
+        question.annotation = annotation
+        question.topic_id = topic_data['id']
+        question.save()
+
+        return Response(topic_data['id'], status=status.HTTP_201_CREATED)
+
+
+class QuestionDetail(APIView):
+
+    def get(self, request, annotation_id):
+        question = Question.objects.get(annotation_id=annotation_id)
+        api = DiscourseAPI(settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY)
+        posts = api.get_topic_posts(question.topic_id)
+        posts = [post for post in posts if post['is_question'] or post['is_accepted_answer']]
+
+        serializer = QuestionPostSerializer(posts, many=True)
+        return Response(serializer.data)
