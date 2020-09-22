@@ -1,5 +1,6 @@
 import SegmentedText from "./SegmentedText";
 import TextSegment from "./TextSegment";
+import * as constants from "app_constants";
 
 const text = "༄༅། །ཐེག་པ་ཆེན་པོ་ཉི་ཤུ་པ།༄༅༅། །རྒྱ་གར་སྐད་དུ།";
 
@@ -89,6 +90,30 @@ describe("SegmentedText", () => {
 
         let tshegSeg = new TextSegment(8, "་");
         expect(segmentedText.segmentsInRange(8, 1)).toEqual([tshegSeg]);
+    });
+
+    it("should get an extract around the given position", () => {
+        let includeBoundaries = true;
+        let expectedExtract = ["།ཐེག་", "པ", "་ཆེན་པོ་ཉི་ཤུ་པ།༄༅༅།"];
+        expect(
+            segmentedText.extractTextAroundPosition(
+                9,
+                10,
+                constants.TEXT_EXTRACT_BOUNDARIES,
+                includeBoundaries
+            )
+        ).toEqual(expectedExtract);
+
+        includeBoundaries = false;
+        expectedExtract = ["ཐེག་", "པ", "་ཆེན་པོ་ཉི་ཤུ་པ"];
+        expect(
+            segmentedText.extractTextAroundPosition(
+                9,
+                10,
+                constants.TEXT_EXTRACT_BOUNDARIES,
+                includeBoundaries
+            )
+        ).toEqual(expectedExtract);
     });
 });
 
