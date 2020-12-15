@@ -122,7 +122,7 @@ class TextSearch(APIView):
                         'total': 0,
                         'extra': False
                     }
-                if max_results is 0 or (max_results > 0 and results[witness.text.id]['total'] < max_results):
+                if max_results == 0 or (max_results > 0 and results[witness.text.id]['total'] < max_results):
                     start = m.start() - left
                     if start < 0:
                         start = 0
