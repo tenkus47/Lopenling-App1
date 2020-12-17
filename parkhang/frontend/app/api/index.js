@@ -18,6 +18,11 @@ export type AnnotationOp = "A" | "R";
 export const appliedOp: AnnotationOp = "A";
 export const removedOp: AnnotationOp = "R";
 
+let HOST = null;
+export function setHost(host: string) {
+    HOST = host;
+}
+
 function request(method: ReqMethod, url, data: any = null): Promise<*> {
     let req = null;
     switch (method) {
@@ -34,6 +39,10 @@ function request(method: ReqMethod, url, data: any = null): Promise<*> {
         default:
             req = axios.get;
             break;
+    }
+
+    if (HOST) {
+        url = HOST + url;
     }
 
     const promiseReq = req;
@@ -334,3 +343,43 @@ export function deleteAnnotation(annotation: Annotation) {
 }
 
 // TODO: get default annotations
+
+// QUESTIONS
+
+function getQuestionUrl(
+    witness: Witness,
+    annotation: Annotation | null = null
+): string {
+    let url =
+        "/api/texts/" +
+        witness.text.id +
+        "/witnesses/" +
+        witness.id +
+        "/questions/";
+    if (annotation) {
+        url += `${annotation.start}-${annotation.length}`;
+    }
+
+    return url;
+}
+
+export function createQuestion(
+    annotation: Annotation,
+    title: String,
+    content: String
+) {
+    const url = getQuestionUrl(annotation.witness, annotation);
+    let data = {
+        question_title: title,
+        question_content: content,
+        ...dataFromAnnotation(annotation)
+    };
+
+    return request(POST, url, data);
+}
+
+export function getQuestion(annotation: Annotation) {
+    const url = getQuestionUrl(annotation.witness, annotation);
+
+    return request(GET, url);
+}

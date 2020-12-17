@@ -10,14 +10,25 @@ import Witness from "lib/Witness";
 import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import AnnotationControlsHeading from "./AnnotationControlsHeading";
 import NoteEditor from "./NoteEditor";
+import QuestionView from "./QuestionView";
+import QuestionEditor from "./QuestionEditor";
+import QuestionsLoading from "./QuestionsLoading";
 import { FormattedMessage } from "react-intl";
 import Note from "./Note";
 import Button from "components/UI/Button";
 import PageBreakIcon from "images/page_break_icon.svg";
 import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
+import Question from "lib/Question";
+
+import type { AnnotationUniqueId } from "lib/Annotation";
 
 export const CONTROLS_MARGIN_LEFT = 10;
+
+export type QuestionData = {
+    loading: boolean,
+    questions: Question[]
+};
 
 export type Props = {
     inline: boolean,
@@ -36,6 +47,10 @@ export type Props = {
     pechaImageClass: string,
     notes: Annotation[],
     temporaryNotes: Annotation[],
+    questions: Annotation[],
+    questionsData: { [annotationId: AnnotationUniqueId]: QuestionData },
+    temporaryQuestions: Annotation[],
+    questionQuote: React.Element<typeof React.Component> | null,
     addNote: () => void,
     editNote: (annotation: Annotation) => void,
     saveAnnotation: (annotation: Annotation, content: string) => void,
@@ -43,6 +58,12 @@ export type Props = {
     deleteAnnotation: (annotation: Annotation) => void,
     addPageBreak: () => void,
     addLineBreak: () => void,
+    addQuestion: () => void,
+    saveQuestion: (
+        question: Annotation,
+        title: string,
+        content: string
+    ) => void,
     list: List | null
 };
 
@@ -474,6 +495,7 @@ export default class AnnotationControls extends React.Component<Props> {
         if (props.temporaryNotes && props.temporaryNotes.length > 0) {
             tempNotes = props.temporaryNotes.map((note: Annotation) => {
                 let key = "NOTE_" + note.uniqueId;
+                // The note is being edited
                 if (note.basedOn) {
                     tempNoteIds[note.basedOn.uniqueId] = note.uniqueId;
                 }
@@ -490,6 +512,7 @@ export default class AnnotationControls extends React.Component<Props> {
 
         let notes = null;
         if (props.notes && props.notes.length > 0) {
+            // Filter out notes that are being edited
             const validNotes = props.notes.filter(
                 (note: Annotation) => !tempNoteIds.hasOwnProperty(note.uniqueId)
             );
@@ -505,6 +528,79 @@ export default class AnnotationControls extends React.Component<Props> {
                 );
             });
         }
+
+        let tempQuestions = null;
+        let tempQuestionIds = {};
+        if (
+            props.temporaryQuestions &&
+            props.temporaryQuestions.length > 0 &&
+            props.questionQuote
+        ) {
+            tempQuestions = props.temporaryQuestions.map(
+                (question: Annotation) => {
+                    tempQuestionIds[question.uniqueId] = question.uniqueId;
+                    let key = "QUESTION_" + question.uniqueId;
+                    return (
+                        <QuestionEditor
+                            question={question}
+                            questionQuote={props.questionQuote}
+                            defaultTitle={props.selectedWitness.text.name}
+                            key={key}
+                            saveQuestion={props.saveQuestion}
+                            cancel={() => props.cancelEditAnnotation(question)}
+                        />
+                    );
+                }
+            );
+        }
+
+        let questionLoadingIndicators = null;
+        let questionViews: Array<QuestionView> = [];
+        let questionsAreLoading = false;
+        if (props.questions && props.questions.length > 0) {
+            let questions: Question[] = [];
+            for (let i = 0; i < props.questions.length; i++) {
+                const question = props.questions[i];
+                let isValid = !tempQuestionIds.hasOwnProperty(
+                    question.uniqueId
+                );
+                if (isValid) {
+                    if (props.questionsData.hasOwnProperty(question.uniqueId)) {
+                        if (props.questionsData[question.uniqueId].loading) {
+                            questionsAreLoading = true;
+                        }
+                        questions = questions.concat(
+                            props.questionsData[question.uniqueId].questions
+                        );
+                    }
+                }
+            }
+
+            questionViews = questions.map((question: Question) => {
+                let key = "QUESTION_" + question.annotationUniqueId;
+                return (
+                    <QuestionView
+                        question={question}
+                        key={"question_" + question.annotationUniqueId}
+                    />
+                );
+            });
+        }
+        let questionHeading = null;
+        if (questionViews.length > 0) {
+            questionHeading = (
+                <h3 className={styles.sectionHeading}>Questions</h3>
+            );
+        }
+
+        let questionsLoading = null;
+        if (questionsAreLoading) {
+            questionsLoading = <QuestionsLoading />;
+        }
+
+        let allowQuestion =
+            props.questions.length === 0 &&
+            props.temporaryQuestions.length === 0;
 
         let classes = [styles.annotationControls];
         if (props.inline) {
@@ -534,6 +630,7 @@ export default class AnnotationControls extends React.Component<Props> {
                                 ? () => props.addNote()
                                 : null
                         }
+                        addQuestion={allowQuestion ? props.addQuestion : null}
                     />
                 )}
                 <div className={styles.annotationContent}>
@@ -545,6 +642,10 @@ export default class AnnotationControls extends React.Component<Props> {
                     {lineBreaksButton}
                     {tempNotes}
                     {notes}
+                    {questionHeading}
+                    {tempQuestions}
+                    {questionsLoading}
+                    {questionViews}
                 </div>
                 <div className={styles.arrow} ref={div => (this.arrow = div)} />
             </div>

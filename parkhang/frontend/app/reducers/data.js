@@ -10,10 +10,31 @@ import type { SourceData, TextData, WitnessData, AnnotationData } from "api";
 import Source from "lib/Source";
 import Text from "lib/Text";
 import User from "lib/User";
+import Question from "lib/Question";
+import Answer from "lib/Answer";
 
 export type AnnotationOperations = {
     [api.AnnotationOp]: { [AnnotationUniqueId]: AnnotationUniqueId }
 };
+
+// TODO: move this and QuestionData into api/index.js?
+export type AnswerData = {
+    name: string,
+    username: string,
+    content: string,
+    created: Date
+}
+
+export type QuestionData = {
+    annotation_unique_id: AnnotationUniqueId,
+    name: string,
+    username: string,
+    title: string,
+    question: string,
+    topic_id: number,
+    created: Date,
+    answers: AnswerData[]
+}
 
 export type DataState = {
     texts: TextData[],
@@ -45,6 +66,12 @@ export type DataState = {
         [searchTerm: string]: {
             [textId: number]: api.TextSearchResultData
         }
+    },
+    questions: {
+        [annotationId: AnnotationUniqueId]: QuestionData[]
+    },
+    questionsLoading: {
+        [annotationId: AnnotationUniqueId]: boolean
     }
 };
 
@@ -71,7 +98,9 @@ export const initialDataState: DataState = {
     loadingAnnotations: false,
     loadedAnnotations: false,
     loadedAnnotationOperations: false,
-    searchResults: {}
+    searchResults: {},
+    questions: {},
+    questionsLoading: {}
 };
 
 function loadingInitialData(state: DataState): DataState {
@@ -539,6 +568,39 @@ function updatedSearchResults(
     }
 }
 
+// QUESTIONS
+
+function loadingQuestion(
+    state: DataState,
+    action: actions.LoadingQuestionAction
+): DataState {
+    console.log("loadingQuestion reducer");
+    return {
+        ...state,
+        questionsLoading: {
+            ...state.questionsLoading,
+            [action.annotation.uniqueId]: true
+        }
+    };
+}
+
+function loadedQuestion(
+    state: DataState,
+    action: actions.LoadedQuestionAction
+): DataState {
+    return {
+        ...state,
+        questions: {
+            ...state.questions,
+            [action.annotation.uniqueId]: action.data
+        },
+        questionsLoading: {
+            ...state.questionsLoading,
+            [action.annotation.uniqueId]: false
+        }
+    };
+}
+
 const dataReducers = {};
 dataReducers[actions.LOADING_INITIAL_DATA] = loadingInitialData;
 dataReducers[actions.LOADED_INITIAL_DATA] = loadedInitialData;
@@ -563,6 +625,8 @@ dataReducers[actions.DELETED_ANNOTATION] = deletedAnnotation;
 dataReducers[actions.SAVED_ANNOTATION] = savedAnnotation;
 dataReducers[actions.UPDATED_SEARCH_RESULTS] = updatedSearchResults;
 dataReducers[actions.SEARCHED_TEXT] = searchedText;
+dataReducers[actions.LOADING_QUESTION] = loadingQuestion;
+dataReducers[actions.LOADED_QUESTION] = loadedQuestion;
 export default dataReducers;
 
 // Selectors
@@ -1011,4 +1075,56 @@ export const getSearchResults = (
     } else {
         return null;
     }
+};
+
+export const questionIsLoading = (
+    state: DataState,
+    annotation: Annotation
+): boolean => {
+    if (state.questionsLoading.hasOwnProperty(annotation.uniqueId)) {
+        return state.questionsLoading[annotation.uniqueId];
+    } else {
+        return false;
+    }
+};
+
+export const getQuestions = (
+    state: DataState,
+    questionId: AnnotationUniqueId
+): Question[] | null => {
+    let questions = [];
+    if (state.questions.hasOwnProperty(questionId)) {
+        const questionsData = state.questions[questionId];
+        if (questionsData) {
+            for (let i=0; i < questionsData.length; i++) {
+                const data = questionsData[i];
+
+                const question = new Question();
+                question.name = data.name;
+                question.username = data.username;
+                question.title = data.title;
+                question.content = data.question;
+                question.topicId = data.topic_id;
+                question.annotationUniqueId = data.annotation_unique_id;
+                question.created = data.created
+                question.answers = [];
+                if (data.answers.length > 0) {
+                    for (let j=0; j < data.answers.length; j++) {
+                        const answerData = data.answers[j];
+                        const answer = new Answer();
+                        answer.name = answerData.name;
+                        answer.username = answerData.username;
+                        answer.content = answerData.content;
+                        answer.created = answerData.created;
+
+                        question.answers.push(answer);
+                    }
+                }
+
+                questions.push(question);
+            }
+        }
+    }
+
+    return questions;
 };

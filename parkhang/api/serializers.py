@@ -87,3 +87,22 @@ class QuestionPostSerializer(serializers.Serializer):
     created = serializers.DateTimeField()
     is_question = serializers.BooleanField()
     is_accepted_answer = serializers.BooleanField()
+
+
+class AnswerSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    username = serializers.CharField()
+    content = serializers.CharField()
+    created = serializers.CharField()
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    annotation = serializers.PrimaryKeyRelatedField(read_only=True)
+    answers = AnswerSerializer(many=True)
+    username = serializers.CharField(source='annotation.creator_user.sso_username', default='')
+    name = serializers.CharField(source='annotation.creator_user.name', default='')
+    
+    class Meta:
+        model = Question
+        fields = ('id', 'annotation', 'annotation_unique_id', 'topic_id', 'title', 'question', 'username', 'name', 'created', 'answers')
+
