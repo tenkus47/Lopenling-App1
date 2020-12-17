@@ -668,13 +668,11 @@ export type TextUrlAction = {
         witnessId?: number,
         annotation?: string
     }
-}
+};
 
-export function enteredUrl(url: string, ) {
+export function enteredUrl(url: string) {
     return {
         type: TEXT_URL,
-        payload: {
-
-        }
-    }
+        payload: {}
+    };
 }
