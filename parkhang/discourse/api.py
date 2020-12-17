@@ -2,6 +2,7 @@ import json
 
 import requests
 
+from django.conf import settings
 
 class DiscourseAPI:
 
@@ -17,7 +18,6 @@ class DiscourseAPI:
 
         return auth_headers
 
-    # TODO: handle errors returned from discourse
     def add_topic(self, username, category_id, topic_name, post_text):
         auth_headers = self.auth_headers(username)
         new_topic_data = {
@@ -29,22 +29,32 @@ class DiscourseAPI:
         r = requests.post(
             f'{self.SITE_URL}/posts.json',
             json=new_topic_data,
-            headers=auth_headers
+            headers=auth_headers,
+            timeout=(10, 60)
         )
 
-        topic_data = r.json()
+        # TODO: handle potential error properly
+        try:
+            topic_data = r.json()
+        except Exception as e:
+            print(r.text)
+            print(e)
+
         
         return {
             'id': topic_data['topic_id']
         }
 
     def get_topic_posts(self, topic_id, raw_text=False):
+        auth_headers = self.auth_headers(settings.DISCOURSE_SYSTEM_USER)
         endpoint = f'{self.SITE_URL}/t/{topic_id}.json'
         if raw_text:
             endpoint += '?include_raw=true'
         
         r = requests.get(
-            endpoint
+            endpoint,
+            headers=auth_headers,
+            timeout=(10, 60)
         )
 
         response_data = r.json()
@@ -66,7 +76,6 @@ class DiscourseAPI:
             }
             if 'raw' in post_data:
                 post['content_raw'] = post_data['raw']
-                
             posts.append(post)
     
         return posts
