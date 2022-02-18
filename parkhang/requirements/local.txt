@@ -1,4 +1,6 @@
 # Development related packages
--r common.txt
+-r base.txt
+psycopg2==2.9.1  # https://github.com/psycopg/psycopg2
+
 django-debug-toolbar==1.7
 coverage==4.3.4

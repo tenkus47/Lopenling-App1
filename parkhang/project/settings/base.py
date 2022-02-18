@@ -9,30 +9,63 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
+from pathlib import Path
 
-import os
-
-from decouple import config
+import environ
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
+# parkhang
+APPS_DIR = ROOT_DIR / "parkhang"
+env = environ.Env()
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# GENERAL
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#debug
+DEBUG = env.bool("DJANGO_DEBUG", False)
+# Internationalization
+# https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+LANGUAGE_CODE = 'bo'
 
-ALLOWED_HOSTS = ["parkhang.phurba.net"]
+# For Sites, used by allauth
+SITE_ID = 1
 
+TIME_ZONE = 'UTC'
 
-# Application definition
+USE_I18N = True
 
-PREREQ_APPS = [
+USE_L10N = True
+
+USE_TZ = True
+
+LOCALE_PATHS = [
+    ROOT_DIR / 'project' / 'locale',
+    ROOT_DIR / 'project' / 'translations' / 'allauth',
+]
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('bo', _('Tibetan'))
+]
+
+# GENERAL
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#databases
+DATABASES = {"default": env.db("DATABASE_URL")}
+
+# URLS
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
+ROOT_URLCONF = "project.urls"
+# https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
+WSGI_APPLICATION = "project.wsgi.application"
+
+# APPs
+# ------------------------------------------------------------------------------
+DJANGO_APP = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +74,9 @@ PREREQ_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.postgres',
+]
+
+THIRD_PARTY_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -54,61 +90,26 @@ PROJECT_APPS = [
     'users',
 ]
 
-INSTALLED_APPS = PREREQ_APPS + PROJECT_APPS
+INSTALLED_APPS = DJANGO_APP + THIRD_PARTY_APPS + PROJECT_APPS
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-ROOT_URLCONF = 'project.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = 'project.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
+# AUTHENTICATION
+# ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
     # default
     'django.contrib.auth.backends.ModelBackend',
-
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# Password validation
-# https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
+AUTH_USER_MODEL = 'users.User'
 
+ACCOUNT_EMAIL_REQUIRED = True
+
+LOGIN_REDIRECT_URL = '/'
+
+# PASSWORDS
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -124,47 +125,54 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'users.User'
-
-ACCOUNT_EMAIL_REQUIRED = True
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.10/topics/i18n/
-
-LANGUAGE_CODE = 'bo'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-LOCALE_PATHS = [
-    '%s/locale' % (BASE_DIR),
-    '%s/translations/allauth' % (BASE_DIR),
+# MIDDLEWARE
+# ------------------------------------------------------------------------------
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-LANGUAGES = [
-    ('en', _('English')),
-    ('bo', _('Tibetan'))
+# TEMPLATES
+# ------------------------------------------------------------------------------
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [str(ROOT_DIR / 'project' / 'templates')],
+        'OPTIONS': {
+            # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
+            # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
+            "loaders": [
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
+            ],
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
 ]
 
+
+
+# STATIC
+# ------------------------------------------------------------------------------
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    '%s/../static/' % (BASE_DIR),
-]
-
-# For Sites, used by allauth
-SITE_ID = 1
+STATICFILES_DIRS = [str(ROOT_DIR / 'static')]
 
 # django-rest-framework
+# -------------------------------------------------------------------------------
 REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -174,12 +182,19 @@ REST_FRAMEWORK = {
 
 # Authentication settings
 
-LOGIN_REDIRECT_URL = '/'
 
 # Email server - used by allauth
 # Defaults to outputting to the console. Override for production.
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
+EMAIL_BACKEND = env(
+    "DJANGO_EMAIL_BACKEND",
+    default="django.core.mail.backends.smtp.EmailBackend",
+)
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
+EMAIL_TIMEOUT = 5
 
 DEFAULT_FROM_EMAIL = 'Nalanda Works <server@nalanda.works>'
 
@@ -187,6 +202,6 @@ DEFAULT_FROM_EMAIL = 'Nalanda Works <server@nalanda.works>'
 WEBPACK_LOADER = {
     'MAIN': {
         'BUNDLE_DIR_NAME': 'static/bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, '../frontend/webpack-stats.json'),
+        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
     }
 }

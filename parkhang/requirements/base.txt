@@ -1,0 +1,11 @@
+# Requirements for all environments
+
+# Django
+# -----------------------------------------------------------------------
+Django==1.11
+django-environ==0.4.5  # https://github.com/joke2k/django-environ
+django-allauth==0.31.0
+django-webpack-loader==0.4.1
+
+# Django REST Framework
+djangorestframework==3.6.2
