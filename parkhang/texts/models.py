@@ -1,3 +1,4 @@
+from operator import mod
 import uuid
 from enum import Enum
 
@@ -73,8 +74,8 @@ class Witness(models.Model):
     need to be updated/created to point to the correct place in the new version.
     """
 
-    text = models.ForeignKey(Text)
-    source = models.ForeignKey(Source)
+    text = models.ForeignKey(Text, on_delete=models.CASCADE)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
     """Revision of this witness. Increases if it changes."""
     revision = models.PositiveIntegerField(default=1)
     """The text content of the witness"""
@@ -106,7 +107,7 @@ class Annotation(models.Model):
         (AnnotationType.line_break.value, 'Line Break')
     )
     unique_id = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
-    witness = models.ForeignKey(Witness)
+    witness = models.ForeignKey(Witness, null=True, blank=True, on_delete=models.SET_NULL)
     start = models.IntegerField()
     length = models.IntegerField()
     content = models.CharField(max_length=DEFAULT_MAX_LENGTH, null=True, blank=True)
@@ -129,7 +130,7 @@ class Annotation(models.Model):
             return self.creator_witness
         if self.creator_user:
             return self.creator_user
-        
+
         return None
 
     def creator_name(self):
@@ -157,9 +158,9 @@ class UserAnnotationOperation(models.Model):
         ('R', 'Removed'),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    annotation = models.ForeignKey(Annotation)
-    witness = models.ForeignKey(Witness)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    annotation = models.ForeignKey(Annotation, null=True, blank=True, on_delete=models.SET_NULL)
+    witness = models.ForeignKey(Witness, null=True, blank=True, on_delete=models.SET_NULL)
     operation = models.CharField(max_length=1, choices=OPERATION_CHOICES)
     """Intended to allow a user to say why they applied this annotation"""
     note = models.TextField(null=True, blank=True)
@@ -173,8 +174,5 @@ class DefaultWitnessAnnotations(models.Model):
     or via automation, not by end users.
     """
 
-    witness = models.ForeignKey(Witness)
-    annotation = models.ForeignKey(Annotation)
-
-
-
+    witness = models.ForeignKey(Witness, null=True, blank=True, on_delete=models.SET_NULL)
+    annotation = models.ForeignKey(Annotation, null=True, blank=True, on_delete=models.SET_NULL)

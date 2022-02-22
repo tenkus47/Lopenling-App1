@@ -51,10 +51,12 @@ LANGUAGES = [
     ('bo', _('Tibetan'))
 ]
 
-# GENERAL
+# DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {"default": env.db("DATABASE_URL")}
+# https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -200,7 +202,7 @@ DEFAULT_FROM_EMAIL = 'Nalanda Works <server@nalanda.works>'
 
 # WEBPACK
 WEBPACK_LOADER = {
-    'MAIN': {
+    'DEFAULT': {
         'BUNDLE_DIR_NAME': 'static/bundles/',
         'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
     }
