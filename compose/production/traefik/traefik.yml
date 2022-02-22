@@ -28,7 +28,7 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
-      rule: "Host(`parkhang.lopenling.org`) || Host(`www.parkhang.lopenling.org`)"
+      rule: "Host(`parkhang.lopenling.org`)"
       entryPoints:
         - web-secure
       middlewares:
