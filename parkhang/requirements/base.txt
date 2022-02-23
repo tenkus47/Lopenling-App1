@@ -2,11 +2,12 @@
 
 # Django
 # -----------------------------------------------------------------------
-django==3.2.12  # pyup: < 4.0  # https://www.djangoproject.com/
+Django==1.11
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
-django-allauth==0.48.0  # https://github.com/pennersr/django-allauth
-django-webpack-loader==1.4.1 #https://github.com/django-webpack/django-webpack-loader
-whitenoise==5.3.0  # https://github.com/evansd/whitenoise
+django-allauth==0.31.0
+django-webpack-loader==0.4.1
+whitenoise==6.0.0  # https://github.com/evansd/whitenoise
+
 
 # Django REST Framework
-djangorestframework==3.13.1  # https://github.com/encode/django-rest-framework
+djangorestframework==3.6.2
