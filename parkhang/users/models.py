@@ -1,7 +1,7 @@
 import re
 
 from django.db import models
-from django.utils import six, timezone
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
 from django.contrib.postgres.fields import JSONField

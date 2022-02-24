@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    {% render_bundle 'parkhang' 'css' config='MAIN' %}
+    {% render_bundle 'parkhang' 'css' %}
     <script>
 
 {% if user.is_authenticated %}
@@ -26,6 +26,6 @@ SSO_SIGNUP_URL = "{{ sso_signup_url }}";
 </head>
 <body>
 <div id="app" style="width: 100vw; height: 100vh;"></div>
-{% render_bundle 'parkhang' 'js' config='MAIN' %}
+{% render_bundle 'parkhang' 'js' %}
 </body>
 </html>
