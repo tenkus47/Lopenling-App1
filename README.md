@@ -1,4 +1,4 @@
-# Parkhang 
+# Parkhang
 
 An application that allow users to participate in creating critical editions of texts, initially targeting the Tibetan language.
 
@@ -18,16 +18,36 @@ The server-side is implemented with [Django](https://www.djangoproject.com/), ta
 An ansible playbook is provided to setup a VM or server. Otherwise, it can be installed inside a virtualenv on the developers machine using pip.
 
     pip install -r requirements/dev.txt
-    
+
 The database can be setup using the standard Django migrate command
 
     ./manage migrate
-    
+
 Once installed, it can be tested using the django's builtin http server:
 
     ./manage runserver
-    
+
 On the server, it is recommended to use nginx and uwsgi to serve the app. The `ansible/appservers.yml` playbook shows an example of how to set this up.
+
+## Development with Docker
+
+Build the stack
+```bash
+$ docker-compose -f local.yml build
+```
+
+Run the stack
+```bash
+$ docker-compose -f local.yml up
+```
+
+Execute Management Commands
+
+```bash
+$ docker-compose -f local.yml run --rm django python manage.py makemigration
+$ docker-compose -f local.yml run --rm django python manage.py migrate
+$ docker-compose -f local.yml run --rm django python manage.py createsuperuser
+```
 
 #### Frontend
 
@@ -64,28 +84,28 @@ The following tooling is required for development:
 * [webpack](https://webpack.js.org/)
 
     For building/packaging the code for release.
-    
+
 * [Jest](https://facebook.github.io/jest/)
 
     Used for testing
-    
+
 ##### Installing
 
 Ensure node.js and npm is installed and up-to-date. Then `package.json` can be installed and everything should be setup as required.
 
     cd path/to/parkhang/parkhang/frontend
     npm install
-    
+
 Webpack can then be started in watch mode:
 
     ./node_modules/.bin/webpack --config webpack.dev.config.js --progress --watch
-    
+
 ##### Testing
 
 Testing is provided using jest, and the test suite can be initiated using npm:
 
     npm test
-    
+
 ## Data model
 
 The following components make up the data:
@@ -104,30 +124,30 @@ The following components make up the data:
 
 * Annotations
 
-    Required changes are packaged in Annotations. These point to a specific location in the base witness, and the length of affected text. They also contain the content that should replace the current content at that location. This is very similar to a [web annotation](https://www.w3.org/TR/annotation-model/#annotations), and could be either converted seamlessly to RDF by an API, or exported. 
-    
+    Required changes are packaged in Annotations. These point to a specific location in the base witness, and the length of affected text. They also contain the content that should replace the current content at that location. This is very similar to a [web annotation](https://www.w3.org/TR/annotation-model/#annotations), and could be either converted seamlessly to RDF by an API, or exported.
+
     These annotations **always** point to a position in the base witness, no matter how many annotations have been applied. This means annotations can keep the same positioning data so long as the base text is not changed. The structure of the content is generated automatically in code to display to the user and/or export to a file.
-    
+
     Annotations that change the text are called *Variants*.
-    
+
     There is also the possibility for non-mutating annotations, such as locations of page breaks, or notes, but they have not yet been implemented in the UI.
-    
+
 Differences between the versions are highlighted and a user can select which one they think is correct. A user's selections are associated only with that user, enabling multiple users to work on the same text concurrently.
 
-    
+
 #### Differences between witnesses
 
-To calculate the differences between the different editions of the text, the `dwdiff` command is used. This generates diff files which are parsed and converted into Annotations and saved in the database. 
+To calculate the differences between the different editions of the text, the `dwdiff` command is used. This generates diff files which are parsed and converted into Annotations and saved in the database.
 
 The particular command is:
 
     dwdiff --start-delete="|-" --stop-delete="-/" --aggregate-changes -d "ཿ།།༌་ \n" "{base_witness_path}" "{other_witness_path}"
-    
-We use the `|` and `/` characters to denote changes as the default `{}` characters are sometimes used within the texts. 
+
+We use the `|` and `/` characters to denote changes as the default `{}` characters are sometimes used within the texts.
 
 There is a Django management command that performs this:
 [`parkhang/texts/management/commands/import_texts.py`](parkhang/texts/management/commands/import_texts.py)
-        
+
 ## Code Structure
 
 #### Django
@@ -140,7 +160,7 @@ The API is setup in the `api` app.
 
 #### Javascript
 
-* The `app` directory contains most of the development code. 
+* The `app` directory contains most of the development code.
 
 * `app/lib` contains non-UI related code.
 
@@ -181,7 +201,7 @@ The html generation is performed by the [Text.js](parkhang/frontend/app/componen
 Texts are segmented into syllables before rendering, and are represented as an instance of [SegmentedText](parkhang/frontend/app/lib/SegmentedText.js). Each syllable can then be wrapped by a span with an id related to it's position in the text. This allows the position of a syllable within a text to be known even if markup is added e.g. to highlight certain sections.
 
 This also prevents grapheme clusters (e.g. stacked characters) being split.
-  
+
 #### [AnnotatedText.js](parkhang/frontend/app/lib/AnnotatedText.js)
 
 This is the main class for generating texts. Annotations can be added, and the text is altered accordingly for display to the user.
@@ -203,5 +223,40 @@ To install on an existing dokku server:
 1. `rsync` texts into the apps data dir
 
         rsync --partial --progress -a ./data/texts/ root@test.nalanda.works:/var/lib/dokku/data/storage/nalanda-works/data/texts/
-        
-# TODO: need to install dwdiff inside container - just copy binary from host? 
+
+# TODO: need to install dwdiff inside container - just copy binary from host?
+
+### Deployment with Docker
+
+You will need to build the stack first. To do that, run:
+
+```bash
+docker-compose -f production.yml build
+```
+
+Once this is ready, you can run it with:
+
+```bash
+docker-compose -f production.yml up
+```
+
+To run the stack and detach the containers, run:
+```bash
+docker-compose -f production.yml up -d
+```
+
+To run a migration, open up a second terminal and run:
+
+```bash
+docker-compose -f production.yml run --rm django python manage.py migrate
+```
+
+To create a superuser, run:
+
+docker-compose -f production.yml run --rm django python manage.py createsuperuser
+If you need a shell, run:
+
+docker-compose -f production.yml run --rm django python manage.py shell
+To check the logs out, run:
+
+docker-compose -f production.yml logs
