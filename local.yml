@@ -10,13 +10,12 @@ services:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
     image: parkhang_local_django
-    volumes:
-      - ./data:/var/parkhang/data
     container_name: parkhang_django
     depends_on:
       - postgres
     volumes:
       - ./parkhang:/app:z
+      - ./data:/var/parkhang/data
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
