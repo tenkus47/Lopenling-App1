@@ -11,6 +11,8 @@ services:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: parkhang_production_django
+    volumes:
+      - ./data:/var/parkhang/data
     depends_on:
       - redis
     env_file:
