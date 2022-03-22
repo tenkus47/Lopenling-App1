@@ -79,10 +79,6 @@ DJANGO_APP = [
 ]
 
 THIRD_PARTY_APPS = [
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.weixin',
     'rest_framework',
     'webpack_loader',
 ]
@@ -99,8 +95,6 @@ INSTALLED_APPS = DJANGO_APP + THIRD_PARTY_APPS + PROJECT_APPS
 AUTHENTICATION_BACKENDS = [
     # default
     'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -217,3 +211,15 @@ WEBPACK_LOADER = {
         'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
     }
 }
+
+# Discourse SSO
+DISCOURSE_SSO_KEY = env('DISCOURSE_SSO_KEY')
+DISCOURSE_SSO_REDIRECT = env('DISCOURSE_SSO_REDIRECT')
+DISCOURSE_SSO_LOGIN_URL = env('DISCOURSE_SSO_LOGIN_URL')
+DISCOURSE_SSO_SIGNUP_URL = env('DISCOURSE_SSO_SIGNUP_URL')
+
+# Discourse API
+DISCOURSE_SITE = env('DISCOURSE_SITE')
+DISCOURSE_API_KEY = env('DISCOURSE_API_KEY')
+DISCOURSE_SYSTEM_USER = env('DISCOURSE_SYSTEM_USER')
+DISCOURSE_QA_TOPIC_ID = env('DISCOURSE_QA_TOPIC_ID')
