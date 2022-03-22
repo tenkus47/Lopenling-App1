@@ -29,8 +29,7 @@ import textMiddleware from "state_helpers/textMiddleware";
 import { connectRoutes } from "redux-first-router";
 
 // Sagas
-import "core-js/fn/string/pad-start";
-import "core-js/fn/string/pad-end";
+import 'core-js/stable';
 import "regenerator-runtime/runtime";
 import rootSaga from "sagas";
 

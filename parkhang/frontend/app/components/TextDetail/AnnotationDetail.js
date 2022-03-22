@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
-import { activeButton } from "css/colour.css";
+import colours from "css/colour.css";
 
 export type Props = {
     annotationData: AnnotationData,
@@ -44,7 +44,7 @@ const AnnotationDetail = (props: Props) => {
                 {props.isActive && (
                     <div className={styles.activeIcon}>
                         <CheckIcon
-                            style={{ fill: activeButton }}
+                            style={{ fill: colours.activeButton }}
                             width={15}
                             height={15}
                         />
