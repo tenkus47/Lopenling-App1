@@ -6,36 +6,36 @@
       "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/8967124136190c7842d863e4a862a528.png",
       "publicPath": "/static/bundles/8967124136190c7842d863e4a862a528.png"
     },
-    "styles-7730164a4be2f9957463.css": {
-      "name": "styles-7730164a4be2f9957463.css",
-      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/styles-7730164a4be2f9957463.css",
-      "publicPath": "/static/bundles/styles-7730164a4be2f9957463.css"
+    "styles-f303c5ee704f7ae294b6.css": {
+      "name": "styles-f303c5ee704f7ae294b6.css",
+      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/styles-f303c5ee704f7ae294b6.css",
+      "publicPath": "/static/bundles/styles-f303c5ee704f7ae294b6.css"
     },
-    "parkhang-7730164a4be2f9957463.js": {
-      "name": "parkhang-7730164a4be2f9957463.js",
-      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/parkhang-7730164a4be2f9957463.js",
-      "publicPath": "/static/bundles/parkhang-7730164a4be2f9957463.js"
+    "parkhang-f303c5ee704f7ae294b6.js": {
+      "name": "parkhang-f303c5ee704f7ae294b6.js",
+      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/parkhang-f303c5ee704f7ae294b6.js",
+      "publicPath": "/static/bundles/parkhang-f303c5ee704f7ae294b6.js"
     },
-    "docx-7730164a4be2f9957463.js": {
-      "name": "docx-7730164a4be2f9957463.js",
-      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/docx-7730164a4be2f9957463.js",
-      "publicPath": "/static/bundles/docx-7730164a4be2f9957463.js"
+    "docx-f303c5ee704f7ae294b6.js": {
+      "name": "docx-f303c5ee704f7ae294b6.js",
+      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/docx-f303c5ee704f7ae294b6.js",
+      "publicPath": "/static/bundles/docx-f303c5ee704f7ae294b6.js"
     },
-    "docx-7730164a4be2f9957463.js.LICENSE.txt": {
-      "name": "docx-7730164a4be2f9957463.js.LICENSE.txt",
-      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/docx-7730164a4be2f9957463.js.LICENSE.txt",
-      "publicPath": "/static/bundles/docx-7730164a4be2f9957463.js.LICENSE.txt"
+    "docx-f303c5ee704f7ae294b6.js.LICENSE.txt": {
+      "name": "docx-f303c5ee704f7ae294b6.js.LICENSE.txt",
+      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/docx-f303c5ee704f7ae294b6.js.LICENSE.txt",
+      "publicPath": "/static/bundles/docx-f303c5ee704f7ae294b6.js.LICENSE.txt"
     },
-    "parkhang-7730164a4be2f9957463.js.LICENSE.txt": {
-      "name": "parkhang-7730164a4be2f9957463.js.LICENSE.txt",
-      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/parkhang-7730164a4be2f9957463.js.LICENSE.txt",
-      "publicPath": "/static/bundles/parkhang-7730164a4be2f9957463.js.LICENSE.txt"
+    "parkhang-f303c5ee704f7ae294b6.js.LICENSE.txt": {
+      "name": "parkhang-f303c5ee704f7ae294b6.js.LICENSE.txt",
+      "path": "/Users/tim/code/parkhang/parkhang/frontend/static/bundles/parkhang-f303c5ee704f7ae294b6.js.LICENSE.txt",
+      "publicPath": "/static/bundles/parkhang-f303c5ee704f7ae294b6.js.LICENSE.txt"
     }
   },
   "chunks": {
     "parkhang": [
-      "styles-7730164a4be2f9957463.css",
-      "parkhang-7730164a4be2f9957463.js"
+      "styles-f303c5ee704f7ae294b6.css",
+      "parkhang-f303c5ee704f7ae294b6.js"
     ]
   },
   "publicPath": "/static/bundles/"
