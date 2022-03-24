@@ -49,6 +49,11 @@ export const UPDATED_ANNOTATION = "text/UPDATED_ANNOTATION";
 export const DELETED_ANNOTATION = "text/DELETED_ANNOTATION";
 export const SAVED_ANNOTATION = "text/SAVED_ANNOTATION";
 
+export const CREATED_QUESTION = "text/CREATED_QUESTION";
+export const LOAD_QUESTION = "text/LOAD_QUESTION";
+export const LOADING_QUESTION = "text/LOADING_QUESTION";
+export const LOADED_QUESTION = "text/LOADED_QUESTION";
+
 // These are for local UI changes
 export const ADDED_TEMPORARY_ANNOTATION = "text/ADDED_TEMPORARY_ANNOTATION";
 export const UPDATED_TEMPORARY_ANNOTATION = "text/UPDATED_TEMPORARY_ANNOTATION";
@@ -374,6 +379,62 @@ export function savedAnnotation(annotation: Annotation): SavedAnnotationAction {
     };
 }
 
+export type CreatedQuestionAction = Action & {
+    annotation: Annotation,
+    title: string,
+    content: string
+};
+/**
+ * The given annotation has been created and applied.
+ */
+export function createdQuestion(
+    annotation: Annotation,
+    title: string,
+    content: string
+): CreatedQuestionAction {
+    return {
+        type: CREATED_QUESTION,
+        annotation,
+        title,
+        content
+    };
+}
+
+export type LoadQuestionAction = Action & {
+    annotation: Annotation
+};
+export function loadQuestion(annotation: Annotation): LoadQuestionAction {
+    return {
+        type: LOAD_QUESTION,
+        annotation
+    };
+}
+
+export type LoadingQuestionAction = Action & {
+    annotation: Annotation
+};
+export function loadingQuestion(annotation: Annotation): LoadingQuestionAction {
+    return {
+        type: LOADING_QUESTION,
+        annotation
+    };
+}
+
+export type LoadedQuestionAction = Action & {
+    annotation: Annotation,
+    data: {}
+};
+export function loadedQuestion(
+    annotation: Annotation,
+    data: {}
+): LoadedQuestionAction {
+    return {
+        type: LOADED_QUESTION,
+        annotation,
+        data
+    };
+}
+
 /* USER */
 export type UserAction = Action & {
     userId: number,
@@ -668,13 +729,11 @@ export type TextUrlAction = {
         witnessId?: number,
         annotation?: string
     }
-}
+};
 
-export function enteredUrl(url: string, ) {
+export function enteredUrl(url: string) {
     return {
         type: TEXT_URL,
-        payload: {
-
-        }
-    }
+        payload: {}
+    };
 }

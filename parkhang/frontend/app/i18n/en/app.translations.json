@@ -23,6 +23,8 @@
         "annotations.variantsHeading": "Variants",
         "annotation.notesHeading": "Notes",
         "annotation.addNoteHelp": "Add a new note",
-        "annotation.noNotes": "No notes available"
+        "annotation.noNotes": "No notes available",
+        "question.answeredBy": "Answered by",
+        "question.viewThread": "view thread"
     }
 }

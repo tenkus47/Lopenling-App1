@@ -1,8 +1,9 @@
 // @flow
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useStore } from "react-redux";
 import { batchActions } from "redux-batched-actions";
 import AnnotationControls from "./AnnotationControls";
+import type { Props as ControlsProps } from "./AnnotationControls";
 import addTibetanShay from "lib/addTibetanShay";
 import * as reducers from "reducers";
 import type { AppState } from "reducers";
@@ -20,6 +21,9 @@ import TextSegment from "lib/TextSegment";
 import SplitText from "lib/SplitText";
 import _ from "lodash";
 import { changedActiveTextAnnotation } from "actions";
+import ReactDOMServer from "react-dom/server";
+import Question from "lib/Question";
+import type { QuestionData } from "./AnnotationControls";
 
 const TEMPORARY_ANNOTATION_ID = -3;
 const BASE_NAME = "Working";
@@ -224,6 +228,10 @@ const getTemporaryAnnotation = (
     }
 };
 
+type StateProps = ControlsProps & {
+    questionsData: { [annotationId: AnnotationUniqueId]: Question[] }
+};
+
 // These are the props that are expected to be set and available in ownProps
 type ContainerProps = {
     annotationPositions: { [string]: Annotation[] },
@@ -333,7 +341,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         });
     }
 
-    const notes = annotations.filter(
+    const notes: Array<Annotation> = annotations.filter(
         (annotation: Annotation) => annotation.type === ANNOTATION_TYPES.note
     );
 
@@ -344,6 +352,62 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         activeAnnotation.length,
         ANNOTATION_TYPES.note
     );
+
+    const questionAnnotations: Array<Annotation> = annotations.filter(
+        (annotation: Annotation): boolean =>
+            annotation.type === ANNOTATION_TYPES.question
+    );
+    let questionsData = {};
+    if (questionAnnotations.length > 0) {
+        for (var i = 0; i < questionAnnotations.length; i++) {
+            const question = questionAnnotations[i];
+            questionsData[question.uniqueId] = {};
+            const isLoading = reducers.questionIsLoading(state, question);
+            questionsData[question.uniqueId]["loading"] = isLoading;
+            const questions = reducers.getQuestions(state, question.uniqueId);
+            questionsData[question.uniqueId]["questions"] = questions;
+        }
+    }
+
+    const temporaryQuestions = reducers.getTemporaryAnnotations(
+        state,
+        selectedWitness.id,
+        activeAnnotation.start,
+        activeAnnotation.length,
+        ANNOTATION_TYPES.question
+    );
+
+    let questionQuote = null;
+    if (temporaryQuestions.length > 0) {
+        const firstQuestion = temporaryQuestions[0];
+
+        let [start, end] = ownProps.annotatedText.getPositionOfAnnotation(
+            firstQuestion
+        );
+        if (start) {
+            if (!end) {
+                end = start + 1;
+            }
+            const [
+                startText,
+                mainText,
+                endText
+            ] = ownProps.annotatedText.segmentedText.extractTextAroundPosition(
+                start,
+                end,
+                ["།", " "]
+            );
+
+            const linkUrl = document.location.href;
+            questionQuote = (
+                <blockquote>
+                    {startText}
+                    <a href={linkUrl}>{mainText}</a>
+                    {endText}
+                </blockquote>
+            );
+        }
+    }
 
     return {
         annotationsData: variantsData,
@@ -357,12 +421,36 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         splitTextRect: ownProps.splitTextRect,
         selectedWitness: selectedWitness,
         notes: notes,
-        temporaryNotes: temporaryNotes
+        temporaryNotes: temporaryNotes,
+        questions: questionAnnotations,
+        temporaryQuestions: temporaryQuestions,
+        questionsData: questionsData,
+        questionQuote: questionQuote
     };
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
+
+    if (stateProps.questions.length > 0) {
+        for (var i = 0; i < stateProps.questions.length; i++) {
+            const question = stateProps.questions[i];
+            let loadQuestionData = true;
+            if (stateProps.questionsData.hasOwnProperty(question.uniqueId)) {
+                if (
+                    stateProps.questionsData[question.uniqueId].questions
+                        .length > 0 ||
+                    stateProps.questionsData[question.uniqueId].loading
+                ) {
+                    loadQuestionData = false;
+                }
+            }
+            if (loadQuestionData) {
+                dispatch(new actions.loadQuestion(question));
+            }
+        }
+    }
+
     const addBreak = (
         breakType: string,
         selectBreak: boolean = false
@@ -398,26 +486,80 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     actions.changedActiveTextAnnotation(breakAnnotation)
                 );
             } else {
-                actionsBatch.push(
-                    actions.changedActiveTextAnnotation(null)
-                );
+                actionsBatch.push(actions.changedActiveTextAnnotation(null));
             }
 
             dispatch(batchActions(actionsBatch));
         };
     };
+
+    const saveAnnotation = (
+        selectedAnnotation: TemporaryAnnotation,
+        content: string
+    ) => {
+        if (!selectedAnnotation.isTemporary) {
+            console.warn(
+                "Tried to save a non-temporary annotation: %o",
+                selectedAnnotation
+            );
+            return;
+        }
+
+        let selectedWitness = stateProps.selectedWitness;
+        let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
+
+        const newAnnotation = new Annotation(
+            selectedAnnotation.id,
+            selectedAnnotation.witness,
+            selectedAnnotation.start,
+            selectedAnnotation.length,
+            content,
+            selectedAnnotation.type,
+            selectedAnnotation.creatorWitness,
+            stateProps.user,
+            selectedAnnotation.uniqueId,
+            selectedAnnotation.basedOn
+        );
+        newAnnotation.isSaved = selectedAnnotation.isSaved;
+        let actionsBatch = [];
+        let action = null;
+        if (newAnnotation.isSaved) {
+            action = actions.updatedAnnotation;
+        } else {
+            action = actions.createdAnnotation;
+        }
+        actionsBatch.push(action(newAnnotation));
+        actionsBatch.push(
+            actions.removedTemporaryAnnotation(selectedAnnotation)
+        );
+        // TODO: figure out what needs changing to handle note annotations
+        actionsBatch.push(
+            actions.appliedAnnotation(
+                newAnnotation.uniqueId,
+                selectedWitnessData
+            )
+        );
+        if (newAnnotation.type === ANNOTATION_TYPES.variant) {
+            actionsBatch.push(
+                actions.changedActiveTextAnnotation(newAnnotation)
+            );
+        }
+        dispatch(batchActions(actionsBatch));
+    };
+
     return {
         ...stateProps,
         ...ownProps,
         didSelectAnnotation: (annotation: Annotation) => {
-            let selectedAnnotation = null;
+            let selectedAnnotation: Annotation | null = null;
             if (annotation.id == BASE_ANNOTATION_ID) {
                 selectedAnnotation = stateProps.baseAnnotation;
             } else {
-                selectedAnnotation = _.find(
-                    stateProps.availableAnnotations,
-                    value => value.uniqueId == annotation.uniqueId
-                );
+                selectedAnnotation =
+                    _.find(
+                        stateProps.availableAnnotations,
+                        value => value.uniqueId == annotation.uniqueId
+                    ) || null;
             }
             let actionsBatch = [];
             let selectedWitness = stateProps.selectedWitness;
@@ -541,59 +683,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 actions.addedTemporaryAnnotation(temporaryAnnotation, true)
             );
         },
-        saveAnnotation: (
-            selectedAnnotation: TemporaryAnnotation,
-            content: string
-        ) => {
-            if (!selectedAnnotation.isTemporary) {
-                console.warn(
-                    "Tried to save a non-temporary annotation: %o",
-                    selectedAnnotation
-                );
-                return;
-            }
-
-            let selectedWitness = stateProps.selectedWitness;
-            let selectedWitnessData = reducers.dataFromWitness(selectedWitness);
-
-            const newAnnotation = new Annotation(
-                selectedAnnotation.id,
-                selectedAnnotation.witness,
-                selectedAnnotation.start,
-                selectedAnnotation.length,
-                content,
-                selectedAnnotation.type,
-                selectedAnnotation.creatorWitness,
-                stateProps.user,
-                selectedAnnotation.uniqueId,
-                selectedAnnotation.basedOn
-            );
-            newAnnotation.isSaved = selectedAnnotation.isSaved;
-            let actionsBatch = [];
-            let action = null;
-            if (newAnnotation.isSaved) {
-                action = actions.updatedAnnotation;
-            } else {
-                action = actions.createdAnnotation;
-            }
-            actionsBatch.push(action(newAnnotation));
-            actionsBatch.push(
-                actions.removedTemporaryAnnotation(selectedAnnotation)
-            );
-            // TODO: figure out what needs changing to handle note annotations
-            actionsBatch.push(
-                actions.appliedAnnotation(
-                    newAnnotation.uniqueId,
-                    selectedWitnessData
-                )
-            );
-            if (newAnnotation.type === ANNOTATION_TYPES.variant) {
-                actionsBatch.push(
-                    actions.changedActiveTextAnnotation(newAnnotation)
-                );
-            }
-            dispatch(batchActions(actionsBatch));
-        },
+        saveAnnotation: saveAnnotation,
         cancelEditAnnotation: (selectedAnnotation: TemporaryAnnotation) => {
             if (!selectedAnnotation.isTemporary) {
                 console.warn(
@@ -672,7 +762,46 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             );
         },
         addPageBreak: addBreak(ANNOTATION_TYPES.pageBreak),
-        addLineBreak: addBreak(ANNOTATION_TYPES.lineBreak)
+        addLineBreak: addBreak(ANNOTATION_TYPES.lineBreak),
+        addQuestion: () => {
+            const activeAnnotation = ownProps.activeAnnotation;
+            const temporaryAnnotation = new TemporaryAnnotation(
+                null,
+                activeAnnotation.witness,
+                activeAnnotation.start,
+                activeAnnotation.length,
+                "",
+                ANNOTATION_TYPES.question,
+                stateProps.selectedWitness,
+                stateProps.user
+            );
+
+            dispatch(
+                actions.addedTemporaryAnnotation(temporaryAnnotation, true)
+            );
+        },
+        saveQuestion: (
+            question: TemporaryAnnotation,
+            title: string,
+            content: string
+        ) => {
+            let [start, end] = ownProps.annotatedText.getPositionOfAnnotation(
+                question
+            );
+
+            const questionQuoteText = ReactDOMServer.renderToStaticMarkup(
+                stateProps.questionQuote
+            );
+            let questionText = questionQuoteText + content;
+
+            saveAnnotation(question, content);
+            const createdQuestionAction = actions.createdQuestion(
+                question,
+                title,
+                questionText
+            );
+            dispatch(createdQuestionAction);
+        }
     };
 };
 

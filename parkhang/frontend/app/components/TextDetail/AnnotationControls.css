@@ -3,13 +3,13 @@
 
 :root {
     --inlineWidth: 280px;
-    --controlsWidth: 390px;
+    --controlsWidth: 434px;
     --controlsPadding: 0px;
     --controlsMargin: 10px;
     --arrowHeight: 10px;
-    --controlsBackground: #7c7e7f;
+    --controlsBackground: #aaaaaa;
     --arrowColor: var(--controlsBackground);
-    
+    --paddingWidth: 5px;
 }
 
 :export {
@@ -31,7 +31,29 @@
 }
 
 .annotationContent {
-    padding: 0 5px 5px 5px;
+    padding: 0 var(--paddingWidth) var(--paddingWidth) var(--paddingWidth);
+}
+
+.subTitle {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.title {
+    font-size: 18px;
+}
+
+.sectionHeading {
+    font-weight: normal;
+    font-size: 21px;
+}
+
+.text {
+    font-size: 18px;
+}
+
+.padding {
+    padding: var(--paddingWidth);
 }
 
 .arrowTop {
@@ -93,8 +115,8 @@
     font-family: var(--fonts);
     font-size: 18px;
     width: 100%;
-    padding: 0 0 5px 0;
-    margin: 0 0 5px 0;
+    padding: 0 0 0px 0;
+    margin: 5px 0 0px 0;
     font-weight: normal;
     color: #444;
 }

@@ -8,7 +8,8 @@ export const ANNOTATION_TYPES: { [string]: string } = {
     note: "N",
     marker: "M",
     pageBreak: "P",
-    lineBreak: "L"
+    lineBreak: "L",
+    question: "Q"
 };
 
 export const TEMPORARY_TYPE: string = "T";

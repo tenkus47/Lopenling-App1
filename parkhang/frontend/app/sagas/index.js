@@ -377,6 +377,33 @@ function* watchDeletedAnnotation() {
     );
 }
 
+function createQuestion(action) {
+    return call(api.createQuestion, action.annotation, action.title, action.content);
+}
+
+function* watchCreatedQuestion() {
+    yield takeEvery(
+        actions.CREATED_QUESTION,
+        typeCalls[actions.CREATED_QUESTION]
+    );
+}
+
+function* loadQuestion(action) {
+    let isLoading = yield select(reducers.questionIsLoading, action.annotation);
+    if (!isLoading) {
+        yield put(actions.loadingQuestion(action.annotation));
+        const results = yield call(api.getQuestion, action.annotation);
+        yield put(actions.loadedQuestion(action.annotation, results));
+    }
+}
+
+function* watchLoadQuestion() {
+    yield takeEvery(
+        actions.LOAD_QUESTION,
+        typeCalls[actions.LOAD_QUESTION]
+    );
+}
+
 function* changeActiveAnnotation(
     action: actions.ChangedActiveAnnotationAction
 ) {
@@ -722,7 +749,9 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.CHANGED_SHOW_PAGE_IMAGES]: changedShowPageImages,
     [actions.CHANGED_TEXT_FONT_SIZE]: changedTextFontSize,
     [actions.USER_LOGGED_IN]: loadUserSettings,
-    [actions.TEXT_URL]: loadedTextUrl
+    [actions.TEXT_URL]: loadedTextUrl,
+    [actions.CREATED_QUESTION]: reqAction(createQuestion),
+    [actions.LOAD_QUESTION]: loadQuestion
 };
 
 /** Root **/
@@ -751,6 +780,8 @@ export default function* rootSaga(): Saga<void> {
         call(watchChangedTextFontSize),
         call(watchUserLoggedIn),
         call(watchTextUrlActions),
-        call(watchChangedActiveAnnotation)
+        call(watchChangedActiveAnnotation),
+        call(watchCreatedQuestion),
+        call(watchLoadQuestion)
     ]);
 }

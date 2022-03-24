@@ -4,11 +4,13 @@ import Button from "components/UI/Button";
 import styles from "./AnnotationControlsHeader.css";
 import PageBreakIcon from "images/page_break_icon.svg";
 import NoteIcon from "images/note.svg";
+import QuestionIcon from "images/question_answer.svg";
 
 type Props = {
     addPageBreak: null | (() => void),
     addLineBreak: null | (() => void),
-    addNote: null | (() => void)
+    addNote: null | (() => void),
+    addQuestion: null | (() => void)
 };
 
 class AnnotationControlsHeader extends React.Component<Props> {
@@ -34,6 +36,21 @@ class AnnotationControlsHeader extends React.Component<Props> {
                     accessoryType={this.props.addNote ? "ADD" : null}
                     onClick={this.props.addNote}
                     disabled={this.props.addNote ? false : true}
+                    align="left"
+                />
+                <Button
+                    title="Question"
+                    noBezel={true}
+                    icon={
+                        <QuestionIcon
+                            width={15}
+                            height={15}
+                            style={{ fill: "#fff" }}
+                        />
+                    }
+                    accessoryType={this.props.addQuestion ? "ADD" : null}
+                    onClick={this.props.addQuestion}
+                    disabled={this.props.addQuestion ? false : true}
                     align="left"
                 />
                 <Button
