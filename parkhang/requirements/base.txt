@@ -1,5 +1,8 @@
 # Requirements for all environments
 
+# General
+requrests=2.27.1
+
 # Django
 # -----------------------------------------------------------------------
 Django==3.2.12
