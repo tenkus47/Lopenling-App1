@@ -1,7 +1,7 @@
 # Requirements for all environments
 
 # General
-requests=2.27.1
+requests==2.27.1
 
 # Django
 # -----------------------------------------------------------------------
