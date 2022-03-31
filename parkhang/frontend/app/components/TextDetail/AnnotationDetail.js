@@ -6,6 +6,7 @@ import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
+import {FacebookShareButton,WhatsappShareButton,FacebookIcon,WhatsappIcon,FacebookShareCount} from 'react-share'
 
 export type Props = {
     annotationData: AnnotationData,
@@ -13,9 +14,10 @@ export type Props = {
     selectAnnotationHandler: () => void,
     isLoggedIn: boolean,
     editAnnotationHandler: () => void
-};
+}; 
 
 const MAXIMUM_TEXT_LENGTH = 250;
+
 
 const AnnotationDetail = (props: Props) => {
     let desc = (
@@ -38,6 +40,7 @@ const AnnotationDetail = (props: Props) => {
     }
 
     let className = classnames(...classes);
+
     return (
         <div className={className} onClick={props.selectAnnotationHandler}>
             <div className={styles.annotationHeader}>
@@ -80,8 +83,24 @@ const AnnotationDetail = (props: Props) => {
             </div>
 
             {desc}
+            <div className={styles.shareContainer}>
+            <FacebookShareButton 
+            title="OpenPecha parkhang"
+            url="https://parkhang.lopenling.org/"
+            quote={props.annotationData.content}
+            hashtag="#openPecha"
+            ><FacebookIcon size={24} round={true}/></FacebookShareButton>
+            <WhatsappShareButton
+             title="Parkhang"
+             url="https://parkhang.lopenling.org/"
+             ><WhatsappIcon size={24} round={true}/></WhatsappShareButton>
+            </div>
+           {console.log(window.location.href)}
         </div>
     );
 };
+
+
+
 
 export default AnnotationDetail;

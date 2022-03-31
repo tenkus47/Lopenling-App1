@@ -337,9 +337,10 @@ export default class AnnotationControls extends React.Component<Props> {
         ) {
             breakSelected = true;
         }
-
+        // the selected word/sentence is props.anotationsData
         if (props.annotationsData) {
             props.annotationsData.map(annotationData => {
+               
                 let isEditing = false;
                 let isActive = false;
                 if (annotationData.isTemporary) {

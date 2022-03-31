@@ -49,6 +49,11 @@ $ docker-compose -f local.yml run --rm django python manage.py migrate
 $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 ```
 
+Import Texts
+```
+docker-compose -f local.yml run --rm django python manage.py import_texts /var/parkhang/data/texts སྡེ་དགེ 
+```
+
 #### Frontend
 
 The UI is implemented using a React/Redux stack:

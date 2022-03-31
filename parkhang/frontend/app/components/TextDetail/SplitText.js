@@ -725,7 +725,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 startPos
             );
         }
-
         return selectedTextIndex;
     }
 
@@ -865,7 +864,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         index,
         parent,
         style
-    }: {
+    }:{
         key: string,
         index: number,
         parent: {},

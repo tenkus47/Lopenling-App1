@@ -83,7 +83,7 @@ const App = (props: Props) => {
                     }}
                 >
                     <div className={classnames(...textListClassnames)}>
-                        <TextsSearchContainer />
+                      {/* <TextsSearchContainer /> */}
                         <TextListContainer />
                     </div>
                     <TextDetailContainer />
