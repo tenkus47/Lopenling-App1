@@ -86,16 +86,16 @@ const AnnotationDetail = (props: Props) => {
             <div className={styles.shareContainer}>
             <FacebookShareButton 
             title="OpenPecha parkhang"
-            url="https://parkhang.lopenling.org/"
+            url={window.location.href}
             quote={props.annotationData.content}
             hashtag="#openPecha"
             ><FacebookIcon size={24} round={true}/></FacebookShareButton>
             <WhatsappShareButton
              title="Parkhang"
-             url="https://parkhang.lopenling.org/"
+             url={window.location.href}
              ><WhatsappIcon size={24} round={true}/></WhatsappShareButton>
             </div>
-           {console.log(window.location.href)}
+           {/* {console.log(window.location.href)} */}
         </div>
     );
 };
