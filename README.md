@@ -12,8 +12,7 @@ The server-side is implemented with [Django](https://www.djangoproject.com/), ta
 
 * [django-rest-framework](http://www.django-rest-framework.org/) is used for the API.
 
-* [django-allauth](http://www.intenct.nl/projects/django-allauth/) is used for user management.
-
+User accounts are connected to a running Discourse instance. Setup is explained below.
 
 An ansible playbook is provided to setup a VM or server. Otherwise, it can be installed inside a virtualenv on the developers machine using pip.
 
@@ -265,3 +264,34 @@ docker-compose -f production.yml run --rm django python manage.py shell
 To check the logs out, run:
 
 docker-compose -f production.yml logs
+
+### Setting up Discourse user account integration
+
+The following environment variables need to be set for users to login using their account from a discourse server.
+
+    DISCOURSE_SSO_KEY
+    A randomly generated string, preferably 64 characters or more.
+
+    DISCOURSE_SSO_REDIRECT
+    e.g. https://<server_url>/discourse/sso/
+
+    DISCOURSE_SSO_LOGIN_URL
+    e.g. https://<discourse_server_url>/session/sso_provider
+
+    DISCOURSE_SSO_SIGNUP_URL
+    e.g. https://<discourse_server_url>/signup
+
+    DISCOURSE_SITE
+    e.g. https://<discourse_server_url>
+
+    DISCOURSE_API_KEY
+    Generated on the Discourse site's Admin > API section by an admin user.
+    The User needs to be defined as All Users.
+
+    DISCOURSE_SYSTEM_USER
+    Usually 'system'
+
+    DISCOURSE_QA_TOPIC_ID
+    The ID of the Topic used to post questions from a parkhang instance.
+    e.g. 4
+
