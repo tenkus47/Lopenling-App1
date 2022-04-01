@@ -1,12 +1,12 @@
 // @flow
-import React from "react";
+import React, { useRef,useEffect } from "react";
 import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
-import {FacebookShareButton,WhatsappShareButton,FacebookIcon,WhatsappIcon,FacebookShareCount} from 'react-share'
+import {FacebookShareButton,WhatsappShareButton,FacebookIcon,WhatsappIcon} from 'react-share'
 
 export type Props = {
     annotationData: AnnotationData,
@@ -20,17 +20,41 @@ const MAXIMUM_TEXT_LENGTH = 250;
 
 
 const AnnotationDetail = (props: Props) => {
+    const handleShare=()=>{
+        var canvas = document.createElement("canvas");
+        var text = props.annotationData.content
+        var lineheight = 30;
+        var lines = text.split('།').filter(l=>l!==" ");
+        canvas.height = lines.length * lineheight+30;
+        canvas.width = 650;
+       
+        var ctx = canvas.getContext('2d');
+        ctx.font = "20px Arial";
+        for (var i = 0; i<lines.length; i++){
+                ctx.fillText(lines[i].concat('།'), 30, 40 + (i*lineheight) );
+        }
+        var img = document.createElement("img");
+        img.src=canvas.toDataURL();
+        var ahref=document.createElement("a")
+        ahref.href= canvas.toDataURL();
+        ahref.innerHTML="clickhere"
+        document.getElementById('content').append(ahref);
+      console.log(img.src)
+    }
     let desc = (
-        <p>
+         <p>
             &lt;<FormattedMessage id="annotation.delete" />&gt;
         </p>
+       
     );
+    
     let content = props.annotationData.content;
     if (content.trim() !== "") {
         if (content.length > MAXIMUM_TEXT_LENGTH) {
             content = content.substr(0, MAXIMUM_TEXT_LENGTH) + "…";
         }
-        desc = <p>{content}</p>;
+        // content variable is the selected trimmed context
+        desc = <div id="content"><p>{content}</p></div>;
     }
 
     let classes = [styles.annotationDetail];
@@ -40,7 +64,6 @@ const AnnotationDetail = (props: Props) => {
     }
 
     let className = classnames(...classes);
-
     return (
         <div className={className} onClick={props.selectAnnotationHandler}>
             <div className={styles.annotationHeader}>
@@ -83,19 +106,21 @@ const AnnotationDetail = (props: Props) => {
             </div>
 
             {desc}
+
             <div className={styles.shareContainer}>
             <FacebookShareButton 
-            title="OpenPecha parkhang"
-            url={window.location.href}
+            onClick={handleShare}
+            url={`https://parkhang.lopenling.org${window.location.pathname}`}
             quote={props.annotationData.content}
             hashtag="#openPecha"
             ><FacebookIcon size={24} round={true}/></FacebookShareButton>
             <WhatsappShareButton
+            onClick={()=>console.log(`https://parkhang.lopenling.org${window.location.pathname}`)}
              title="Parkhang"
-             url={window.location.href}
+             url={`https://parkhang.lopenling.org${window.location.pathname}`}
              ><WhatsappIcon size={24} round={true}/></WhatsappShareButton>
+             
             </div>
-           {/* {console.log(window.location.href)} */}
         </div>
     );
 };

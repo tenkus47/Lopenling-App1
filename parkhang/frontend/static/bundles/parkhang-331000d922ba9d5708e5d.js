@@ -1204,7 +1204,7 @@ var App = function App(props) {
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: classnames__WEBPACK_IMPORTED_MODULE_2___default.a.apply(void 0, textListClassnames)
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(containers_TextListContainer__WEBPACK_IMPORTED_MODULE_6__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_TextDetail_TextDetailContainer__WEBPACK_IMPORTED_MODULE_7__["default"], null))));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_TextsSearch_TextsSearchContainer__WEBPACK_IMPORTED_MODULE_5__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(containers_TextListContainer__WEBPACK_IMPORTED_MODULE_6__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_TextDetail_TextDetailContainer__WEBPACK_IMPORTED_MODULE_7__["default"], null))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (App);
@@ -3264,7 +3264,7 @@ var AnnotationDetail = function AnnotationDetail(props) {
     className: _AnnotationDetail_css__WEBPACK_IMPORTED_MODULE_3___default.a.shareContainer
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_share__WEBPACK_IMPORTED_MODULE_6__["FacebookShareButton"], {
     title: "OpenPecha parkhang",
-    url: "https://parkhang.lopenling.org/",
+    url: "https://parkhang.lopenling.org/".concat(window.location.pathname),
     quote: props.annotationData.content,
     hashtag: "#openPecha"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_share__WEBPACK_IMPORTED_MODULE_6__["FacebookIcon"], {
@@ -3272,11 +3272,11 @@ var AnnotationDetail = function AnnotationDetail(props) {
     round: true
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_share__WEBPACK_IMPORTED_MODULE_6__["WhatsappShareButton"], {
     title: "Parkhang",
-    url: "https://parkhang.lopenling.org/"
+    url: "https://parkhang.lopenling.org/".concat(window.location.pathname)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_share__WEBPACK_IMPORTED_MODULE_6__["WhatsappIcon"], {
     size: 24,
     round: true
-  }))), console.log(window.location.href));
+  }))), "kunsang", console.log("https://parkhang.lopenling.org/".concat(window.location.pathname)));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (AnnotationDetail);

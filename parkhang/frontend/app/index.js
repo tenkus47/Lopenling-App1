@@ -138,7 +138,6 @@ function intlSelector(state) {
 ReactDOM.render(
     <Provider store={store}>
         <IntlProvider textComponent={Fragment} intlSelector={intlSelector}>
-           
             <AppContainer />
         </IntlProvider>
     </Provider>,

@@ -67,7 +67,7 @@ export type Props = {
     list: List | null
 };
 
-type AnchorPoint = "top" | "left" | "bottom" | "right";
+type AnchorPoint = "top" | "left" | "bottom" | "right"; 
 
 const anchorPoints = {
     top: 1,

@@ -9,7 +9,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (env, argv) => {
     const devMode = (argv.mode !== 'production');
-    
     return {
         context: __dirname,
         entry: {
