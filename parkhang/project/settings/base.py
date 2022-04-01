@@ -207,7 +207,11 @@ DEFAULT_FROM_EMAIL = 'Nalanda Works <server@nalanda.works>'
 # WEBPACK
 WEBPACK_LOADER = {
     'DEFAULT': {
+        'CACHE':not DEBUG,
         'BUNDLE_DIR_NAME': 'static/bundles/',
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
         'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
     }
 }

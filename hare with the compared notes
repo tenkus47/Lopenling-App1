@@ -1,0 +1,251 @@
+
+[33mcommit a285ad73d9a64480cc5e632058f13bb6cd947838[m[33m ([m[1;31morigin/parkhang_dev[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Thu Mar 24 22:42:29 2022 +0000
+
+    Update js build
+
+[33mcommit 49d3161f0501f015cb5f8893479f5fec7c9318d9[m
+Merge: 4beb26d 72a6150
+Author: Tim Lewis <tim@phurba.net>
+Date:   Thu Mar 24 22:35:59 2022 +0000
+
+    Merge branch 'development'
+    
+    # Conflicts:
+    #       parkhang/project/settings/base.py
+    #       parkhang/texts/models.py
+
+[33mcommit 4beb26d8b3ca2d92813d6a1ccbbace9c64922c62[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Thu Mar 24 22:26:16 2022 +0000
+
+    Ignore docx-dev
+
+[33mcommit e278ef201b910d5748ef157cc8455dccd3007537[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Tue Mar 22 22:54:46 2022 +0000
+
+    Upgrade js packages, including webpack to v5
+
+[33mcommit 65c826f46da9a6022f0756c4dfd6c1c66d35cbcd[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Tue Mar 22 22:50:40 2022 +0000
+
+    Fix text search when max_results is unlimited
+
+[33mcommit 9772b04dc8bde2a54a9b0d8932c5c632c9e2f74e[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Tue Mar 22 22:45:09 2022 +0000
+
+    Use discourse sso to login via lopenling site
+
+[33mcommit 651bc1bd86a659fcaa72155f04c188d4d555f0e0[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Tue Mar 22 22:44:21 2022 +0000
+
+    Upgrade packages, including django to 3.2
+
+[33mcommit 186abd84b3feee20b7bdf789c1f71d0989eb4763[m
+Merge: 04d06a0 66132b1
+Author: Tim Lewis <tim@phurba.net>
+Date:   Tue Mar 22 21:58:13 2022 +0000
+
+    Merge branch 'master' of github.com:OpenPecha-dev/parkhang
+
+[33mcommit 66132b16e0b29869926c5cfa1a88a9f4568e805a[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Mon Mar 14 16:53:49 2022 +0530
+
+    docs: develop and deploy with docker-compose docs
+
+[33mcommit f9ac86c3ba7e28b88d0240e2addee5e3da9497c8[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Mon Mar 14 11:37:57 2022 +0530
+
+    build: fix dwdiff installation
+
+[33mcommit 45eb782c7a182236496991413fb8016a323a6e09[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Mon Mar 14 10:40:18 2022 +0530
+
+    build: fix prod dockerfile
+
+[33mcommit 2541a2f7e527d66d85a3f223cb4bdf6105568c70[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Mon Mar 14 10:38:44 2022 +0530
+
+    build: add dwdiff dependency
+
+[33mcommit 6f84e4d7667e068eb40f8b3ae515b3a844da1084[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Mon Mar 14 10:26:06 2022 +0530
+
+    deploy: add parkhang data volume
+
+[33mcommit 8a22531b730cd5ff45e845dc61819fbcbabf0a52[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Fri Mar 11 11:57:35 2022 +0530
+
+    deploy: add whitenoise middleware
+
+[33mcommit 04d06a076c989a68d8a6ee31ab61e430cb9bf5dd[m
+Merge: fd51a93 aedd1e4
+Author: Tim Lewis <tim@phurba.net>
+Date:   Thu Feb 24 19:21:22 2022 +1300
+
+    Merge branch 'master' of github.com:OpenPecha-dev/parkhang
+    
+    # Conflicts:
+    #       parkhang/frontend/package-lock.json
+    #       parkhang/project/settings/base.py
+
+[33mcommit aedd1e46fb66bfc3af76013da97f02e100229e3b[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Wed Feb 23 16:14:43 2022 +0530
+
+    deploy: wsgi path in gunicorn
+
+[33mcommit 59b171a7394ab73f984e5543da52d5e1922e23ed[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Wed Feb 23 16:11:23 2022 +0530
+
+    deploy: add project static files path
+
+[33mcommit 26576a37a9fd06f689e73cbfd56d9d25775b64c9[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Wed Feb 23 16:06:24 2022 +0530
+
+    deploy: add STATIC_ROOT in settings
+
+[33mcommit e2b18cb6418b0f87c838c01ce0b64071fda67d2e[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Wed Feb 23 14:26:47 2022 +0530
+
+    deploy: fix whitenoise version
+
+[33mcommit adaced08440a0d0542c35540e9664eb338ba64d8[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Wed Feb 23 12:53:19 2022 +0530
+
+    deploy: fix versions
+
+[33mcommit 73cc34c175c0e5cbfba21996b3b9dff2ccdb6f69[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Wed Feb 23 12:05:40 2022 +0530
+
+    deploy: add whitenoise
+
+[33mcommit 4354b83c4b9632fca1aab327f2fa9d81607f1764[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Wed Feb 23 11:22:32 2022 +0530
+
+    deploy: remove anymail setup
+
+[33mcommit 587f7f9610308a5e2b282a04094ee4566e34f3eb[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 17:13:50 2022 +0530
+
+    deploy: remove www from hostname in traefik config
+
+[33mcommit 48b49dc06324a857fa3caa1883b31695e2ddf17a[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 17:08:54 2022 +0530
+
+    deploy: fix hostname typo in traefik config
+
+[33mcommit 6a34aedb3dd6f25bade647787fe9f2a0cc4085e6[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 17:02:40 2022 +0530
+
+    deploy: fix base.txt path in prod requirements
+
+[33mcommit abaacd078a6ac7c3fc9788dc7b334993c0f71db6[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 17:00:48 2022 +0530
+
+    deploy: fix app dir in dockerfile
+
+[33mcommit a473a272a9c61498a9ca9b4c7d67dad4e6c6db43[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 16:49:47 2022 +0530
+
+    deploy: fix production postgres volume
+
+[33mcommit c2d0510268ee9a71fbf2b4f2d67f88d73062c0b3[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 16:45:02 2022 +0530
+
+    deploy: add production settings
+
+[33mcommit 3b2f85175f5439e5b981f804726ba34951a2217f[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 15:48:55 2022 +0530
+
+    deploy: fix hostname in traefik
+
+[33mcommit e6ed11c8d47a3fecf8a98cc31ef92783a4b05b59[m
+Merge: 13a0099 6f06b30
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 14:24:39 2022 +0530
+
+    Merge branch 'master' of github.com:OpenPecha-dev/parkhang
+
+[33mcommit 13a0099d69ce75f59231c21e7c60d59d93f7fe0a[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Tue Feb 22 14:24:22 2022 +0530
+
+    deploy: add production docker setup
+
+[33mcommit 6f06b30a4bf5ef83789de8b116a656cbdbbe2f68[m
+Merge: 649d32a cf483f0
+Author: Tim Lewis <tim@phurba.net>
+Date:   Mon Feb 21 23:06:23 2022 +1300
+
+    Merge pull request #22 from OpenPecha-dev/refactor-django-upgrade
+    
+    refactor(django): upgrade to django 3.2 LTS
+
+[33mcommit 649d32affdcca30477982fbe0a4ce53dee59f1ea[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Mon Feb 21 11:36:43 2022 +0530
+
+    deploy(postgres): fix pyscopg2 version incompatibility
+
+[33mcommit dee4e6d6f23ce404ae9434281736f652dfb5129b[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Mon Feb 21 10:50:49 2022 +0530
+
+    deploy(settings): fix staticfiles path
+
+[33mcommit cf483f01da68092eea53211f985c45d38a6acc5b[m[33m ([m[1;31morigin/refactor-django-upgrade[m[33m)[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Mon Feb 21 10:38:41 2022 +0530
+
+    refactor(django): latest version
+
+[33mcommit 58da18df78c0ba190ff882b88e804eab9b6f69cd[m
+Author: tenzin <ten13zin@gmail.com>
+Date:   Fri Feb 18 16:12:11 2022 +0530
+
+    deploy: fix docker-compose build
+
+[33mcommit 72a61508b3f06443c765d27948bf339c30ba42a2[m[33m ([m[1;31morigin/development[m[33m)[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Thu Dec 17 23:26:06 2020 +1300
+
+    Add questions UI
+
+[33mcommit 6197dc950426c02ae776db8cb50dabc17dd3c633[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Thu Dec 17 22:58:55 2020 +1300
+
+    Formatting
+
+[33mcommit 5e9bb7ba4670dfdb85c3c6be4ed5e566132b1b5a[m
+Author: Tim Lewis <tim@phurba.net>
+Date:   Thu Dec 17 22:54:08 2020 +1300
+
+    Support authenticated topics and improve error handling
+
+[33mcommit d877d21
