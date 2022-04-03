@@ -10,7 +10,7 @@ var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 module.exports = {
     context: __dirname,
 
-    mode: "development",
+    mode: "production",
 
     entry: {
         parkhang: ["./app/index", "./website/index"]
@@ -18,19 +18,19 @@ module.exports = {
 
     output: {
         path: path.resolve(__dirname, "static/bundles/"),
-        filename: "[name]-dev.js",
+        filename: "[name]-[hash].js",
         library: "parkhang",
-        publicPath: "/bundles/"
+        publicPath: "/static/bundles/"
     },
 
     plugins: [
-        new BundleTracker({ filename: "./webpack-stats-dev.json" }),
+        new BundleTracker({ filename: "./webpack-stats.json" }),
         new MiniCssExtractPlugin({
-            filename: "styles-dev.css"
+            filename: "styles-[hash].css"
         }),
         new webpack.DefinePlugin({
             "process.env": {
-                NODE_ENV: JSON.stringify("development")
+                NODE_ENV: JSON.stringify("production")
             }
         }),
         new LodashModuleReplacementPlugin()
@@ -153,5 +153,5 @@ module.exports = {
         modules: [path.resolve("./node_modules"), path.resolve("./app")]
     },
 
-    devtool: "cheap-module-source-map"
+    devtool: "source-map"
 };
