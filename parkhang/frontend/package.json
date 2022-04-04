@@ -8,10 +8,10 @@
   },
   "scripts": {
     "dev": "webpack --config webpack.dev.config.js --progress --watch",
+    "build": "webpack --config webpack.prod.config.js --progress --watch",
     "test": "jest",
-    "flow": "flow",
-    "build": "webpack --config webpack.prod.js"
-  },
+    "flow": "flow"
+    },
   "author": "tim@phurba.net",
   "license": "UNLICENSED",
   "dependencies": {

@@ -91,7 +91,7 @@ export const Header = (props: HeaderProps) => {
     let toggleTitle = props.intl.formatMessage({
         id: "header.toggleTextList"
     });
-    const image_location ="/static/"+lopenlingLogo
+    const image_location =lopenlingLogo
     return (
         <header className={styles.header}>
             <NavigationButton
