@@ -133,3 +133,23 @@
 .buttonStyle:hover{
     background-color: transparent;
 }
+.shareContainer img{
+    height:1.5rem;
+    width:1.5rem;
+   background-color: transparent;
+   cursor: pointer;
+}
+.shareContainer *{
+    
+    animation-name:mymove;
+    animation-duration:1s;
+    position:relative;
+    animation-iteration-count: infinite;
+}
+.shareContainer *:hover{
+    border:1px solid grey;
+}
+@keyframes mymove {
+    from {transform: scale(1);}
+    to {transform: scale(1.06);}
+  }

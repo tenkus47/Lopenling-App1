@@ -20,7 +20,7 @@ module.exports = {
         path: path.resolve(__dirname, "static/bundles/"),
         filename: "[name]-dev.js",
         library: "parkhang",
-        publicPath: "/bundles/"
+        publicPath: "/static/bundles/"
     },
 
     plugins: [
