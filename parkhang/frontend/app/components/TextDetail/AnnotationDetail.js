@@ -26,22 +26,62 @@ const MAXIMUM_TEXT_LENGTH = 250;
 
 const AnnotationDetail = (props: Props) => {
 
+    function longest_str_in_array(arra)
+    {
+      var max_str = arra[0].length;
+      var ans = arra[0];
+      for (var i = 1; i < arra.length; i++) {
+          var maxi = arra[i].length;
+          if (maxi > max_str) {
+              ans = arra[i].length;
+              max_str = maxi;
+          }
+      }
+      return ans;
+  }
+     function mergeArray(arr){
+         var textCount=arr.length;
+         var maxPerLine=55;
 
-    const handleShare=async()=>{
+
+         for (var i=0;i<Math.ceil(arr.join().length/maxPerLine)+1;i++){
+            
+            if( arr[i] && arr[i+1] && arr[i].length < maxPerLine){
+                arr[i]=arr[i]+'།'+arr[i+1];
+                arr.splice(i+1,1)
+                mergeArray(arr)
+            }
+         else if(arr[i] && arr[i+1] && arr[i].length > maxPerLine)
+              
+               {    
+                // code to cut selected text should be here
+            }
+         }
+       return arr;
+       
+     }
+
+    const ImageDownload=async()=>{
         var canvas = document.createElement("canvas");
         var text = props.annotationData.content
-        var lineheight = 30;
-        var lines = text.split('།').filter(l=>l!==" ");
+        var lineheight = 50;
+        var data = text.split('།').filter(l=>l!==" ");
+        var lines =await mergeArray(data)
         canvas.height = lines.length * lineheight+30;
-        canvas.width = 650;
+        canvas.width = 15*longest_str_in_array(lines);
         var ctx = canvas.getContext('2d');
-        ctx.fillStyle="rgb(2, 66, 121)"
+        var grad = ctx.createRadialGradient(300, 100, 0, 300, 100, 316.23);
+  
+        grad.addColorStop(0, 'rgba(255, 255, 0, 1)');
+        grad.addColorStop(0.57, 'rgba(0, 188, 212, 1)');
+        grad.addColorStop(1, 'rgba(238, 130, 238, 1)');
+        ctx.fillStyle=grad;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.font = "20px Arial";
-        ctx.fillStyle="white"
-        for (var i = 0; i<lines.length; i++){
-                ctx.fillText(lines[i].concat('།'), 30, 40 + (i*lineheight) );
-        }
+        ctx.font = "40px arial";
+        ctx.fillStyle="black"
+        for (var i = 0; i<lines.length-1; i++){
+                                ctx.fillText(lines[i].concat('།'), 30, 40 + (i*lineheight) );
+                        }
         var data = canvas.toDataURL();
 
         var img = document.createElement('img');
@@ -142,7 +182,7 @@ const AnnotationDetail = (props: Props) => {
              title="Parkhang"
              url={`https://parkhang.lopenling.org${window.location.pathname}`}
              ><WhatsappIcon size={24} round={true}/></WhatsappShareButton>
-          <img onClick={handleShare} className={styles.downloadlogo} src="https://img.icons8.com/material-outlined/24/000000/download--v1.png"/>
+          <img onClick={ImageDownload} className={styles.downloadlogo} src="https://img.icons8.com/material-outlined/24/000000/download--v1.png"/>
          
                        </div>
                    
