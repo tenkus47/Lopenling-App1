@@ -380,6 +380,7 @@ export default class AnnotationControls extends React.Component<Props> {
                 } else {
                     let annotationDetail = (
                         <AnnotationDetail
+                            fontSize={props.fontSize}
                             annotationData={annotationData}
                             key={annotationData.annotation.uniqueId}
                             isActive={isActive}

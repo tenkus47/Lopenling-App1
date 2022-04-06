@@ -20,6 +20,7 @@ export type Props = {
     selectAnnotationHandler: () => void,
     isLoggedIn: boolean,
     editAnnotationHandler: () => void,
+    fontSize: Number
    }; 
 
 const MAXIMUM_TEXT_LENGTH = 250;
@@ -29,8 +30,8 @@ const AnnotationDetail = (props: Props) => {
     function longest_str_in_array(arra)
     {
       var max_str = arra[0].length;
-      var ans = arra[0];
-      for (var i = 1; i < arra.length; i++) {
+      var ans = arra[0].length;
+      for (var i = 0; i < arra.length; i++) {
           var maxi = arra[i].length;
           if (maxi > max_str) {
               ans = arra[i].length;
@@ -47,7 +48,7 @@ const AnnotationDetail = (props: Props) => {
          for (var i=0;i<Math.ceil(arr.join().length/maxPerLine)+1;i++){
             
             if( arr[i] && arr[i+1] && arr[i].length < maxPerLine){
-                arr[i]=arr[i]+'།'+arr[i+1];
+                arr[i]=arr[i]+' '+arr[i+1];
                 arr.splice(i+1,1)
                 mergeArray(arr)
             }
@@ -61,40 +62,44 @@ const AnnotationDetail = (props: Props) => {
        
      }
 
-    const ImageDownload=async()=>{
-        var canvas = document.createElement("canvas");
+    const ImageDownload=()=>{
+        var fontSize= props.fontSize;
         var text = props.annotationData.content
         var lineheight = 50;
-        var data = text.split('།').filter(l=>l!==" ");
-        var lines =await mergeArray(data)
+        var ra = text.split(' ')
+        var lines = mergeArray(ra)
+        var canvas = document.createElement("canvas");
         canvas.height = lines.length * lineheight+30;
-        canvas.width = 15*longest_str_in_array(lines);
+            canvas.width =40+ 6 * longest_str_in_array(lines);
+        
         var ctx = canvas.getContext('2d');
-        var grad = ctx.createRadialGradient(300, 100, 0, 300, 100, 316.23);
-  
-        grad.addColorStop(0, 'rgba(255, 255, 0, 1)');
-        grad.addColorStop(0.57, 'rgba(0, 188, 212, 1)');
-        grad.addColorStop(1, 'rgba(238, 130, 238, 1)');
-        ctx.fillStyle=grad;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.font = "40px arial";
+       
+            var grad = ctx.createRadialGradient(300, 100, 0, 300, 100, 316.23);
+            grad.addColorStop(0, 'rgba(255, 255, 0, 1)');
+            grad.addColorStop(0.57, 'rgba(0, 188, 212, 1)');
+            grad.addColorStop(1, 'rgba(238, 130, 238, 1)');
+            ctx.fillStyle=grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+       
+      
+        ctx.font = `${fontSize}`+"px Arial";
         ctx.fillStyle="black"
-        for (var i = 0; i<lines.length-1; i++){
-                                ctx.fillText(lines[i].concat('།'), 30, 40 + (i*lineheight) );
+        
+        for (var i = 0; i<lines.length; i++){
+                       ctx.fillText(lines[i].concat(' '), 50, 50 + (i*lineheight) );
                         }
         var data = canvas.toDataURL();
-
+        console.log(data)
         var img = document.createElement('img');
         img.src = data;
-        document.getElementById('content').append(img)
-        
+        // creating a clickable link for downloading image
         var a = document.createElement('a');
         a.setAttribute("download", "SelectedText.jpeg");
         a.setAttribute("href", data);
         a.appendChild(img);
         
         var w = open();
-        w.document.title = props.annotationData.content.slice(0,20)+'...';
+        w.document.title = props.annotationData.content.slice(0,30)+'...';
         w.document.body.innerHTML = '<h1>click on Image to Download</h1>';
         w.document.body.appendChild(a);
        }
@@ -114,7 +119,7 @@ const AnnotationDetail = (props: Props) => {
             content = content.substr(0, MAXIMUM_TEXT_LENGTH) + "…";
         }
         // content variable is the selected trimmed context
-        desc = <div id="content"><p>{content}</p></div>;
+        desc = <p>{content}</p>;
     }
 
     let classes = [styles.annotationDetail];
@@ -169,7 +174,7 @@ const AnnotationDetail = (props: Props) => {
             </div>
 
             {desc}
-
+            <div id="content"></div>
             <div className={styles.shareContainer}>
             <FacebookShareButton 
             id="sharebutton"
