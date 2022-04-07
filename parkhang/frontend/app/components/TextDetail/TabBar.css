@@ -16,4 +16,6 @@
     border-bottom: 3px solid var(--blue-tint);
     font-weight: bold;
     color: var(--blue-tint);
+    background-color: #eee;
+    padding-top:5px;
 }

@@ -212,7 +212,7 @@ WEBPACK_LOADER = {
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
-        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats-dev.json'),
+        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
     }
 }
 
@@ -227,3 +227,7 @@ DISCOURSE_SITE = env('DISCOURSE_SITE')
 DISCOURSE_API_KEY = env('DISCOURSE_API_KEY')
 DISCOURSE_SYSTEM_USER = env('DISCOURSE_SYSTEM_USER')
 DISCOURSE_QA_TOPIC_ID = env('DISCOURSE_QA_TOPIC_ID')
+
+#facebook app id
+
+FACEBOOK_APP_KEY = env('FACEBOOK_APP_KEY')

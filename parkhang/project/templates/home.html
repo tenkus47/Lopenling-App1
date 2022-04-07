@@ -3,9 +3,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/all.js"></script>
+    <title>Parkhang</title>
     {% render_bundle 'parkhang' 'css' %}
     <script>
+FACEBOOK_APP_KEY="{{ facebook_app_key }}";
 
 {% if user.is_authenticated %}
 USER_LOGGED_IN = true;
@@ -22,10 +24,24 @@ USER_LOCALE = "bo";
 CSRF_TOKEN = "{{ csrf_token }}";
 SSO_SIGNUP_URL = "{{ sso_signup_url }}";
     </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Overpass&display=swap" rel="stylesheet">
 </head>
 <body>
 <div id="app" style="width: 100vw; height: 100vh;"></div>
 {% render_bundle 'parkhang' 'js' %}
+
+<script>
+  
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId            : FACEBOOK_APP_KEY,
+        autoLogAppEvents : true,
+        xfbml            : true,
+        version          : 'v13.0'
+      });
+    };
+  </script>
+  
 </body>
 </html>

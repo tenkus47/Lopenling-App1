@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import React,{useState} from "react";
 import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
@@ -26,6 +26,9 @@ export type Props = {
 const MAXIMUM_TEXT_LENGTH = 250;
 
 const AnnotationDetail = (props: Props) => {
+
+   const [imageUrl,setImageUrl]=useState(null);
+     
 
     function longest_str_in_array(arra)
     {
@@ -70,7 +73,7 @@ const AnnotationDetail = (props: Props) => {
         var lines = mergeArray(ra)
         var canvas = document.createElement("canvas");
         canvas.height = lines.length * lineheight+30;
-            canvas.width =40+ 6 * longest_str_in_array(lines);
+        canvas.width =90 + 6 * longest_str_in_array(lines);
         
         var ctx = canvas.getContext('2d');
        
@@ -86,12 +89,13 @@ const AnnotationDetail = (props: Props) => {
         ctx.fillStyle="black"
         
         for (var i = 0; i<lines.length; i++){
-                       ctx.fillText(lines[i].concat(' '), 50, 50 + (i*lineheight) );
+                       ctx.fillText(lines[i].concat(' '), 35, 35 + (i*lineheight) );
                         }
         var data = canvas.toDataURL();
-        console.log(data)
         var img = document.createElement('img');
         img.src = data;
+        setImageUrl(data);
+        // runClick(data);
         // creating a clickable link for downloading image
         var a = document.createElement('a');
         a.setAttribute("download", "SelectedText.jpeg");
@@ -103,7 +107,6 @@ const AnnotationDetail = (props: Props) => {
         w.document.body.innerHTML = '<h1>click on Image to Download</h1>';
         w.document.body.appendChild(a);
        }
-
 
     let desc = (
          <p>
@@ -124,7 +127,22 @@ const AnnotationDetail = (props: Props) => {
 
     let classes = [styles.annotationDetail];
   
+const runClick=()=>{
+    var imgURL = imageUrl
+    FB.api('/photos', 'post', {
+        message: 'photo description',
+        access_token:"EAAW41ADJQ7kBAF73Bls1ZAqmeVZCuZBgYZAfPPXdVPxCvikV5OCZA229RbB1USuPLUlwVmkqihZAO5NZCRua0080zKmZCvAZAS5Kw6vw8noAUahNYdnTDYcbl062BBBADkhptyjpnxaMxzu1ehxMR1B32Sbn6IAZBmZAWzms3KPy0ahGy2Bgvev0zY1qcsn5Y4ZB9xIBqD5R6cZBLqrZB5zdBt1hoKsXn585wTLacoqVxMHMHZCSrVHepDZBZBBZCG",
+        url: imgURL
+    }, function (response) {
 
+        if (!response || response.error) {
+            alert('Error occured:' + response);
+        } else {
+            alert('Post ID: ' + response.id);
+        }
+
+    });
+}
 
 
     if (props.isActive) {
@@ -188,7 +206,8 @@ const AnnotationDetail = (props: Props) => {
              url={`https://parkhang.lopenling.org${window.location.pathname}`}
              ><WhatsappIcon size={24} round={true}/></WhatsappShareButton>
           <img onClick={ImageDownload} className={styles.downloadlogo} src="https://img.icons8.com/material-outlined/24/000000/download--v1.png"/>
-         
+          <img onClick={runClick} className={styles.downloadlogo} src="https://img.icons8.com/windows/32/000000/upload.png"/>
+          
                        </div>
                    
                       
