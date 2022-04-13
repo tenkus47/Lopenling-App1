@@ -145,3 +145,4 @@ ReactDOM.render(
 );
 
 store.dispatch(loadInitialData());
+

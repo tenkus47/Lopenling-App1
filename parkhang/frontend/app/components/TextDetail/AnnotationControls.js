@@ -67,7 +67,7 @@ export type Props = {
     list: List | null
 };
 
-type AnchorPoint = "top" | "left" | "bottom" | "right";
+type AnchorPoint = "top" | "left" | "bottom" | "right"; 
 
 const anchorPoints = {
     top: 1,
@@ -337,9 +337,10 @@ export default class AnnotationControls extends React.Component<Props> {
         ) {
             breakSelected = true;
         }
-
+        // the selected word/sentence is props.anotationsData
         if (props.annotationsData) {
             props.annotationsData.map(annotationData => {
+               
                 let isEditing = false;
                 let isActive = false;
                 if (annotationData.isTemporary) {

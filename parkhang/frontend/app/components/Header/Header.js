@@ -91,7 +91,7 @@ export const Header = (props: HeaderProps) => {
     let toggleTitle = props.intl.formatMessage({
         id: "header.toggleTextList"
     });
-
+    const image_location =lopenlingLogo
     return (
         <header className={styles.header}>
             <NavigationButton
@@ -100,7 +100,7 @@ export const Header = (props: HeaderProps) => {
                 title={toggleTitle}
             />
             <div className={styles.logo}>
-                <img src={lopenlingLogo} height="40" />
+                <img src={image_location} height="40" />
             </div>
             <LocaleSwitcher />
             {controls}

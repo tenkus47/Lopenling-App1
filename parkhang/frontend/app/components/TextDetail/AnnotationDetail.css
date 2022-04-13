@@ -112,3 +112,24 @@
     background-color: var(--cancel);
     @apply --button;
 }
+.shareContainer{
+    position: absolute;
+    top:4px;
+    right:10px;
+    display: flex;
+    gap:5px;
+}
+.buttonStyle{
+    height:1.5rem;
+    width:1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline:none;
+    border:none;
+    border-radius: 10px;
+    transition: 0.2s all ease-in-out;
+}
+.buttonStyle:hover{
+    background-color: transparent;
+}

@@ -1,45 +1,42 @@
 var path = require("path");
 var webpack = require("webpack");
+
 var BundleTracker = require("webpack-bundle-tracker");
 var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (env, argv) => {
     const devMode = (argv.mode !== 'production');
-    
     return {
         context: __dirname,
-        
         entry: {
             parkhang: ["./app/index", "./website/index"]
         },
-
         devtool: devMode ? 'eval-source-map' : false,
-        
         output: {
             filename: devMode ? '[name]-dev.js' : '[name]-[hash].js',
             path: path.resolve(__dirname, 'static/bundles'),
             library: 'parkhang',
             publicPath: "/static/bundles/"
         },
-
         mode: devMode ? 'development' : 'production',
-
         plugins: [
-            new BundleTracker({filename: devMode ? './webpack-stats-dev.json' : 'webpack-stats.json'}),
+            new BundleTracker({filename: devMode ? 'webpack-stats-dev.json' : 'webpack-stats.json'}),
             new MiniCssExtractPlugin({
                 filename: devMode ? "styles-dev.css" : "styles-[hash].css"
+            }),
+            new HtmlWebpackPlugin({
+                title:"Development"
             })
         ],
-        
         module: {
             rules: [
                 {
-                    test: /\.jsx?$/,
+                    test: /\.(js|jsx)?$/,
                     exclude: /node_modules/,
-                    use: [
-                        {
+                    use: {
                             loader: "babel-loader",
                             options: {
                                 presets: [
@@ -49,7 +46,7 @@ module.exports = (env, argv) => {
                                 ]
                             }
                         }
-                    ]
+                 
                 },
                 {
                     test: /\.css$/,
@@ -147,10 +144,9 @@ module.exports = (env, argv) => {
                 }
             ],
         },
-
         resolve: {
             extensions: [".js", ".jsx"],
             modules: [path.resolve("./node_modules"), path.resolve("./app")]
-        }
+        },
     }
 }
