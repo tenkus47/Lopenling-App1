@@ -50,7 +50,7 @@ $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 Import Texts
 ```
-docker-compose -f local.yml run --rm django python manage.py import_texts /var/parkhang/data/texts སྡེ་དགེ 
+docker-compose -f local.yml run --rm django python manage.py import_texts /var/parkhang/data/texts སྡེ་དགེ
 ```
 
 #### Frontend
@@ -257,12 +257,19 @@ docker-compose -f production.yml run --rm django python manage.py migrate
 
 To create a superuser, run:
 
+```bash
 docker-compose -f production.yml run --rm django python manage.py createsuperuser
+```
+
 If you need a shell, run:
 
+```bash
 docker-compose -f production.yml run --rm django python manage.py shell
+```
+
 To check the logs out, run:
 
+```bash
 docker-compose -f production.yml logs
 
 ### Setting up Discourse user account integration

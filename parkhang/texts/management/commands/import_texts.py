@@ -125,7 +125,7 @@ class Command(BaseCommand):
                         print(e)
 
                     try:
-                        annotations = parse_word_diff(diff, filename)
+                        annotations = parse_word_diff(diff)
                     except Exception as e:
                         annotations = []
                         print(f'dir: {dir}, filename: {filename}')
