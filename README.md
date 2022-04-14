@@ -50,7 +50,7 @@ $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 Import Texts
 ```
-docker-compose -f local.yml run --rm django python manage.py import_texts /var/parkhang/data/texts སྡེ་དགེ 
+docker-compose -f local.yml run --rm django python manage.py import_texts /var/parkhang/data/texts སྡེ་དགེ
 ```
 
 #### Frontend
@@ -271,9 +271,6 @@ To check the logs out, run:
 
 ```bash
 docker-compose -f production.yml logs
-<<<<<<< HEAD
-```
-=======
 
 ### Setting up Discourse user account integration
 
@@ -305,4 +302,3 @@ The following environment variables need to be set for users to login using thei
     The ID of the Topic used to post questions from a parkhang instance.
     e.g. 4
 
->>>>>>> b51e7edb2f4e5de99b158a83ce08d4625dd33a4c
