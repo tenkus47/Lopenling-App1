@@ -1,5 +1,6 @@
 var path = require("path");
 var webpack = require("webpack");
+
 var BundleTracker = require("webpack-bundle-tracker");
 var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
@@ -133,6 +134,14 @@ module.exports = {
                                 ]
                             }
                         }
+                    }
+                ]
+            },
+            {
+                test: /\.(png|jpe?g|gif)$/i,
+                use: [
+                    {
+                        loader: "file-loader"
                     }
                 ]
             }

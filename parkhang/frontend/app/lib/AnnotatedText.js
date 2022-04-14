@@ -467,26 +467,37 @@ export default class AnnotatedText {
                     }
                 }
                 if (foundVariant !== null) {
-                    let segments = this.segmentsForAnnotation(foundVariant);
-                    content = segments.reduce(
-                        (
-                            previousValue: string,
-                            currentValue: TextSegment | number
-                        ) => {
-                            let value = previousValue;
-                            if (currentValue instanceof TextSegment) {
-                                value += currentValue.text;
-                            }
-                            return value;
-                        },
-                        ""
-                    );
-                    if (content !== foundVariant.content) {
-                        console.warn(
-                            "foundVariant content != generated content"
+                    if (
+                        foundVariant.start == start &&
+                        foundVariant.length >= length
+                    ) {
+                        annotation = foundVariant;
+                    } else {
+                        annotation = new Annotation(
+                            null,
+                            this.baseWitness,
+                            start,
+                            length,
+                            " ",
+                            ANNOTATION_TYPES.variant,
+                            this.activeWitness
                         );
+                        let segments = this.segmentsForAnnotation(annotation);
+                        content = segments.reduce(
+                            (
+                                previousValue: string,
+                                currentValue: TextSegment | number
+                            ) => {
+                                let value = previousValue;
+                                if (currentValue instanceof TextSegment) {
+                                    value += currentValue.text;
+                                }
+                                return value;
+                            },
+                            ""
+                        );
+                        annotation.content = content;
                     }
-                    annotation = foundVariant;
                 }
             }
         }
@@ -565,15 +576,44 @@ export default class AnnotatedText {
         ) {
             let start = annotation.start;
             let end = annotation.end;
-
+            let processedAnnotations = [];
             for (let i = start; i <= end; i++) {
                 let segment = null;
                 let [pos, deleted] = orginalCurrentSegmentPositions[String(i)];
-
+                let posAnnotations = this.annotationsForPosition(pos);
+                let longestAnnotation;
+                if (posAnnotations.length > 0) {
+                    for (let i = 0; i < posAnnotations.length; i++) {
+                        let current = posAnnotations[i];
+                        if (
+                            !longestAnnotation ||
+                            current.length > longestAnnotation.length
+                        )
+                            longestAnnotation = current;
+                    }
+                }
+                
                 if (deleted) {
                     segment = pos;
                 } else if (annotation.isInsertion) {
                     segment = new TextSegment(pos, annotation.content);
+                } else if (
+                    longestAnnotation &&
+                    processedAnnotations.indexOf(longestAnnotation) === -1
+                ) {
+                    let to = pos + longestAnnotation.content.length;
+                    for (let j = pos; j < to; j++) {
+                        let annoSegment = this.segmentedText.segmentAtPosition(
+                            j
+                        );
+                        if (
+                            annoSegment &&
+                            segments.indexOf(annoSegment) == -1
+                        ) {
+                            segments.push(annoSegment);
+                        }
+                    }
+                    processedAnnotations.push(longestAnnotation);
                 } else {
                     segment = this.segmentedText.segmentAtPosition(pos);
                 }

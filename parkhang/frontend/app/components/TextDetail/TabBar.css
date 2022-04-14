@@ -13,7 +13,7 @@
 }
 
 .selected {
-    border-bottom: 3px solid var(--main-tint);
+    border-bottom: 3px solid var(--blue-tint);
     font-weight: bold;
-    color: var(--main-tint);
+    color: var(--blue-tint);
 }

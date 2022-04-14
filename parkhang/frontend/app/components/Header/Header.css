@@ -1,7 +1,7 @@
 @import "css/type.css";
 @import "css/colour.css";
 
-@value header-height: 65px;
+@value header-height: 70px;
 
 :root {
     --header-height: header-height;
@@ -12,15 +12,17 @@
 }
 
 .header {
-    background-color: var(--main-tint);
+    background-color: #ffffff;
     font-family: var(--fonts);
     font-size: 30px;
-    color: white;
+    color: #888;
     padding: 0px 10px 0px 20px;
     height: var(--header-height);
     display: flex;
     flex-shrink: 0;
     align-items: center;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.18); /* Same as lopenling header */
+    z-index: 1;
 }
 
 .header p {
@@ -29,12 +31,19 @@
     flex-grow: 2;
 }
 
+.logo {
+    margin: 0 0 0 20px;
+    padding: 0;
+    flex-grow: 2;
+    display: flex;
+}
+
 .navigationButton {
     margin-right: 10px;
 }
 
 .controls {
-    font-size: 18px;
+    font-size: 15px;
     display: flex;
     align-items: center;
     position: relative;
@@ -46,9 +55,24 @@
     color: white;
 }
 
-.textLink {
-    color: white;
+.loginButton {
+    font-family: var(--fonts);
+    font-size: 15px;
+    background-color: var(--green-tint);
+    color: #ffffff;
     margin-right: 20px;
+    margin-left: 7px;
+    border: 0;
+    line-height: 1;
+    padding: 6px 10px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.loginButton svg {
+    color: white;
+    margin-right: 5px;
 }
 
 .textLink a:link,
@@ -57,12 +81,13 @@
 }
 
 .buttonLink {
-    background-color: white;
+    line-height: 1;
+    background-color: var(--green-tint);
     border-radius: 4px;
-    padding: 5px 20px;
+    padding: 6px 10px;
 }
 
 .buttonLink a:link,
 .buttonLink a:visited {
-    color: var(--main-tint);
+    color: #ffffff;
 }

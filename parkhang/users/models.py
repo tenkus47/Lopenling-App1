@@ -4,7 +4,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
-from django.contrib.postgres.fields import JSONField
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.contrib.auth.validators import ASCIIUsernameValidator, UnicodeUsernameValidator
 from django.core.validators import RegexValidator
@@ -46,6 +45,15 @@ class User(AbstractBaseUser, PermissionsMixin):
             'unique': _("A user with that username already exists."),
         },
     )
+    sso_username = models.CharField(
+        _('sso username'), 
+        max_length=200,
+        blank=True, 
+        null=True, 
+        help_text=_(
+            'The extenal username if using sso.'
+        )
+    )
     name = models.CharField(_('name'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(
@@ -63,7 +71,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     locale = models.CharField(max_length=10, choices=LOCALE_CHOICES, default="bo")
-    settings = JSONField(null=True, blank=True)
+    settings = models.JSONField(null=True, blank=True)
 
     objects = UserManager()
 

@@ -9,7 +9,8 @@
 
 {% if user.is_authenticated %}
 USER_LOGGED_IN = true;
-USER_NAME = "{{ user.username }}";
+USER_USERNAME = "{{ user.username }}";
+USER_NAME = "{{ user.name }}";
 USER_ID = "{{ user.id }}";
 USER_LOCALE = "{{ user.locale }}";
 {% else %}
@@ -18,7 +19,10 @@ USER_NAME = "";
 USER_ID = null;
 USER_LOCALE = "bo";
 {% endif %}
+CSRF_TOKEN = "{{ csrf_token }}";
+SSO_SIGNUP_URL = "{{ sso_signup_url }}";
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Overpass&display=swap" rel="stylesheet">
 </head>
 <body>
 <div id="app" style="width: 100vw; height: 100vh;"></div>

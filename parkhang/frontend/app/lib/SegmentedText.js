@@ -1,6 +1,8 @@
 // @flow
 import TextSegment from "./TextSegment";
 
+const DEFAULT_BOUNDARIES = [" "];
+
 export default class SegmentedText {
     segments: TextSegment[];
     _sortedSegments: TextSegment[];
@@ -24,6 +26,71 @@ export default class SegmentedText {
             this._sortedText = text;
         }
         return this._sortedText;
+    }
+
+    extractTextAroundPosition(
+        start: number,
+        end: number,
+        boundaries: string[],
+        includeBoundaries: boolean = true
+    ): [string, string, string] {
+        // TODO: in future add options for length etc.
+        
+        let totalSegments = this.segments.length;
+        let index = this.indexOfSegmentAtPosition(start);
+        let startIndex = null;
+        if (boundaries.length === 0) {
+            boundaries = DEFAULT_BOUNDARIES;
+        }
+        const boundariesLength = boundaries.length;
+
+        let startExtract = "";
+        let currentIndex = index - 1;
+
+        while (startIndex === null) {
+            let segment = this.segments[currentIndex];
+            for (let i = 0; i < boundariesLength; i++) {
+                let boundary = boundaries[i];
+                if (segment.text.includes(boundary)) {
+                    startIndex = currentIndex;
+                    break;
+                }
+            }
+            if (!startIndex || includeBoundaries) {
+                startExtract = segment.text + startExtract;
+                if (currentIndex > 0) {
+                    currentIndex--;
+                } else {
+                    startIndex = 0;
+                }
+            }
+        }
+
+        let positionSegment = this.segments[index];
+
+        currentIndex = index + 1;
+        let endIndex = null;
+        let endExtract = "";
+        while (endIndex === null) {
+            let segment = this.segments[currentIndex];
+            for (let i = 0; i < boundariesLength; i++) {
+                let boundary = boundaries[i];
+                if (segment.text.includes(boundary)) {
+                    endIndex = currentIndex;
+                    break;
+                }
+            }
+            if (!endIndex || includeBoundaries) {
+                endExtract = endExtract + segment.text;
+                if (currentIndex < totalSegments) {
+                    currentIndex++;
+                } else {
+                    endIndex = currentIndex;
+                }
+            }
+        }
+
+        return [startExtract, positionSegment.text, endExtract];
     }
 
     /**

@@ -26,7 +26,7 @@ const AccountOverlay = (props: Props) => {
             }}
         >
             <h3 className={styles.username}>{props.user.name}</h3>
-            <a href="/accounts/logout/">
+            <a href="/discourse/logout/">
                 <Button
                     title={signOutTitle}
                     color="black"

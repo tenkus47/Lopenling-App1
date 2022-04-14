@@ -23,6 +23,8 @@
         "annotations.variantsHeading": "དག་ཆའི་ཁྱད་པར།",
         "annotation.notesHeading": "མཆན།",
         "annotation.addNoteHelp": "མཆན་འཁོད།",
-        "annotation.noNotes": "མཆན་མི་འདུག"
+        "annotation.noNotes": "མཆན་མི་འདུག",
+        "question.answeredBy": "Answered by",
+        "question.viewThread": "view thread"
     }
 }

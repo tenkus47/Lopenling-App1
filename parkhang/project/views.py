@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 from django.views.generic.base import TemplateView
 from django.conf import settings
-
+from django.middleware import csrf
 
 
 
@@ -17,5 +17,7 @@ class HomeView(TemplateView):
         user = self.request.user
 
         context['user'] = user
+        context['csrf_token'] = csrf.get_token(self.request)
+        context['sso_signup_url'] = settings.DISCOURSE_SSO_SIGNUP_URL
 
         return context

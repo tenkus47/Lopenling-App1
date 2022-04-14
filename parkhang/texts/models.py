@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import JSONField
 
 
 
@@ -81,7 +80,7 @@ class Witness(models.Model):
     """The text content of the witness"""
     content = models.TextField(null=True, blank=True)
     """Extra properties for a witness"""
-    properties = JSONField(null=True, blank=True)
+    properties = models.JSONField(null=True, blank=True)
 
 
 class AnnotationQuerySet(models.QuerySet):
@@ -97,6 +96,7 @@ class AnnotationType(Enum):
     note = 'N'
     page_break = 'P'
     line_break = 'L'
+    question = 'Q'
 
 
 class Annotation(models.Model):
@@ -104,7 +104,8 @@ class Annotation(models.Model):
         (AnnotationType.variant.value, 'Variant'),
         (AnnotationType.note.value, 'Note'),
         (AnnotationType.page_break.value, 'Page Break'),
-        (AnnotationType.line_break.value, 'Line Break')
+        (AnnotationType.line_break.value, 'Line Break'),
+        (AnnotationType.question.value, 'Question')
     )
     unique_id = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
     witness = models.ForeignKey(Witness, null=True, blank=True, on_delete=models.SET_NULL)
@@ -124,6 +125,11 @@ class Annotation(models.Model):
 
     # see https://docs.djangoproject.com/en/1.11/topics/db/managers/#creating-a-manager-with-queryset-methods
     objects = AnnotationQuerySet.as_manager()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['witness_id', 'start', 'length', 'type'])
+        ]
 
     def creator(self):
         if self.creator_witness:
@@ -176,3 +182,21 @@ class DefaultWitnessAnnotations(models.Model):
 
     witness = models.ForeignKey(Witness, null=True, blank=True, on_delete=models.SET_NULL)
     annotation = models.ForeignKey(Annotation, null=True, blank=True, on_delete=models.SET_NULL)
+
+class Question(models.Model):
+    annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE)
+    # We want to be able to save a question without a topic_id in 
+    # case the external server is down.
+    topic_id = models.IntegerField(blank=True, null=True)
+    title = models.TextField()
+    question = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def annotation_unique_id(self):
+        return self.annotation.unique_id
+    
+    # Non-persisted data. These are intended to be set
+    # after retrieving data from an external server.
+    answers = []
+    
+

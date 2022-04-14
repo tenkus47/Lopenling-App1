@@ -1,14 +1,18 @@
+import uuid
+from unittest import skip
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from texts.models import Text
 
 from users.models import User
-from api.views import TextList, SourceList, WitnessList, AnnotationList, AnnotationDetail, AppliedUserAnnotations
-from texts.models import Text, Source, Witness, Annotation, AppliedUserAnnotation
+from api.views import TextList, SourceList, WitnessList, AnnotationList, AnnotationDetail, QuestionList, QuestionDetail
+from texts.models import Text, Source, Witness, Annotation, AnnotationType, Question
 
 class TextsTestCase(APITestCase):
     username = "TestUser"
+    sso_username = "sherab"
     password = "1ABDefgH89"
     text_name = 'Test Text'
     source_name = 'Derge'
@@ -31,7 +35,8 @@ class TextsTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = User.objects.create_user(
             username=cls.username,
-            password=cls.password
+            password=cls.password,
+            sso_username=cls.sso_username
         )
 
         cls.text, created = Text.objects.get_or_create(
@@ -40,12 +45,12 @@ class TextsTestCase(APITestCase):
 
         cls.source, created = Source.objects.get_or_create(
             name=cls.source_name,
-            is_default_base_text=True
+            is_base=True
         )
 
         cls.source_2, created = Source.objects.get_or_create(
             name=cls.source_name_2,
-            is_default_base_text=False
+            is_base=False
         )
 
         cls.witness, created = Witness.objects.get_or_create(
@@ -136,6 +141,52 @@ class TextsTestCase(APITestCase):
 
         annotation = Annotation.objects.get_active(self.annotation.pk)
         self.assertEqual(annotation.content, new_content)
+
+    @skip("Creates a topic on discourse site, so only test manually and then delete the new topic from the external site.")
+    def test_create_question(self):
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/questions/'
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.post(url, {
+            'witness': self.witness.pk,
+            'start': self.annotation_start,
+            'length': self.annotation_length,
+            'content': self.annotation_content,
+            'creator_user': self.user.pk,
+            'creator_witness': None,
+            'question_title': 'Test',
+            'question_content': 'Testing creating questions from parkhang',
+            'original': None,
+            'unique_id': str(uuid.uuid4())
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(response.content.decode('utf-8').isnumeric())
+
+    def test_get_question(self):
+        # TODO: create annotation manually then link to new Question object
+        # using an existing topic on lopenling e.g. 208
+        # Then, get posts for that question
+        annotation = Annotation()
+        annotation.witness = self.witness
+        annotation.start = self.annotation_start
+        annotation.length = self.annotation_length
+        annotation.content = ""
+        annotation.creator_witness = self.witness_2
+        annotation.type = AnnotationType.question.value
+        annotation.save()
+
+        question = Question()
+        question.annotation = annotation
+        question.topic_id = 208
+        question.save()
+
+        url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/questions/{annotation.id}'
+        response = self.client.get(url)
+        data = response.json()
+
+        self.assertTrue(len(data) > 0)
+        self.assertTrue('id' in data[0])
+        self.assertTrue('is_question' in data[0])
 
     def test_apply_user_annotation(self):
         url = f'/api/texts/{self.text.pk}/witnesses/{self.witness.pk}/applied_annotations/'

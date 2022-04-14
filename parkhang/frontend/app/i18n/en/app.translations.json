@@ -3,7 +3,7 @@
     "displayName": "English",
     "messages": {
         "header.title": "Nalanda Texts Project",
-        "header.login": "Login",
+        "header.login": "Log In",
         "header.signUp": "Sign Up",
         "header.logout": "Sign Out",
         "header.toggleTextList": "Toggle Text List",
@@ -23,6 +23,8 @@
         "annotations.variantsHeading": "Variants",
         "annotation.notesHeading": "Notes",
         "annotation.addNoteHelp": "Add a new note",
-        "annotation.noNotes": "No notes available"
+        "annotation.noNotes": "No notes available",
+        "question.answeredBy": "Answered by",
+        "question.viewThread": "view thread"
     }
 }

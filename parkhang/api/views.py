@@ -3,6 +3,7 @@ import json
 
 from django.db.models import Q
 from django.http import Http404, JsonResponse
+from django.conf import settings
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -10,9 +11,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ParseError, ValidationError, NotFound, PermissionDenied
 
-from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer, UserAnnotationOperationsSerializer
-from texts.models import Text, Source, Witness, Annotation, UserAnnotationOperation
+from .serializers import TextSerializer, SourceSerializer, WitnessSerializer, AnnotationSerializer, UserAnnotationOperationsSerializer, QuestionPostSerializer, QuestionSerializer
+from texts.models import Text, Source, Witness, Annotation, AnnotationType, UserAnnotationOperation, Question
 from users.models import User
+from discourse.api import DiscourseAPI
 
 
 class UserDetail(APIView):
@@ -120,7 +122,7 @@ class TextSearch(APIView):
                         'total': 0,
                         'extra': False
                     }
-                if max_results is 0 or (max_results > 0 and results[witness.text.id]['total'] < max_results):
+                if max_results == 0 or (max_results > 0 and results[witness.text.id]['total'] < max_results):
                     start = m.start() - left
                     if start < 0:
                         start = 0
@@ -412,3 +414,90 @@ class UserAnnotationOperationDetail(APIView):
         user_annotation_operation.delete()
 
         return Response('', status=status.HTTP_204_NO_CONTENT)
+
+
+class QuestionList(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, witness_id, start, length):
+        question_annotations = Annotation.objects.filter(witness_id=witness_id, start=start, length=length, type=AnnotationType.question.value)
+
+        discourse_api = DiscourseAPI(settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY)
+        questions = Question.objects.filter(annotation_id__in=question_annotations).select_related('annotation', 'annotation__creator_user')
+        try:
+            for question in questions:
+                if question.topic_id:
+                    answers = []
+                    posts = discourse_api.get_topic_posts(question.topic_id)
+                    for post in posts:
+                        if post['is_accepted_answer']:
+                            answers.append({
+                                'name': post['name'],
+                                'username': post['username'],
+                                'content': post['content_html'],
+                                'created': post['created'],
+                            })
+                            print(answers)
+                    question.answers = answers
+        except:
+            print("Exception getting answers")
+            pass
+        
+        questions_serializer = QuestionSerializer(questions, many=True)
+        return Response(questions_serializer.data)
+
+    def post(self, request, witness_id, start, length):
+        """
+        Add a new post to discourse Q&A site related
+        to the given annotation.
+        """
+
+        user = request.user
+
+        serializer = AnnotationSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                annotation = Annotation.objects.get(unique_id=serializer.validated_data['unique_id'])
+            except:
+                annotation = serializer.save()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        question_title = request.data['question_title']
+        question_content = request.data['question_content']
+
+        question = Question()
+        question.annotation = annotation
+        question.title = question_title
+        question.question = question_content
+
+        try:
+            api = DiscourseAPI(settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY)
+            topic_data = api.add_topic(user.sso_username, settings.DISCOURSE_QA_TOPIC_ID, question_title, question_content)
+            topic_id = topic_data['id']
+        except:
+            topic_id = None
+            print("Error saving question via remote API")
+        
+        question.topic_id = topic_id
+        question.save()
+
+        return Response(topic_id, status=status.HTTP_201_CREATED)
+
+
+class QuestionPostDetail(APIView):
+
+    def get(self, request, annotation_id):
+        question = Question.objects.get(annotation_id=annotation_id)
+        api = DiscourseAPI(settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY)
+        posts = api.get_topic_posts(question.topic_id)
+        posts = [post for post in posts if post['is_question'] or post['is_accepted_answer']]
+
+        serializer = QuestionPostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+
+class QuestionDetail(APIView):
+    
+    def get(self, request, annotation_id):
+        question = Question.objects.get(annotation_id=annotation_id)

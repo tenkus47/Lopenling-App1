@@ -4,6 +4,7 @@ import dataReducers, * as data from "./data";
 import uiReducers, * as ui from "./ui";
 import userReducers, * as user from "./user";
 import * as actions from "actions";
+import * as api from "api";
 import Annotation, {
     ANNOTATION_TYPES,
     TemporaryAnnotation
@@ -16,6 +17,7 @@ import type { WitnessData, AnnotationData, TextData } from "api";
 import { appliedOp, removedOp } from "api";
 import type { TextSearchResultData } from "api";
 import User from "lib/User";
+import Question from "lib/Question";
 
 // i18n
 import { intlReducer } from "react-intl-redux";
@@ -372,9 +374,23 @@ export const annotationOriginallyUserCreated = (
 export const getSearchResults = (
     state: AppState,
     searchTerm: string
-): TextSearchResultData[] | null => {
+): { [number]: api.TextSearchResultData } | null => {
     return data.getSearchResults(state.data, searchTerm);
 };
+
+export const questionIsLoading = (
+    state: AppState,
+    annotation: Annotation
+): boolean => {
+    return data.questionIsLoading(state.data, annotation);
+};
+
+export const getQuestions = (
+    state: AppState,
+    questionId: AnnotationUniqueId
+): Question[] | null => {
+    return data.getQuestions(state.data, questionId);
+}
 
 // Root
 
