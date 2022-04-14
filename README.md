@@ -253,10 +253,18 @@ docker-compose -f production.yml run --rm django python manage.py migrate
 
 To create a superuser, run:
 
+```bash
 docker-compose -f production.yml run --rm django python manage.py createsuperuser
+```
+
 If you need a shell, run:
 
+```bash
 docker-compose -f production.yml run --rm django python manage.py shell
+```
+
 To check the logs out, run:
 
+```bash
 docker-compose -f production.yml logs
+```
