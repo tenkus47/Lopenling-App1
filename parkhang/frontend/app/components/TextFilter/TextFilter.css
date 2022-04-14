@@ -1,0 +1,9 @@
+.filter{
+    color:#ff0000;
+    background-color: #555555;
+    display: flex;
+    flex:1;
+    align-items: center;
+    padding-inline: 50px;
+    gap:1.3rem;
+}

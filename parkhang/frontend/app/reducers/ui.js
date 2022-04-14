@@ -378,6 +378,7 @@ uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
 export default uiReducers;
 
 export const getSelectedText = (state: UIState): api.TextData | null => {
+   
     return state.selectedText;
 };
 

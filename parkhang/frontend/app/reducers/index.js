@@ -100,6 +100,7 @@ export const getUser = (state: AppState): User => {
 // ui
 
 export const getSelectedText = (state: AppState): TextData | null => {
+   
     return ui.getSelectedText(state.ui);
 };
 

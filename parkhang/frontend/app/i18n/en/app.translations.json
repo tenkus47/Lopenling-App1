@@ -9,6 +9,7 @@
         "header.toggleTextList": "Toggle Text List",
         "header.export": "Export",
         "leftbar.search": "Search",
+        "leftbar.authorFilter": "Author",
         "leftbar.titles": "Titles",
         "leftbar.loadMore": "Load More…",
         "leftbar.loading": "Loading…",

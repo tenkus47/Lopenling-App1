@@ -26,6 +26,7 @@ export type Props = {
 const TextHeading = (props: Props) => {
     let name = "";
     if (props.selectedText && props.selectedText.name) {
+
         name = addTibetanShay(props.selectedText.name);
     }
 

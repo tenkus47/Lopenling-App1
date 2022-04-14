@@ -101,7 +101,8 @@ class TextDetail extends React.Component<Props> {
                     selectedSearchResult={this.props.selectedSearchResult}
                     searchValue={this.props.searchValue}
                     fontSize={this.props.fontSize}
-                />
+                >
+                </SplitTextComponent>
             );
         }
 

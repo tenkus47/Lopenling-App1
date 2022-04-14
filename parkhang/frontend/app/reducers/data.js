@@ -511,11 +511,11 @@ function savedAnnotation(
         }
     };
 }
-
 function searchedText(
     state: DataState,
     action: actions.SearchedTextAction
 ): DataState {
+
     if (
         action.searchValue in state.searchResults &&
         action.textId in state.searchResults[action.searchValue]

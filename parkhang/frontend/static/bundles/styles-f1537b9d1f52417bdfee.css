@@ -2022,6 +2022,74 @@ body {
     z-index: 1;
     background-color: #ffffff;
 }
+.TextsFilter---textsFilterContainer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.TextsFilter---textsSearch {
+    padding: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    background-color: #394a59;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+}
+
+.TextsFilter---textsSearch form {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+}
+
+.TextsFilter---textsSearch input {
+    font-size: 1em;
+    margin-right: 10px;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    min-height: 20px;
+    padding: 0 5px;
+    border: 0;
+    border-radius: 4px;
+}
+
+.TextsFilter---textsSearch button {
+    min-width: 50px;
+    text-align: center;
+}
+
+.TextsFilter---textsSearch select {
+    font-size: 0.8em;
+    height: 20px;
+}
+
+.TextsFilter---minify {
+    font-family: arial, sans-serif;
+    width: 20px;
+    background-color: #313131;
+    color: white;
+    -ms-flex-line-pack: center;
+        align-content: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    font-size: 12px;
+    line-height: 29px;
+    cursor: pointer;
+}
 @font-face {
     font-family: "Tibetan";
     font-style: normal;
@@ -2195,4 +2263,4 @@ we require as we don't want to change the html.
 
 
 
-/*# sourceMappingURL=styles-6ff412f31500ecca87cc.css.map*/
+/*# sourceMappingURL=styles-f1537b9d1f52417bdfee.css.map*/

@@ -212,6 +212,7 @@ class TextList extends React.Component<Props> {
                                 overscanRowCount={3}
                                 deferredMeasurementCache={this.cache}
                             />
+                          
                         )}
                     </AutoSizer>
                 ) : this.props.searching ? (

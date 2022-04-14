@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/all.js"></script>
+<!-- <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/all.js"></script> -->
     <title>Parkhang</title>
     {% render_bundle 'parkhang' 'css' %}
     <script>
@@ -31,17 +31,5 @@ SSO_SIGNUP_URL = "{{ sso_signup_url }}";
 <div id="app" style="width: 100vw; height: 100vh;"></div>
 {% render_bundle 'parkhang' 'js' %}
 
-<script>
-  
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId            : FACEBOOK_APP_KEY,
-        autoLogAppEvents : true,
-        xfbml            : true,
-        version          : 'v13.0'
-      });
-    };
-  </script>
-  
 </body>
 </html>
