@@ -27,6 +27,12 @@ createsuperuser:
 prod-createsuperuser:
 	docker-compose -f production.yml run --rm django python manage.py createsuperuser
 
+manage:
+	docker-compose -f local.yml run --rm django python manage.py $(arg)
+
+prod-manage:
+	docker-compose -f production.yml run --rm django python manage.py $(arg)
+
 test:
 	docker-compose -f local.yml run django pytest
 
