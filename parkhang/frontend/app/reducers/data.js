@@ -161,12 +161,14 @@ function loadedSources(
 }
 
 function loadingWitnesses(state: DataState): DataState {
+    
     return {
         ...state,
         loadingWitnesses: true,
         loadedWitnesses: false
     };
 }
+
 
 function loadedWitnesses(
     state: DataState,

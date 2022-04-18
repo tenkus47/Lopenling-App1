@@ -235,12 +235,28 @@ export function* watchLoadInitialData(): any {
 // SELECTED TEXT
 
 function* selectedText(action: actions.SelectedTextAction): Saga<void> {
+    
     yield put(actions.loadingWitnesses(action.text));
     yield all([call(loadInitialTextData, action)]);
 }
 
 function* watchSelectedText(): Saga<void> {
     yield takeEvery(actions.SELECTED_TEXT, selectedText);
+}
+
+//FILTER AUTHOR
+
+function* filterText(action: actions.FilterTextAction): Saga<void> {
+ let filtered={id: 2, name: 'བཀྲ་ཤིས་ཀྱི་ཚིགས་སུ་བཅད་པ།b'} //dummy data
+ 
+
+ action={...action,text:filtered}
+    yield put(actions.loadingWitnesses(action.text));
+    yield all([call(loadInitialTextData, action)]);
+}
+
+function* watchFilterText(): Saga<void> {
+    yield takeEvery(actions.FILTER_TEXT, filterText);
 }
 
 // WITNESSES
@@ -270,6 +286,7 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 call(loadAnnotationOperations, workingWitness.id)
             ]);
             // auto-select the working witness
+           
             yield put(
                 actions.selectedTextWitness(action.text.id, workingWitness.id)
             );
@@ -759,6 +776,7 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
 export default function* rootSaga(): Saga<void> {
     yield all([
         call(watchLoadInitialData),
+        call(watchFilterText),
         call(watchSelectedText),
         call(watchLoadAnnotations),
         call(watchBatchedActions),

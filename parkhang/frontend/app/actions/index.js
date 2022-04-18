@@ -60,7 +60,7 @@ export const UPDATED_TEMPORARY_ANNOTATION = "text/UPDATED_TEMPORARY_ANNOTATION";
 export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 // UI
-
+export const FILTER_TEXT = "textList/FILTER_TEXT";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const CHANGED_SEARCH_VALUE = "textList/CHANGED_SEARCH_VALUE";
 export const SEARCHED_TEXT = "textList/SEARCHED_TEXT";
@@ -100,6 +100,7 @@ export const SELECTED_LOCALE = "i18n/SELECT_LOCALE";
 // URLS
 export const TEXT_URL = "urls/TEXT";
 export const USER_URL = "urls/USER";
+export const FILTER_URL = "urls/FILTER";
 
 /** Action creators **/
 
@@ -473,6 +474,14 @@ export function selectedText(text: api.TextData): SelectedTextAction {
     return {
         type: SELECTED_TEXT,
         text
+    };
+}
+
+export type FilterTextAction = Action & TextDataAction;
+export function filterText(data: string): FilterTextAction {
+    return {
+        type: FILTER_TEXT,
+        data
     };
 }
 

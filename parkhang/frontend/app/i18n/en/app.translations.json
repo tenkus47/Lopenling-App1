@@ -26,6 +26,8 @@
         "annotation.addNoteHelp": "Add a new note",
         "annotation.noNotes": "No notes available",
         "question.answeredBy": "Answered by",
-        "question.viewThread": "view thread"
+        "question.viewThread": "view thread",
+        "filter.category":"Category",
+        "filter.author":"Author"
     }
 }

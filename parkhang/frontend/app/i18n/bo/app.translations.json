@@ -26,6 +26,8 @@
         "annotation.addNoteHelp": "མཆན་འཁོད།",
         "annotation.noNotes": "མཆན་མི་འདུག",
         "question.answeredBy": "Answered by",
-        "question.viewThread": "view thread"
+        "question.viewThread": "view thread",
+        "filter.category":"ཚན་པ།",
+        "filter.author":"མཛད་པ་པོ།"
     }
 }

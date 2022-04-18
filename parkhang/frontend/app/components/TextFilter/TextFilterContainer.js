@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import TextFilter from "./TextFilter";
 import type { Props } from "./TextFilter";
 import * as actions from "actions";
+import { getSelectedText } from "reducers";
+
 
 import {
 } from "actions";
@@ -12,7 +14,8 @@ import type { AppState } from "reducers";
 const mapStateToProps = (state: AppState): {} => {
     let texts = state.data.texts;
     return {
-        texts: texts
+        texts,
+       selectedText:getSelectedText(state)
     };
 };
 
