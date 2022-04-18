@@ -50,11 +50,10 @@ function authorChange(e){
 <FormattedMessage id="filter.author" />
 </label>
            <select  onChange={authorChange}>
-<option value='kalsang'>  
-<Link to='#'>kalsang</Link>
-</option>              
+                    <option value='kalsang'>  
+                      ༡ རྩོམ་པ་པོ།་
+                    </option>              
                </select>
-               <Link to="text/author/kalden">kalden</Link>
            </div>
     
   )

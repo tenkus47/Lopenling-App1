@@ -114,42 +114,53 @@
 }
 .shareContainer{
     position: absolute;
-    top:4px;
-    right:10px;
+    right:5px;
+    bottom:2px;
     display: flex;
-    gap:5px;
-}
-.buttonStyle{
-    height:1.5rem;
-    width:1.5rem;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    outline:none;
-    border:none;
-    border-radius: 10px;
-    transition: 0.2s all ease-in-out;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid grey;
+    cursor: pointer;
+    font-size: 16px;
+    transition: .3s linear;
+    padding-inline:8px;
 }
-.buttonStyle:hover{
-    background-color: transparent;
+.shareContainer:hover{
+    transform: scale(1.1);
 }
-.shareContainer img{
-    height:1.5rem;
-    width:1.5rem;
-   background-color: transparent;
-   cursor: pointer;
+.shareButton{
+position:absolute;
+width:100%;
+height: 100%;
+background-color: #444;
+color:white;
+text-align: center;
+line-height: 20px;
+z-index: 444;
+transition: .6s linear;
+
 }
-.shareContainer *{
-    
-    animation-name:mymove;
-    animation-duration:1s;
-    position:relative;
-    animation-iteration-count: infinite;
+.shareContainer:hover .shareButton{
+    transform: translateX(-100%);
+    transition-delay: .3s;
+
 }
-.shareContainer *:hover{
-    border:1px solid grey;
+.facebookButton ,.whatsappButton{
+    flex:1;
+    text-align: center;
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: .3s linear;
 }
-@keyframes mymove {
-    from {transform: scale(1);}
-    to {transform: scale(1.06);}
-  }
+.shareContainer:hover .facebookButton,
+.shareContainer:hover .whatsappButton{
+    opacity: 1;
+    transform: translateX(0);
+}
+.shareContainer:hover .facebookButton{
+    transition-delay: 0.3s;
+}
+.shareContainer:hover .whatsappButton{
+    transition-delay: 0.5s;
+}

@@ -3,46 +3,46 @@
   "assets": {
     "8967124136190c7842d863e4a862a528.png": {
       "name": "8967124136190c7842d863e4a862a528.png",
-      "path": "C:\\Users\\Tenzin Kunsang\\Desktop\\parkhang\\parkhang\\frontend\\static\\bundles\\8967124136190c7842d863e4a862a528.png",
+      "path": "D:\\git Project work\\parkhang\\parkhang\\frontend\\static\\bundles\\8967124136190c7842d863e4a862a528.png",
       "publicPath": "/static/bundles/8967124136190c7842d863e4a862a528.png"
     },
-    "styles-f1537b9d1f52417bdfee.css": {
-      "name": "styles-f1537b9d1f52417bdfee.css",
-      "path": "C:\\Users\\Tenzin Kunsang\\Desktop\\parkhang\\parkhang\\frontend\\static\\bundles\\styles-f1537b9d1f52417bdfee.css",
-      "publicPath": "/static/bundles/styles-f1537b9d1f52417bdfee.css"
+    "styles-3e9900f8f3bfa385e17b.css": {
+      "name": "styles-3e9900f8f3bfa385e17b.css",
+      "path": "D:\\git Project work\\parkhang\\parkhang\\frontend\\static\\bundles\\styles-3e9900f8f3bfa385e17b.css",
+      "publicPath": "/static/bundles/styles-3e9900f8f3bfa385e17b.css"
     },
-    "parkhang-f1537b9d1f52417bdfee.js": {
-      "name": "parkhang-f1537b9d1f52417bdfee.js",
-      "path": "C:\\Users\\Tenzin Kunsang\\Desktop\\parkhang\\parkhang\\frontend\\static\\bundles\\parkhang-f1537b9d1f52417bdfee.js",
-      "publicPath": "/static/bundles/parkhang-f1537b9d1f52417bdfee.js"
+    "parkhang-3e9900f8f3bfa385e17b.js": {
+      "name": "parkhang-3e9900f8f3bfa385e17b.js",
+      "path": "D:\\git Project work\\parkhang\\parkhang\\frontend\\static\\bundles\\parkhang-3e9900f8f3bfa385e17b.js",
+      "publicPath": "/static/bundles/parkhang-3e9900f8f3bfa385e17b.js"
     },
-    "vendors~docx-f1537b9d1f52417bdfee.js": {
-      "name": "vendors~docx-f1537b9d1f52417bdfee.js",
-      "path": "C:\\Users\\Tenzin Kunsang\\Desktop\\parkhang\\parkhang\\frontend\\static\\bundles\\vendors~docx-f1537b9d1f52417bdfee.js",
-      "publicPath": "/static/bundles/vendors~docx-f1537b9d1f52417bdfee.js"
+    "vendors~docx-3e9900f8f3bfa385e17b.js": {
+      "name": "vendors~docx-3e9900f8f3bfa385e17b.js",
+      "path": "D:\\git Project work\\parkhang\\parkhang\\frontend\\static\\bundles\\vendors~docx-3e9900f8f3bfa385e17b.js",
+      "publicPath": "/static/bundles/vendors~docx-3e9900f8f3bfa385e17b.js"
     },
-    "styles-f1537b9d1f52417bdfee.css.map": {
-      "name": "styles-f1537b9d1f52417bdfee.css.map",
-      "path": "C:\\Users\\Tenzin Kunsang\\Desktop\\parkhang\\parkhang\\frontend\\static\\bundles\\styles-f1537b9d1f52417bdfee.css.map",
-      "publicPath": "/static/bundles/styles-f1537b9d1f52417bdfee.css.map"
+    "styles-3e9900f8f3bfa385e17b.css.map": {
+      "name": "styles-3e9900f8f3bfa385e17b.css.map",
+      "path": "D:\\git Project work\\parkhang\\parkhang\\frontend\\static\\bundles\\styles-3e9900f8f3bfa385e17b.css.map",
+      "publicPath": "/static/bundles/styles-3e9900f8f3bfa385e17b.css.map"
     },
-    "parkhang-f1537b9d1f52417bdfee.js.map": {
-      "name": "parkhang-f1537b9d1f52417bdfee.js.map",
-      "path": "C:\\Users\\Tenzin Kunsang\\Desktop\\parkhang\\parkhang\\frontend\\static\\bundles\\parkhang-f1537b9d1f52417bdfee.js.map",
-      "publicPath": "/static/bundles/parkhang-f1537b9d1f52417bdfee.js.map"
+    "parkhang-3e9900f8f3bfa385e17b.js.map": {
+      "name": "parkhang-3e9900f8f3bfa385e17b.js.map",
+      "path": "D:\\git Project work\\parkhang\\parkhang\\frontend\\static\\bundles\\parkhang-3e9900f8f3bfa385e17b.js.map",
+      "publicPath": "/static/bundles/parkhang-3e9900f8f3bfa385e17b.js.map"
     },
-    "vendors~docx-f1537b9d1f52417bdfee.js.map": {
-      "name": "vendors~docx-f1537b9d1f52417bdfee.js.map",
-      "path": "C:\\Users\\Tenzin Kunsang\\Desktop\\parkhang\\parkhang\\frontend\\static\\bundles\\vendors~docx-f1537b9d1f52417bdfee.js.map",
-      "publicPath": "/static/bundles/vendors~docx-f1537b9d1f52417bdfee.js.map"
+    "vendors~docx-3e9900f8f3bfa385e17b.js.map": {
+      "name": "vendors~docx-3e9900f8f3bfa385e17b.js.map",
+      "path": "D:\\git Project work\\parkhang\\parkhang\\frontend\\static\\bundles\\vendors~docx-3e9900f8f3bfa385e17b.js.map",
+      "publicPath": "/static/bundles/vendors~docx-3e9900f8f3bfa385e17b.js.map"
     }
   },
   "chunks": {
     "parkhang": [
-      "styles-f1537b9d1f52417bdfee.css",
-      "parkhang-f1537b9d1f52417bdfee.js",
-      "styles-f1537b9d1f52417bdfee.css.map",
-      "parkhang-f1537b9d1f52417bdfee.js.map"
+      "styles-3e9900f8f3bfa385e17b.css",
+      "parkhang-3e9900f8f3bfa385e17b.js",
+      "styles-3e9900f8f3bfa385e17b.css.map",
+      "parkhang-3e9900f8f3bfa385e17b.js.map"
     ]
   },
   "publicPath": "/static/bundles/"
