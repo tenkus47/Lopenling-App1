@@ -126,9 +126,18 @@
 }
 
 .LocaleSwitcher---localeOption {
-    font-size: 14px;
-    padding: 0 20px;
+    font-size: 15px;
+    padding: 0 10px;
     cursor: pointer;
+}
+
+.LocaleSwitcher---localeOption:hover {
+    font-size: 17px;
+    padding: 0 10px;
+    cursor: pointer;
+    background-color: #aaa;
+    color:white;
+    border-radius: 10px;
 }
 
 .LocaleSwitcher---selected {
@@ -323,7 +332,7 @@
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    background-color: #394a59;
+    background-color: #345B63;
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
@@ -351,7 +360,7 @@
 }
 
 .TextsSearch---textsSearch button {
-    min-width: 80px;
+    min-width: 70px;
     text-align: center;
 }
 
@@ -561,7 +570,9 @@
             flex-grow: 1;
     -ms-flex-negative: 0;
         flex-shrink: 0;
-    padding: 0 10px;
+    padding:0 10px;
+    border: 4px solid black;
+    font-size: 23px;
 }
 
 .TextList---textName {
@@ -714,6 +725,7 @@
 .TextHeading---textHeading {
     font-size: 21px;
     margin: 0;
+    margin-left:30px;
     font-weight: normal;
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
@@ -779,6 +791,8 @@
     border-bottom: 3px solid #024279;
     font-weight: bold;
     color: #024279;
+    background-color: #eee;
+    padding-top:5px;
 }
 .ImageToggle---imageToggle {
     display: -webkit-box;
@@ -1106,37 +1120,80 @@
 
 .AnnotationDetail---shareContainer{
     position: absolute;
-    top:4px;
-    right:10px;
+    right:3px;
+    bottom:2px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    gap:5px;
+    overflow: hidden;
+    cursor: pointer;
+    font-size: 14px;
+    -webkit-transition: .3s linear;
+    transition: .3s linear;
+    padding-inline:8px;
 }
 
-.AnnotationDetail---buttonStyle{
-    height:24px;
-    height:1.5rem;
-    width:24px;
-    width:1.5rem;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    outline:none;
-    border:none;
-    border-radius: 10px;
-    -webkit-transition: 0.2s all ease-in-out;
-    transition: 0.2s all ease-in-out;
+.AnnotationDetail---shareContainer:hover{
+    -webkit-transform: scale(1.1);
+            transform: scale(1.1);
 }
 
-.AnnotationDetail---buttonStyle:hover{
-    background-color: transparent;
+.AnnotationDetail---shareButton{
+position:absolute;
+height: 100%;
+width: 100%;
+display: -webkit-box;
+display: -ms-flexbox;
+display: flex;
+-ms-flex-pack: distribute;
+    justify-content: space-around;
+color:#024279;
+text-align: center;
+line-height: 20px;
+z-index: 444;
+-webkit-transition: .6s linear;
+transition: .6s linear;
+}
+
+.AnnotationDetail---shareContainer:hover .AnnotationDetail---shareButton{
+    -webkit-transform: translateY(-100%);
+            transform: translateY(-100%);
+    -webkit-transition-delay: .3s;
+            transition-delay: .3s;
+
+}
+
+.AnnotationDetail---facebookButton ,.AnnotationDetail---whatsappButton{
+    
+    -webkit-transform: translateY(-100%);
+    
+            transform: translateY(-100%);
+    opacity: 0;
+    -webkit-transition: .3s linear;
+    transition: .3s linear; 
+    padding-inline:5px;
+
+}
+
+.AnnotationDetail---shareContainer:hover .AnnotationDetail---facebookButton,
+.AnnotationDetail---shareContainer:hover .AnnotationDetail---whatsappButton{
+    opacity: 1;
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+}
+
+.AnnotationDetail---shareContainer:hover .AnnotationDetail---facebookButton{
+    -webkit-transition-delay: 0.3s;
+            transition-delay: 0.3s;
+}
+
+.AnnotationDetail---shareContainer:hover .AnnotationDetail---whatsappButton{
+    -webkit-transition-delay: 0.5s;
+            transition-delay: 0.5s;
+}
+
+.AnnotationDetail---facebookButton{
+    margin-right: 5px;
 }
 @font-face {
     font-family: "Tibetan";
@@ -1887,6 +1944,22 @@
         -ms-flex-direction: column;
             flex-direction: column;
 }
+.TextFilter---filter{
+    background-color: #555555;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex:1;
+        -ms-flex:1;
+            flex:1;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    padding-inline: 50px;
+    gap:20.8px;
+    gap:1.3rem;
+    color:white;
+}
 
 .TextListTab---tab {
     background-color: #666;
@@ -1983,6 +2056,74 @@ body {
     cursor: col-resize;
     z-index: 1;
     background-color: #ffffff;
+}
+.TextsFilter---textsFilterContainer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.TextsFilter---textsSearch {
+    padding: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    background-color: #394a59;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+}
+
+.TextsFilter---textsSearch form {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+}
+
+.TextsFilter---textsSearch input {
+    font-size: 1em;
+    margin-right: 10px;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    min-height: 20px;
+    padding: 0 5px;
+    border: 0;
+    border-radius: 4px;
+}
+
+.TextsFilter---textsSearch button {
+    min-width: 50px;
+    text-align: center;
+}
+
+.TextsFilter---textsSearch select {
+    font-size: 0.8em;
+    height: 20px;
+}
+
+.TextsFilter---minify {
+    font-family: arial, sans-serif;
+    width: 20px;
+    background-color: #313131;
+    color: white;
+    -ms-flex-line-pack: center;
+        align-content: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    font-size: 12px;
+    line-height: 29px;
+    cursor: pointer;
 }
 @font-face {
     font-family: "Tibetan";
@@ -2157,4 +2298,4 @@ we require as we don't want to change the html.
 
 
 
-/*# sourceMappingURL=styles-731ad170ead60ad34ab4.css.map*/
+/*# sourceMappingURL=styles-d77c001ed30a0d9ab260.css.map*/

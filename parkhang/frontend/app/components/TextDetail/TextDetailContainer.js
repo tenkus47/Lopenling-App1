@@ -638,7 +638,7 @@ const getSegmentsRange = (
     if (startAnnotation && endAnnotation && startAnnotation === endAnnotation) {
         rangeAnnotation = startAnnotation;
     }
-
+    
     return {
         start: start,
         length: end - start + 1,

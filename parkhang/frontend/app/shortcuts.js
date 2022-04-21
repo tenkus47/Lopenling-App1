@@ -430,7 +430,6 @@ export const handleKeyDown = (
     dispatch: (action: actions.Action) => void
 ) => {
     const key = getShortcutKey(e);
-    console.log(key);
     if (shortcuts.hasOwnProperty(key)) {
         shortcuts[key](state, dispatch);
     }

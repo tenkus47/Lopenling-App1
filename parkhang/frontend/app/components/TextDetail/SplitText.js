@@ -874,7 +874,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const cache = this.cache;
         const component = this;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
-        let imageUrl = "";
+        let imageUrl = index;
         if (
             props.selectedWitness &&
             props.selectedWitness.properties &&

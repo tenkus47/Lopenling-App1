@@ -5,11 +5,18 @@
 }
 
 .localeOption {
-    font-size: 14px;
-    padding: 0 20px;
+    font-size: 15px;
+    padding: 0 10px;
     cursor: pointer;
 }
-
+.localeOption:hover {
+    font-size: 17px;
+    padding: 0 10px;
+    cursor: pointer;
+    background-color: #aaa;
+    color:white;
+    border-radius: 10px;
+}
 .selected {
     font-weight: bold;
 }

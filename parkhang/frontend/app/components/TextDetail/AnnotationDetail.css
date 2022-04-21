@@ -114,22 +114,54 @@
 }
 .shareContainer{
     position: absolute;
-    top:4px;
-    right:10px;
+    right:3px;
+    bottom:2px;
     display: flex;
-    gap:5px;
+    overflow: hidden;
+    cursor: pointer;
+    font-size: 14px;
+    transition: .3s linear;
+    padding-inline:8px;
 }
-.buttonStyle{
-    height:1.5rem;
-    width:1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    outline:none;
-    border:none;
-    border-radius: 10px;
-    transition: 0.2s all ease-in-out;
+.shareContainer:hover{
+    transform: scale(1.1);
 }
-.buttonStyle:hover{
-    background-color: transparent;
+.shareButton{
+position:absolute;
+height: 100%;
+width: 100%;
+display: flex;
+justify-content: space-around;
+color:var(--main-tint);
+text-align: center;
+line-height: 20px;
+z-index: 444;
+transition: .6s linear;
+}
+.shareContainer:hover .shareButton{
+    transform: translateY(-100%);
+    transition-delay: .3s;
+
+}
+.facebookButton ,.whatsappButton{
+    
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: .3s linear; 
+    padding-inline:5px;
+
+}
+.shareContainer:hover .facebookButton,
+.shareContainer:hover .whatsappButton{
+    opacity: 1;
+    transform: translateY(0);
+}
+.shareContainer:hover .facebookButton{
+    transition-delay: 0.3s;
+}
+.shareContainer:hover .whatsappButton{
+    transition-delay: 0.5s;
+}
+.facebookButton{
+    margin-right: 5px;
 }

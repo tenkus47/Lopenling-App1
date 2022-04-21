@@ -1,46 +1,71 @@
 // @flow
-import React, { useRef,useEffect } from "react";
+import React,{useState} from "react";
 import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
-import {FacebookShareButton,WhatsappShareButton,FacebookIcon,WhatsappIcon} from 'react-share'
+import ShareIcon from 'images/share.svg';
+import {FacebookShareButton,
+    WhatsappShareButton,
+    FacebookIcon,
+    WhatsappIcon} from 'react-share'
+    
+
 
 export type Props = {
     annotationData: AnnotationData,
     isActive: boolean,
     selectAnnotationHandler: () => void,
     isLoggedIn: boolean,
-    editAnnotationHandler: () => void
-}; 
+    editAnnotationHandler: () => void,
+    fontSize: Number
+   }; 
 
 const MAXIMUM_TEXT_LENGTH = 250;
 
-
 const AnnotationDetail = (props: Props) => {
-    const handleShare=()=>{
-        var canvas = document.createElement("canvas");
-        var text = props.annotationData.content
-        var lineheight = 30;
-        var lines = text.split('།').filter(l=>l!==" ");
-        canvas.height = lines.length * lineheight+30;
-        canvas.width = 650;
+
+   const [imageUrl,setImageUrl]=useState(null);
+     
+
+    function longest_str_in_array(arra)
+    {
+      var max_str = arra[0].length;
+      var ans = arra[0].length;
+      for (var i = 0; i < arra.length; i++) {
+          var maxi = arra[i].length;
+          if (maxi > max_str) {
+              ans = arra[i].length;
+              max_str = maxi;
+          }
+      }
+      return ans;
+  }
+     function mergeArray(arr){
+         var textCount=arr.length;
+         var maxPerLine=55;
+
+
+         for (var i=0;i<Math.ceil(arr.join().length/maxPerLine)+1;i++){
+            
+            if( arr[i] && arr[i+1] && arr[i].length < maxPerLine){
+                arr[i]=arr[i]+' '+arr[i+1];
+                arr.splice(i+1,1)
+                mergeArray(arr)
+            }
+         else if(arr[i] && arr[i+1] && arr[i].length > maxPerLine)
+              
+               {    
+                // code to cut selected text should be here
+            }
+         }
+       return arr;
        
-        var ctx = canvas.getContext('2d');
-        ctx.font = "20px Arial";
-        for (var i = 0; i<lines.length; i++){
-                ctx.fillText(lines[i].concat('།'), 30, 40 + (i*lineheight) );
-        }
-        var img = document.createElement("img");
-        img.src=canvas.toDataURL();
-        var ahref=document.createElement("a")
-        ahref.href= canvas.toDataURL();
-        ahref.innerHTML="clickhere"
-        document.getElementById('content').append(ahref);
-      console.log(img.src)
-    }
+     }
+
+
     let desc = (
          <p>
             &lt;<FormattedMessage id="annotation.delete" />&gt;
@@ -49,15 +74,18 @@ const AnnotationDetail = (props: Props) => {
     );
     
     let content = props.annotationData.content;
+
     if (content.trim() !== "") {
         if (content.length > MAXIMUM_TEXT_LENGTH) {
             content = content.substr(0, MAXIMUM_TEXT_LENGTH) + "…";
         }
         // content variable is the selected trimmed context
-        desc = <div id="content"><p>{content}</p></div>;
+        desc = <p>{content}</p>;
     }
 
     let classes = [styles.annotationDetail];
+  
+
 
     if (props.isActive) {
         classes.push(styles.active);
@@ -106,26 +134,55 @@ const AnnotationDetail = (props: Props) => {
             </div>
 
             {desc}
+            
 
-            <div className={styles.shareContainer}>
-            <FacebookShareButton 
-            onClick={handleShare}
-            url={`https://parkhang.lopenling.org${window.location.pathname}`}
-            quote={props.annotationData.content}
-            hashtag="#openPecha"
-            ><FacebookIcon size={24} round={true}/></FacebookShareButton>
-            <WhatsappShareButton
-            onClick={()=>console.log(`https://parkhang.lopenling.org${window.location.pathname}`)}
-             title="Parkhang"
-             url={`https://parkhang.lopenling.org${window.location.pathname}`}
-             ><WhatsappIcon size={24} round={true}/></WhatsappShareButton>
-             
-            </div>
+
+
+            <Sharebutton props={props}/>
+                      
         </div>
     );
 };
 
 
+
+
+
+const Sharebutton=({props})=>{
+    return (
+        <div className={styles.shareContainer}>
+            <div className={styles.shareButton}>
+                 <FormattedMessage id="annotation.share" />
+              
+                 </div>
+            <FacebookShareButton
+            className={styles.facebookButton}
+                id="sharebutton"
+                url={`https://parkhang.lopenling.org${window.location.pathname}`}
+                quote={props.annotationData.content}
+                hashtag="#openPecha"
+            >
+                <FacebookIcon size={20} round={true} />
+            </FacebookShareButton>
+            <WhatsappShareButton
+                className={styles.whatsappButton}
+                onClick={() =>
+                    console.log(
+                        `https://parkhang.lopenling.org${window.location.pathname}`
+                    )
+                }
+                title="Parkhang"
+                url={`https://parkhang.lopenling.org${window.location.pathname}`}
+            >
+                <WhatsappIcon size={20} round={true} />
+            </WhatsappShareButton>
+               {/* <img onClick={ImageDownload} className={styles.downloadlogo} src="https://img.icons8.com/material-outlined/24/000000/download--v1.png"/>
+                <img onClick={runClick} className={styles.downloadlogo} src="https://img.icons8.com/windows/32/000000/upload.png"/> */}
+    
+           
+             </div>
+    );
+}
 
 
 export default AnnotationDetail;

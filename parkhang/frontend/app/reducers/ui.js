@@ -6,6 +6,7 @@ import * as constants from "app_constants";
 
 export type UIState = {
     selectedText: api.TextData | null,
+    filterAuthor:string|null,
     selectedTextWitness: { [textId: number]: number },
     selectedSearchResult: {
         textId: number,
@@ -35,6 +36,8 @@ export type UIState = {
 
 export const initialUIState = {
     selectedText: null,
+    filterAuthor:null,
+    selectedAuthor: null,
     selectedTextWitness: {},
     selectedSearchResult: null,
     searchValue: "",
@@ -82,6 +85,18 @@ function selectedText(
 
     return state;
 }
+
+function filterAuthor(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
+    state = {
+        ...state,
+        filterAuthor: action.data
+    };
+    return state;
+}
+
 
 function selectedTextWitness(
     state: UIState,
@@ -357,6 +372,7 @@ function changedAccountOverlay(
 const uiReducers = {};
 uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
+uiReducers[actions.FILTER_TEXT] = filterAuthor;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
 uiReducers[actions.SELECTED_SEARCH_RESULT] = selectedSearchResult;
@@ -378,6 +394,7 @@ uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
 export default uiReducers;
 
 export const getSelectedText = (state: UIState): api.TextData | null => {
+   
     return state.selectedText;
 };
 

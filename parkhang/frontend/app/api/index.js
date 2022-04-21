@@ -112,7 +112,9 @@ export type SourceData = {
 };
 export function fetchSources(): Promise<SourceData[]> {
     const url = "/api/sources/";
+
     return request(GET, url);
+
 }
 
 export type TextData = {
@@ -123,6 +125,7 @@ export function fetchTexts(): Promise<TextData[]> {
     const url = "/api/texts/";
     return request(GET, url);
 }
+
 
 export type TextSearchResultData = {
     results: [[number, string]],
@@ -165,6 +168,7 @@ export type WitnessData = {
 };
 export function fetchTextWitnesses(text: TextData): Promise<WitnessData[]> {
     const url = "/api/texts/" + String(text.id) + "/witnesses/";
+   
     return request(GET, url);
 }
 

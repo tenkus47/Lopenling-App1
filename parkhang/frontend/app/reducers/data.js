@@ -161,12 +161,14 @@ function loadedSources(
 }
 
 function loadingWitnesses(state: DataState): DataState {
+    
     return {
         ...state,
         loadingWitnesses: true,
         loadedWitnesses: false
     };
 }
+
 
 function loadedWitnesses(
     state: DataState,
@@ -511,11 +513,11 @@ function savedAnnotation(
         }
     };
 }
-
 function searchedText(
     state: DataState,
     action: actions.SearchedTextAction
 ): DataState {
+
     if (
         action.searchValue in state.searchResults &&
         action.textId in state.searchResults[action.searchValue]

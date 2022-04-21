@@ -8,6 +8,7 @@ import HeaderContainer from "components/Header";
 import TextsSearchContainer from "components/TextsSearch/TextsSearchContainer";
 import TextListContainer from "containers/TextListContainer";
 import TextDetailContainer from "components/TextDetail/TextDetailContainer";
+import TextFilterContainer from "components/TextFilter/TextFilterContainer";
 import TextListTabContainer from "components/TextList/TextListTabContainer";
 import type { AppState } from "reducers";
 import * as actions from "actions";
@@ -18,6 +19,7 @@ import headerStyles from "components/Header/Header.css";
 import utilStyles from "css/util.css";
 
 import { handleKeyDown } from "../../shortcuts";
+import TextsFilterContainer from "../TextsSearch/TextsFilterContainer";
 
 type Props = {
     title: string,
@@ -41,6 +43,7 @@ const App = (props: Props) => {
     let minSize = constants.MIN_TEXT_LIST_WIDTH;
     let defaultSize = constants.DEFAULT_TEXT_LIST_WIDTH;
     let size = props.textListWidth;
+    let minFilterHeight=constants.MIN_FILTER_HEIGHT;
     if (props.textListIsVisible) {
         textListClassnames.push(styles.showListContainer);
     } else {
@@ -82,11 +85,38 @@ const App = (props: Props) => {
                         window.dispatchEvent(new Event("resize"));
                     }}
                 >
+                     
+
                     <div className={classnames(...textListClassnames)}>
-                      <TextsSearchContainer />
+                        <TextsSearchContainer />
                         <TextListContainer />
                     </div>
-                    <TextDetailContainer />
+                    <SplitPane 
+                    split="horizontal"
+                    minSize={minFilterHeight}
+                    defaultSize={defaultSize}
+                    size={minFilterHeight}
+                    paneStyle={{
+                        display: "flex"
+                    }}
+                    style={{
+                        height: bodyHeight
+                    }}
+                    onDragFinished={(width: number) => {
+                        if (width > 0) {
+                            props.onChangedTextWidth(width);
+                            if (!props.textListIsVisible) {
+                                props.onChangedTextListVisible(true);
+                            }
+                        }
+                        window.dispatchEvent(new Event("resize"));
+                    }}
+                    >
+                       <TextFilterContainer />
+                       <TextDetailContainer />
+                    </SplitPane>
+                    
+                   
                 </SplitPane>
             </div>
         </div>

@@ -24,7 +24,7 @@ import { changedActiveTextAnnotation } from "actions";
 import ReactDOMServer from "react-dom/server";
 import Question from "lib/Question";
 import type { QuestionData } from "./AnnotationControls";
-
+import {getTextFontSize} from 'reducers'
 const TEMPORARY_ANNOTATION_ID = -3;
 const BASE_NAME = "Working";
 
@@ -269,7 +269,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
             inline: null,
             firstSelectedSegment: null,
             splitTextRect: null,
-            selectedWitness: null
+            selectedWitness: null,
         };
     }
 
@@ -408,6 +408,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
             );
         }
     }
+    let fontSize = getTextFontSize(state);
 
     return {
         annotationsData: variantsData,
@@ -425,7 +426,8 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         questions: questionAnnotations,
         temporaryQuestions: temporaryQuestions,
         questionsData: questionsData,
-        questionQuote: questionQuote
+        questionQuote: questionQuote,
+        fontSize
     };
 };
 

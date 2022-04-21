@@ -1,16 +1,16 @@
 :root {
-    --inputHeight: 30px;
-    --searchButtonMinWidth: 70px;
+    --inputHeight: 20px;
+    --searchButtonMinWidth: 50px;
 }
 
-.textsSearchContainer {
+.textsFilterContainer {
     display: flex;
 }
 
 .textsSearch {
     padding: 10px;
     display: flex;
-    background-color: #345B63;
+    background-color: #394a59;
     flex-grow: 1;
 }
 

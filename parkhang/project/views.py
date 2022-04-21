@@ -19,5 +19,4 @@ class HomeView(TemplateView):
         context['user'] = user
         context['csrf_token'] = csrf.get_token(self.request)
         context['sso_signup_url'] = settings.DISCOURSE_SSO_SIGNUP_URL
-
         return context

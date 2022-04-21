@@ -14,7 +14,10 @@ type Props = {
 };
 
 class LocaleSwitcher extends React.Component<Props> {
+
+ 
     render() {
+ 
         const locales = this.props.locales.map(localeData => {
             return (
                 <div

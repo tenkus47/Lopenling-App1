@@ -208,7 +208,7 @@ DEFAULT_FROM_EMAIL = 'Nalanda Works <server@nalanda.works>'
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE':not DEBUG,
-        'BUNDLE_DIR_NAME': 'static/bundles/',
+        'BUNDLE_DIR_NAME': '/bundles/',
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
@@ -227,3 +227,4 @@ DISCOURSE_SITE = env('DISCOURSE_SITE')
 DISCOURSE_API_KEY = env('DISCOURSE_API_KEY')
 DISCOURSE_SYSTEM_USER = env('DISCOURSE_SYSTEM_USER')
 DISCOURSE_QA_TOPIC_ID = env('DISCOURSE_QA_TOPIC_ID')
+

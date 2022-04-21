@@ -9,6 +9,7 @@
         "header.toggleTextList": "Toggle Text List",
         "header.export": "Export",
         "leftbar.search": "Search",
+        "leftbar.authorFilter": "Author",
         "leftbar.titles": "Titles",
         "leftbar.loadMore": "Load More…",
         "leftbar.loading": "Loading…",
@@ -25,6 +26,9 @@
         "annotation.addNoteHelp": "Add a new note",
         "annotation.noNotes": "No notes available",
         "question.answeredBy": "Answered by",
-        "question.viewThread": "view thread"
+        "question.viewThread": "view thread",
+        "annotation.share":"Share",
+        "filter.category":"Category",
+        "filter.author":"Author"
     }
 }

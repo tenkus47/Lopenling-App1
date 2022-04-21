@@ -26,7 +26,7 @@ import rootReducer, { allReducers } from "reducers";
 import textMiddleware from "state_helpers/textMiddleware";
 
 // URL management
-import { connectRoutes } from "redux-first-router";
+import { connectRoutes, redirect} from "redux-first-router";
 
 // Sagas
 import 'core-js/stable';
@@ -70,8 +70,16 @@ const sagaMiddleware = createSagaMiddleware();
 const routesMap = {
     HOME: "/",
     [actions.TEXT_URL]: "/texts/:textId/witnesses/:witnessId/:annotation?",
-    USER: "/user/:id"
-};
+    USER: "/user/:id",
+    FILTER:{ path:'/texts/author/:author',
+                thunk:(dispatch,getState)=>
+                {
+                    const {author} =getState().location.payload;
+                    console.log(author)
+                    dispatch(actions.filterText(author))
+                },
+                  }
+    };
 const routes = connectRoutes(routesMap, {
     initialDispatch: false
 });
