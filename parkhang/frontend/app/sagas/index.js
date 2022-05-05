@@ -741,6 +741,53 @@ function* watchTextUrlActions() {
     yield takeEvery(actions.TEXT_URL, loadedTextUrl);
 }
 
+
+
+//URL to LOAD TEXTDATA AND AUTO WITNESS 
+function* loadedFilterUrl(action){
+    _loadedTextUrl = true;
+    
+
+    if (action.payload) {
+    const textId = action.payload.textId; 
+
+    let textData: api.TextData;
+    do {
+        textData = yield select(reducers.getText, textId, true);
+        if (!textData) yield delay(100);
+    } while (textData === null);
+
+        yield put(actions.loadingWitnesses(textData));
+        const witnesses = yield call(api.fetchTextWitnesses,textData);
+        const selectedTextAction = actions.selectedText(textData);
+
+     
+        yield put(actions.loadedWitnesses(textData, witnesses));
+        for (const witness of witnesses) {
+            if (witness.is_working) {
+              var  workingWitnessData = witness;
+            }
+            if (witness.is_base) {
+              var  baseWitnessData = witness;
+            }
+        }
+     
+        const selectedWitnessAction = actions.selectedTextWitness(
+            textData.id,
+            workingWitnessData.id
+        );
+        yield put(selectedTextAction);
+        yield put(selectedWitnessAction);
+        
+}
+}
+
+function* watchFilterUrlActions() {
+    yield takeEvery(actions.TEXTID_ONLY_URL, loadedFilterUrl);
+}
+
+
+
 /**
  * Stores functions by action type.
  * Used primarily to allow batched actions to be handled
@@ -767,6 +814,7 @@ const typeCalls: { [string]: (any) => Saga<void> } = {
     [actions.CHANGED_TEXT_FONT_SIZE]: changedTextFontSize,
     [actions.USER_LOGGED_IN]: loadUserSettings,
     [actions.TEXT_URL]: loadedTextUrl,
+    [actions.TEXTID_ONLY_URL]:loadedFilterUrl,
     [actions.CREATED_QUESTION]: reqAction(createQuestion),
     [actions.LOAD_QUESTION]: loadQuestion
 };
@@ -798,6 +846,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchChangedTextFontSize),
         call(watchUserLoggedIn),
         call(watchTextUrlActions),
+        call(watchFilterUrlActions),
         call(watchChangedActiveAnnotation),
         call(watchCreatedQuestion),
         call(watchLoadQuestion)

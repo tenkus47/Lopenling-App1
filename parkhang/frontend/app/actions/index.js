@@ -100,7 +100,7 @@ export const SELECTED_LOCALE = "i18n/SELECT_LOCALE";
 // URLS
 export const TEXT_URL = "urls/TEXT";
 export const USER_URL = "urls/USER";
-export const FILTER_URL = "urls/FILTER";
+export const TEXTID_ONLY_URL = "urls/TEXTID";
 
 /** Action creators **/
 
