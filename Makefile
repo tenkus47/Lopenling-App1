@@ -36,8 +36,15 @@ prod-manage:
 test:
 	docker-compose -f local.yml run django pytest
 
+shell:
+	docker-compose -f local.yml exec django sh
+
 django-shell:
 	docker-compose -f local.yml run --rm django python manage.py shell
 
 prod-django-shell:
 	docker-compose -f production.yml run --rm django python manage.py shell
+
+graph-models:
+	docker-compose -f local.yml exec django python manage.py graph_models texts users -g -o /home/django/models.png
+	docker cp "$(docker-compose -f local.yml ps -q django)":/home/django/models.png ./parkhang/static/
