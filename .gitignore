@@ -21,5 +21,6 @@ vendors~docx-dev.js
 vendors~docx-dev.js.map
 
 .envs/*
+__pycache__
 !.envs/.local/
 /parkhang/frontend/static/bundles/docx-dev.js
