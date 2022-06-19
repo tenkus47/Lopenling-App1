@@ -40,7 +40,7 @@ shell:
 	docker-compose -f local.yml exec django sh
 
 django-shell:
-	docker-compose -f local.yml run --rm django python manage.py shell
+	docker-compose -f local.yml run --rm django python manage.py shell_plus
 
 prod-django-shell:
 	docker-compose -f production.yml run --rm django python manage.py shell
