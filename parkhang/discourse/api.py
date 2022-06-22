@@ -1,8 +1,8 @@
 import json
 
 import requests
-
 from django.conf import settings
+
 
 class DiscourseAPI:
 
@@ -40,7 +40,7 @@ class DiscourseAPI:
             print(r.text)
             print(e)
 
-        
+
         return {
             'id': topic_data['topic_id']
         }
@@ -50,7 +50,7 @@ class DiscourseAPI:
         endpoint = f'{self.SITE_URL}/t/{topic_id}.json'
         if raw_text:
             endpoint += '?include_raw=true'
-        
+
         r = requests.get(
             endpoint,
             headers=auth_headers,
@@ -77,5 +77,5 @@ class DiscourseAPI:
             if 'raw' in post_data:
                 post['content_raw'] = post_data['raw']
             posts.append(post)
-    
+
         return posts

@@ -39,7 +39,7 @@ class UserSettings(APIView):
             return Response(user.settings)
         else:
             raise Http404
-    
+
     def put(self, request, user_id):
         user = User.objects.get(pk=user_id)
         if user:
@@ -188,7 +188,7 @@ class AnnotationList(APIView):
         If the user is logged in, also return any of that
         user's annotations for the text.
         """
-        
+
         if request.user.is_authenticated:
             annotation_list = Annotation.objects.active().filter(
                 Q(witness=witness_id),
@@ -213,7 +213,7 @@ class AnnotationList(APIView):
     def post(self, request, *args, **kwargs):
         """
         Create a new Annotation
-        :param request: 
+        :param request:
         :return: JSON encoded data for the new annotation, including new id
         """
 
@@ -247,9 +247,9 @@ class AnnotationDetail(APIView):
     def get(self, request, annotation_unique_id, *args, **kwargs):
         """
         Get the annotation with the specified id
-        
-        :param request: 
-        :param annotation_unique_id: unique_id of the annotation to return 
+
+        :param request:
+        :param annotation_unique_id: unique_id of the annotation to return
         """
 
         annotation = get_annotation(request, annotation_unique_id)
@@ -260,8 +260,8 @@ class AnnotationDetail(APIView):
     def put(self, request, annotation_unique_id, *args, **kwargs):
         """
         Update annotation with given id
-        
-        :param request: 
+
+        :param request:
         :param annotation_unique_id: unique_id of the annotation to update
         :return: Empty string
         """
@@ -277,10 +277,10 @@ class AnnotationDetail(APIView):
     def delete(self, request, annotation_unique_id, *args, **kwargs):
         """
         Set given annotation's is_deleted to True.
-        This prevents it being returned elsewhere and is effectively deleted. 
-        :param request: 
+        This prevents it being returned elsewhere and is effectively deleted.
+        :param request:
         :param annotation_unique_id: unique_id of the annotation to be deleted
-        :return: Empty string 
+        :return: Empty string
         """
 
         annotation = get_annotation(request, annotation_unique_id)
@@ -442,7 +442,7 @@ class QuestionList(APIView):
         except:
             print("Exception getting answers")
             pass
-        
+
         questions_serializer = QuestionSerializer(questions, many=True)
         return Response(questions_serializer.data)
 
@@ -473,12 +473,12 @@ class QuestionList(APIView):
 
         try:
             api = DiscourseAPI(settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY)
-            topic_data = api.add_topic(user.sso_username, settings.DISCOURSE_QA_TOPIC_ID, question_title, question_content)
+            topic_data = api.add_topic(user.sso_username, settings.DISCOURSE_QA_CATEGORY_ID, question_title, question_content)
             topic_id = topic_data['id']
         except:
             topic_id = None
             print("Error saving question via remote API")
-        
+
         question.topic_id = topic_id
         question.save()
 
@@ -498,6 +498,6 @@ class QuestionPostDetail(APIView):
 
 
 class QuestionDetail(APIView):
-    
+
     def get(self, request, annotation_id):
         question = Question.objects.get(annotation_id=annotation_id)

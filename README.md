@@ -1,6 +1,44 @@
-# Parkhang
+<h1 align="center">
+  <br>
+  <a href="https://parkhang.lopenling.org" target="blank_"><img src="https://github.com/OpenPecha/Lopenling-App/raw/master/parkhang/frontend/app/images/lopenling_logo.png" alt="Lopenling App Logo" width="500"></a>
+  <br>
+</h1>
+
+<h3 align="center">Lopenling App</h3>
+
+
+<!-- Replace the title of the repository -->
+
+<p align="center">
+  <a href="#description">Description</a> •
+  <a href="#owner">Owner</a> •
+  <a href="#integrations">Integrations</a> •
+  <a href="#docs">Docs</a>
+</p>
+<hr>
+
+## Description
 
 An application that allow users to participate in creating critical editions of texts, initially targeting the Tibetan language.
+<!-- This section provides a high-level overview for the repo -->
+
+## Owner
+
+- [@sherab](https://github.com/sherab)
+- [@10zinten](https://github.com/10zinten)
+- [@tenkus47](https://github.com/tenkus47)
+
+
+<!-- This section lists the owners of the repo -->
+
+## Integrations
+
+- No integrations with other repos.
+
+<!-- This section must list as bulleted list how this repo depends or is integrated with other repos -->
+
+## Docs
+
 
 ## Dependencies
 
@@ -298,7 +336,7 @@ The following environment variables need to be set for users to login using thei
     DISCOURSE_SYSTEM_USER
     Usually 'system'
 
-    DISCOURSE_QA_TOPIC_ID
+    DISCOURSE_QA_CATEGORY_ID
     The ID of the Topic used to post questions from a parkhang instance.
     e.g. 4
 
