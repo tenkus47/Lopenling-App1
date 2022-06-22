@@ -298,7 +298,7 @@ The following environment variables need to be set for users to login using thei
     DISCOURSE_SYSTEM_USER
     Usually 'system'
 
-    DISCOURSE_QA_TOPIC_ID
+    DISCOURSE_QA_CATEGORY_ID
     The ID of the Topic used to post questions from a parkhang instance.
     e.g. 4
 
