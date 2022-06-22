@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://openpecha.org"><img src="https://avatars.githubusercontent.com/u/82142807?s=400&u=19e108a15566f3a1449bafb03b8dd706a72aebcd&v=4" alt="OpenPecha" width="150"></a>
+  <a href="https://openpecha.org"><img src="https://github.com/OpenPecha/Lopenling-App/raw/master/parkhang/frontend/app/images/lopenling_logo.png" alt="Lopenling App Logo" width="500"></a>
   <br>
 </h1>
 
