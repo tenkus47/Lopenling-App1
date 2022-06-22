@@ -34,7 +34,7 @@ prod-manage:
 	docker-compose -f production.yml run --rm django python manage.py $(arg)
 
 test:
-	docker-compose -f local.yml run django pytest
+	docker-compose -f local.yml run --rm django python manage.py test $(arg)
 
 shell:
 	docker-compose -f local.yml exec django sh
