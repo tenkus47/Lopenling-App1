@@ -252,7 +252,11 @@ export const isImagePortrait = (
     return media.isImagePortrait(state.media);
 }
 // data
-
+export const getTexts = (
+    state: AppState
+): Text | TextData | null => {
+    return data.getTexts(state.data);
+};
 export const getText = (
     state: AppState,
     textId: number,
