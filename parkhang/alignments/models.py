@@ -3,11 +3,12 @@ from django.utils.translation import gettext_lazy as _
 from texts.models import Text
 
 
+class AlignmentTypes(models.TextChoices):
+    TEXT = 'T', _('Text')
+    IMAGE = 'I', _('Image')
+    VIDEO = 'V', _('Video')
+
 class Alignment(models.Model):
-    class Types(models.TextChoices):
-        TEXT = 'T', _('Text')
-        IMAGE = 'I', _('Image')
-        VIDEO = 'V', _('Video')
 
     source = models.ForeignKey(
         Text,
@@ -15,7 +16,7 @@ class Alignment(models.Model):
         on_delete=models.CASCADE
     )
     alignment = models.JSONField()
-    type = models.CharField(max_length=1, choices=Types.choices, blank=True, null=True)
+    type = models.CharField(max_length=1, choices=AlignmentTypes.choices, blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -25,7 +26,7 @@ class TextAlignment(Alignment):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.type = Alignment.Types.TEXT
+            self.type = AlignmentTypes.TEXT
         return super().save(*args, **kwargs)
 
 class Imagegroup(models.Model):
@@ -36,7 +37,7 @@ class ImageAlignment(Alignment):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.type = Alignment.Types.IMAGE
+            self.type = AlignmentTypes.IMAGE
         return super().save(*args, **kwargs)
 
 class Video(models.Model):
@@ -47,5 +48,5 @@ class VideoAlignment(Alignment):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.type = Alignment.Types.VIDEO
+            self.type = AlignmentTypes.VIDEO
         return super().save(*args, **kwargs)
