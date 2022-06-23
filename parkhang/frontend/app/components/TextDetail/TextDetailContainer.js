@@ -44,8 +44,11 @@ import {
     getScrollPosition,
     getSelectedSearchResult,
     getSearchValue,
-    getTextFontSize
+    getTextFontSize,
+    isSecondWindowOpen,
+    getImageData
 } from "reducers";
+import * as reducers from 'reducers'
 import _ from "lodash";
 
 import AnnotatedText from "lib/AnnotatedText";
@@ -151,6 +154,7 @@ const mapStateToProps = state => {
     const loading =
         state.data.loadingWitnesses || state.data.loadingAnnotations;
     const textListVisible = getTextListVisible(state);
+    const isPanelLinked= reducers.isPanelLinked(state);
     if (loading) {
         return {
             text: null,
@@ -167,7 +171,9 @@ const mapStateToProps = state => {
             activeAnnotation: null,
             user: user,
             textListVisible,
-            fontSize: constants.DEFAULT_TEXT_FONT_SIZE
+            fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
+            isSecondWindowOpen:isSecondWindowOpen(state),
+            isPanelLinked
         };
     }
 
@@ -231,6 +237,7 @@ const mapStateToProps = state => {
                 annotatedText,
                 (Object.values(annotations): any)
             );
+
         }
 
         // Get the segments that are part of the current active annotation.
@@ -293,7 +300,6 @@ const mapStateToProps = state => {
     }
 
     _selectedWitness = selectedWitness;
-
     return {
         text: selectedText,
         witnesses: witnesses,
@@ -302,7 +308,7 @@ const mapStateToProps = state => {
         annotations: annotations,
         loading: loading,
         paginated: paginated,
-        pageImagesVisible: pageImagesVisible,
+        pageImagesVisible: false,
         annotatedText: annotatedText,
         selectedAnnotatedSegments: selectedAnnotatedSegments,
         annotationPositions: annotationPositions,
@@ -315,7 +321,10 @@ const mapStateToProps = state => {
         selectedWitness,
         selectedSearchResult,
         searchValue,
-        fontSize
+        fontSize,
+        isSecondWindowOpen:isSecondWindowOpen(state),
+        imageData:getImageData(state),
+        isPanelLinked
     };
 };
 
@@ -528,7 +537,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     }
                 }
             }
-        }
+        },
+        changeSyncId:(payload)=> dispatch(actions.changeSyncId(payload))
     };
 };
 

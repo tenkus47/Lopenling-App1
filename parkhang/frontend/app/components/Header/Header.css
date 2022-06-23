@@ -1,7 +1,7 @@
 @import "css/type.css";
 @import "css/colour.css";
 
-@value header-height: 70px;
+@value header-height: 40px;
 
 :root {
     --header-height: header-height;
@@ -12,16 +12,18 @@
 }
 
 .header {
-    background-color: #ffffff;
+    background-color: var(--nav-bgcolor);
     font-family: var(--fonts);
-    font-size: 30px;
-    color: #888;
+    font-size: 1.5rem;
+    color:var(--nav-text);
     padding: 0px 10px 0px 20px;
     height: var(--header-height);
+    justify-content: space-between;
     display: flex;
     flex-shrink: 0;
     align-items: center;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.18); /* Same as lopenling header */
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+    /* Same as lopenling header */
     z-index: 1;
 }
 
@@ -34,8 +36,8 @@
 .logo {
     margin: 0 0 0 20px;
     padding: 0;
-    flex-grow: 2;
     display: flex;
+    align-items: center;
 }
 
 .navigationButton {
@@ -90,4 +92,47 @@
 .buttonLink a:link,
 .buttonLink a:visited {
     color: #ffffff;
+}
+
+.navlinks {
+    height:100%;
+}
+
+.navlinks ul {
+    height: 100%;
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    margin:0;
+
+}
+.navlinks ul li{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navlinks a {
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--nav-text);
+    font-family: "Roboto", sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+    line-height: 26px;
+    vertical-align: middle;
+    margin-inline-end: 30px;
+}
+
+.navlinks a:hover {
+    color: #666;
+}
+
+.loginSection{
+    display:inline-flex;
+    min-width: 250px;
+    max-height: 100%;
+    overflow: hidden;
+    float:left;
 }

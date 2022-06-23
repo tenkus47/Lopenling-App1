@@ -15,7 +15,6 @@
 .splitTextRowContent {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
 }
 
 .splitTextRow {
@@ -39,7 +38,7 @@
 }
 
 .pechaImage img {
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .controlsPlaceholder {
@@ -62,4 +61,30 @@
 :global(.ReactVirtualized__Grid__innerScrollContainer) {
     overflow: visible !important;
     margin-bottom: 300px;
+}
+span{
+    position: relative
+}
+
+
+
+.hightlighter{
+    animation: pulse .3s infinite ;
+    height: 100%;
+    width: 100%;
+    top:0;
+    left:0;
+    position: absolute;
+    background-color: transparent;
+}
+
+@keyframes pulse {
+    0%{
+     transform: scale(1);
+    }
+    
+    100%{
+
+        transform: scale(1.7);
+    }
 }

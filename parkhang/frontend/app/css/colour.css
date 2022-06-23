@@ -7,12 +7,23 @@
     --main-tint: blue-tint;
     --blue-tint: blue-tint;
     --green-tint: green-tint;
-    --text-bg: #ddd;
+    --white: #ddd;
     --green: #5B8960;
     --yellow: #ffc300;
     --red: #840000;
     --cancel: #aaa;
     --active-button: active-button;
+    --white:white;
+    --rightbackground:#FBFBFA;
+    --dark-gray:#666;
+    --light-gray:rgb(208, 199, 199);
+    --text-color:black;
+    --editor-bg:black;
+    --text-bg:white;
+    --nav-text:rgb(102, 102, 102);
+    --nav-bgcolor:#FBFBFA;
+    --resource-header-bgcolor:#EDEDED;
+    --textDetail-heading:#f7f7f7;
 }
 
 :export {

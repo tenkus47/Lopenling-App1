@@ -1,25 +1,23 @@
 // @flow
-import React from "react";
-import { connect } from "react-redux";
+import React,{useState,useEffect} from "react";
 import classnames from "classnames";
-import SplitPane from "react-split-pane";
-
 import HeaderContainer from "components/Header";
-import TextsSearchContainer from "components/TextsSearch/TextsSearchContainer";
-import TextListContainer from "containers/TextListContainer";
-import TextDetailContainer from "components/TextDetail/TextDetailContainer";
-import TextFilterContainer from "components/TextFilter/TextFilterContainer";
-import TextListTabContainer from "components/TextList/TextListTabContainer";
+
 import type { AppState } from "reducers";
 import * as actions from "actions";
-import * as constants from "app_constants";
-
 import styles from "./App.css";
-import headerStyles from "components/Header/Header.css";
 import utilStyles from "css/util.css";
 
 import { handleKeyDown } from "../../shortcuts";
-import TextsFilterContainer from "../TextsSearch/TextsFilterContainer";
+import { useFlags } from 'flagsmith/react';
+import favimage from 'images/favicon.png'
+import Main from 'bodyComponent/Main'
+import {useActive} from '../UI/activeHook'
+import { history as his} from 'redux-first-router'
+import Search from 'bodyComponent/Search'
+import Notification from 'bodyComponent/utility/Notification'
+import Favicon from 'react-favicon'
+import Editor from 'components/Editors/EditorContainer'
 
 type Props = {
     title: string,
@@ -28,29 +26,45 @@ type Props = {
     state: AppState,
     dispatch: (action: actions.Action) => void,
     onChangedTextWidth: (width: number) => void,
-    onChangedTextListVisible: (isVisible: boolean) => void
+    onChangedTextListVisible: (isVisible: boolean) => void,
+    onChangedNotification:(data:Object)=>void
 };
 
 function setTitle(title: string) {
     document.title = title;
 }
 
+
+
 const App = (props: Props) => {
     setTitle(props.title);
+    const isActive=useActive(4000)
+    const history=his();
+    const path=history.location.pathname;
+    const isSearchActive=path.includes('/search/');
+    
 
-    let textListClassnames = [styles.listContainer];
+  
+    useEffect(()=>{
+       if(isActive===false) props.onChangedNotification({
+            message:'YOU ARE NOT ACTIVE FOR SOME TIME NOW, CAN WE HELP YOU?',
+            time:8000,
+            type:'warning'
+        })
+    },[isActive])
 
-    let minSize = constants.MIN_TEXT_LIST_WIDTH;
-    let defaultSize = constants.DEFAULT_TEXT_LIST_WIDTH;
-    let size = props.textListWidth;
-    let minFilterHeight=constants.MIN_FILTER_HEIGHT;
-    if (props.textListIsVisible) {
-        textListClassnames.push(styles.showListContainer);
-    } else {
-        size = 0;
-        textListClassnames.push(styles.hideListContainer);
-    }
-    const bodyHeight = "calc(100vh - " + headerStyles.headerHeight + ")";
+    let SelectedText=   props.state?.ui?.selectedText
+   
+    if(!SelectedText){
+         setTitle('Parkhang')
+     }
+   
+    const  flags = useFlags(['navbar_parkhang','toggle_mainpage']);
+
+       let navbar_parkhang = flags?.navbar_parkhang?.enabled
+       let toggle_mainpage=flags?.toggle_mainpage?.enabled
+    
+
     return (
         <div
             className={classnames(
@@ -62,65 +76,16 @@ const App = (props: Props) => {
                 handleKeyDown(e, props.state, props.dispatch);
             }}
         >
+               <Favicon url={favimage} />
+         
             <HeaderContainer />
-            <div className={classnames(styles.interface, utilStyles.flex)}>
-                <SplitPane
-                    split="vertical"
-                    minSize={minSize}
-                    defaultSize={defaultSize}
-                    size={size}
-                    paneStyle={{
-                        display: "flex"
-                    }}
-                    style={{
-                        height: bodyHeight
-                    }}
-                    onDragFinished={(width: number) => {
-                        if (width > 0) {
-                            props.onChangedTextWidth(width);
-                            if (!props.textListIsVisible) {
-                                props.onChangedTextListVisible(true);
-                            }
-                        }
-                        window.dispatchEvent(new Event("resize"));
-                    }}
-                >
-                     
-
-                    <div className={classnames(...textListClassnames)}>
-                        <TextsSearchContainer />
-                        <TextListContainer />
-                    </div>
-                    <SplitPane 
-                    split="horizontal"
-                    minSize={minFilterHeight}
-                    defaultSize={defaultSize}
-                    size={minFilterHeight}
-                    paneStyle={{
-                        display: "flex"
-                    }}
-                    style={{
-                        height: bodyHeight
-                    }}
-                    onDragFinished={(width: number) => {
-                        if (width > 0) {
-                            props.onChangedTextWidth(width);
-                            if (!props.textListIsVisible) {
-                                props.onChangedTextListVisible(true);
-                            }
-                        }
-                        window.dispatchEvent(new Event("resize"));
-                    }}
-                    >
-                       <TextFilterContainer />
-                       <TextDetailContainer />
-                    </SplitPane>
-                    
-                   
-                </SplitPane>
-            </div>
+          {isSearchActive ? <Search/> : (SelectedText !== null) ? <Editor props={props}/>: <Main/>} 
+             {/* <Notification/> */}
+   
         </div>
     );
 };
+
+
 
 export default App;

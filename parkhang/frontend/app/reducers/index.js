@@ -1,8 +1,11 @@
 // @flow
 import { combineReducers } from "redux";
 import dataReducers, * as data from "./data";
+import dataReducers2, * as data2 from "./data2";
 import uiReducers, * as ui from "./ui";
 import userReducers, * as user from "./user";
+import categoryReducers,* as category from './category';
+import mediaReducers,* as media from './media';
 import * as actions from "actions";
 import * as api from "api";
 import Annotation, {
@@ -36,7 +39,7 @@ function createReducer(
         }
     };
 }
-
+export const dataReducer2= createReducer(data2.initialDataState,dataReducers2)
 export const dataReducer = createReducer(data.initialDataState, dataReducers);
 export const uiReducer = createReducer(ui.initialUIState, uiReducers);
 export const userReducer = createReducer(user.initialUserState, userReducers);
@@ -44,13 +47,17 @@ export const localesReducer = createReducer(
     locales.initialLocalesState,
     localesReducers
 );
+export const categoryReducer =createReducer(category.initialCategoryState,categoryReducers);
+export const mediaReducer= createReducer(media.initialMediaState,mediaReducers)
 
 export type AppState = {
     data: data.DataState,
+    data2:data.DataState,
     ui: ui.UIState,
     user: user.UserState,
     intl: { locale: string, messages: { [string]: string } },
-    locales: locales.LocaleState
+    locales: locales.LocaleState,
+    category: any
 };
 
 /* Selectors */
@@ -103,12 +110,22 @@ export const getSelectedText = (state: AppState): TextData | null => {
    
     return ui.getSelectedText(state.ui);
 };
-
+export const getSelectedText2 = (state: AppState): TextData | null => {
+   
+    return ui.getSelectedText2(state.ui);
+};
 export const getSelectedTextWitnessId = (
     state: AppState,
     textId: number
 ): number | null => {
     return ui.getSelectedTextWitnessId(state.ui, textId);
+};
+
+export const getSelectedTextWitnessId2 = (
+    state: AppState,
+    textId: number
+): number | null => {
+    return ui.getSelectedTextWitnessId2(state.ui, textId);
 };
 
 export const getSelectedTextWitness = (state: AppState): Witness | null => {
@@ -146,9 +163,11 @@ export const getTextListVisible = (state: AppState): boolean => {
     return ui.getTextListVisible(state.ui);
 };
 
+
 export const getTextListWidth = (state: AppState): number => {
     return ui.getTextListWidth(state.ui);
 };
+
 
 export const getTemporaryAnnotations = (
     state: AppState,
@@ -177,6 +196,12 @@ export const getExportingWitness = (
 export const getSearchValue = (state: AppState): string => {
     return ui.getSearchValue(state.ui);
 };
+export const getNotification = (state: AppState): string => {
+    return ui.getNotification(state.ui);
+};
+export const getSearchTerm = (state: AppState): string => {
+    return ui.getSearchTerm(state.ui);
+};
 
 export const getSelectedSearchResult = (
     state: AppState
@@ -192,6 +217,40 @@ export const getTextFontSize = (state: AppState): number => {
     return ui.getTextFontSize(state.ui);
 };
 
+export const getTextFontSize2 = (state: AppState): number => {
+    return ui.getTextFontSize2(state.ui);
+};
+export const isSecondWindowOpen = (state: AppState): number => {
+    return ui.isSecondWindowOpen(state.ui);
+};
+export const getSyncId = (state: AppState): number => {
+    return ui.getSyncId(state.ui);
+};
+export const isPanelLinked = (state: AppState): number => {
+    return ui.isPanelLinked(state.ui);
+};
+
+//media
+
+export const getMediaData =(state)=>{
+    return media.getMediaData(state.media);
+}
+
+export const getImageData = (
+    state: AppState
+)=> {
+    return media.getImageData(state.media);
+}
+export const getVideoData = (
+    state: AppState
+)=> {
+    return media.getVideoData(state.media);
+}
+export const isImagePortrait = (
+    state: AppState
+)=> {
+    return media.isImagePortrait(state.media);
+}
 // data
 
 export const getText = (
@@ -202,9 +261,11 @@ export const getText = (
     return data.getText(state.data, textId, asData);
 };
 
+
 export const getSources = (state: AppState): Source[] => {
     return data.getSources(state.data);
 };
+
 
 export const getSource = (state: AppState, sourceId: number): Source | null => {
     return data.getSource(state.data, sourceId);
@@ -216,14 +277,24 @@ export const getWitness = (
 ): Witness | null => {
     return data.getWitness(state.data, witnessId);
 };
-
+export const getWitness2 = (
+    state: AppState,
+    witnessId: number
+): Witness | null => {
+    return data2.getWitness(state.data2, witnessId);
+};
 export const getWitnessData = (
     state: AppState,
     witnessId: number
 ): WitnessData | null => {
     return data.getWitnessData(state.data, witnessId);
 };
-
+export const getWitnessData2 = (
+    state: AppState,
+    witnessId: number
+): WitnessData | null => {
+    return data2.getWitnessData(state.data2, witnessId);
+};
 export const getTextWitnesses = (
     state: AppState,
     textId: number
@@ -231,18 +302,40 @@ export const getTextWitnesses = (
     return data.getTextWitnesses(state.data, textId);
 };
 
+export const getTextWitnesses2 = (
+    state: AppState,
+    textId: number
+): Witness[] => {
+    return data2.getTextWitnesses(state.data2, textId);
+};
+
+
 export const getBaseWitness = (
     state: AppState,
     textId: number
 ): Witness | null => {
     return data.getBaseWitness(state.data, textId);
 };
+export const getBaseWitness2 = (
+    state: AppState,
+    textId: number
+): Witness | null => {
+    return data2.getBaseWitness(state.data2, textId);
+};
 
 export const getWorkingWitness = (
     state: AppState,
     textId: number
 ): Witness | null => {
+
     return data.getWorkingWitness(state.data, textId);
+};
+
+export const getWorkingWitness2 = (
+    state: AppState,
+    textId: number
+): Witness | null => {
+    return data2.getWorkingWitness(state.data2, textId);
 };
 
 export const hasLoadedWitness = (
@@ -257,6 +350,13 @@ export const hasLoadedWitnessAnnotations = (
     witnessId: number
 ): boolean => {
     return state.data["witnessAnnotationsById"].hasOwnProperty(witnessId);
+};
+
+export const hasLoadedWitnessAnnotations2 = (
+    state: AppState,
+    witnessId: number
+): boolean => {
+    return state.data2["witnessAnnotationsById"].hasOwnProperty(witnessId);
 };
 
 export const hasLoadedWitnessAppliedAnnotations = (
@@ -393,14 +493,46 @@ export const getQuestions = (
     return data.getQuestions(state.data, questionId);
 }
 
+//data2
+
+export const getText2 = (
+    state: AppState,
+    textId: number,
+    asData: boolean = false
+): Text | TextData | null => {
+    return data2.getText(state.data, textId, asData);
+};
+export const getSources2 = (state: AppState): Source[] => {
+    return data2.getSources(state.data);
+};
+
+
+export const getSource2 = (state: AppState, sourceId: number): Source | null => {
+    return data2.getSource(state.data, sourceId);
+};
+
+
+// get selectedTextTitle
+
+
+export const getTextTitle = (
+    state: AppState
+): any | null => {
+    return category.getTextTitleData(state.category);
+}
+
+
 // Root
 
 export const allReducers = {
     data: dataReducer,
+    data2:dataReducer2,
     ui: uiReducer,
     user: userReducer,
     intl: intlReducer,
-    locales: localesReducer
+    locales: localesReducer,
+    category: categoryReducer,
+    media:mediaReducer
 };
 
 const rootReducer = combineReducers(allReducers);
