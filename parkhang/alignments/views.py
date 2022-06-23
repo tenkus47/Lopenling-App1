@@ -5,15 +5,15 @@ from .serializers import (ImageAlignmentSerializer, TextAlignmentSerializer,
                           VideoAlignmentSerializer)
 
 
-class DetailTextAlignment(generics.RetrieveAPIView):
+class TextAlignmentDetail(generics.RetrieveAPIView):
     queryset = TextAlignment.objects.all()
     serializer_class = TextAlignmentSerializer
 
-class DetailImageAlignment(generics.RetrieveAPIView):
+class ImageAlignmentDetail(generics.RetrieveAPIView):
     queryset = ImageAlignment.objects.all()
     serializer_class = ImageAlignmentSerializer
 
-class DetailVideoAlignment(generics.RetrieveAPIView):
+class VideoAlignmentDetail(generics.RetrieveAPIView):
     queryset = VideoAlignment.objects.all()
     serializer_class = VideoAlignmentSerializer
 

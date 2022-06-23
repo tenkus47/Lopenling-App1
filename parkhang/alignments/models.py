@@ -15,7 +15,7 @@ class Alignment(models.Model):
         on_delete=models.CASCADE
     )
     alignment = models.JSONField()
-    type = models.CharField(max_length=1, blank=True, null=True)
+    type = models.CharField(max_length=1, choices=Types.choices, blank=True, null=True)
 
     class Meta:
         abstract = True
