@@ -52,7 +52,8 @@ function request(method: ReqMethod, url, data: any = null): Promise<*> {
                 resolve(response.data);
             })
             .catch(error => {
-                console.dir(error);
+                // console.dir(error);
+                console.log('couldnot get the data . check connection')
                 reject(error);
             });
     });
@@ -101,6 +102,30 @@ export function setUserSettings(
     const url = "/api/users/" + user.id + "/settings/";
     return request(PUT, url, settings);
 }
+
+// Alignment + Media
+export function fetchAlignment(textId=0)
+{
+    const url="https://api.npoint.io/f73005415ff7a7f899df";
+    return request(GET, url); 
+
+}
+
+export function fetchChapterDetail(){
+  const  url="https://api.npoint.io/bf0ceeb6cdae14e09a17"
+  return request(GET, url); 
+}
+
+export function fetchImageWithAlignmentId(AlignmentId=0){
+      const  url="https://api.npoint.io/760936be2b22b5744345"
+      return request(GET, url); 
+  }
+
+  export function fetchVideoWithAlignmentId(AlignmentId=0){
+      const  url="https://api.npoint.io/a52c16e1ceeb6c44add3"
+      return request(GET, url); 
+  }
+
 
 // GET DATA
 

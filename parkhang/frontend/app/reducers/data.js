@@ -691,6 +691,7 @@ export const getWitness = (
         return cachedWitnesses[witnessId];
     }
     const witnessData = state.witnessesById[witnessId];
+
     let witness = null;
     if (witnessData) {
         const source = getSource(state, witnessData.source);
@@ -714,7 +715,6 @@ export const getWitness = (
             );
         }
     }
-
     return witness;
 };
 
