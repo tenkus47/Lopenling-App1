@@ -31,6 +31,7 @@ import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 
+
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
@@ -50,6 +51,7 @@ let _searchResultsCache: {
 
 export type Props = {
     textListVisible: boolean,
+    editMenuVisible:Boolean,
     imagesBaseUrl: string,
     splitText: SplitText,
     didSelectSegmentIds: (segmentIds: string[]) => void,
@@ -68,10 +70,15 @@ export type Props = {
         length: number
     } | null,
     searchValue: string | null,
-    fontSize: number
+    fontSize: number,
+    isSecondWindowOpen:Boolean,
+    changeSyncId:()=>void,
+    imageData:{},
+    isPanelLinked:Boolean
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
+    isSecondWindowOpen:Boolean;
     list: List | null;
     splitText: HTMLDivElement | null;
     cache: CellMeasurerCache;
@@ -84,6 +91,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     resizeHandler: () => void;
     selectionHandler: (e: Event) => void;
     textListVisible: boolean;
+    editMenuVisible:Boolean;
     activeSelection: Selection | null;
     selectedNodes: Node[] | null;
     // Whether the mouse button is down
@@ -100,9 +108,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     imageWidth: number | null;
     imageHeight: number | null;
     calculatedImageHeight: number | null;
-
+    changeSyncId:()=>void;
+    scrolling:()=>void;
+    spans:Node[] | null;
+    isPanelLinked:Boolean;
     constructor(props: Props) {
         super(props);
+        this.childRef=React.createRef('0');
 
         this.list = null;
         this.splitText = null;
@@ -112,6 +124,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         });
         this.rowRenderer = this.rowRenderer.bind(this);
         this.textListVisible = props.textListVisible;
+        this.editMenuVisible =props.editMenuVisible;
+        this.isPanelLinked =props.isPanelLinked;
         this.activeSelection = null;
         this.selectedNodes = null;
         this._mouseDown = false;
@@ -121,8 +135,53 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.imageHeight = null;
         this.imageWidth = null;
         this.calculatedImageHeight = null;
-        
         this.processProps(props);
+        this.changeSyncId=props.changeSyncId;
+    }
+
+    scrolling(e){
+        let newList=[]
+        
+    if(this.isPanelLinked){
+        if(this.spans){
+            this.spans.forEach(span=>{
+                 let position=span.getBoundingClientRect();
+                  let spanId=span.id.replace('s_','');
+                 if(position.top>100){
+                     newList.push(spanId)
+                 }
+             })
+         
+         }
+      
+         this.changeSyncId(newList)
+    }
+       
+    }
+   
+    updateId(id){
+
+        // if(id && id.includes('s')){
+        //     let newId=id.replace('s','s2');
+        //     if(document.getElementById(newId)){
+        //         document?.getElementById(newId)?.scrollIntoView({block: 'center'});
+        //     let positionHighlight=  document.getElementById(newId).getBoundingClientRect();
+
+        //     let hightlighter= document.createElement('div');
+        //     hightlighter.classList.add(styles.hightlighter);
+        //    hightlighter.style.border='2px solid blue';
+          
+
+        //     document.getElementById(newId).append(hightlighter)
+        //     document.getElementById(newId).style.color='blue';
+
+        //      setTimeout(()=>{
+        //         document.getElementById(newId).style.color='black';
+        //         hightlighter.remove();
+        //     },500)
+        //     }
+    
+        // }
     }
 
     updateList(
@@ -130,7 +189,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         resetRows: number | number[] | null = null
     ) {
         if (
-            this.props.showImages &&
+            !this.props.showImages &&
             !this.calculatedImageHeight &&
             this.imageHeight &&
             this.imageWidth
@@ -178,11 +237,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     handleSelection(e: Event) {
         if (!this._modifyingSelection) {
             this.activeSelection = document.getSelection();
+            let selectedId=this.activeSelection?.anchorNode?.parentElement?.id
+            this.updateId(selectedId)
+
             if (!this._mouseDown) {
                 // sometimes, this gets called after the mouseDown event handler
                 this.mouseUp();
+
             }
         } else {
+           
             e.stopPropagation();
             // Need to set this here. If set at callsite, the event will not
             // have time to propagate.
@@ -522,12 +586,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.selectedElementId = controlsMeasurements.selectedElementId;
             this.selectedElementIds = controlsMeasurements.selectedElementIds;
         }
-
-        if (props.textListVisible !== this.textListVisible) {
+   
+       
+        if ((props.textListVisible !== this.textListVisible) || (props.editMenuVisible !== this.editMenuVisible)) {
             setTimeout(() => {
                 this.textListVisible = props.textListVisible;
+                this.editMenuVisible = props.editMenuVisible;
                 this.updateList(true);
             }, 500);
+
+        
         } else {
             if (changedWitness) {
                 this.updateList(true);
@@ -598,13 +666,23 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidMount() {
+
+
         this.resizeHandler = _.throttle(() => {
             this.calculatedImageHeight = null;
             this.updateList();
         }, 500).bind(this);
 
+        const handler=
+            ()=>{
+                setTimeout(()=>{
+                 this.updateList()
+                },200) 
+             }
+            
+        document.querySelector('#doubleWindow').addEventListener('click',handler)
         window.addEventListener("resize", this.resizeHandler);
-
+        
         this.selectionHandler = _.debounce(e => {
             this.handleSelection(e);
         }, 200).bind(this);
@@ -613,17 +691,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         document.addEventListener("mousedown", this.mouseDown.bind(this), true);
         document.addEventListener("mouseup", this.mouseUp.bind(this), true);
-
+        this.scrolling.bind(this.props);
         this.processProps(this.props);
         this.componentDidUpdate();
     }
 
-    componentWillUnmount() {
-        document.removeEventListener("mousedown", this);
-        document.removeEventListener("mouseup", this);
-    }
-
     componentDidUpdate() {
+        this.spans= document.querySelectorAll('.Text---textContainer span')
+        this.isPanelLinked = this.props.isPanelLinked
         if (this.selectedNodes && this.selectedNodes.length > 0) {
             const selectedNodes = this.selectedNodes;
             const selectedSegments = this.props.selectedAnnotatedSegments;
@@ -681,8 +756,20 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentWillUnmount() {
+        const handler=
+        ()=>{
+            setTimeout(()=>{
+             this.updateList(true)
+            },200) 
+         }
+
+
+        document.removeEventListener("mousedown", this);
+        document.removeEventListener("mouseup", this);
         window.removeEventListener("resize", this.resizeHandler);
         document.removeEventListener("selectionchange", this.selectionHandler);
+        document.querySelector('#doubleWindow').removeEventListener('click',handler)
+
     }
 
     calculateImageHeight() {
@@ -746,15 +833,19 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const rowRenderer = this.rowRenderer;
         const cache = this.cache;
         const key = props.selectedWitness ? props.selectedWitness.id : 0;
-
+     
         return (
             <div
                 className={styles.splitText}
                 ref={div => (this.splitText = div)}
                 key={key}
             >
+                <button id='updateList' 
+                style={{display:'none'}}
+                onClick={()=>this.updateList(true)} ></button>
                 <AutoSizer>
                     {({ height, width }) => (
+                    
                         <List
                             ref={list => (this.list = list)}
                             height={height}
@@ -764,7 +855,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             width={width}
                             overscanRowCount={3}
                             deferredMeasurementCache={cache}
-                        />
+                            onScroll={(e)=>this.scrolling(e)}
+                           
+                         
+                        >
+                        </List>
+                       
                     )}
                 </AutoSizer>
             </div>
@@ -874,13 +970,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const cache = this.cache;
         const component = this;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
-        let imageUrl = index;
+        
+
+        let imageUrl = '';
         if (
             props.selectedWitness &&
             props.selectedWitness.properties &&
             props.selectedWitness.properties.hasOwnProperty(IMAGE_START_PRE_KEY)
         ) {
             imageUrl = this.getImageUrl(index);
+
         }
 
         let searchStringPositions = {};
@@ -898,7 +997,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (props.showImages && pechaImageClass && this.calculatedImageHeight) {
             pechaStyles["height"] = this.calculatedImageHeight + "px";
         }
-
+        let newStyle={...style,height:style.height+10}
         return (
             <CellMeasurer
                 columnIndex={0}
@@ -907,14 +1006,18 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 rowIndex={index}
                 cache={cache}
             >
-                <div key={key} style={style} className={styles.splitTextRow}>
+                <div key={key} style={newStyle} className={styles.splitTextRow}>
                     <div className={styles.splitTextRowContent}>
-                        {props.showImages && (
+                        {
+                        props.showImages
+                         && (
                             <div
                                 className={pechaImageClass}
                                 style={pechaStyles}
                             >
-                                <img
+                          
+                                    <img
+                                    alt="Text related Image"
                                     src={imageUrl}
                                     width="100%"
                                     height="100%"
@@ -937,9 +1040,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                         }
                                     }}
                                 />
+                                  
+                               
                             </div>
                         )}
                         <Text
+                            ref={this.childRef}
                             segmentedText={props.splitText.texts[index]}
                             annotations={props.annotations}
                             activeAnnotations={props.activeAnnotations}
@@ -960,6 +1066,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             }
                             searchStringPositions={searchStringPositions}
                             fontSize={props.fontSize}
+                            // menuVisible={props.menuVisible}
                         />
                     </div>
                     {this.selectedTextIndex === index &&

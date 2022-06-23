@@ -74,7 +74,7 @@ export default class Text extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-
+        this.textRef=React.createRef();
         this.state = {
             segmentedText: props.segmentedText
         };
@@ -478,16 +478,18 @@ export default class Text extends React.Component<Props, State> {
         if (!this._renderedHtml) {
             this._renderedHtml = html;
         }
-
         return (
-            <div className={styles.textContainer}>
+            <div className={styles.textContainer} 
+            >
                 <div
+                ref={this.textRef}
                     className={classnames(...classes)}
                     dangerouslySetInnerHTML={html}
-                    onClick={e => this.selectedElement(e.target)}
                     style={{
                         fontSize: this.props.fontSize
                     }}
+                    onClick={e => this.selectedElement(e.target)}
+
                 />
             </div>
         );
