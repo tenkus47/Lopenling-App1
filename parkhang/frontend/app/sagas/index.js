@@ -975,8 +975,10 @@ function* loadTextTitle(action) {
 
     console.log(title);
 
-    let TextIdofTitle = 2;
     if (action.payload) {
+    let texts = yield select(reducers.getTexts);
+    let TextIdofTitle = texts[4].id;
+
         const textId = TextIdofTitle;
         let textData: api.TextData;
         do {
@@ -1059,7 +1061,9 @@ function* editorUrl(action) {
 
     if (action.payload) {
         // const textId = action.payload.textId;
-        const textId = 2;
+        let texts = yield select(reducers.getTexts);
+
+        const textId = texts[3].id;
         let textData: api.TextData;
         do {
             textData = yield select(reducers.getText, textId, true);

@@ -633,6 +633,12 @@ export default dataReducers;
 
 // Selectors
 
+export const getTexts = (
+    state: DataState
+): Text | TextData | null => {
+    const textData = state.texts;
+    return textData;
+};
 export const getText = (
     state: DataState,
     textId: number,

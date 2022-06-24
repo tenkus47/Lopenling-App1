@@ -105,12 +105,12 @@ export const Header = (props: HeaderProps) => {
       <div style={{display:'flex'}}>
       {
    !window.location.href.includes('witnesses')
-   &&  <NavLink to='/'>
+   &&  <a href='http://www.lopenling.org'>
            <div  className={styles.logo}>
                 <img src={image_location} height="30" />
             </div>
             
-           </NavLink> }
+           </a> }
              <div className={styles.navlinks}>
                  <ul>
                      <li><NavLink to='/textSelection'><FormattedMessage id={'header.texts'}/></NavLink></li>
