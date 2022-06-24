@@ -32,6 +32,9 @@ class TextAlignment(Alignment):
 class Imagegroup(models.Model):
     bdrc_imagegroup_id = models.CharField(max_length=120)
 
+    def __str__(self):
+        return self.bdrc_imagegroup_id
+
 class ImageAlignment(Alignment):
     target = models.ForeignKey(Imagegroup, related_name="alignment_image", on_delete=models.CASCADE)
 
@@ -43,6 +46,9 @@ class ImageAlignment(Alignment):
 class Video(models.Model):
     title = models.CharField(max_length=300)
     url = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.title
 class VideoAlignment(Alignment):
     target = models.ForeignKey(Video, related_name="alignment_video", on_delete=models.CASCADE)
 
