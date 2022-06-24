@@ -2,7 +2,6 @@
 import React from "react";
 import classnames from "classnames";
 
-import TextHeadingContainer from "./TextHeadingContainer";
 import SplitTextComponent from "components/TextDetail/SplitText";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
@@ -17,6 +16,9 @@ import styles from "./TextDetail.css";
 import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
+import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
+
+
 
 export type Props = {
     paginated: boolean,
@@ -38,10 +40,13 @@ export type Props = {
     selectedSearchResult: {
         textId: number,
         start: number,
-        length: number
+        length: number,
     } | null,
     searchValue: string | null,
-    fontSize: number
+    fontSize: number,
+    isSecondWindowOpen:Boolean,
+    imageData:{},
+    isPanelLinked:boolean
 };
 
 let textDetailId = 0;
@@ -57,7 +62,7 @@ class TextDetail extends React.Component<Props> {
 
     render() {
         let text = {
-            name: ""
+            name: "",
         };
         if (this.props.text) {
             text = this.props.text;
@@ -66,8 +71,11 @@ class TextDetail extends React.Component<Props> {
         let inlineControls = false;
         let textComponent = null;
         let splitText = null;
-
-        if (!this.props.annotatedText || !this.props.text || this.props.loading) {
+        if (
+            !this.props.annotatedText ||
+            !this.props.text ||
+            this.props.loading
+        ) {
             textComponent = <div key={this.key} />;
         } else {
             let limitWidth = false;
@@ -101,15 +109,22 @@ class TextDetail extends React.Component<Props> {
                     selectedSearchResult={this.props.selectedSearchResult}
                     searchValue={this.props.searchValue}
                     fontSize={this.props.fontSize}
-                >
-                </SplitTextComponent>
+                    isSecondWindowOpen={this.props.isSecondWindowOpen}
+                    changeSyncId={this.props.changeSyncId}
+                    imageData={this.props.imageData}
+                    isPanelLinked={this.props.isPanelLinked}
+                    >
+                      
+                    </SplitTextComponent>
             );
         }
 
         let textComponents = [textComponent];
-
+        
+    
         return (
             <div
+                style={{height:'100%'}}
                 className={classnames(
                     styles.textDetail,
                     utilStyles.flex,
@@ -117,8 +132,10 @@ class TextDetail extends React.Component<Props> {
                 )}
                 key={this.key}
             >
-                <TextHeadingContainer text={text} />
+            
+                <TextDetailHeadingContainer />
                 <Loader loaded={!this.props.loading} />
+                    
                 <div
                     className={classnames(
                         styles.textContainer,
@@ -126,7 +143,9 @@ class TextDetail extends React.Component<Props> {
                     )}
                 >
                     {!this.props.loading ? textComponents : <div />}
-                </div>
+                </div>   
+               
+                    
             </div>
         );
     }

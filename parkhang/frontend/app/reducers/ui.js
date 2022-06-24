@@ -6,14 +6,16 @@ import * as constants from "app_constants";
 
 export type UIState = {
     selectedText: api.TextData | null,
-    filterAuthor:string|null,
+    selectedText2: api.TextData | null,
     selectedTextWitness: { [textId: number]: number },
+    selectedTextWitness2: { [textId: number]: number },
     selectedSearchResult: {
         textId: number,
         start: number,
         length: number
     } | null,
     searchValue: string,
+    searchTerm:String,
     showPageImages: boolean,
     activeAnnotations: { [witnessId: number]: Annotation },
     activeTextAnnotations: { [textId: number]: Annotation },
@@ -31,17 +33,28 @@ export type UIState = {
         [witnessId: number]: boolean
     },
     showAccountOverlay: boolean,
-    textFontSize: number
+    textFontSize: number,
+    textFontSize2: number,
+    notification:{
+        message:String,
+        time:Number,
+        type:String
+    },
+    showSecondWindow:Boolean,
+    SyncId:Number,
+    isPanelLinked:boolean
 };
 
 export const initialUIState = {
     selectedText: null,
-    filterAuthor:null,
+    selectedText2: null,
     selectedAuthor: null,
     selectedTextWitness: {},
+    selectedTextWitness2: {},
     selectedSearchResult: null,
     searchValue: "",
-    showPageImages: true,
+    searchTerm:"",
+    showPageImages: false,
     activeAnnotations: {},
     activeTextAnnotations: {},
     textListVisible: true,
@@ -50,7 +63,16 @@ export const initialUIState = {
     scrollPositions: {},
     exportingWitness: {},
     showAccountOverlay: false,
-    textFontSize: constants.DEFAULT_TEXT_FONT_SIZE
+    textFontSize: constants.DEFAULT_TEXT_FONT_SIZE,
+    textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,    
+    notification:{
+        message:'',
+        time:null,
+        type:''
+    },
+    showSecondWindow:true,
+    SyncId:0,
+    isPanelLinked:true
 };
 
 function loadedUserSettings(
@@ -86,17 +108,70 @@ function selectedText(
     return state;
 }
 
-function filterAuthor(
+function toggleSecondWindow(
     state: UIState,
     action: actions.SelectedTextAction
 ): UIState {
     state = {
         ...state,
-        filterAuthor: action.data
+        showSecondWindow: action.payload
     };
     return state;
 }
 
+function selectedText2(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
+    state = {
+        ...state,
+        selectedText2: action.text
+    };
+
+    if (
+        state.selectedSearchResult &&
+        state.selectedSearchResult.textId !== action.text.id
+    ) {
+        state = clearSearchResult(state);
+    }
+
+    return state;
+}
+
+function changeSyncId(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
+    state = {
+        ...state,
+        SyncId: action.payload
+    };
+
+    return state;
+}
+
+function changeLinkPanel(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
+    state = {
+        ...state,
+        isPanelLinked: action.payload
+    };
+
+    return state;
+}
+
+function noSelectedText(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
+    state = {
+        ...state,
+        selectedText: action.data
+    };
+    return state;
+}
 
 function selectedTextWitness(
     state: UIState,
@@ -111,6 +186,19 @@ function selectedTextWitness(
     };
 }
 
+function selectedTextWitness2(
+    state: UIState,
+    action: actions.SelectedTextWitnessAction
+): UIState {
+
+    return {
+        ...state,
+        selectedTextWitness2: {
+            ...selectedTextWitness2,
+            [action.textId]:action.witnessId
+        }
+    };
+}
 function changedSearchValue(
     state: UIState,
     action: actions.ChangedSearchValueAction
@@ -122,6 +210,20 @@ function changedSearchValue(
     return {
         ...state,
         searchValue: searchValue
+    };
+}
+
+function changedSearchTerm(
+    state: UIState,
+    action: actions.ChangedSearchTermAction
+): UIState {
+    let searchTerm = action.searchTerm;
+    if (!searchTerm) {
+        searchTerm = "";
+    }
+    return {
+        ...state,
+        searchTerm: searchTerm
     };
 }
 
@@ -175,6 +277,25 @@ function changedTextFontSize(
         textFontSize: action.fontSize
     };
 }
+function changedTextFontSize2(
+    state: UIState,
+    action: actions.ChangedTextFontSizeAction
+): UIState {
+    return {
+        ...state,
+        textFontSize2: action.fontSize
+    };
+}
+function changedNotification(
+    state: UIState,
+    action: actions.ChangedTextFontSizeAction
+): UIState {
+    return {
+        ...state,
+        notification: {...action.data}
+    };
+}
+
 
 // TODO: delete? Doesn't seem to be used anywhere.
 // function changedSelectedSegment(state, action) {
@@ -248,6 +369,8 @@ function textListVisibleChanged(
     };
 }
 
+
+
 function textListWidthChanged(
     state: UIState,
     action: actions.ChangedTextListWidth
@@ -257,6 +380,8 @@ function textListWidthChanged(
         textListWidth: action.width
     };
 }
+
+
 
 function getTemporaryAnnotationKey(start: number, length: number): string {
     return [start, length].join("-");
@@ -365,19 +490,26 @@ function changedAccountOverlay(
         ...state,
         showAccountOverlay: action.isVisible
     };
-
+     
     return state;
 }
 
 const uiReducers = {};
 uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
-uiReducers[actions.FILTER_TEXT] = filterAuthor;
+uiReducers[actions.SELECTED_TEXT2] = selectedText2;
+uiReducers[actions.NO_SELECTED_TEXT] = noSelectedText;
+uiReducers[actions.SYNC_ID]=changeSyncId;
+uiReducers[actions.LINK_PANEL]=changeLinkPanel;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
+uiReducers[actions.SELECTED_WITNESS2] = selectedTextWitness2;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
+uiReducers[actions.CHANGED_SEARCH_TERM] = changedSearchTerm;
 uiReducers[actions.SELECTED_SEARCH_RESULT] = selectedSearchResult;
 uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
 uiReducers[actions.CHANGED_TEXT_FONT_SIZE] = changedTextFontSize;
+uiReducers[actions.CHANGED_TEXT_FONT_SIZE2] = changedTextFontSize2;
+
 // uiReducers[actions.CHANGED_SELECTED_SEGMENT] = changedSelectedSegment;
 uiReducers[actions.CHANGED_ACTIVE_ANNOTATION] = changedActiveAnnotation;
 uiReducers[
@@ -391,20 +523,35 @@ uiReducers[actions.CHANGED_WITNESS_SCROLL_POSITION] = changedScrollPosition;
 uiReducers[actions.EXPORT_WITNESS] = exportingWitness;
 uiReducers[actions.EXPORTED_WITNESS] = exportedWitness;
 uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
+uiReducers[actions.CHANGED_NOTIFICATION]= changedNotification;
+uiReducers[actions.SECOND_WINDOW]= toggleSecondWindow;
+
 export default uiReducers;
 
 export const getSelectedText = (state: UIState): api.TextData | null => {
    
     return state.selectedText;
 };
-
+export const getSelectedText2 = (state: UIState): api.TextData | null => {
+   
+    return state.selectedText2;
+};
+export const getNotification = (state: UIState): api.TextData | null => {
+   
+    return state.notification;
+};
 export const getSelectedTextWitnessId = (
     state: UIState,
     textId: number
 ): number | null => {
     return state.selectedTextWitness[textId];
 };
-
+export const getSelectedTextWitnessId2 = (
+    state: UIState,
+    textId: number
+): number | null => {
+    return state.selectedTextWitness2[textId];
+};
 export const showPageImages = (state: UIState): boolean => {
     return state.showPageImages;
 };
@@ -446,11 +593,15 @@ export const getActiveTextAnnotation = (
 export const getTextListVisible = (state: UIState): boolean => {
     return state.textListVisible;
 };
-
 export const getTextListWidth = (state: UIState): number => {
     return state.textListWidth;
 };
-
+export const getSyncId = (state: UIState): number => {
+    return state.SyncId;
+};
+export const isPanelLinked = (state: UIState): number => {
+    return state.isPanelLinked;
+};
 export const getTemporaryAnnotations = (
     state: UIState,
     witnessId: number,
@@ -490,6 +641,10 @@ export const getSearchValue = (state: UIState): string => {
     return state.searchValue;
 };
 
+export const getSearchTerm =(state:UIState): string =>{
+    return state.searchTerm;
+}
+
 export const getSelectedSearchResult = (
     state: UIState
 ): null | { textId: number, start: number, length: number } => {
@@ -502,4 +657,10 @@ export const getAccountOverlayVisible = (state: UIState): boolean => {
 
 export const getTextFontSize = (state: UIState): number => {
     return state.textFontSize;
+};
+export const getTextFontSize2 = (state: UIState): number => {
+    return state.textFontSize2;
+};
+export const isSecondWindowOpen = (state: UIState): number => {
+    return state.showSecondWindow;
 };

@@ -6,9 +6,14 @@ import Witness from "lib/Witness";
 import type { LocalesData } from "i18n";
 
 /** Actions types **/
+//Media
 
+export const ACTIVATE_MEDIA="MEDIA_SELECTION";
+export const LOAD_IMAGE_DATA="LOAD_IMAGE_DATA";
+export const LOAD_VIDEO_DATA="LOAD_VIDEO_DATA";
+export const IS_IMAGE_PORTRAIT="IS_IMAGE_PORTRAIT"
 // Data
-
+export const SEARCH_TERM="SEARCH_TERM"; 
 export const LOAD_INITIAL_DATA = "LOAD_INITIAL_DATA";
 export const LOADING_INITIAL_DATA = "LOADING_INITIAL_DATA";
 export const LOADED_INITIAL_DATA = "LOADED_INITIAL_DATA";
@@ -26,13 +31,20 @@ export const LOADING_TEXT_DATA = "LOADING_TEXT_DATA";
 
 export const LOAD_WITNESSES = "LOAD_WITNESSES";
 export const LOADING_WITNESSES = "LOADING_WITNESSES";
+export const LOADING_WITNESSES2 = "LOADING_WITNESSES2";
 export const LOADED_WITNESSES = "LOADED_WITNESSES";
+export const LOADED_WITNESSES2 = "LOADED_WITNESSES2";
 
 export const LOAD_WITNESS_ANNOTATIONS = "LOAD_WITNESS_ANNOTATIONS";
+export const LOAD_WITNESS_ANNOTATIONS2 = "LOAD_WITNESS_ANNOTATIONS2";
 export const LOADING_WITNESS_ANNOTATIONS = "LOADING_WITNESS_ANNOTATIONS";
+export const LOADING_WITNESS_ANNOTATIONS2 = "LOADING_WITNESS_ANNOTATIONS2";
 export const LOADED_WITNESS_ANNOTATIONS = "LOADED_WITNESS_ANNOTATIONS";
+export const LOADED_WITNESS_ANNOTATIONS2 = "LOADED_WITNESS_ANNOTATIONS2";
 export const LOADED_WITNESS_ANNOTATION_OPERATIONS =
     "LOADED_WITNESS_ANNOTATION_OPERATIONS";
+export const LOADED_WITNESS_ANNOTATION_OPERATIONS2 =
+    "LOADED_WITNESS_ANNOTATION_OPERATIONS2";
 export const LOADED_WITNESS_REMOVED_ANNOTATIONS =
     "LOADED_WITNESS_REMOVED_ANNOTATIONS";
 
@@ -60,16 +72,23 @@ export const UPDATED_TEMPORARY_ANNOTATION = "text/UPDATED_TEMPORARY_ANNOTATION";
 export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 // UI
-export const FILTER_TEXT = "textList/FILTER_TEXT";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
+export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
+export const NO_SELECTED_TEXT="textList/NO_SELECTED_TEXT";
 export const CHANGED_SEARCH_VALUE = "textList/CHANGED_SEARCH_VALUE";
+export const CHANGED_SEARCH_TERM = "textList/CHANGED_SEARCH_TERM";
 export const SEARCHED_TEXT = "textList/SEARCHED_TEXT";
 export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
+export const CHANGED_NOTIFICATION ="notification/CHANGED_NOTIFICATION"
+export const SECOND_WINDOW ="notification/SECOND_WINDOW"
 
 export const SELECTED_WITNESS = "text/SELECTED_WITNESS";
+export const SELECTED_WITNESS2 = "text/SELECTED_WITNESS2";
+
 export const CHANGED_SHOW_PAGE_IMAGES = "text/CHANGED_SHOW_PAGE_IMAGES";
 export const CHANGED_TEXT_FONT_SIZE = "text/CHANGED_TEXT_FONT_SIZE";
+export const CHANGED_TEXT_FONT_SIZE2 = "text/CHANGED_TEXT_FONT_SIZE2";
 
 export const CHANGED_SELECTED_SEGMENT = "text/CHANGED_SELECTED_SEGMENT";
 export const DESELECTED_SEGMENT = "text/DESELECTED_SEGMENT";
@@ -79,7 +98,10 @@ export const CHANGED_ACTIVE_TEXT_ANNOTATION =
     "text/CHANGED_ACTIVE_TEXT_ANNOTATION";
 
 export const CHANGED_TEXT_LIST_VISIBLE = "textList/CHANGED_TEXT_LIST_VISIBLE";
+export const CHANGED_MENU_LIST_VISIBLE = "textList/CHANGED_MENU_LIST_VISIBLE";
 export const CHANGED_TEXT_LIST_WIDTH = "textList/CHANGED_TEXT_LIST_WIDTH";
+export const CHANGED_MENU_LIST_WIDTH = "textList/CHANGED_MENU_LIST_WIDTH";
+
 
 export const CHANGED_WITNESS_SCROLL_POSITION =
     "text/CHANGED_WITNESS_SCROLL_POSITION";
@@ -89,6 +111,8 @@ export const EXPORTED_WITNESS = "text/EXPORTED_WITNESS";
 
 export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 
+export const LINK_PANEL="panel/LINKED";
+export const SYNC_ID="imageSync/ID"
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
 export const LOADED_USER_SETTINGS = "user/LOADED_USER_SETTINGS";
@@ -97,10 +121,20 @@ export const LOADED_USER_SETTINGS = "user/LOADED_USER_SETTINGS";
 export const UPDATE_LOCALES = "i18n/UPDATE_LOCALES";
 export const SELECTED_LOCALE = "i18n/SELECT_LOCALE";
 
+// HOMEPAGE
+export const SELECT_TEXTTITLE = "title/SELECT_TEXTTITLE";
+export const SET_TEXTDATA="title/SET_TEXTDATA";
+export const IS_LOADED="title/IS_LOADED"
+
 // URLS
+export const TEXTS = "urls/textSelection";
 export const TEXT_URL = "urls/TEXT";
+export const TEXT_URL2 = "urls/TEXT2";
 export const USER_URL = "urls/USER";
 export const TEXTID_ONLY_URL = "urls/TEXTID";
+export const EDITOR="urls/editor";
+export const SEARCH="urls/search";
+export const TEXT_TITLE="urls/textSelected";
 
 /** Action creators **/
 
@@ -198,6 +232,12 @@ export function loadingWitnesses(text: api.TextData): TextDataAction {
         text
     };
 }
+export function loadingWitnesses2(text: api.TextData): TextDataAction {
+    return {
+        type: LOADING_WITNESSES2,
+        text
+    };
+}
 
 export type LoadedWitnessesAction = TextDataAction & {
     witnesses: api.WitnessData[]
@@ -213,6 +253,18 @@ export function loadedWitnesses(
     };
 }
 
+
+export function loadedWitnesses2(
+    text: api.TextData,
+    witnesses: api.WitnessData[]
+) {
+    return {
+        type: LOADED_WITNESSES2,
+        text,
+        witnesses
+    };
+}
+
 // ANNOTATIONS
 
 export function loadWitnessAnnotations(witnessId: number): WitnessAction {
@@ -221,10 +273,22 @@ export function loadWitnessAnnotations(witnessId: number): WitnessAction {
         witnessId
     };
 }
+export function loadWitnessAnnotations2(witnessId: number): WitnessAction {
+    return {
+        type: LOAD_WITNESS_ANNOTATIONS2,
+        witnessId
+    };
+}
 
 export function loadingWitnessAnnotations(witnessId: number): WitnessAction {
     return {
         type: LOADING_WITNESS_ANNOTATIONS,
+        witnessId
+    };
+}
+export function loadingWitnessAnnotations2(witnessId: number): WitnessAction {
+    return {
+        type: LOADING_WITNESS_ANNOTATIONS2,
         witnessId
     };
 }
@@ -244,6 +308,27 @@ export function loadedWitnessAnnotations(
     };
 }
 
+export type LoadedWitnessAnnotationsAction2 = Action & {
+    witnessId: number,
+    annotations: api.AnnotationData[]
+};
+export function loadedWitnessAnnotations2(
+    witnessId: number,
+    annotations: api.AnnotationData[]
+): LoadedWitnessAnnotationsAction2 {
+    return {
+        type: LOADED_WITNESS_ANNOTATIONS2,
+        witnessId,
+        annotations
+    };
+}
+
+
+
+
+
+
+
 export type LoadedWitnessAnnotationOperationsAction = WitnessAction & {
     annotationOperations: api.AnnotationOperationData[]
 };
@@ -253,6 +338,16 @@ export function loadedWitnessAnnotationOperations(
 ): LoadedWitnessAnnotationOperationsAction {
     return {
         type: LOADED_WITNESS_ANNOTATION_OPERATIONS,
+        witnessId,
+        annotationOperations
+    };
+}
+export function loadedWitnessAnnotationOperations2(
+    witnessId: number,
+    annotationOperations: api.AnnotationOperationData[]
+): LoadedWitnessAnnotationOperationsAction {
+    return {
+        type: LOADED_WITNESS_ANNOTATION_OPERATIONS2,
         witnessId,
         annotationOperations
     };
@@ -468,6 +563,14 @@ export function loadedUserSettings(
 }
 
 /* UI */
+export type noSelectedTextAction = Action & TextDataAction;
+export function noSelectedText(data: api.TextData): noSelectedTextAction {
+    return {
+        type: NO_SELECTED_TEXT,
+        data
+    };
+}
+
 
 export type SelectedTextAction = Action & TextDataAction;
 export function selectedText(text: api.TextData): SelectedTextAction {
@@ -477,13 +580,15 @@ export function selectedText(text: api.TextData): SelectedTextAction {
     };
 }
 
-export type FilterTextAction = Action & TextDataAction;
-export function filterText(data: string): FilterTextAction {
+export type SelectedTextAction2 = Action & TextDataAction;
+export function selectedText2(text: api.TextData): SelectedTextAction2 {
     return {
-        type: FILTER_TEXT,
-        data
+        type: SELECTED_TEXT2,
+        text
     };
 }
+
+
 
 export type ChangedSearchValueAction = Action & {
     searchValue: string
@@ -494,6 +599,18 @@ export function changedSearchValue(
     return {
         type: CHANGED_SEARCH_VALUE,
         searchValue
+    };
+}
+
+export type ChangedSearchTermAction = Action & {
+    searchTerm: string
+};
+export function changedSearchTerm(
+    searchTerm: string
+): ChangedSearchTermAction {
+    return {
+        type: CHANGED_SEARCH_TERM,
+        searchTerm
     };
 }
 
@@ -555,6 +672,14 @@ export function changedTextListWidth(width: number): ChangedTextListWidth {
     };
 }
 
+export function changedNotification(data) {
+    return {
+        type: CHANGED_NOTIFICATION,
+        data
+    };
+}
+
+
 export type ChangedShowPageImagesAction = Action & {
     showPageImages: boolean
 };
@@ -579,6 +704,19 @@ export function changedTextFontSize(
     };
 }
 
+export type ChangedTextFontSizeAction2 = Action & {
+    fontSize: number
+};
+export function changedTextFontSize2(
+    fontSize: number
+): ChangedTextFontSizeAction2 {
+    return {
+        type: CHANGED_TEXT_FONT_SIZE2,
+        fontSize
+    };
+}
+
+
 export type SelectedTextWitnessAction = Action & {
     witnessId: number,
     textId: number
@@ -593,6 +731,24 @@ export function selectedTextWitness(
         witnessId
     };
 }
+
+
+export type SelectedTextWitnessAction2 = Action & {
+    witnessId: number,
+    textId: number
+};
+export function selectedTextWitness2(
+    textId: number,
+    witnessId: number
+): SelectedTextWitnessAction2 {
+    return {
+        type: SELECTED_WITNESS2,
+        textId,
+        witnessId
+    };
+}
+
+
 
 export type AddedTemporaryAnnotationAction = Action & {
     annotation: TemporaryAnnotation,
@@ -654,6 +810,8 @@ export function changedTextListVisible(
         isVisible
     };
 }
+
+
 
 export type ChangedWitnessScrollPositionAction = Action & {
     witnessId: number,
@@ -740,9 +898,91 @@ export type TextUrlAction = {
     }
 };
 
-export function enteredUrl(url: string) {
+
+export function enteredUrl(url: TextUrlAction) {
     return {
         type: TEXT_URL,
         payload: {}
     };
+}
+
+
+export function selectTextTitle(textTitle:string){
+   
+    return {
+        type:SELECT_TEXTTITLE,
+        payload:textTitle
+    }
+}
+
+
+
+
+export function setTextData(originData){
+    return {
+        type:SET_TEXTDATA,
+        payload:originData
+    }
+}
+
+export function changeIsLoaded(loaded){
+    return {
+        type:IS_LOADED,
+        payload:loaded
+    }
+}
+
+export function searchTerm(data){
+    return {
+      type:SEARCH_TERM,
+      payload:data
+    }
+}
+
+export function toggleSecondWindow(data){
+    return {
+      type:SECOND_WINDOW,
+      payload:data
+    }
+}
+
+export function changeSyncId(payload){
+    return {
+        type:SYNC_ID,
+        payload:payload
+    }
+}
+export function changePanelLink(payload){
+    return {
+        type:LINK_PANEL,
+        payload:payload
+    }
+}
+export function changeImageData(data){
+    return {
+        type:LOAD_IMAGE_DATA,
+        data:data
+    }
+}
+export function changeVideoData(data){
+    return {
+        type:LOAD_VIDEO_DATA,
+        data:data
+    }
+}
+
+
+export function mediaSelection(data){
+    const payload=data
+    return {
+        type:ACTIVATE_MEDIA,
+        payload
+    }
+}
+
+export function setIsImagePortrait(payload){
+    return {
+        type:IS_IMAGE_PORTRAIT,
+        payload
+    }
 }

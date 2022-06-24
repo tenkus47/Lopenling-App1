@@ -633,6 +633,12 @@ export default dataReducers;
 
 // Selectors
 
+export const getTexts = (
+    state: DataState
+): Text | TextData | null => {
+    const textData = state.texts;
+    return textData;
+};
 export const getText = (
     state: DataState,
     textId: number,
@@ -691,6 +697,7 @@ export const getWitness = (
         return cachedWitnesses[witnessId];
     }
     const witnessData = state.witnessesById[witnessId];
+
     let witness = null;
     if (witnessData) {
         const source = getSource(state, witnessData.source);
@@ -714,7 +721,6 @@ export const getWitness = (
             );
         }
     }
-
     return witness;
 };
 

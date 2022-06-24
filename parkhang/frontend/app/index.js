@@ -1,10 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import Cookies from "js-cookie";
 import AppContainer from "components/App/AppContainer";
-
+import flagsmith from 'flagsmith'
+import {FlagsmithProvider} from 'flagsmith/react'
 // For dev only
 import { composeWithDevTools } from "redux-devtools-extension";
+import * as api from "api";
 
 // Redux
 import { createStore, applyMiddleware, compose } from "redux";
@@ -26,7 +28,7 @@ import rootReducer, { allReducers } from "reducers";
 import textMiddleware from "state_helpers/textMiddleware";
 
 // URL management
-import { connectRoutes, redirect} from "redux-first-router";
+import { connectRoutes, history} from "redux-first-router";
 
 // Sagas
 import 'core-js/stable';
@@ -68,11 +70,20 @@ const sagaMiddleware = createSagaMiddleware();
 
 // redux-first-router
 const routesMap = {
-    HOME: "/",
+    HOME: {path:'/',
+           thunk:()=>{
+               let h=history();
+                h.push('/textSelection')
+           }},
     [actions.TEXT_URL]: "/texts/:textId/witnesses/:witnessId/:annotation?",
+    [actions.TEXT_URL2]: "/texts/:textId/witnesses/:witnessId/texts2/:textId2",
     USER: "/user/:id",
-    [actions.TEXTID_ONLY_URL]: "/texts/:textId"
-    };
+    [actions.TEXTID_ONLY_URL]: "/texts/:textId",
+    [actions.TEXTS]:"/textSelection", 
+    [actions.EDITOR]:"/editor",
+    [actions.SEARCH]:"/search/:search",
+    [actions.TEXT_TITLE]:'/title/:title'
+};
 const routes = connectRoutes(routesMap, {
     initialDispatch: false
 });
@@ -89,6 +100,7 @@ let store = createStore(
         applyMiddleware(...middlewares)
     )
 );
+
 if (process.env.NODE_ENV === "development") {
     store = createStore(
         enableBatching(locationRootReducer),
@@ -136,14 +148,24 @@ function intlSelector(state) {
     };
 }
 
-ReactDOM.render(
+
+const environmentID= process.env.NODE_ENV==='development'?'3Dt7CemgqtVS5RUzFovjx9':'YrffVXdfn7BzSFVmLBFdrv';
+const root=ReactDOM.createRoot(document.getElementById('app'));
+
+root.render(
     <Provider store={store}>
         <IntlProvider textComponent={Fragment} intlSelector={intlSelector}>
+        <FlagsmithProvider
+           options={{
+             environmentID,
+           }}
+           flagsmith={flagsmith}>
             <AppContainer />
+            </FlagsmithProvider>
         </IntlProvider>
-    </Provider>,
-    document.getElementById("app")
+    </Provider>
 );
+
 
 store.dispatch(loadInitialData());
 

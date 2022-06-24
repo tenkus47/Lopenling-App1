@@ -15,6 +15,9 @@ import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo.png";
 import UserIcon from "images/discourse_user.svg";
+import {NavLink} from 'redux-first-router-link'
+import Search from 'components/search'
+import TranslateButton from "bodyComponent/utility/TranslateButton";
 
 type LoginProps = {
     successRedirect: string,
@@ -94,16 +97,37 @@ export const Header = (props: HeaderProps) => {
     const image_location =lopenlingLogo
     return (
         <header className={styles.header}>
-            <NavigationButton
+            {/* <NavigationButton
                 onClick={props.navigationButtonClicked}
                 className={styles.navigationButton}
                 title={toggleTitle}
-            />
-            <div className={styles.logo}>
-                <img src={image_location} height="40" />
+            /> */}
+      <div style={{display:'flex'}}>
+      {
+   !window.location.href.includes('witnesses')
+   &&  <a href='http://www.lopenling.org'>
+           <div  className={styles.logo}>
+                <img src={image_location} height="30" />
             </div>
-            <LocaleSwitcher />
-            {controls}
+            
+           </a> }
+             <div className={styles.navlinks}>
+                 <ul>
+                     <li><NavLink to='/textSelection'><FormattedMessage id={'header.texts'}/></NavLink></li>
+                     <li><NavLink to='/editor'><FormattedMessage id={'header.editor'}/></NavLink></li>
+                     <li><NavLink to='/search/'><FormattedMessage id={'leftbar.search'}/></NavLink></li>
+                 </ul>
+             </div>
+      </div>
+    
+             {
+   window.location.href.includes('witnesses') && <Search/>}      
+         
+         <div className={styles.loginSection}>  
+             {/* <LocaleSwitcher /> */}
+             <TranslateButton/>
+                 {controls}
+             </div> 
         </header>
     );
 };
