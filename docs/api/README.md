@@ -3,6 +3,6 @@
 Documentation for Lopening API
 
 ### Table Of Content
-- [Alignments](https://github.com/OpenPecha/Lopenling-App/blob/master/docs/api/alignments.md)
+- [Alignments](/Lopenling-App/api/alignments.md)
 - Discourse
 - Texts
