@@ -20,7 +20,7 @@ from django.contrib import admin
 from project.views import HomeView
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^db/admin', admin.site.urls),
     url(r'^discourse/', include('discourse.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^[^.]*$', HomeView.as_view())
