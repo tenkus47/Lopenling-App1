@@ -4,35 +4,43 @@ Named Concepts
 - `Segment Pair`: pair of segments, it can be translation of segment, root and citation, etc
 - `Alignment`: a set of `Segment Pairs`, a whole book translations
 - `Alignment Type`: type of `Alignment` based on content type like `etext`, `image`, `video` etc 
+- `text`: refers to abstract text with title
+- `witness`: a particular version/edtition of the text.
 
-
-Source Text All Alignments API
+Big Idea
 ---
-- get all alignments associated to the source text
+- All alignments are created on the `witness` level because each `witness` will have diffirent alignment
 
-**Endpoint**: GET `/api/alignments/all/{source_text_id}`
+Text All Alignments API
+---
+- get all alignments associated to the text
+
+**Endpoint**: GET `/api/alignments/all/{text_id}`
 
 **Schema**:
 ```json
 {
-  "source": "111",
+  "text": "111",
   "alignments": {
     "text": [
-      {
+      { 
+        "witness": "111",
         "target": "111",
         "alignment": "111"
       }
     ],
     "image": [
       {
+        "witness": "111",
         "target": "111",
-        "alignment": "111"
+        "alignment": "222"
       }
     ],
     "video": [
       {
+        "witness": "111",
         "target": "111",
-        "alignment": "111"
+        "alignment": "333"
       }
     ]
   }
@@ -78,8 +86,8 @@ Text2Text Alignment API
 
 **Description**:
 - `id` is id of the alignment instance
-- `source`: id of the source text
-- `target`: id of the target text
+- `source`: id of the source witness text
+- `target`: id of the target witness text
 - `type`: type of alignment, it can be either `text`, `image` or `video`. It determines the target content type
 - `alignment`: contain all the segments pairs
 - `source_segment`: character span of the source text segment
@@ -111,8 +119,8 @@ Text2Image Alignment API
 
 **Description**:
 - `id` is id of the alignment instance
-- `source`: id of the source text
-- `target`: id of the target text
+- `source`: id of the source witness text
+- `target`: id of the imagegroup
 - `type`: type of alignment, it can be either `text`, `image` or `video`. It determines the target content type
 - `alignment`: contain all the segments pairs
 - `source_segment`: character span of the source text segment
@@ -149,8 +157,8 @@ Text2AV Alignment API
 
 **Description**:
 - `id` is id of the alignment instance
-- `source`: id of the source text
-- `target`: id of the target text
+- `source`: id of the source witness text
+- `target`: id of the target video
 - `type`: type of alignment, it can be either `text`, `image` or `video`. It determines the target content type
 - `alignment`: contain all the segments pairs
 - `source_segment`: character span of the source text segment
