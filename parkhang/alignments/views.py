@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from texts.models import Witness
 
 from .models import ImageAlignment, TextAlignment, VideoAlignment
 from .serializers import (ImageAlignmentSerializer, TextAlignmentSerializer,
@@ -8,16 +9,16 @@ from .serializers import (ImageAlignmentSerializer, TextAlignmentSerializer,
 
 
 @api_view(["GET"])
-def get_source_alignments(request, source_pk):
+def get_text_alignments(request, text_pk):
 
     def _serialize_alignments(alignments):
         return [
-            {"target": target, "alignment": id}
-            for id, target in alignments
+            {"source": source, "target": target, "alignment": id}
+            for id, source, target in alignments
         ]
 
     output = {
-        "source": source_pk,
+        "text": text_pk,
         "alignments": {
             "text": [],
             "image": [],
@@ -25,13 +26,14 @@ def get_source_alignments(request, source_pk):
         }
     }
 
-    text_alignments = TextAlignment.objects.filter(source__id=source_pk).values_list("id", "target")
-    image_alignments = ImageAlignment.objects.filter(source__id=source_pk).values_list("id", "target")
-    video_alignments = VideoAlignment.objects.filter(source__id=source_pk).values_list("id", "target")
+    for witness in Witness.objects.filter(text__id=text_pk):
+        text_alignments = TextAlignment.objects.filter(source__id=witness.id).values_list("id", "source", "target")
+        image_alignments = ImageAlignment.objects.filter(source__id=witness.id).values_list("id","source", "target")
+        video_alignments = VideoAlignment.objects.filter(source__id=witness.id).values_list("id", "source", "target")
 
-    output["alignments"]["text"] = _serialize_alignments(text_alignments)
-    output["alignments"]["image"] = _serialize_alignments(image_alignments)
-    output["alignments"]["video"] = _serialize_alignments(video_alignments)
+        output["alignments"]["text"].extend(_serialize_alignments(text_alignments))
+        output["alignments"]["image"].extend(_serialize_alignments(image_alignments))
+        output["alignments"]["video"].extend(_serialize_alignments(video_alignments))
 
     return Response(output)
 

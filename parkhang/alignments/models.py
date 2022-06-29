@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from texts.models import Text
+from texts.models import Witness
 
 
 class AlignmentTypes(models.TextChoices):
@@ -11,7 +11,7 @@ class AlignmentTypes(models.TextChoices):
 class Alignment(models.Model):
 
     source = models.ForeignKey(
-        Text,
+        Witness,
         related_name="%(app_label)s_%(class)s_related",
         on_delete=models.CASCADE
     )
@@ -22,7 +22,7 @@ class Alignment(models.Model):
         abstract = True
 
 class TextAlignment(Alignment):
-    target = models.ForeignKey(Text, related_name="alignment_text", on_delete=models.CASCADE)
+    target = models.ForeignKey(Witness, related_name="alignment_text", on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if not self.pk:

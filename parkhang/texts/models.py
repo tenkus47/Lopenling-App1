@@ -82,6 +82,9 @@ class Witness(models.Model):
     """Extra properties for a witness"""
     properties = models.JSONField(null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.text} ({self.source})"
+
 
 class AnnotationQuerySet(models.QuerySet):
     def active(self):
