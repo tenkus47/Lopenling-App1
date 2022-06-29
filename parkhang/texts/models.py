@@ -1,14 +1,11 @@
-from operator import mod
 import uuid
 from enum import Enum
 
-from django.db import models
-from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
-
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 # Constants
 
@@ -61,6 +58,9 @@ class Source(models.Model):
     is_base = models.BooleanField(default=False)
     """True if this source represents the working edition"""
     is_working = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 
 class Witness(models.Model):
@@ -185,7 +185,7 @@ class DefaultWitnessAnnotations(models.Model):
 
 class Question(models.Model):
     annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE)
-    # We want to be able to save a question without a topic_id in 
+    # We want to be able to save a question without a topic_id in
     # case the external server is down.
     topic_id = models.IntegerField(blank=True, null=True)
     title = models.TextField()
@@ -194,9 +194,9 @@ class Question(models.Model):
 
     def annotation_unique_id(self):
         return self.annotation.unique_id
-    
+
     # Non-persisted data. These are intended to be set
     # after retrieving data from an external server.
     answers = []
-    
+
 
