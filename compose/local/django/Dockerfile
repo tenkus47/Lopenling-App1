@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg2 dependencies
   libpq-dev \
   # app dependencies
-  dwdiff
+  dwdiff \
+  graphviz graphviz-dev
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./parkhang/requirements .
@@ -37,9 +38,6 @@ ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 
 WORKDIR ${APP_HOME}
 
-RUN addgroup --system django \
-    && adduser --system --ingroup django django
-
 # Install required system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg2 dependencies
@@ -48,6 +46,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   gettext \
   # app dependencies
   dwdiff \
+  graphviz graphviz-dev \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
@@ -71,7 +70,5 @@ RUN chmod +x /start
 
 # copy application code to WORKDIR
 COPY ./parkhang ${APP_HOME}
-
-USER django
 
 ENTRYPOINT ["/entrypoint"]

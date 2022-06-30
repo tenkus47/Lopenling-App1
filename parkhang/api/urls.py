@@ -1,6 +1,10 @@
-from django.conf.urls import url, include
+from django.conf.urls import include, url
+from django.urls import include, path
 
-from .views import UserDetail, UserSettings, SourceList, TextList, TextDetail, TextSearch, WitnessList, AnnotationList, AnnotationDetail, UserAnnotationOperations, UserAnnotationOperationDetail, QuestionList, QuestionDetail
+from .views import (AnnotationDetail, AnnotationList, QuestionDetail,
+                    QuestionList, SourceList, TextDetail, TextList, TextSearch,
+                    UserAnnotationOperationDetail, UserAnnotationOperations,
+                    UserDetail, UserSettings, WitnessList)
 
 urlpatterns = [
     url(r'users/(?P<user_id>[0-9]+)/?$', UserDetail.as_view()),
@@ -19,6 +23,7 @@ urlpatterns = [
     url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/applied_annotations/$', UserAnnotationOperations.as_view()),
     url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/applied_annotations/(?P<annotation_unique_id>.+)$', UserAnnotationOperationDetail.as_view()),
     url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/user_annotation_operations/$', UserAnnotationOperations.as_view()),
-    url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/user_annotation_operations/(?P<annotation_unique_id>.+)$', UserAnnotationOperationDetail.as_view())
+    url(r'texts/[0-9]+/witnesses/(?P<witness_id>[0-9]+)/user_annotation_operations/(?P<annotation_unique_id>.+)$', UserAnnotationOperationDetail.as_view()),
+    path("alignments/", include("alignments.urls"))
 ]
 

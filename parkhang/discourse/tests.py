@@ -1,9 +1,11 @@
-from django.test import TestCase
+from unittest import skip
+
 from django.conf import settings
+from django.test import TestCase
 
 from .api import DiscourseAPI
 
-TOPIC_ID = 184
+TOPIC_ID = 1228
 
 class DiscourseTestCase(TestCase):
 

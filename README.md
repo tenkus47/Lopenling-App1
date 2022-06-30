@@ -24,9 +24,9 @@ An application that allow users to participate in creating critical editions of 
 
 ## Owner
 
-- [@sherab](https://github.com/sherab)
-- [@10zinten](https://github.com/10zinten)
-- [@tenkus47](https://github.com/tenkus47)
+- [@sherab](https://github.com/sherab), Fullstack
+- [@10zinten](https://github.com/10zinten), Backend
+- [@tenkus47](https://github.com/tenkus47), Frontend
 
 
 <!-- This section lists the owners of the repo -->
@@ -39,6 +39,7 @@ An application that allow users to participate in creating critical editions of 
 
 ## Docs
 
+- [documentation](https://openpecha.github.io/Lopenling-App)
 
 ## Dependencies
 

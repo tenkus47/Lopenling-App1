@@ -1,14 +1,12 @@
 import os
-import subprocess
 import shlex
+import subprocess
 
 from django.core.management.base import BaseCommand
-
-from texts.models import Text, Source, Witness, Annotation, AnnotationType
-from texts.utils.parse_word_diff import parse_word_diff
+from texts.models import Annotation, AnnotationType, Source, Text, Witness
 from texts.utils.normalise_string import normalise_string
 from texts.utils.parse_layout_data import parse_layout_data
-
+from texts.utils.parse_word_diff import parse_word_diff
 
 WORKING_SOURCE_NAME = 'Working'
 
@@ -29,11 +27,14 @@ class Command(BaseCommand):
         base_witnesses = {} # witnesses that the base was copied from
         sources = {}
 
+        for source in Source.objects.all():
+            sources[source.name] = source
+
         # create base source and witness
-        working_source = Source()
-        working_source.name = WORKING_SOURCE_NAME
-        working_source.is_working = True
-        working_source.save()
+        working_source, _ = Source.objects.get_or_create(
+            name=WORKING_SOURCE_NAME,
+            is_working=True,
+        )
 
         # make sure base text is the first witness processed
         sorted_dir_list = []
@@ -51,20 +52,13 @@ class Command(BaseCommand):
                 is_base = False
 
             if dir not in sources:
-                source = Source()
-                source.name = dir
-                # if is_base:
-                #     source.is_default_base_text = True
-                # else:
-                #     source.is_default_base_text = False
-                source.is_base = is_base
-                source.save()
+                source = Source.objects.create(
+                    name=dir,
+                    is_base=is_base
+                )
                 sources[dir] = source
             else:
                 source = sources[dir]
-
-            # if is_base:
-            #     source = base_source
 
             files = next(os.walk(full_dir))[2]
 

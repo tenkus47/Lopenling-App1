@@ -72,7 +72,7 @@ class DiscourseAPI:
                 'content_html': post_data['cooked'],
                 'created': post_data['created_at'],
                 'is_question': (post_data['post_number'] == 1),
-                'is_accepted_answer': post_data['accepted_answer']
+                'is_accepted_answer': post_data.get('accepted_answer')
             }
             if 'raw' in post_data:
                 post['content_raw'] = post_data['raw']

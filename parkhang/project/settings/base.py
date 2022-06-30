@@ -86,6 +86,7 @@ THIRD_PARTY_APPS = [
 PROJECT_APPS = [
     'texts',
     'users',
+    'alignments'
 ]
 
 INSTALLED_APPS = DJANGO_APP + THIRD_PARTY_APPS + PROJECT_APPS
