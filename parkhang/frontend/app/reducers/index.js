@@ -223,8 +223,11 @@ export const getTextFontSize2 = (state: AppState): number => {
 export const isSecondWindowOpen = (state: AppState): number => {
     return ui.isSecondWindowOpen(state.ui);
 };
-export const getSyncId = (state: AppState): number => {
-    return ui.getSyncId(state.ui);
+export const getSyncIdOnScroll = (state: AppState): number => {
+    return ui.getSyncIdOnScroll(state.ui);
+};
+export const getSyncIdOnClick = (state: AppState): number => {
+    return ui.getSyncIdOnCLick(state.ui);
 };
 export const isPanelLinked = (state: AppState): number => {
     return ui.isPanelLinked(state.ui);

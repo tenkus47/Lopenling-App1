@@ -27,7 +27,9 @@ const handleClick=()=>{
 const domNode2=useClickOutSide(()=>setIsOpen(false))
 
   return (<div style={{position:'relative'}} ref={domNode2}>     
-        <button  onClick={handleClick}>{selectedText?selectedText.name:selected}</button>
+        <button  onClick={handleClick}
+        className={styles.listToggelBtn}
+        >{selectedText?selectedText.name:selected}</button>
         {isOpen && <div className={classname(classes)} style={{position:'absolute'}}>
           <AutoSizer>{
               ({width,height})=>(

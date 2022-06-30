@@ -46,7 +46,9 @@
     white-space: pre;
     cursor: pointer;
 }
-
+.textline>span{
+    transition: all 0.4s linear;
+}
 .limitWidth.textFirstRow {
     margin-top: 20px;
 }

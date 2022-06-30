@@ -8,12 +8,12 @@ import type { LocalesData } from "i18n";
 /** Actions types **/
 //Media
 
-export const ACTIVATE_MEDIA="MEDIA_SELECTION";
-export const LOAD_IMAGE_DATA="LOAD_IMAGE_DATA";
-export const LOAD_VIDEO_DATA="LOAD_VIDEO_DATA";
-export const IS_IMAGE_PORTRAIT="IS_IMAGE_PORTRAIT"
+export const ACTIVATE_MEDIA = "MEDIA_SELECTION";
+export const LOAD_IMAGE_DATA = "LOAD_IMAGE_DATA";
+export const LOAD_VIDEO_DATA = "LOAD_VIDEO_DATA";
+export const IS_IMAGE_PORTRAIT = "IS_IMAGE_PORTRAIT";
 // Data
-export const SEARCH_TERM="SEARCH_TERM"; 
+export const SEARCH_TERM = "SEARCH_TERM";
 export const LOAD_INITIAL_DATA = "LOAD_INITIAL_DATA";
 export const LOADING_INITIAL_DATA = "LOADING_INITIAL_DATA";
 export const LOADED_INITIAL_DATA = "LOADED_INITIAL_DATA";
@@ -74,14 +74,14 @@ export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 // UI
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
-export const NO_SELECTED_TEXT="textList/NO_SELECTED_TEXT";
+export const NO_SELECTED_TEXT = "textList/NO_SELECTED_TEXT";
 export const CHANGED_SEARCH_VALUE = "textList/CHANGED_SEARCH_VALUE";
 export const CHANGED_SEARCH_TERM = "textList/CHANGED_SEARCH_TERM";
 export const SEARCHED_TEXT = "textList/SEARCHED_TEXT";
 export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
-export const CHANGED_NOTIFICATION ="notification/CHANGED_NOTIFICATION"
-export const SECOND_WINDOW ="notification/SECOND_WINDOW"
+export const CHANGED_NOTIFICATION = "notification/CHANGED_NOTIFICATION";
+export const SECOND_WINDOW = "notification/SECOND_WINDOW";
 
 export const SELECTED_WITNESS = "text/SELECTED_WITNESS";
 export const SELECTED_WITNESS2 = "text/SELECTED_WITNESS2";
@@ -102,7 +102,6 @@ export const CHANGED_MENU_LIST_VISIBLE = "textList/CHANGED_MENU_LIST_VISIBLE";
 export const CHANGED_TEXT_LIST_WIDTH = "textList/CHANGED_TEXT_LIST_WIDTH";
 export const CHANGED_MENU_LIST_WIDTH = "textList/CHANGED_MENU_LIST_WIDTH";
 
-
 export const CHANGED_WITNESS_SCROLL_POSITION =
     "text/CHANGED_WITNESS_SCROLL_POSITION";
 
@@ -111,8 +110,10 @@ export const EXPORTED_WITNESS = "text/EXPORTED_WITNESS";
 
 export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 
-export const LINK_PANEL="panel/LINKED";
-export const SYNC_ID="imageSync/ID"
+export const LINK_PANEL = "panel/LINKED";
+export const SYNC_ID_ON_SCROLL = "ScrollSync/ID";
+export const SYNC_ID_ON_CLICK = "ClickSync/ID";
+
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
 export const LOADED_USER_SETTINGS = "user/LOADED_USER_SETTINGS";
@@ -123,8 +124,8 @@ export const SELECTED_LOCALE = "i18n/SELECT_LOCALE";
 
 // HOMEPAGE
 export const SELECT_TEXTTITLE = "title/SELECT_TEXTTITLE";
-export const SET_TEXTDATA="title/SET_TEXTDATA";
-export const IS_LOADED="title/IS_LOADED"
+export const SET_TEXTDATA = "title/SET_TEXTDATA";
+export const IS_LOADED = "title/IS_LOADED";
 
 // URLS
 export const TEXTS = "urls/textSelection";
@@ -132,27 +133,26 @@ export const TEXT_URL = "urls/TEXT";
 export const TEXT_URL2 = "urls/TEXT2";
 export const USER_URL = "urls/USER";
 export const TEXTID_ONLY_URL = "urls/TEXTID";
-export const EDITOR="urls/editor";
-export const SEARCH="urls/search";
-export const TEXT_TITLE="urls/textSelected";
+export const EDITOR = "urls/editor";
+export const SEARCH = "urls/search";
 
 /** Action creators **/
 
 export type Action = {
     type: string,
-    payload?: any
+    payload?: any,
 };
 
 export type WitnessAction = Action & {
-    witnessId: number
+    witnessId: number,
 };
 
 export type TextDataAction = Action & {
-    text: api.TextData
+    text: api.TextData,
 };
 
 export type AnnotationAction = Action & {
-    annotation: Annotation
+    annotation: Annotation,
 };
 
 /* DATA */
@@ -161,24 +161,24 @@ export type AnnotationAction = Action & {
 
 export function loadTexts(): Action {
     return {
-        type: LOAD_TEXTS
+        type: LOAD_TEXTS,
     };
 }
 
 export function loadingTexts(): Action {
     return {
-        type: LOADING_TEXTS
+        type: LOADING_TEXTS,
     };
 }
 
 export type TextsAction = Action & {
-    texts: api.TextData[]
+    texts: api.TextData[],
 };
 
 export function loadedTexts(texts: api.TextData[]): TextsAction {
     return {
         type: LOADED_TEXTS,
-        texts
+        texts,
     };
 }
 
@@ -186,23 +186,23 @@ export function loadedTexts(texts: api.TextData[]): TextsAction {
 
 export function loadSources(): Action {
     return {
-        type: LOAD_SOURCES
+        type: LOAD_SOURCES,
     };
 }
 
 export function loadingSources(): Action {
     return {
-        type: LOADING_SOURCES
+        type: LOADING_SOURCES,
     };
 }
 
 export type LoadedSourcesAction = Action & {
-    sources: api.SourceData[]
+    sources: api.SourceData[],
 };
 export function loadedSources(sources: api.SourceData[]): LoadedSourcesAction {
     return {
         type: LOADED_SOURCES,
-        sources
+        sources,
     };
 }
 
@@ -210,37 +210,37 @@ export function loadedSources(sources: api.SourceData[]): LoadedSourcesAction {
 
 export function loadInitialData(): Action {
     return {
-        type: LOAD_INITIAL_DATA
+        type: LOAD_INITIAL_DATA,
     };
 }
 
 export function loadingInitialData(): Action {
     return {
-        type: LOADING_INITIAL_DATA
+        type: LOADING_INITIAL_DATA,
     };
 }
 
 export function loadedInitialData(): Action {
     return {
-        type: LOADED_INITIAL_DATA
+        type: LOADED_INITIAL_DATA,
     };
 }
 
 export function loadingWitnesses(text: api.TextData): TextDataAction {
     return {
         type: LOADING_WITNESSES,
-        text
+        text,
     };
 }
 export function loadingWitnesses2(text: api.TextData): TextDataAction {
     return {
         type: LOADING_WITNESSES2,
-        text
+        text,
     };
 }
 
 export type LoadedWitnessesAction = TextDataAction & {
-    witnesses: api.WitnessData[]
+    witnesses: api.WitnessData[],
 };
 export function loadedWitnesses(
     text: api.TextData,
@@ -249,10 +249,9 @@ export function loadedWitnesses(
     return {
         type: LOADED_WITNESSES,
         text,
-        witnesses
+        witnesses,
     };
 }
-
 
 export function loadedWitnesses2(
     text: api.TextData,
@@ -261,7 +260,7 @@ export function loadedWitnesses2(
     return {
         type: LOADED_WITNESSES2,
         text,
-        witnesses
+        witnesses,
     };
 }
 
@@ -270,32 +269,32 @@ export function loadedWitnesses2(
 export function loadWitnessAnnotations(witnessId: number): WitnessAction {
     return {
         type: LOAD_WITNESS_ANNOTATIONS,
-        witnessId
+        witnessId,
     };
 }
 export function loadWitnessAnnotations2(witnessId: number): WitnessAction {
     return {
         type: LOAD_WITNESS_ANNOTATIONS2,
-        witnessId
+        witnessId,
     };
 }
 
 export function loadingWitnessAnnotations(witnessId: number): WitnessAction {
     return {
         type: LOADING_WITNESS_ANNOTATIONS,
-        witnessId
+        witnessId,
     };
 }
 export function loadingWitnessAnnotations2(witnessId: number): WitnessAction {
     return {
         type: LOADING_WITNESS_ANNOTATIONS2,
-        witnessId
+        witnessId,
     };
 }
 
 export type LoadedWitnessAnnotationsAction = Action & {
     witnessId: number,
-    annotations: api.AnnotationData[]
+    annotations: api.AnnotationData[],
 };
 export function loadedWitnessAnnotations(
     witnessId: number,
@@ -304,13 +303,13 @@ export function loadedWitnessAnnotations(
     return {
         type: LOADED_WITNESS_ANNOTATIONS,
         witnessId,
-        annotations
+        annotations,
     };
 }
 
 export type LoadedWitnessAnnotationsAction2 = Action & {
     witnessId: number,
-    annotations: api.AnnotationData[]
+    annotations: api.AnnotationData[],
 };
 export function loadedWitnessAnnotations2(
     witnessId: number,
@@ -319,18 +318,12 @@ export function loadedWitnessAnnotations2(
     return {
         type: LOADED_WITNESS_ANNOTATIONS2,
         witnessId,
-        annotations
+        annotations,
     };
 }
 
-
-
-
-
-
-
 export type LoadedWitnessAnnotationOperationsAction = WitnessAction & {
-    annotationOperations: api.AnnotationOperationData[]
+    annotationOperations: api.AnnotationOperationData[],
 };
 export function loadedWitnessAnnotationOperations(
     witnessId: number,
@@ -339,7 +332,7 @@ export function loadedWitnessAnnotationOperations(
     return {
         type: LOADED_WITNESS_ANNOTATION_OPERATIONS,
         witnessId,
-        annotationOperations
+        annotationOperations,
     };
 }
 export function loadedWitnessAnnotationOperations2(
@@ -349,13 +342,13 @@ export function loadedWitnessAnnotationOperations2(
     return {
         type: LOADED_WITNESS_ANNOTATION_OPERATIONS2,
         witnessId,
-        annotationOperations
+        annotationOperations,
     };
 }
 
 export type AppliedAnnotationAction = Action & {
     annotationId: AnnotationUniqueId,
-    witnessData: api.WitnessData
+    witnessData: api.WitnessData,
 };
 export function appliedAnnotation(
     annotationId: AnnotationUniqueId,
@@ -364,13 +357,13 @@ export function appliedAnnotation(
     return {
         type: APPLIED_ANNOTATION,
         annotationId,
-        witnessData: witnessData
+        witnessData: witnessData,
     };
 }
 
 export type RemovedAppliedAnnotationAction = Action & {
     annotationId: AnnotationUniqueId,
-    witnessData: api.WitnessData
+    witnessData: api.WitnessData,
 };
 export function removedAppliedAnnotation(
     annotationId: AnnotationUniqueId,
@@ -379,13 +372,13 @@ export function removedAppliedAnnotation(
     return {
         type: REMOVED_APPLIED_ANNOTATION,
         annotationId,
-        witnessData: witnessData
+        witnessData: witnessData,
     };
 }
 
 export type RemovedDefaultAnnotationAction = Action & {
     annotationId: AnnotationUniqueId,
-    witnessData: api.WitnessData
+    witnessData: api.WitnessData,
 };
 export function removedDefaultAnnotation(
     annotationId: AnnotationUniqueId,
@@ -394,13 +387,13 @@ export function removedDefaultAnnotation(
     return {
         type: REMOVED_DEFAULT_ANNOTATION,
         annotationId,
-        witnessData: witnessData
+        witnessData: witnessData,
     };
 }
 
 export type AppliedDefaultAnnotationAction = Action & {
     annotationId: AnnotationUniqueId,
-    witnessData: api.WitnessData
+    witnessData: api.WitnessData,
 };
 export function appliedDefaultAnnotation(
     annotationId: AnnotationUniqueId,
@@ -409,12 +402,12 @@ export function appliedDefaultAnnotation(
     return {
         type: APPLIED_DEFAULT_ANNOTATION,
         annotationId,
-        witnessData: witnessData
+        witnessData: witnessData,
     };
 }
 
 export type CreatedAnnotationAction = Action & {
-    annotation: Annotation
+    annotation: Annotation,
 };
 /**
  * The given annotation has been created and applied.
@@ -424,12 +417,12 @@ export function createdAnnotation(
 ): CreatedAnnotationAction {
     return {
         type: CREATED_ANNOTATION,
-        annotation
+        annotation,
     };
 }
 
 export type UpdatedAnnotationAction = Action & {
-    annotation: Annotation
+    annotation: Annotation,
 };
 /**
  * The given annotation has been updated with new data.
@@ -439,13 +432,13 @@ export function updatedAnnotation(
 ): UpdatedAnnotationAction {
     return {
         type: UPDATED_ANNOTATION,
-        annotation
+        annotation,
     };
 }
 
 export type DeletedAnnotationAction = Action & {
     annotation: Annotation,
-    witness: Witness
+    witness: Witness,
 };
 /**
  * The given annotation has been deleted.
@@ -457,12 +450,12 @@ export function deletedAnnotation(
     return {
         type: DELETED_ANNOTATION,
         annotation,
-        witness
+        witness,
     };
 }
 
 export type SavedAnnotationAction = Action & {
-    annotation: Annotation
+    annotation: Annotation,
 };
 /**
  * The annotation has been succesfully saved and given a
@@ -471,14 +464,14 @@ export type SavedAnnotationAction = Action & {
 export function savedAnnotation(annotation: Annotation): SavedAnnotationAction {
     return {
         type: SAVED_ANNOTATION,
-        annotation
+        annotation,
     };
 }
 
 export type CreatedQuestionAction = Action & {
     annotation: Annotation,
     title: string,
-    content: string
+    content: string,
 };
 /**
  * The given annotation has been created and applied.
@@ -492,33 +485,33 @@ export function createdQuestion(
         type: CREATED_QUESTION,
         annotation,
         title,
-        content
+        content,
     };
 }
 
 export type LoadQuestionAction = Action & {
-    annotation: Annotation
+    annotation: Annotation,
 };
 export function loadQuestion(annotation: Annotation): LoadQuestionAction {
     return {
         type: LOAD_QUESTION,
-        annotation
+        annotation,
     };
 }
 
 export type LoadingQuestionAction = Action & {
-    annotation: Annotation
+    annotation: Annotation,
 };
 export function loadingQuestion(annotation: Annotation): LoadingQuestionAction {
     return {
         type: LOADING_QUESTION,
-        annotation
+        annotation,
     };
 }
 
 export type LoadedQuestionAction = Action & {
     annotation: Annotation,
-    data: {}
+    data: {},
 };
 export function loadedQuestion(
     annotation: Annotation,
@@ -527,7 +520,7 @@ export function loadedQuestion(
     return {
         type: LOADED_QUESTION,
         annotation,
-        data
+        data,
     };
 }
 
@@ -535,7 +528,7 @@ export function loadedQuestion(
 export type UserAction = Action & {
     userId: number,
     userName: string,
-    userLocale: string
+    userLocale: string,
 };
 export function userLoggedIn(
     userId: number,
@@ -546,19 +539,19 @@ export function userLoggedIn(
         type: USER_LOGGED_IN,
         userId,
         userName,
-        userLocale
+        userLocale,
     };
 }
 
 export type LoadedUserSettingsAction = Action & {
-    settings: api.UserSettings
+    settings: api.UserSettings,
 };
 export function loadedUserSettings(
     settings: api.UserSettings
 ): LoadedUserSettingsAction {
     return {
         type: LOADED_USER_SETTINGS,
-        settings
+        settings,
     };
 }
 
@@ -567,16 +560,15 @@ export type noSelectedTextAction = Action & TextDataAction;
 export function noSelectedText(data: api.TextData): noSelectedTextAction {
     return {
         type: NO_SELECTED_TEXT,
-        data
+        data,
     };
 }
-
 
 export type SelectedTextAction = Action & TextDataAction;
 export function selectedText(text: api.TextData): SelectedTextAction {
     return {
         type: SELECTED_TEXT,
-        text
+        text,
     };
 }
 
@@ -584,39 +576,35 @@ export type SelectedTextAction2 = Action & TextDataAction;
 export function selectedText2(text: api.TextData): SelectedTextAction2 {
     return {
         type: SELECTED_TEXT2,
-        text
+        text,
     };
 }
 
-
-
 export type ChangedSearchValueAction = Action & {
-    searchValue: string
+    searchValue: string,
 };
 export function changedSearchValue(
     searchValue: string
 ): ChangedSearchValueAction {
     return {
         type: CHANGED_SEARCH_VALUE,
-        searchValue
+        searchValue,
     };
 }
 
 export type ChangedSearchTermAction = Action & {
-    searchTerm: string
+    searchTerm: string,
 };
-export function changedSearchTerm(
-    searchTerm: string
-): ChangedSearchTermAction {
+export function changedSearchTerm(searchTerm: string): ChangedSearchTermAction {
     return {
         type: CHANGED_SEARCH_TERM,
-        searchTerm
+        searchTerm,
     };
 }
 
 export type SearchedTextAction = Action & {
     textId: number,
-    searchValue: string
+    searchValue: string,
 };
 export function searchedText(
     textId: number,
@@ -625,13 +613,13 @@ export function searchedText(
     return {
         type: SEARCHED_TEXT,
         textId,
-        searchValue
+        searchValue,
     };
 }
 
 export type UpdatedSearchResultsAction = Action & {
     searchValue: string,
-    searchResults: { [text_id: number]: api.TextSearchResultData }
+    searchResults: { [text_id: number]: api.TextSearchResultData },
 };
 export function updatedSearchResults(
     searchValue: string,
@@ -640,14 +628,14 @@ export function updatedSearchResults(
     return {
         type: UPDATED_SEARCH_RESULTS,
         searchValue,
-        searchResults
+        searchResults,
     };
 }
 
 export type SelectedSearchResultAction = Action & {
     textId: number | null,
     start: number | null,
-    length: number | null
+    length: number | null,
 };
 export function selectedSearchResult(
     textId: number | null,
@@ -658,68 +646,66 @@ export function selectedSearchResult(
         type: SELECTED_SEARCH_RESULT,
         textId,
         start,
-        length
+        length,
     };
 }
 
 export type ChangedTextListWidth = Action & {
-    width: number
+    width: number,
 };
 export function changedTextListWidth(width: number): ChangedTextListWidth {
     return {
         type: CHANGED_TEXT_LIST_WIDTH,
-        width
+        width,
     };
 }
 
 export function changedNotification(data) {
     return {
         type: CHANGED_NOTIFICATION,
-        data
+        data,
     };
 }
 
-
 export type ChangedShowPageImagesAction = Action & {
-    showPageImages: boolean
+    showPageImages: boolean,
 };
 export function changedShowPageImages(
     showPageImages: boolean
 ): ChangedShowPageImagesAction {
     return {
         type: CHANGED_SHOW_PAGE_IMAGES,
-        showPageImages
+        showPageImages,
     };
 }
 
 export type ChangedTextFontSizeAction = Action & {
-    fontSize: number
+    fontSize: number,
 };
 export function changedTextFontSize(
     fontSize: number
 ): ChangedTextFontSizeAction {
     return {
         type: CHANGED_TEXT_FONT_SIZE,
-        fontSize
+        fontSize,
     };
 }
 
 export type ChangedTextFontSizeAction2 = Action & {
-    fontSize: number
+    fontSize: number,
 };
 export function changedTextFontSize2(
     fontSize: number
 ): ChangedTextFontSizeAction2 {
     return {
         type: CHANGED_TEXT_FONT_SIZE2,
-        fontSize
+        fontSize,
     };
 }
 
-
 export type SelectedTextWitnessAction = Action & {
     witnessId: number,
-    textId: number
+    textId: number,
 };
 export function selectedTextWitness(
     textId: number,
@@ -728,14 +714,13 @@ export function selectedTextWitness(
     return {
         type: SELECTED_WITNESS,
         textId,
-        witnessId
+        witnessId,
     };
 }
 
-
 export type SelectedTextWitnessAction2 = Action & {
     witnessId: number,
-    textId: number
+    textId: number,
 };
 export function selectedTextWitness2(
     textId: number,
@@ -744,15 +729,13 @@ export function selectedTextWitness2(
     return {
         type: SELECTED_WITNESS2,
         textId,
-        witnessId
+        witnessId,
     };
 }
 
-
-
 export type AddedTemporaryAnnotationAction = Action & {
     annotation: TemporaryAnnotation,
-    isActive: boolean
+    isActive: boolean,
 };
 export function addedTemporaryAnnotation(
     annotation: TemporaryAnnotation,
@@ -761,24 +744,24 @@ export function addedTemporaryAnnotation(
     return {
         type: ADDED_TEMPORARY_ANNOTATION,
         annotation,
-        isActive
+        isActive,
     };
 }
 
 export type RemovedTemporaryAnnotationAction = Action & {
-    annotation: TemporaryAnnotation
+    annotation: TemporaryAnnotation,
 };
 export function removedTemporaryAnnotation(
     annotation: TemporaryAnnotation
 ): RemovedTemporaryAnnotationAction {
     return {
         type: REMOVED_TEMPORARY_ANNOTATION,
-        annotation
+        annotation,
     };
 }
 
 export type ChangedActiveAnnotationAction = Action & {
-    annotation: Annotation | null
+    annotation: Annotation | null,
 };
 
 export function changedActiveAnnotation(
@@ -786,7 +769,7 @@ export function changedActiveAnnotation(
 ): ChangedActiveAnnotationAction {
     return {
         type: CHANGED_ACTIVE_ANNOTATION,
-        annotation
+        annotation,
     };
 }
 
@@ -795,27 +778,25 @@ export function changedActiveTextAnnotation(
 ): ChangedActiveAnnotationAction {
     return {
         type: CHANGED_ACTIVE_TEXT_ANNOTATION,
-        annotation
+        annotation,
     };
 }
 
 export type ChangedTextListVisibleAction = Action & {
-    isVisible: boolean
+    isVisible: boolean,
 };
 export function changedTextListVisible(
     isVisible: boolean
 ): ChangedTextListVisibleAction {
     return {
         type: CHANGED_TEXT_LIST_VISIBLE,
-        isVisible
+        isVisible,
     };
 }
 
-
-
 export type ChangedWitnessScrollPositionAction = Action & {
     witnessId: number,
-    scrollPosition: number
+    scrollPosition: number,
 };
 
 export function changedWitnessScrollPosition(
@@ -825,13 +806,13 @@ export function changedWitnessScrollPosition(
     return {
         type: CHANGED_WITNESS_SCROLL_POSITION,
         witnessId,
-        scrollPosition
+        scrollPosition,
     };
 }
 
 export type ExportWitnessAction = Action & {
     witnessId: number,
-    format: string
+    format: string,
 };
 
 export function exportWitness(
@@ -841,7 +822,7 @@ export function exportWitness(
     return {
         type: EXPORT_WITNESS,
         witnessId,
-        format
+        format,
     };
 }
 
@@ -852,39 +833,39 @@ export function exportedWitness(
     return {
         type: EXPORTED_WITNESS,
         witnessId,
-        format
+        format,
     };
 }
 
 export type ChangedAccountOverlayAction = Action & {
-    isVisible: boolean
+    isVisible: boolean,
 };
 export function changedAccountOverlay(
     isVisible: boolean
 ): ChangedAccountOverlayAction {
     return {
         type: CHANGED_ACCOUNT_OVERLAY,
-        isVisible
+        isVisible,
     };
 }
 
 /* I18N */
 export type UpdateLocalesAction = {
     type: string,
-    payload: LocalesData
+    payload: LocalesData,
 };
 
 export function updateLocales(locales: LocalesData): UpdateLocalesAction {
     return {
         type: UPDATE_LOCALES,
-        payload: locales
+        payload: locales,
     };
 }
 
 export function selectedLocale(locale: string): Action {
     return {
         type: SELECTED_LOCALE,
-        payload: locale
+        payload: locale,
     };
 }
 
@@ -894,95 +875,96 @@ export type TextUrlAction = {
     payload: {
         textId: number,
         witnessId?: number,
-        annotation?: string
-    }
+        annotation?: string,
+    },
 };
-
 
 export function enteredUrl(url: TextUrlAction) {
     return {
         type: TEXT_URL,
-        payload: {}
+        payload: {},
     };
 }
 
-
-export function selectTextTitle(textTitle:string){
-   
+export function selectTextTitle(textTitle: string) {
     return {
-        type:SELECT_TEXTTITLE,
-        payload:textTitle
-    }
+        type: SELECT_TEXTTITLE,
+        payload: textTitle,
+    };
 }
 
-
-
-
-export function setTextData(originData){
+export function setTextData(originData) {
     return {
-        type:SET_TEXTDATA,
-        payload:originData
-    }
+        type: SET_TEXTDATA,
+        payload: originData,
+    };
 }
 
-export function changeIsLoaded(loaded){
+export function changeIsLoaded(loaded) {
     return {
-        type:IS_LOADED,
-        payload:loaded
-    }
+        type: IS_LOADED,
+        payload: loaded,
+    };
 }
 
-export function searchTerm(data){
+export function searchTerm(data) {
     return {
-      type:SEARCH_TERM,
-      payload:data
-    }
+        type: SEARCH_TERM,
+        payload: data,
+    };
 }
 
-export function toggleSecondWindow(data){
+export function toggleSecondWindow(data) {
     return {
-      type:SECOND_WINDOW,
-      payload:data
-    }
+        type: SECOND_WINDOW,
+        payload: data,
+    };
 }
 
-export function changeSyncId(payload){
+export function changeSyncIdOnScroll(payload) {
     return {
-        type:SYNC_ID,
-        payload:payload
-    }
-}
-export function changePanelLink(payload){
-    return {
-        type:LINK_PANEL,
-        payload:payload
-    }
-}
-export function changeImageData(data){
-    return {
-        type:LOAD_IMAGE_DATA,
-        data:data
-    }
-}
-export function changeVideoData(data){
-    return {
-        type:LOAD_VIDEO_DATA,
-        data:data
-    }
+        type: SYNC_ID_ON_SCROLL,
+        payload: payload,
+    };
 }
 
-
-export function mediaSelection(data){
-    const payload=data
+export function changeSyncIdOnClick(payload) {
     return {
-        type:ACTIVATE_MEDIA,
-        payload
-    }
+        type: SYNC_ID_ON_CLICK,
+        payload: payload,
+    };
 }
 
-export function setIsImagePortrait(payload){
+export function changePanelLink(payload) {
     return {
-        type:IS_IMAGE_PORTRAIT,
-        payload
-    }
+        type: LINK_PANEL,
+        payload: payload,
+    };
+}
+export function changeImageData(data) {
+    return {
+        type: LOAD_IMAGE_DATA,
+        data: data,
+    };
+}
+export function changeVideoData(data) {
+    return {
+        type: LOAD_VIDEO_DATA,
+        data: data,
+    };
+}
+
+export function mediaSelection(data) {
+    const payload = data;
+    return {
+        type: ACTIVATE_MEDIA,
+        payload,
+    };
+}
+
+export function setIsImagePortrait(payload) {
+    return {
+        type: IS_IMAGE_PORTRAIT,
+        payload,
+    };
 }

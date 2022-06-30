@@ -18,8 +18,6 @@ import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
 
-
-
 export type Props = {
     paginated: boolean,
     pageImagesVisible: boolean,
@@ -44,9 +42,11 @@ export type Props = {
     } | null,
     searchValue: string | null,
     fontSize: number,
-    isSecondWindowOpen:Boolean,
-    imageData:{},
-    isPanelLinked:boolean
+    isSecondWindowOpen: Boolean,
+    imageData: {},
+    isPanelLinked: boolean,
+    changeSyncIdOnClick: () => void,
+    changeSyncIdOnScroll: () => void,
 };
 
 let textDetailId = 0;
@@ -110,21 +110,19 @@ class TextDetail extends React.Component<Props> {
                     searchValue={this.props.searchValue}
                     fontSize={this.props.fontSize}
                     isSecondWindowOpen={this.props.isSecondWindowOpen}
-                    changeSyncId={this.props.changeSyncId}
+                    changeSyncIdOnScroll={this.props.changeSyncIdOnScroll}
+                    changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                     imageData={this.props.imageData}
                     isPanelLinked={this.props.isPanelLinked}
-                    >
-                      
-                    </SplitTextComponent>
+                ></SplitTextComponent>
             );
         }
 
         let textComponents = [textComponent];
-        
-    
+
         return (
             <div
-                style={{height:'100%'}}
+                style={{ height: "100%" }}
                 className={classnames(
                     styles.textDetail,
                     utilStyles.flex,
@@ -132,10 +130,9 @@ class TextDetail extends React.Component<Props> {
                 )}
                 key={this.key}
             >
-            
                 <TextDetailHeadingContainer />
                 <Loader loaded={!this.props.loading} />
-                    
+
                 <div
                     className={classnames(
                         styles.textContainer,
@@ -143,9 +140,7 @@ class TextDetail extends React.Component<Props> {
                     )}
                 >
                     {!this.props.loading ? textComponents : <div />}
-                </div>   
-               
-                    
+                </div>
             </div>
         );
     }

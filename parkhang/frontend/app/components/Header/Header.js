@@ -15,13 +15,12 @@ import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo.png";
 import UserIcon from "images/discourse_user.svg";
-import {NavLink} from 'redux-first-router-link'
-import Search from 'components/search'
+import { NavLink } from "redux-first-router-link";
 import TranslateButton from "bodyComponent/utility/TranslateButton";
 
 type LoginProps = {
     successRedirect: string,
-    csrfToken: string
+    csrfToken: string,
 };
 
 export const LoginControls = (props: LoginProps) => (
@@ -32,15 +31,20 @@ export const LoginControls = (props: LoginProps) => (
             </a>
         </div>
         <form method="post" action="/discourse/login_redirect/">
-            <button
-                className={classnames(styles.loginButton)}
-                type="submit"
-            >
+            <button className={classnames(styles.loginButton)} type="submit">
                 <UserIcon width="11" />
                 <FormattedMessage id="header.login" />
             </button>
-            <input type="hidden" name="csrfmiddlewaretoken" value={props.csrfToken} />
-            <input type="hidden" name="success_redirect" value={props.successRedirect} />
+            <input
+                type="hidden"
+                name="csrfmiddlewaretoken"
+                value={props.csrfToken}
+            />
+            <input
+                type="hidden"
+                name="success_redirect"
+                value={props.successRedirect}
+            />
         </form>
     </div>
 );
@@ -48,7 +52,7 @@ export const LoginControls = (props: LoginProps) => (
 type LoggedInControlsProps = {
     user: User,
     overlayVisible: boolean,
-    accountButtonClicked: () => void
+    accountButtonClicked: () => void,
 };
 
 export const LoggedInControls = (props: LoggedInControlsProps) => (
@@ -57,9 +61,19 @@ export const LoggedInControls = (props: LoggedInControlsProps) => (
             name={props.user.name}
             onClick={props.accountButtonClicked}
         />
-        {props.overlayVisible && (
+        <div style={{ display: "flex", flexDirection: "column", fontSize: 10 }}>
+            <div>{props.user.name}</div>
+            <a
+                href="/discourse/logout"
+                style={{ color: "black", fontSize: 12 }}
+            >
+                logout
+            </a>
+        </div>
+        {console.log(props.overlayVisible)}
+        {/* {props.overlayVisible && (
             <AccountOverlay top={60} right={0} user={props.user} />
-        )}
+        )} */}
     </div>
 );
 
@@ -71,7 +85,7 @@ type HeaderProps = {
     intl: { formatMessage: ({ [id: string]: string }) => string },
     accountButtonClicked: () => void,
     successRedirect: string,
-    csrfToken: string
+    csrfToken: string,
 };
 
 export const Header = (props: HeaderProps) => {
@@ -85,16 +99,18 @@ export const Header = (props: HeaderProps) => {
             />
         );
     } else {
-        controls = <LoginControls 
-                    successRedirect={props.successRedirect} 
-                    csrfToken={props.csrfToken}
-                    />;
+        controls = (
+            <LoginControls
+                successRedirect={props.successRedirect}
+                csrfToken={props.csrfToken}
+            />
+        );
     }
 
     let toggleTitle = props.intl.formatMessage({
-        id: "header.toggleTextList"
+        id: "header.toggleTextList",
     });
-    const image_location =lopenlingLogo
+    const image_location = lopenlingLogo;
     return (
         <header className={styles.header}>
             {/* <NavigationButton
@@ -102,32 +118,40 @@ export const Header = (props: HeaderProps) => {
                 className={styles.navigationButton}
                 title={toggleTitle}
             /> */}
-      <div style={{display:'flex'}}>
-      {
-   !window.location.href.includes('witnesses')
-   &&  <a href='http://www.lopenling.org'>
-           <div  className={styles.logo}>
-                <img src={image_location} height="30" />
+            <div style={{ display: "flex" }}>
+                {!window.location.href.includes("witnesses") && (
+                    <NavLink to="/">
+                        <div className={styles.logo}>
+                            <img src={image_location} height="30" />
+                        </div>
+                    </NavLink>
+                )}
+                <div className={styles.navlinks}>
+                    <ul>
+                        <li>
+                            <NavLink to="/textSelection">
+                                <FormattedMessage id={"header.texts"} />
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/editor">
+                                <FormattedMessage id={"header.editor"} />
+                            </NavLink>
+                        </li>
+                        <li>
+                            <a href="http://www.parkhang.lopenling.org">
+                                <FormattedMessage id={"lopenlingForum"} />
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            
-           </a> }
-             <div className={styles.navlinks}>
-                 <ul>
-                     <li><NavLink to='/textSelection'><FormattedMessage id={'header.texts'}/></NavLink></li>
-                     <li><NavLink to='/editor'><FormattedMessage id={'header.editor'}/></NavLink></li>
-                     <li><NavLink to='/search/'><FormattedMessage id={'leftbar.search'}/></NavLink></li>
-                 </ul>
-             </div>
-      </div>
-    
-             {
-   window.location.href.includes('witnesses') && <Search/>}      
-         
-         <div className={styles.loginSection}>  
-             {/* <LocaleSwitcher /> */}
-             <TranslateButton/>
-                 {controls}
-             </div> 
+
+            <div className={styles.loginSection}>
+                {/* <LocaleSwitcher /> */}
+                <TranslateButton />
+                {controls}
+            </div>
         </header>
     );
 };
@@ -145,7 +169,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
         textListIsVisible: getTextListVisible(state),
         accountOverlayVisible: getAccountOverlayVisible(state),
         successRedirect: successRedirect,
-        csrfToken: csrfToken
+        csrfToken: csrfToken,
     };
 };
 
@@ -162,14 +186,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             dispatchProps.dispatch(
                 actions.changedAccountOverlay(!stateProps.accountOverlayVisible)
             );
-        }
+        },
     };
 };
 
-const HeaderContainer = connect(
-    mapStateToProps,
-    null,
-    mergeProps
-)(Header);
+const HeaderContainer = connect(mapStateToProps, null, mergeProps)(Header);
 
 export default injectIntl(HeaderContainer);

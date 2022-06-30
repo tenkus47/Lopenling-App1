@@ -17,43 +17,27 @@ import * as actions from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
 import User from "lib/User";
-import Annotation, {
-    ANNOTATION_TYPES
-} from "lib/Annotation";
+import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import AnnotatedText, {
     WORKING_VERSION_ANNOTATION_ID,
 } from "lib/AnnotatedText";
 import * as TextStore from "state_helpers/TextStore";
-import {
-    updateIntl
-} from "react-intl-redux";
+import { updateIntl } from "react-intl-redux";
 import Cookies from "js-cookie";
-import {
-    i18n_cookie_name
-} from "i18n";
-import {
-    compare as tibetanCompare
-} from "tibetan-sort-js";
+import { i18n_cookie_name } from "i18n";
+import { compare as tibetanCompare } from "tibetan-sort-js";
 import getWitnessAnnotatedText from "reducers/getWitnessAnnotatedText";
-import type {
-    TextExporter
-} from "lib/TextExporter";
+import type { TextExporter } from "lib/TextExporter";
 import PlainTextExporter from "lib/PlainTextExporter";
 import DocxExporter from "lib/DocxExporter";
 
 import * as api from "api";
-import {
-    BATCH
-} from "redux-batched-actions";
+import { BATCH } from "redux-batched-actions";
 
 import * as constants from "app_constants";
 
-import type {
-    Saga
-} from "redux-saga";
-import {
-    fetchTexts
-} from "../api";
+import type { Saga } from "redux-saga";
+import { fetchTexts } from "../api";
 
 /**
  * Get the required delay for a failed request.
@@ -105,10 +89,7 @@ const SAGA_REQUEST = "SAGA_REQUEST";
 function* watchRequests() {
     const requestChan = yield actionChannel(SAGA_REQUEST);
     while (true) {
-        const {
-            payload,
-            action
-        } = yield take(requestChan);
+        const { payload, action } = yield take(requestChan);
         let complete = false;
         let attempts = 0;
         while (!complete) {
@@ -138,10 +119,8 @@ function* watchRequests() {
  * @param callback
  * @return {Function}
  */
-function reqAction(callback): (actions.Action) => Generator < * , *, * > {
-    return function* (action: actions.Action): Generator < * ,
-    *,
-    * > {
+function reqAction(callback): (actions.Action) => Generator<*, *, *> {
+    return function* (action: actions.Action): Generator<*, *, *> {
         yield put({
             type: SAGA_REQUEST,
             payload: callback,
@@ -150,7 +129,7 @@ function reqAction(callback): (actions.Action) => Generator < * , *, * > {
     };
 }
 
-function applyAnnotation(action: actions.AppliedAnnotationAction): Promise < * > {
+function applyAnnotation(action: actions.AppliedAnnotationAction): Promise<*> {
     return (call(
         api.applyAnnotation,
         action.annotationId,
@@ -218,7 +197,7 @@ function* watchAppliedDefaultAnnotation() {
 
 // INITIAL DATA
 
-export function* loadTexts(): Saga < void > {
+export function* loadTexts(): Saga<void> {
     try {
         const texts = yield call(api.fetchTexts);
         if (texts) {
@@ -241,7 +220,7 @@ function* loadSources() {
     }
 }
 
-function* loadInitialData(): Saga < void > {
+function* loadInitialData(): Saga<void> {
     yield all([call(loadTexts), call(loadSources)]);
 
     yield put(actions.loadedInitialData());
@@ -257,21 +236,21 @@ export function* watchLoadInitialData(): any {
 
 // SELECTED TEXT
 
-function* selectedText(action: actions.SelectedTextAction): Saga < void > {
+function* selectedText(action: actions.SelectedTextAction): Saga<void> {
     yield put(actions.loadingWitnesses(action.text));
     yield all([call(loadInitialTextData, action)]);
 }
 
-function* watchSelectedText(): Saga < void > {
+function* watchSelectedText(): Saga<void> {
     yield takeEvery(actions.SELECTED_TEXT, selectedText);
 }
 
-function* selectedText2(action: actions.SelectedTextAction): Saga < void > {
+function* selectedText2(action: actions.SelectedTextAction): Saga<void> {
     yield put(actions.loadingWitnesses2(action.text));
     yield all([call(loadInitialTextData2, action)]);
 }
 
-function* watchSelectedText2(): Saga < void > {
+function* watchSelectedText2(): Saga<void> {
     yield takeEvery(actions.SELECTED_TEXT2, selectedText2);
 }
 
@@ -292,7 +271,7 @@ function* loadInitialTextData(action: actions.TextDataAction) {
             }
         }
         if (workingWitnessData) {
-            const workingWitness: Witness = yield(select(
+            const workingWitness: Witness = yield (select(
                 reducers.getWitness,
                 workingWitnessData.id
             ): any);
@@ -307,17 +286,20 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 actions.selectedTextWitness(action.text.id, workingWitness.id)
             );
         }
-        let textId= action.text.id; 
-        const AlignmentData=yield call(api.fetchAlignment,textId);
+        let textId = action.text.id;
+        const AlignmentData = yield call(api.fetchAlignment, textId);
 
-        const ImageData = yield call(api.fetchImageWithAlignmentId,AlignmentData.alignments.image[0].alignment);
-        const VideoData =yield call(api.fetchVideoWithAlignmentId,AlignmentData.alignments.video[0].alignment);
-    //    console.log(AlignmentData)
+        const ImageData = yield call(
+            api.fetchImageWithAlignmentId,
+            AlignmentData.alignments.image[0].alignment
+        );
+        const VideoData = yield call(
+            api.fetchVideoWithAlignmentId,
+            AlignmentData.alignments.video[0].alignment
+        );
+        //    console.log(AlignmentData)
         yield put(actions.changeImageData(ImageData));
         yield put(actions.changeVideoData(VideoData));
-
-
-
     } catch (e) {
         console.log("FAILED loadInitialTextData %o", e);
     }
@@ -377,7 +359,7 @@ function* loadInitialTextData2(action: actions.TextDataAction) {
             }
         }
         if (workingWitnessData) {
-            const workingWitness: Witness = yield(select(
+            const workingWitness: Witness = yield (select(
                 reducers.getWitness2,
                 workingWitnessData.id
             ): any);
@@ -738,7 +720,7 @@ function* watchChangedTextFontSize() {
 
 // BATCHED ACTIONS
 
-function* dispatchedBatch(action): Saga < void > {
+function* dispatchedBatch(action): Saga<void> {
     const actions = action.payload;
     for (let i = 0; i < actions.length; i++) {
         const batchedAction = actions[i];
@@ -786,17 +768,28 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
         );
 
         const witnesses = yield call(api.fetchTextWitnesses, textData);
-        const AlignmentData=yield call(api.fetchAlignment,textId);
+        const AlignmentData = yield call(api.fetchAlignment, textId);
 
-        const ImageData = yield call(api.fetchImageWithAlignmentId,AlignmentData.alignments.image[0].alignment);
-        const VideoData =yield call(api.fetchVideoWithAlignmentId,AlignmentData.alignments.video[0].alignment);
-    //    console.log(AlignmentData)
+        //Search image Alignment on basis of textId and WitnessId
+        console.log(witnessId);
+        let alignmentImage = AlignmentData.alignments.image.find(
+            (l) => l.witness === witnessId
+        );
+        const ImageData = yield call(
+            api.fetchImageWithAlignmentId,
+            alignmentImage
+        );
+        const VideoData = yield call(
+            api.fetchVideoWithAlignmentId,
+            AlignmentData.alignments.video[0].alignment
+        );
+        //    console.log(AlignmentData)
         yield put(actions.changeImageData(ImageData));
         yield put(actions.changeVideoData(VideoData));
 
         yield put(actions.loadedWitnesses(textData, witnesses));
 
-        let textWitnesses: Array < Witness > = [];
+        let textWitnesses: Array<Witness> = [];
         do {
             textWitnesses = yield select(reducers.getTextWitnesses, textId);
             if (textWitnesses.length === 0) yield delay(100);
@@ -966,56 +959,6 @@ function* watchTextIdonlyUrlActions() {
     yield takeEvery(actions.TEXTID_ONLY_URL, loadedTextIdonlyUrl);
 }
 
-// //url /title/:title
-
-function* loadTextTitle(action) {
-    let {
-        title
-    } = action.payload;
-
-    console.log(title);
-
-    if (action.payload) {
-    let texts = yield select(reducers.getTexts);
-    let TextIdofTitle = texts[4].id;
-
-        const textId = TextIdofTitle;
-        let textData: api.TextData;
-        do {
-            textData = yield select(reducers.getText, textId, true);
-            if (!textData) yield delay(100);
-        } while (textData === null);
-
-        yield put(actions.loadingWitnesses(textData));
-        const witnesses = yield call(api.fetchTextWitnesses, textData);
-        const selectedTextAction = actions.selectedText(textData);
-
-        yield put(actions.loadedWitnesses(textData, witnesses));
-        yield put(actions.selectedText2(textData));
-        yield put(actions.loadedWitnesses2(textData, witnesses));
-
-        for (const witness of witnesses) {
-            if (witness.is_working) {
-                var workingWitnessData = witness;
-            }
-            if (witness.is_base) {
-                var baseWitnessData = witness;
-            }
-        }
-
-        const selectedWitnessAction = actions.selectedTextWitness(
-            textData.id,
-            workingWitnessData.id
-        );
-        yield put(selectedTextAction);
-        yield put(selectedWitnessAction);
-    }
-}
-
-function* watchTextTitleUrlAction() {
-    yield takeEvery(actions.TEXT_TITLE, loadTextTitle);
-}
-
 //Home
 
 function* selectTextUrl(action) {
@@ -1026,7 +969,7 @@ function* selectTextUrl(action) {
     yield put(noSelectedTextAction);
     const noTitleSelected = actions.selectTextTitle(null);
     yield put(noTitleSelected);
-    yield delay(500);
+
     const textdata = yield select(reducers.getTextTitle);
     let texts;
     let setTextData;
@@ -1130,7 +1073,7 @@ function* watchSearchUrl() {
  * @type {Object.<string, function>}
  */
 const typeCalls: {
-    [string]: (any) => Saga < void >
+    [string]: (any) => Saga<void>,
 } = {
     [actions.LOAD_INITIAL_DATA]: loadInitialData,
     [actions.LOAD_WITNESS_ANNOTATIONS]: loadWitnessAnnotations,
@@ -1160,12 +1103,11 @@ const typeCalls: {
     [actions.LOAD_QUESTION]: loadQuestion,
     [actions.EDITOR]: editorUrl,
     [actions.SEARCH]: searchUrl,
-    [actions.TEXT_TITLE]: loadTextTitle,
 };
 
 /** Root **/
 
-export default function* rootSaga(): Saga < void > {
+export default function* rootSaga(): Saga<void> {
     yield all([
         call(watchLoadInitialData),
         call(watchSelectedText),
@@ -1201,6 +1143,5 @@ export default function* rootSaga(): Saga < void > {
         call(watchSearchUrl),
         call(watchSelectedText2),
         call(watchSelectedTextWitness2),
-        call(watchTextTitleUrlAction),
     ]);
 }

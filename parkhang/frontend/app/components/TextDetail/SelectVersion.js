@@ -1,23 +1,25 @@
 // @flow
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect, memo } from "react";
 import classnames from "classnames";
-import { FormattedMessage,injectIntl } from "react-intl";
+import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
 
 export type Props = {
     witnesses: Witness[],
     activeWitness: Witness | null,
-    onSelectedWitness: (witness: Witness) => void
+    onSelectedWitness: (witness: Witness) => void,
+    user: {},
 };
 
-const SelectVersion=(props:Props)=> {
-    const [temp,setTemp]=useState(0);
+const SelectVersion = (props: Props) => {
     let witnesses;
-    let tabs = [];
-    let classes=[styles.selectOptions];
+    let tabName = "";
+    let r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
+    const [temp, setTemp] = useState(0);
+    let classes = [styles.selectOptions];
     if (props.witnesses) {
-        witnesses = props.witnesses.map(witness => witness);
+        witnesses = props.witnesses.map((witness) => witness);
         classes = [styles.tab];
         witnesses.sort((a, b) => {
             if (a.isWorking) {
@@ -34,28 +36,46 @@ const SelectVersion=(props:Props)=> {
             }
             return 0;
         });
+        witnesses = witnesses.sort((a, b) => a.id - b.id);
     }
 
-    useEffect(()=>{
-        if(props.witnesses.length>0){
-            props.onSelectedWitness(witnesses[temp])
+    useEffect(() => {
+        if (props.witnesses.length > 0) {
+            props.onSelectedWitness(witnesses[temp]);
         }
-    },[temp])
+    }, [temp]);
+    return (
+        <select
+            onChange={(e) => setTemp(e.target.value)}
+            className={styles.selectVersion}
+            value={r}
+        >
+            {witnesses.map((witness, key) => {
+                if (witness.id === props.activeWitness.id)
+                    classes.push(styles.selected);
+                tabName = witness.source.name;
 
-    return <select onChange={(e)=>setTemp(e.target.value)} className={styles.selectVersion}>
-        {witnesses.map((witness,key)=>{
-               if (witness === props.activeWitness) classes.push(styles.selected);
-               let tabName = witness.source.name;
-               if (witness.isWorking) {
-                tabName = (
-                   props.intl.locale==='en'?"working":'མཉམ་འབྲེལ་པར་མ།'
-                ) }
-                return (<option key={`versionSelect-${key}`} value={key} className={classes}>
-                    {tabName} 
-                </option>)}
-                )
-    }
-    </select>;
-}
+                if (witness.isWorking) {
+                    tabName =
+                        props.intl.locale === "en"
+                            ? props.user.name === "User"
+                                ? "Working"
+                                : "My Edition"
+                            : "མཉམ་འབྲེལ་པར་མ།";
+                }
 
-export default injectIntl(SelectVersion)
+                return (
+                    <option
+                        key={`versionSelect-${key}`}
+                        value={key}
+                        className={classes}
+                    >
+                        {tabName}
+                    </option>
+                );
+            })}
+        </select>
+    );
+};
+
+export default memo(injectIntl(SelectVersion));
