@@ -12,26 +12,27 @@ config = {
         "Dominant": {
             "pecha": "O2FCA4A99",
             "branch": "export-lopenling",
-            "has_layout": False
+            "has_layout": False,
         },
         "སྡེ་དགེ": {
             "pecha": "DF8F32338",
             "branch": "export-lopenling",
-            "has_layout": True
+            "has_layout": True,
         },
         "སྣར་ཐང": {
             "pecha": "D9755B799",
             "branch": "export-lopenling",
-            "has_layout": True
+            "has_layout": True,
         },
         "པེ་ཅིན": {
             "pecha": "D0A20E299",
             "branch": "export-lopenling",
-            "has_layout": True
+            "has_layout": True,
         },
         "ཅོ་ནེ": {},
-    }
+    },
 }
+
 
 def download_file(url, output_path):
     print(url)
@@ -42,22 +43,24 @@ def download_file(url, output_path):
 
     output_path.write_text(r.text)
 
+
 def get_text_file_url(version, file_name):
     text_file_url = config["url_template"].format(
         pecha_id=config["versions"][version]["pecha"],
         view=config["versions"][version]["branch"],
-        file_name=file_name
+        file_name=file_name,
     )
     return text_file_url
+
 
 def download_version(version):
     if not config["versions"][version]:
         return
 
     version_output_path = OUTPUT / version
-    version_output_path.mkdir(exist_ok=True)
+    version_output_path.mkdir(exist_ok=True, parents=True)
 
-    text_file_name = config['text_title']
+    text_file_name = config["text_title"]
     text_file_path = version_output_path / f"{text_file_name}.txt"
 
     text_file_url = get_text_file_url(version, text_file_name)
@@ -71,9 +74,11 @@ def download_version(version):
     text_file_url = get_text_file_url(version, text_file_name)
     download_file(text_file_url, text_file_path)
 
+
 def main():
     for version in config["versions"]:
         download_version(version)
+
 
 if __name__ == "__main__":
     main()
