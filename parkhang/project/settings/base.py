@@ -28,12 +28,12 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'bo'
+LANGUAGE_CODE = "bo"
 
 # For Sites, used by allauth
 SITE_ID = 1
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -42,14 +42,11 @@ USE_L10N = True
 USE_TZ = True
 
 LOCALE_PATHS = [
-    ROOT_DIR / 'project' / 'locale',
-    ROOT_DIR / 'project' / 'translations' / 'allauth',
+    ROOT_DIR / "project" / "locale",
+    ROOT_DIR / "project" / "translations" / "allauth",
 ]
 
-LANGUAGES = [
-    ('en', _('English')),
-    ('bo', _('Tibetan'))
-]
+LANGUAGES = [("en", _("English")), ("bo", _("Tibetan"))]
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -68,25 +65,26 @@ WSGI_APPLICATION = "project.wsgi.application"
 # APPs
 # ------------------------------------------------------------------------------
 DJANGO_APP = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'django.contrib.postgres',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "django.contrib.postgres",
 ]
 
 THIRD_PARTY_APPS = [
-    'rest_framework',
-    'webpack_loader',
+    "rest_framework",
+    "webpack_loader",
 ]
 
 PROJECT_APPS = [
-    'texts',
-    'users',
-    'alignments'
+    "texts",
+    "users",
+    "alignments",
+    "api",
 ]
 
 INSTALLED_APPS = DJANGO_APP + THIRD_PARTY_APPS + PROJECT_APPS
@@ -95,70 +93,69 @@ INSTALLED_APPS = DJANGO_APP + THIRD_PARTY_APPS + PROJECT_APPS
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
     # default
-    'django.contrib.auth.backends.ModelBackend',
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
 ACCOUNT_EMAIL_REQUIRED = True
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = "/"
 
 # PASSWORDS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # MIDDLEWARE
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [str(ROOT_DIR / 'project' / 'templates')],
-        'OPTIONS': {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [str(ROOT_DIR / "project" / "templates")],
+        "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
             "loaders": [
                 "django.template.loaders.filesystem.Loader",
                 "django.template.loaders.app_directories.Loader",
             ],
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
-
 
 
 # STATIC
@@ -167,10 +164,10 @@ TEMPLATES = [
 STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(ROOT_DIR / 'frontend' / 'static'), str(ROOT_DIR / 'static')]
+STATICFILES_DIRS = [str(ROOT_DIR / "frontend" / "static"), str(ROOT_DIR / "static")]
 
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
@@ -181,10 +178,10 @@ STATICFILES_FINDERS = [
 # django-rest-framework
 # -------------------------------------------------------------------------------
 REST_FRAMEWORK = {
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.SessionAuthentication',
-    )
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+    ),
 }
 
 # Authentication settings
@@ -203,29 +200,28 @@ EMAIL_BACKEND = env(
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
-DEFAULT_FROM_EMAIL = 'Nalanda Works <server@nalanda.works>'
+DEFAULT_FROM_EMAIL = "Nalanda Works <server@nalanda.works>"
 
 # WEBPACK
 WEBPACK_LOADER = {
-    'DEFAULT': {
-        'CACHE':not DEBUG,
-        'BUNDLE_DIR_NAME': '/bundles/',
-        'POLL_INTERVAL': 0.1,
-        'TIMEOUT': None,
-        'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
-        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
+    "DEFAULT": {
+        "CACHE": not DEBUG,
+        "BUNDLE_DIR_NAME": "/bundles/",
+        "POLL_INTERVAL": 0.1,
+        "TIMEOUT": None,
+        "IGNORE": [r".+\.hot-update.js", r".+\.map"],
+        "STATS_FILE": str(ROOT_DIR / "frontend/webpack-stats.json"),
     }
 }
 
 # Discourse SSO
-DISCOURSE_SSO_KEY = env('DISCOURSE_SSO_KEY')
-DISCOURSE_SSO_REDIRECT = env('DISCOURSE_SSO_REDIRECT')
-DISCOURSE_SSO_LOGIN_URL = env('DISCOURSE_SSO_LOGIN_URL')
-DISCOURSE_SSO_SIGNUP_URL = env('DISCOURSE_SSO_SIGNUP_URL')
+DISCOURSE_SSO_KEY = env("DISCOURSE_SSO_KEY")
+DISCOURSE_SSO_REDIRECT = env("DISCOURSE_SSO_REDIRECT")
+DISCOURSE_SSO_LOGIN_URL = env("DISCOURSE_SSO_LOGIN_URL")
+DISCOURSE_SSO_SIGNUP_URL = env("DISCOURSE_SSO_SIGNUP_URL")
 
 # Discourse API
-DISCOURSE_SITE = env('DISCOURSE_SITE')
-DISCOURSE_API_KEY = env('DISCOURSE_API_KEY')
-DISCOURSE_SYSTEM_USER = env('DISCOURSE_SYSTEM_USER')
-DISCOURSE_QA_CATEGORY_ID = env('DISCOURSE_QA_CATEGORY_ID')
-
+DISCOURSE_SITE = env("DISCOURSE_SITE")
+DISCOURSE_API_KEY = env("DISCOURSE_API_KEY")
+DISCOURSE_SYSTEM_USER = env("DISCOURSE_SYSTEM_USER")
+DISCOURSE_QA_CATEGORY_ID = env("DISCOURSE_QA_CATEGORY_ID")
