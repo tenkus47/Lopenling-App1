@@ -140,6 +140,11 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class FeaturedTextSerializer(serializers.ModelSerializer):
+    title = serializers.SerializerMethodField()
+
     class Meta:
         model = FeaturedText
-        fields = ("text", "order", "description")
+        fields = ("text", "title", "order", "description")
+
+    def get_title(self, instance):
+        return instance.text.name
