@@ -4,6 +4,5 @@ psycopg2==2.8.6  # https://github.com/psycopg/psycopg2
 
 django-debug-toolbar==1.7
 coverage==4.3.4
-django-extensions==3.1.5  # https://github.com/django-extensions/django-extensions
 pygraphviz==1.6  #https://pypi.org/project/pygraphviz
 pydot==1.4.2  # https://github.com/pydot/pydot
