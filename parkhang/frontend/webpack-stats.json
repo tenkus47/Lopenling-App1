@@ -58,6 +58,7 @@
       "parkhang-5473845eb9d751e66b1c.js",
       "styles-5473845eb9d751e66b1c.css.map",
       "parkhang-5473845eb9d751e66b1c.js.map"
+
     ]
   },
   "publicPath": "/static/bundles/"
