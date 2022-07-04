@@ -28,7 +28,7 @@ export const CONTROLS_MARGIN_LEFT = 10;
 
 export type QuestionData = {
     loading: boolean,
-    questions: Question[]
+    questions: Question[],
 };
 
 export type Props = {
@@ -65,24 +65,24 @@ export type Props = {
         title: string,
         content: string
     ) => void,
-    list: List | null
+    list: List | null,
+    closeAnnotation: () => void,
 };
 
-type AnchorPoint = "top" | "left" | "bottom" | "right"; 
+type AnchorPoint = "top" | "left" | "bottom" | "right";
 
 const anchorPoints = {
     top: 1,
     left: 2,
     bottom: 3,
-    right: 4
+    right: 4,
 };
 
- class AnnotationControls extends React.Component<Props> {
+class AnnotationControls extends React.Component<Props> {
     controls: HTMLDivElement | null;
     arrow: HTMLDivElement | null;
     arrowDs: HTMLDivElement | null;
     fake_login_toggle: null;
-
 
     constructor(props: Props) {
         super(props);
@@ -90,14 +90,11 @@ const anchorPoints = {
         this.controls = null;
         this.arrow = null;
         this.arrowDs = null;
-
-       
-         
     }
 
     componentDidMount() {
         this.updatePosition();
-        this.fake_login_toggle=flagsmith.hasFeature('fake_login_toggle');
+        this.fake_login_toggle = flagsmith.hasFeature("fake_login_toggle");
     }
 
     componentDidUpdate() {
@@ -222,13 +219,13 @@ const anchorPoints = {
                     selectedLeft - width - arrow.offsetWidth + "px";
             } else {
                 // right-side of selection
-               
-                // arrow.className = styles.arrowLeft;
-                // arrow.style.left = -arrow.offsetWidth + "px";
-                // controls.style.left = selectedLeft + selectedWidth + arrow.offsetWidth + "px";
 
-                controls.style.right = 0 +'px';
-                
+                arrow.className = styles.arrowLeft;
+                arrow.style.left = -arrow.offsetWidth + "px";
+                controls.style.left =
+                    selectedLeft + selectedWidth + arrow.offsetWidth + "px";
+
+                // controls.style.right = 0 + "px";
             }
 
             arrow.style.top =
@@ -253,21 +250,21 @@ const anchorPoints = {
         height: number,
         topGap: number,
         bottomGap: number,
-        viewPortWidth: number | null
+        viewPortWidth: number | null,
     } | null {
         if (!this.props.selectedElementIds) {
             return null;
         }
 
-        const lastSelectedElementId = this.props.selectedElementIds[
-            this.props.selectedElementIds.length - 1
-        ];
+        const lastSelectedElementId =
+            this.props.selectedElementIds[
+                this.props.selectedElementIds.length - 1
+            ];
         const lastElement = document.getElementById(lastSelectedElementId);
         const firstSelectedElementId = this.props.selectedElementIds[0];
         const firstElement = document.getElementById(firstSelectedElementId);
 
         const splitTextRect = this.props.splitTextRect;
-
         let extraTop = 0;
         let scrollTop = 0;
 
@@ -294,7 +291,7 @@ const anchorPoints = {
                 height: 1,
                 topGap: 0,
                 bottomGap: 0,
-                viewPortWidth: 1
+                viewPortWidth: 1,
             };
         }
         const top = lastElement.offsetTop + extraTop;
@@ -328,7 +325,7 @@ const anchorPoints = {
             height: height,
             topGap: topGap,
             bottomGap: bottomGap,
-            viewPortWidth: viewPortWidth
+            viewPortWidth: viewPortWidth,
         };
     }
 
@@ -348,10 +345,9 @@ const anchorPoints = {
             breakSelected = true;
         }
         // the selected word/sentence is props.anotationsData
-        
+
         if (props.annotationsData) {
-            props.annotationsData.map(annotationData => {
-               
+            props.annotationsData.map((annotationData) => {
                 let isEditing = false;
                 let isActive = false;
                 if (annotationData.isTemporary) {
@@ -371,7 +367,7 @@ const anchorPoints = {
                             annotationData={annotationData}
                             key={annotationData.annotation.uniqueId}
                             isActive={isActive}
-                            saveAnnotationHandler={content => {
+                            saveAnnotationHandler={(content) => {
                                 props.saveAnnotation(
                                     annotationData.annotation,
                                     content
@@ -389,12 +385,44 @@ const anchorPoints = {
                     );
                     temporaryAnnotations.push(annotationDetail);
                 } else {
-                    if(annotationData.name===' Working; སྡེ་དགེ'||annotationData.name===' མཉམ་འབྲེལ་པར་མ།། སྡེ་དགེ'){
-                       if(!isEditing){
+                    if (
+                        annotationData.name === " Working; སྡེ་དགེ" ||
+                        annotationData.name === " མཉམ་འབྲེལ་པར་མ།། སྡེ་དགེ" ||
+                        annotationData.name === " Working; སྡེ་དགེ Dominant;" ||
+                        annotationData.name ===
+                            " མཉམ་འབྲེལ་པར་མ།། སྡེ་དགེ Dominant;"
+                    ) {
+                        if (!isEditing) {
+                            let annotationDetail = (
+                                <AnnotationDetail
+                                    isWorkingSection={true}
+                                    fontSize={props.fontSize}
+                                    annotationData={annotationData}
+                                    key={annotationData.annotation.uniqueId}
+                                    isActive={isActive}
+                                    selectAnnotationHandler={() => {
+                                        if (isLoggedIn && !isEditing) {
+                                            props.didSelectAnnotation(
+                                                annotationData.annotation
+                                            );
+                                        }
+                                    }}
+                                    editAnnotationHandler={() => {
+                                        if (isLoggedIn && !isEditing) {
+                                            props.editAnnotation(
+                                                annotationData.annotation
+                                            );
+                                        }
+                                    }}
+                                    isLoggedIn={isLoggedIn}
+                                />
+                            );
+                            annotations.push(annotationDetail);
+                        }
+                    } else {
                         let annotationDetail = (
-
                             <AnnotationDetail
-                                isWorkingSection={true}
+                                isWorkingSection={false}
                                 fontSize={props.fontSize}
                                 annotationData={annotationData}
                                 key={annotationData.annotation.uniqueId}
@@ -417,44 +445,18 @@ const anchorPoints = {
                             />
                         );
                         annotations.push(annotationDetail);
-                            }
                     }
-                    else {
-                      let annotationDetail = (
-
-                        <AnnotationDetail
-                            isWorkingSection={false}
-                            fontSize={props.fontSize}
-                            annotationData={annotationData}
-                            key={annotationData.annotation.uniqueId}
-                            isActive={isActive}
-                            selectAnnotationHandler={() => {
-                                if (isLoggedIn && !isEditing) {
-                                    props.didSelectAnnotation(
-                                        annotationData.annotation
-                                    );
-                                }
-                            }}
-                            editAnnotationHandler={() => {
-                                if (isLoggedIn && !isEditing) {
-                                    props.editAnnotation(
-                                        annotationData.annotation
-                                    );
-                                }
-                            }}
-                            isLoggedIn={isLoggedIn}
-                        />
-                    );
-                    annotations.push(annotationDetail);
-                        }
                 }
             }, this);
-            if (!this.fake_login_toggle===!props.user.isLoggedIn) {
+            if (!this.fake_login_toggle === !props.user.isLoggedIn) {
                 // NOTE: FormattedMessage cannot take a child when using
                 // the values option, so need to wrap it in a div
-                
+
                 anonymousUserMessage = (
-                    <div className={styles.anonymousMessage}>
+                    <div
+                        className={styles.anonymousMessage}
+                        style={{ position: "relative" }}
+                    >
                         <FormattedMessage
                             id="annotations.loginMessage"
                             values={{
@@ -462,9 +464,22 @@ const anchorPoints = {
                                     <a href="/accounts/login/">
                                         <FormattedMessage id="annotations.loginLink" />
                                     </a>
-                                )
+                                ),
                             }}
                         />
+                        <div
+                            onClick={() => this.props.closeAnnotation()}
+                            style={{
+                                position: "absolute",
+                                left: 5,
+                                width: 10,
+                                height: 10,
+                                top: 5,
+                                cursor: "pointer",
+                            }}
+                        >
+                            x
+                        </div>
                     </div>
                 );
             }
@@ -587,7 +602,7 @@ const anchorPoints = {
                 (question: Annotation) => {
                     tempQuestionIds[question.uniqueId] = question.uniqueId;
                     let key = "QUESTION_" + question.uniqueId;
-                    
+
                     return (
                         <QuestionEditor
                             question={question}
@@ -658,7 +673,6 @@ const anchorPoints = {
         let showHeader = true;
         if (anonymousUserMessage || breakSelected) showHeader = false;
 
-
         return (
             <div
                 className={classnames(...classes)}
@@ -680,6 +694,7 @@ const anchorPoints = {
                                 : null
                         }
                         addQuestion={allowQuestion ? props.addQuestion : null}
+                        closeAnnotation={props.closeAnnotation}
                     />
                 )}
                 <div className={styles.annotationContent}>
@@ -696,11 +711,13 @@ const anchorPoints = {
                     {questionsLoading}
                     {questionViews}
                 </div>
-                <div className={styles.arrow} ref={div => (this.arrow = div)} />
+                <div
+                    className={styles.arrow}
+                    ref={(div) => (this.arrow = div)}
+                />
             </div>
         );
     }
 }
-
 
 export default AnnotationControls;

@@ -7,7 +7,7 @@ import {
     INSERTION_KEY,
     DELETION_KEY,
     PAGE_BREAK_KEY,
-    LINE_BREAK_KEY
+    LINE_BREAK_KEY,
 } from "lib/AnnotatedText";
 import _ from "lodash";
 import SegmentedText from "lib/SegmentedText";
@@ -16,7 +16,6 @@ import Witness from "lib/Witness";
 import { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
-
 export function idForSegment(segment: TextSegment): string {
     return "s_" + segment.start;
 }
@@ -50,15 +49,17 @@ export type Props = {
     selectedSearchResult: {
         textId: number,
         start: number,
-        length: number
+        length: number,
     } | null,
     searchStringPositions: { [position: number]: [number, number] },
     fontSize?: number,
-    activeWitness: Witness
+    activeWitness: Witness,
+    changeSyncIdOnClick: () => void,
+    isPanelLinked: Boolean,
 };
 
 export type State = {
-    segmentedText: SegmentedText
+    segmentedText: SegmentedText,
 };
 
 import ReactDOMServer from "react-dom/server";
@@ -71,12 +72,11 @@ const pageBreakIconString = ReactDOMServer.renderToStaticMarkup(
 export default class Text extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
     _renderedHtml: { __html: string } | null;
-
     constructor(props: Props) {
         super(props);
-        this.textRef=React.createRef();
+        this.textRef = React.createRef();
         this.state = {
-            segmentedText: props.segmentedText
+            segmentedText: props.segmentedText,
         };
 
         this._renderedSegments = null;
@@ -87,16 +87,15 @@ export default class Text extends React.Component<Props, State> {
         this.setState((prevState: State, props: Props) => {
             return {
                 ...prevState,
-                segmentedText: nextProps.segmentedText
+                segmentedText: nextProps.segmentedText,
             };
         });
     }
 
     annotationsForSegment(segment: TextSegment): Annotation[] {
         let annotations: Annotation[] = [];
-        const foundAnnotations = this.props.annotationPositions[
-            String(segment.start)
-        ];
+        const foundAnnotations =
+            this.props.annotationPositions[String(segment.start)];
         if (foundAnnotations) {
             annotations = foundAnnotations;
         }
@@ -136,6 +135,9 @@ export default class Text extends React.Component<Props, State> {
 
     selectedElement(element: Element) {
         const selection = document.getSelection();
+        if (element?.id.includes("s_") && this.props.isPanelLinked) {
+            this.props.changeSyncIdOnClick(element.id);
+        }
         if (selection && selection.type === "Range") {
             return;
         }
@@ -144,6 +146,7 @@ export default class Text extends React.Component<Props, State> {
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
         let segments = renderState.segmentedText.segments;
+
         let textLineClass = styles.textLine;
         let segmentHTML = '<p class="' + textLineClass + '">';
         if (segments.length === 0) return { __html: segmentHTML };
@@ -204,9 +207,8 @@ export default class Text extends React.Component<Props, State> {
                                 )
                             ) {
                                 inactiveInsertions.push(annotation);
-                                processedInactiveInsertions[
-                                    annotationKey
-                                ] = annotation;
+                                processedInactiveInsertions[annotationKey] =
+                                    annotation;
                             }
                         }
                     } else {
@@ -259,9 +261,8 @@ export default class Text extends React.Component<Props, State> {
 
                 if (activeDeletions.length > 0) {
                     const activeDeletion = activeDeletions[0];
-                    const baseAnnotation = renderProps.getBaseAnnotation(
-                        activeDeletion
-                    );
+                    const baseAnnotation =
+                        renderProps.getBaseAnnotation(activeDeletion);
                     deletionText = baseAnnotation.content;
                     if (
                         renderProps.activeAnnotation &&
@@ -372,9 +373,8 @@ export default class Text extends React.Component<Props, State> {
                             segmentContent += char;
                         }
                     } else if (position in renderProps.searchStringPositions) {
-                        let [start, end] = renderProps.searchStringPositions[
-                            position
-                        ];
+                        let [start, end] =
+                            renderProps.searchStringPositions[position];
                         segmentContent +=
                             '<span class="' + highlight + '">' + char;
                         if (j === segment.text.length - 1 || position === end) {
@@ -443,9 +443,8 @@ export default class Text extends React.Component<Props, State> {
         segmentHTML += "</p>";
 
         const html = {
-            __html: segmentHTML
+            __html: segmentHTML,
         };
-
         return html;
     }
 
@@ -479,17 +478,18 @@ export default class Text extends React.Component<Props, State> {
             this._renderedHtml = html;
         }
         return (
-            <div className={styles.textContainer} 
-            >
+            <div className={styles.textContainer}>
                 <div
-                ref={this.textRef}
+                    ref={this.textRef}
                     className={classnames(...classes)}
                     dangerouslySetInnerHTML={html}
                     style={{
-                        fontSize: this.props.fontSize
+                        fontSize: this.props.fontSize,
+                        
                     }}
-                    onClick={e => this.selectedElement(e.target)}
-
+                    onClick={(e) => {
+                        this.selectedElement(e.target);
+                    }}
                 />
             </div>
         );

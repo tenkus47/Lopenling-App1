@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./textDetailHeading.css";
 import Check from "images/checkmark.png";
 import Refresh from "images/Refresh.svg";
@@ -8,6 +8,8 @@ import Witness from "lib/Witness";
 import Slider from "../UI/Slider";
 import TextList from "./TextListContainer";
 import useClickOutSide from "../UI/useClickOutSideClose";
+import useLocalStorage from "bodyComponent/utility/useLocalStorage";
+import Pen from "images/pen.png";
 type HeaderProps = {
     witnesses: Witness[],
     selectedWitness: Witness,
@@ -21,35 +23,37 @@ type HeaderProps = {
     onChangedFontSize: () => void,
     onChangeWindowOpen: () => void,
     isSecondWindowOpen: boolean,
+    changeIsAnnotating: () => void,
+    isAnnotating: Boolean,
 };
 
 function TextDetailHeading(props: HeaderProps) {
     const selectedText = props?.selectedText;
     let [showOption, setShowOption] = useState(false);
     let [showShare, setShowShare] = useState(false);
-
     let domNode = useClickOutSide(() => setShowOption(false));
-   let domNode3= useClickOutSide(()=>setShowShare(false))
+    let domNode3 = useClickOutSide(() => setShowShare(false));
     const handleClick = () => {
         setShowOption((prev) => !prev);
     };
 
- const handleRefresh=()=>{
-     let updatelistBtn=document.getElementById('updateList');
-     let updatelistBtn2=document.getElementById('updateList2');
+    const handleRefresh = useCallback(() => {
+        let updatelistBtn = document.getElementById("updateList");
+        let updatelistBtn2 = document.getElementById("updateList2");
 
-     
-     updatelistBtn.click();
-     updatelistBtn2.click();
- }
- 
- useEffect(()=>{
- let timer=setTimeout(()=>{
-   handleRefresh();
- },1000)
+        if (updatelistBtn) updatelistBtn.click();
+        if (updatelistBtn2) updatelistBtn2.click();
+    }, []);
+    useEffect(() => {
+        let timer = setInterval(() => {
+            handleRefresh();
+        }, 500);
+        let timer2 = setTimeout(() => {
+            clearInterval(timer);
+        }, 2000);
 
- return ()=>clearTimeout(timer)
- },[])
+        return () => clearTimeout(timer2);
+    }, [props.isSecondWindowOpen]);
 
     return (
         <div className={styles.textDetailHeading}>
@@ -72,30 +76,54 @@ function TextDetailHeading(props: HeaderProps) {
                 )}
             </div>
             <div className={styles.selectVersion}>
+                <div className={styles.textHeadingTitle} style={{ flex: 1 }}>
+                    <TextList />
+                </div>
                 <SelectVersion
                     witnesses={props.witnesses}
                     activeWitness={props.selectedWitness}
                     onSelectedWitness={props.onSelectedWitness}
+                    user={props.user}
                 />
-                <div className={styles.textHeadingTitle} style={{ flex: 1 }}>
-                    <TextList />
-                </div>
             </div>
-            <div style={{position:'absolute',right:20}} ref={domNode3}>
-                <button id="doubleWindow" style={{ display: "none" }}/>
-                <button 
-                onClick={()=>setShowShare(prev=>!prev)}>
+            <div style={{ position: "absolute", right: 80 }} ref={domNode3}>
+                <button id="doubleWindow" style={{ display: "none" }} />
+                <button onClick={() => setShowShare((prev) => !prev)}>
                     Share
                 </button>
-                {
-                showShare && <ShareOption props={props}/>
-                }
+                {showShare && <ShareOption props={props} />}
             </div>
-            <div style={{position:'absolute',right:20,top:46}} >
-           <  ApplyTooltip tooltipName={'refresh'} effect={'float'}>
-            <button className={styles.buttonRefresh} onClick={handleRefresh}>
-                <Refresh />
-                </button> 
+            <div style={{ position: "absolute", right: 20 }}>
+                <ApplyTooltip tooltipName={"Annotate"} effect={"solid"}>
+                    <button
+                        style={{
+                            padding: 0,
+                            maxHeight: 25,
+                            maxWidth: 25,
+                            background: props.isAnnotating
+                                ? "darkgray"
+                                : "#eee",
+                        }}
+                        onClick={() =>
+                            props.changeIsAnnotating(!props.isAnnotating)
+                        }
+                    >
+                        <img
+                            src={Pen}
+                            alt="pencil"
+                            style={{ width: 20, height: 20 }}
+                        />
+                    </button>
+                </ApplyTooltip>
+            </div>
+            <div style={{ position: "absolute", right: 20, top: 46 }}>
+                <ApplyTooltip tooltipName={"refresh"} effect={"solid"}>
+                    <button
+                        className={styles.buttonRefresh}
+                        onClick={handleRefresh}
+                    >
+                        <Refresh />
+                    </button>
                 </ApplyTooltip>
             </div>
         </div>
@@ -134,53 +162,70 @@ function Options({ props }) {
                 across both column
             </li>
             <li
-                onClick={()=>{
-                    props.navigationButtonClicked()
+                onClick={() => {
+                    props.navigationButtonClicked();
                     document.querySelector("#doubleWindow").click();
-                    
                 }}
             >
                 {!props.textListIsVisible && <img src={Check}></img>}
                 Hide sidebar
             </li>
             <hr />
-            <li
-             onClick={()=>props.onChangePanelLink(!props.isPanelLinked)}
-            >
-                 {props.isPanelLinked && <img src={Check}></img>}
-                 link panels</li>
+            <li onClick={() => props.onChangePanelLink(!props.isPanelLinked)}>
+                {props.isPanelLinked && <img src={Check}></img>}
+                link panels
+            </li>
         </ul>
     );
 }
 
-function ShareOption({props}){
-    let textid=props.selectedText.id
-    let textid2=props.selectedText2.id
-    let witnessid=props.selectedWitness.id
-    let witnessid2=props.selectedWitness2.id
-    let url=window.location.origin+`/texts/${textid}/witnesses/${witnessid}/texts2/${textid2}`
+function ShareOption({ props }) {
+    let textid = props.selectedText.id;
+    let textid2 = props.selectedText2.id;
+    let witnessid = props.selectedWitness.id;
+    let witnessid2 = props.selectedWitness2.id;
+    let url =
+        window.location.origin +
+        `/texts/${textid}/witnesses/${witnessid}/texts2/${textid2}/witnesses2/${witnessid2}`;
 
-    const handleCopy=()=>{
-        let copyButton=document.getElementById('copyButton');
-        let inputForUrl=document.getElementById('inputForUrl');
-        navigator.clipboard.writeText(url)
-        .then(()=>{
-            console.log('text been copied')
-            inputForUrl.style.display='none';
-            copyButton.innerText='copied';
-            copyButton.disabled=true;
-        }).catch((e)=>console.log(e.message))
-        .finally(()=>console.log('you are copying the url '+ url))
-    }
+    const handleCopy = () => {
+        let copyButton = document.getElementById("copyButton");
+        let inputForUrl = document.getElementById("inputForUrl");
+        navigator.clipboard
+            .writeText(url)
+            .then(() => {
+                console.log("text been copied");
+                inputForUrl.style.display = "none";
+                copyButton.innerText = "copied";
+                copyButton.disabled = true;
+            })
+            .catch((e) => console.log(e.message))
+            .finally(() => console.log("you are copying the url " + url));
+    };
 
-
-    return <div  style={{position:'absolute',top:30,background:'white',
-    width:240,right:10,boxShadow:'1px 1px 2px black',zIndex:9999,padding:10,
-    borderRadius:10}}>
-        <div style={{textAlign:'center',marginBottom:10}}>{props.selectedText.name}</div>
-        <div style={{textAlign:'center'}}> 
-            <input type='text' defaultValue={url} id="inputForUrl"></input>
-            <button onClick={handleCopy} id='copyButton'>copy</button>
+    return (
+        <div
+            style={{
+                position: "absolute",
+                top: 30,
+                background: "white",
+                width: 240,
+                right: 10,
+                boxShadow: "1px 1px 2px black",
+                zIndex: 9999,
+                padding: 10,
+                borderRadius: 10,
+            }}
+        >
+            <div style={{ textAlign: "center", marginBottom: 10 }}>
+                {props.selectedText.name}
+            </div>
+            <div style={{ textAlign: "center" }}>
+                <input type="text" defaultValue={url} id="inputForUrl"></input>
+                <button onClick={handleCopy} id="copyButton">
+                    copy
+                </button>
+            </div>
         </div>
-    </div>
+    );
 }

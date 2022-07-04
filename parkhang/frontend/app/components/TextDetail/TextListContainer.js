@@ -17,37 +17,38 @@ const mapStateToProps = (state: AppState) => {
     // returned
 
     let searching = false;
-    let texts = state.data.texts;
+    let texts = reducers.getTexts(state);
     if (searchValue.length > 0) {
         if (searchResults === null) {
             searching = true;
             texts = [];
         } else {
-            texts = texts.filter(text => searchResults.hasOwnProperty(text.id));
+            texts = texts.filter((text) =>
+                searchResults.hasOwnProperty(text.id)
+            );
         }
     }
-
     return {
         texts: texts,
         selectedText: getSelectedText(state),
         searchTerm: searchValue,
         searchResults,
         selectedSearchResult,
-        searching
+        searching,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         onSelectedText: (text: api.TextData) => {
             dispatch(actions.selectedText(text));
-        }
-        
+        },
     };
 };
 
-const TextListContainer = connect(mapStateToProps, mapDispatchToProps)(
-    TextList
-);
+const TextListContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TextList);
 
 export default TextListContainer;

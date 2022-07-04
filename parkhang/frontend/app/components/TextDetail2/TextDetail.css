@@ -2,11 +2,18 @@
 
 
 .textDetail2 {
-    background-color: var(--editor-bg);
+    background-color: white;
     position: relative;
     width: 50%;
-    color:var(--text-color);
+    color: var(--text-color);
     border: thick double var(--green);
+    transition: height 0.3s linear;
+    overflow: hidden;
+}
+
+.textDetail2 ::selection {
+    color: black;
+    background-color: rgb(226, 226, 176);
 }
 
 .textContainer {
@@ -19,6 +26,6 @@
     left: 50%;
     top: 20%;
     padding: 50px;
-    background-color: rgba(1,1,1,0.1);
+    background-color: rgba(1, 1, 1, 0.1);
     border-radius: 5px;
 }

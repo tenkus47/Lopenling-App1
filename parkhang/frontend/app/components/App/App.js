@@ -1,5 +1,5 @@
 // @flow
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import classnames from "classnames";
 import HeaderContainer from "components/Header";
 
@@ -7,18 +7,17 @@ import type { AppState } from "reducers";
 import * as actions from "actions";
 import styles from "./App.css";
 import utilStyles from "css/util.css";
-
+import waterStyles from "./Water.css";
 import { handleKeyDown } from "../../shortcuts";
-import { useFlags } from 'flagsmith/react';
-import favimage from 'images/favicon.png'
-import Main from 'bodyComponent/Main'
-import {useActive} from '../UI/activeHook'
-import { history as his} from 'redux-first-router'
-import Search from 'bodyComponent/Search'
-import Notification from 'bodyComponent/utility/Notification'
-import Favicon from 'react-favicon'
-import Editor from 'components/Editors/EditorContainer'
-
+import { useFlags } from "flagsmith/react";
+import favimage from "images/favicon.png";
+import Main from "bodyComponent/Main";
+import { useActive } from "../UI/activeHook";
+import { history as his } from "redux-first-router";
+import Notification from "bodyComponent/utility/Notification";
+import Favicon from "react-favicon";
+import Editor from "components/Editors/EditorContainer";
+import useDelayUnmount from "../UI/useDelayUnmount";
 type Props = {
     title: string,
     textListIsVisible: boolean,
@@ -27,46 +26,43 @@ type Props = {
     dispatch: (action: actions.Action) => void,
     onChangedTextWidth: (width: number) => void,
     onChangedTextListVisible: (isVisible: boolean) => void,
-    onChangedNotification:(data:Object)=>void
+    onChangedNotification: (data: Object) => void,
 };
 
 function setTitle(title: string) {
     document.title = title;
 }
 
-
-
 const App = (props: Props) => {
     setTitle(props.title);
-    const isActive=useActive(4000)
-    const history=his();
-    const path=history.location.pathname;
-    const isSearchActive=path.includes('/search/');
-    
+    const isActive = useActive(4000);
+    let [loadScreen, setLoadScreen] = useState(true);
+    const shouldRenderChild = useDelayUnmount(loadScreen, 500);
+    useEffect(() => {
+        if (isActive === false)
+            props.onChangedNotification({
+                message:
+                    "YOU ARE NOT ACTIVE FOR SOME TIME NOW, CAN WE HELP YOU?",
+                time: 8000,
+                type: "warning",
+            });
+    }, [isActive]);
+    useEffect(() => {
+        let timer = setTimeout(() => {
+            setLoadScreen(false);
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, []);
+    let SelectedText = props.state?.ui?.selectedText;
 
-  
-    useEffect(()=>{
-       if(isActive===false) props.onChangedNotification({
-            message:'YOU ARE NOT ACTIVE FOR SOME TIME NOW, CAN WE HELP YOU?',
-            time:8000,
-            type:'warning'
-        })
-    },[isActive])
-
-    let SelectedText=   props.state?.ui?.selectedText
-   
-    if(!SelectedText){
-         setTitle('Parkhang')
-     }
-   
-    const  flags = useFlags(['navbar_parkhang','toggle_mainpage']);
-
-       let navbar_parkhang = flags?.navbar_parkhang?.enabled
-       let toggle_mainpage=flags?.toggle_mainpage?.enabled
-    
-
+    if (!SelectedText) {
+        setTitle("Parkhang");
+    }
+    const mountedStyle = { opacity: 1, transition: "opacity 500ms ease-in" };
+    const unmountedStyle = { opacity: 0, transition: "opacity 500ms ease-in" };
     return (
         <div
+            style={{ position: "relative" }}
             className={classnames(
                 styles.container,
                 utilStyles.flex,
@@ -76,16 +72,20 @@ const App = (props: Props) => {
                 handleKeyDown(e, props.state, props.dispatch);
             }}
         >
-               <Favicon url={favimage} />
-         
+            <Favicon url={favimage} />
+            {shouldRenderChild && (
+                <div
+                    style={loadScreen ? mountedStyle : unmountedStyle}
+                    className={waterStyles.divBody}
+                >
+                    <div className={waterStyles.water}></div>
+                </div>
+            )}
             <HeaderContainer />
-          {isSearchActive ? <Search/> : (SelectedText !== null) ? <Editor props={props}/>: <Main/>} 
-             {/* <Notification/> */}
-   
+            {SelectedText !== null ? <Editor props={props} /> : <Main />}
+            {/* <Notification/> */}
         </div>
     );
 };
-
-
 
 export default App;

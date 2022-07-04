@@ -9,3 +9,14 @@
     width:500px;
     height: 500px;
 }
+.listToggelBtn{
+    outline: none;
+    border:none;
+    background-color: transparent;
+    font-weight: bold;
+    font-size: 1rem;
+}
+.listToggelBtn:hover{
+    background-color: #eee;
+    outline:2px solid goldenrod;
+}

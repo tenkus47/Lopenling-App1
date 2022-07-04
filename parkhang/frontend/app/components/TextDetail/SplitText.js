@@ -5,7 +5,7 @@ import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import { List } from "react-virtualized/dist/es/List";
 import {
     CellMeasurer,
-    CellMeasurerCache
+    CellMeasurerCache,
 } from "react-virtualized/dist/es/CellMeasurer";
 import "react-virtualized/styles.css";
 import Text, {
@@ -13,7 +13,7 @@ import Text, {
     idForDeletedSegment,
     idForInsertion,
     idForPageBreak,
-    idForLineBreak
+    idForLineBreak,
 } from "./Text";
 import SplitText from "lib/SplitText";
 import SegmentedText from "lib/SegmentedText";
@@ -22,7 +22,6 @@ import { CONTROLS_MARGIN_LEFT } from "./AnnotationControls";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import styles from "./SplitText.css";
 import annotationControlsStyles from "./AnnotationControls.css";
-import textStyles from "./Text.css";
 import controlStyles from "./AnnotationControls.css";
 import _ from "lodash";
 import TextSegment from "lib/TextSegment";
@@ -30,7 +29,6 @@ import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
-
 
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
@@ -44,14 +42,14 @@ const IMAGE_START_SUFFIX_KEY = "bdrcimg_suffix";
 let _searchResultsCache: {
     [splitTextUniqueId: string]: {
         [searchTerm: string]: {
-            [index: number]: { [position: number]: [number, number] }
-        }
-    }
+            [index: number]: { [position: number]: [number, number] },
+        },
+    },
 } = {};
 
 export type Props = {
     textListVisible: boolean,
-    editMenuVisible:Boolean,
+    editMenuVisible: Boolean,
     imagesBaseUrl: string,
     splitText: SplitText,
     didSelectSegmentIds: (segmentIds: string[]) => void,
@@ -67,18 +65,19 @@ export type Props = {
     selectedSearchResult: {
         textId: number,
         start: number,
-        length: number
+        length: number,
     } | null,
     searchValue: string | null,
     fontSize: number,
-    isSecondWindowOpen:Boolean,
-    changeSyncId:()=>void,
-    imageData:{},
-    isPanelLinked:Boolean
+    isSecondWindowOpen: Boolean,
+    changeSyncIdOnScroll: () => void,
+    changeSyncIdOnClick: () => void,
+    imageData: {},
+    isPanelLinked: Boolean,
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
-    isSecondWindowOpen:Boolean;
+    isSecondWindowOpen: Boolean;
     list: List | null;
     splitText: HTMLDivElement | null;
     cache: CellMeasurerCache;
@@ -86,12 +85,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         key: string,
         index: number,
         parent: {},
-        style: {}
+        style: {},
     }) => React.Element<CellMeasurer>;
     resizeHandler: () => void;
     selectionHandler: (e: Event) => void;
     textListVisible: boolean;
-    editMenuVisible:Boolean;
+    editMenuVisible: Boolean;
     activeSelection: Selection | null;
     selectedNodes: Node[] | null;
     // Whether the mouse button is down
@@ -108,24 +107,27 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     imageWidth: number | null;
     imageHeight: number | null;
     calculatedImageHeight: number | null;
-    changeSyncId:()=>void;
-    scrolling:()=>void;
-    spans:Node[] | null;
-    isPanelLinked:Boolean;
+    changeSyncIdOnScroll: () => void;
+    changeSyncIdOnClick: () => void;
+    scrolling: () => void;
+    textlines: Node[] | null;
+    jump: number;
+    isPanelLinked: Boolean;
+    splitTextRef;
     constructor(props: Props) {
         super(props);
-        this.childRef=React.createRef('0');
-
+        this.childRef = React.createRef("0");
         this.list = null;
         this.splitText = null;
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
-            defaultHeight: 300
+            defaultHeight: 300,
         });
+        this.splitTextRef = React.createRef(null);
         this.rowRenderer = this.rowRenderer.bind(this);
         this.textListVisible = props.textListVisible;
-        this.editMenuVisible =props.editMenuVisible;
-        this.isPanelLinked =props.isPanelLinked;
+        this.editMenuVisible = props.editMenuVisible;
+        this.isPanelLinked = props.isPanelLinked;
         this.activeSelection = null;
         this.selectedNodes = null;
         this._mouseDown = false;
@@ -136,51 +138,53 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.imageWidth = null;
         this.calculatedImageHeight = null;
         this.processProps(props);
-        this.changeSyncId=props.changeSyncId;
+        this.changeSyncIdOnScroll = props.changeSyncIdOnScroll;
+        this.changeSyncIdOnClick = props.changeSyncIdOnClick;
+        this.scrollJump = props.scrollJump;
     }
 
-    scrolling(e){
-        let newList=[]
-        
-    if(this.isPanelLinked){
-        if(this.spans){
-            this.spans.forEach(span=>{
-                 let position=span.getBoundingClientRect();
-                  let spanId=span.id.replace('s_','');
-                 if(position.top>100){
-                     newList.push(spanId)
-                 }
-             })
-         
-         }
-      
-         this.changeSyncId(newList)
+    scrolling(e) {
+        let newList = [];
+        this.props.changeSelectedImage(null);
+        if (this.isPanelLinked) {
+            if (this.textlines) {
+                let textLineToSync = this.textlines[0];
+                if (textLineToSync !== undefined) {
+                    let position = textLineToSync.getBoundingClientRect();
+                    if (position.top < 100) {
+                        textLineToSync = this.textlines[1];
+                    }
+
+                    let span = textLineToSync?.firstChild;
+                    let spanId = 0;
+                    if (span) spanId = span.id.replace("s_", "");
+
+                    this.changeSyncIdOnScroll(spanId);
+                }
+            }
+        }
     }
-       
-    }
-   
-    updateId(id){
 
-        // if(id && id.includes('s')){
-        //     let newId=id.replace('s','s2');
-        //     if(document.getElementById(newId)){
-        //         document?.getElementById(newId)?.scrollIntoView({block: 'center'});
-        //     let positionHighlight=  document.getElementById(newId).getBoundingClientRect();
-
-        //     let hightlighter= document.createElement('div');
-        //     hightlighter.classList.add(styles.hightlighter);
-        //    hightlighter.style.border='2px solid blue';
-          
-
-        //     document.getElementById(newId).append(hightlighter)
-        //     document.getElementById(newId).style.color='blue';
-
-        //      setTimeout(()=>{
-        //         document.getElementById(newId).style.color='black';
-        //         hightlighter.remove();
-        //     },500)
+    updateId(id) {
+        // if (id && id.includes("s")) {
+        //     let newId = id.replace("s", "s2");
+        //     if (document.getElementById(newId)) {
+        //         document
+        //             ?.getElementById(newId)
+        //             ?.scrollIntoView({ block: "center" });
+        //         let positionHighlight = document
+        //             .getElementById(newId)
+        //             .getBoundingClientRect();
+        //         let hightlighter = document.createElement("div");
+        //         hightlighter.classList.add(styles.hightlighter);
+        //         hightlighter.style.border = "2px solid blue";
+        //         document.getElementById(newId).append(hightlighter);
+        //         document.getElementById(newId).style.color = "blue";
+        //         setTimeout(() => {
+        //             document.getElementById(newId).style.color = "black";
+        //             hightlighter.remove();
+        //         }, 500);
         //     }
-    
         // }
     }
 
@@ -237,16 +241,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     handleSelection(e: Event) {
         if (!this._modifyingSelection) {
             this.activeSelection = document.getSelection();
-            let selectedId=this.activeSelection?.anchorNode?.parentElement?.id
-            this.updateId(selectedId)
-
+            let selectedId =
+                this.activeSelection?.anchorNode?.parentElement?.id;
+            this.updateId(selectedId);
             if (!this._mouseDown) {
                 // sometimes, this gets called after the mouseDown event handler
                 this.mouseUp();
-
             }
         } else {
-           
             e.stopPropagation();
             // Need to set this here. If set at callsite, the event will not
             // have time to propagate.
@@ -309,7 +311,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }
             return accumulator;
         }, nodeIds);
-
         return nodeIds;
     }
 
@@ -340,14 +341,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         return rangeSpans;
     }
 
-    getControlsMeasurements(
-        props: Props
-    ): {
+    getControlsMeasurements(props: Props): {
         selectedTextIndex: number,
         firstSelectedSegment: TextSegment,
         selectedElementId: string,
         splitTextRect: ClientRect,
-        selectedElementIds: string[]
+        selectedElementIds: string[],
     } | null {
         if (!this.splitText) {
             return null;
@@ -362,9 +361,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let startPos = 0;
         if (props.activeAnnotation) {
             let activeAnnotation = props.activeAnnotation;
-            [startPos] = props.splitText.annotatedText.getPositionOfAnnotation(
-                activeAnnotation
-            );
+            [startPos] =
+                props.splitText.annotatedText.getPositionOfAnnotation(
+                    activeAnnotation
+                );
             if (startPos === null) {
                 console.warn("No startPos in getControlsMeasurements");
                 return null;
@@ -379,9 +379,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             // Index of text containing end of annotation
             let positionEnd = startPos + activeAnnotation.length;
             if (activeAnnotation.length > 0) positionEnd -= 1;
-            selectedTextIndex = props.splitText.getTextIndexOfPosition(
-                positionEnd
-            );
+            selectedTextIndex =
+                props.splitText.getTextIndexOfPosition(positionEnd);
             splitTextRect = splitTextComponent.getBoundingClientRect();
         }
         let selectedAnnotatedSegments = [];
@@ -421,11 +420,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 firstSelectedSegment = segment;
                 selectedAnnotatedSegments = [firstSelectedSegment];
             } else if (props.activeAnnotation.isInsertion) {
-                const [
-                    start
-                ] = props.splitText.annotatedText.getPositionOfAnnotation(
-                    props.activeAnnotation
-                );
+                const [start] =
+                    props.splitText.annotatedText.getPositionOfAnnotation(
+                        props.activeAnnotation
+                    );
                 if (start) {
                     let segment = new TextSegment(start, "");
                     selectedElementId = idForInsertion(segment);
@@ -473,7 +471,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 firstSelectedSegment: firstSelectedSegment,
                 selectedElementId: selectedElementId,
                 splitTextRect: splitTextRect,
-                selectedElementIds: selectedElementIds
+                selectedElementIds: selectedElementIds,
             };
         } else {
             return null;
@@ -569,13 +567,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         // make sure there's no numbers in selectedAnnotatedSegments
         // as we want to pass it to Text which only expects TextSegments
-        this._filteredSelectedAnnotatedSegments = props.selectedAnnotatedSegments.reduce(
-            (acc, current: TextSegment | number) => {
-                if (current instanceof TextSegment) acc.push(current);
-                return acc;
-            },
-            []
-        );
+        this._filteredSelectedAnnotatedSegments =
+            props.selectedAnnotatedSegments.reduce(
+                (acc, current: TextSegment | number) => {
+                    if (current instanceof TextSegment) acc.push(current);
+                    return acc;
+                },
+                []
+            );
 
         const controlsMeasurements = this.getControlsMeasurements(props);
         if (controlsMeasurements) {
@@ -586,16 +585,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.selectedElementId = controlsMeasurements.selectedElementId;
             this.selectedElementIds = controlsMeasurements.selectedElementIds;
         }
-   
-       
-        if ((props.textListVisible !== this.textListVisible) || (props.editMenuVisible !== this.editMenuVisible)) {
+
+        if (
+            props.textListVisible !== this.textListVisible ||
+            props.editMenuVisible !== this.editMenuVisible
+        ) {
             setTimeout(() => {
                 this.textListVisible = props.textListVisible;
                 this.editMenuVisible = props.editMenuVisible;
                 this.updateList(true);
             }, 500);
-
-        
         } else {
             if (changedWitness) {
                 this.updateList(true);
@@ -666,24 +665,25 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidMount() {
-
+        let list = this.list;
 
         this.resizeHandler = _.throttle(() => {
             this.calculatedImageHeight = null;
             this.updateList();
         }, 500).bind(this);
 
-        const handler=
-            ()=>{
-                setTimeout(()=>{
-                 this.updateList()
-                },200) 
-             }
-            
-        document.querySelector('#doubleWindow').addEventListener('click',handler)
+        const handler = () => {
+            setTimeout(() => {
+                this.updateList();
+            }, 200);
+        };
+
+        document
+            .querySelector("#doubleWindow")
+            .addEventListener("click", handler);
         window.addEventListener("resize", this.resizeHandler);
-        
-        this.selectionHandler = _.debounce(e => {
+
+        this.selectionHandler = _.debounce((e) => {
             this.handleSelection(e);
         }, 200).bind(this);
 
@@ -697,8 +697,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidUpdate() {
-        this.spans= document.querySelectorAll('.Text---textContainer span')
-        this.isPanelLinked = this.props.isPanelLinked
+        this.textlines = document.querySelectorAll(".Text---textLine");
+
+        this.isPanelLinked = this.props.isPanelLinked;
         if (this.selectedNodes && this.selectedNodes.length > 0) {
             const selectedNodes = this.selectedNodes;
             const selectedSegments = this.props.selectedAnnotatedSegments;
@@ -747,29 +748,67 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     // scrollToRow often positions the annotation at the
                     // bottom of the screen, so scroll up a bit
                     setTimeout(() => {
-                        list.scrollToPosition(list.props.scrollTop - 100);
+                        if (list.props.scrollTop) {
+                            list.scrollToPosition(list.props.scrollTop - 100);
+                        } else {
+                            list.scrollToPosition(-100);
+                        }
                     }, 0);
                 }, 100);
             }
             this._didSetInitialScrollPosition = true;
         }
+
+        let startPos = this.props.selectedImage?.source_segment?.start;
+
+        if (startPos) {
+            let list = this.list;
+            let selectedTextIndex = 0;
+            if (startPos) {
+                selectedTextIndex =
+                    this.props.splitText.getTextIndexOfPosition(startPos);
+            }
+            setTimeout(() => {
+                list.scrollToRow(selectedTextIndex);
+                setTimeout(() => {
+                    if (list.props.scrollTop) {
+                        list.scrollToPosition(list.props.scrollTop - 900);
+                    } else {
+                        if (
+                            this.splitTextRef.current !== null &&
+                            this.splitTextRef.current !== "undefined"
+                        ) {
+                            let currentId =
+                                this.splitTextRef.current.id.replace(
+                                    "index_",
+                                    ""
+                                );
+                            if (parseInt(currentId) < selectedTextIndex) {
+                                let position =
+                                    this.splitTextRef.current.getBoundingClientRect();
+                                list.scrollToPosition(position.top - 100);
+                            }
+                        }
+                    }
+                }, 100);
+            }, 100);
+        }
     }
 
     componentWillUnmount() {
-        const handler=
-        ()=>{
-            setTimeout(()=>{
-             this.updateList(true)
-            },200) 
-         }
-
+        const handler = () => {
+            setTimeout(() => {
+                this.updateList(true);
+            }, 200);
+        };
 
         document.removeEventListener("mousedown", this);
         document.removeEventListener("mouseup", this);
         window.removeEventListener("resize", this.resizeHandler);
         document.removeEventListener("selectionchange", this.selectionHandler);
-        document.querySelector('#doubleWindow').removeEventListener('click',handler)
-
+        document
+            .querySelector("#doubleWindow")
+            .removeEventListener("click", handler);
     }
 
     calculateImageHeight() {
@@ -777,9 +816,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (this.imageHeight && this.imageWidth) {
             const ratio = this.imageWidth / this.imageHeight;
             const pechaImageClass = styles.pechaImage;
-            const pechaImageContainers = document.getElementsByClassName(
-                pechaImageClass
-            );
+            const pechaImageContainers =
+                document.getElementsByClassName(pechaImageClass);
             if (pechaImageContainers.length > 0) {
                 let container = pechaImageContainers[0];
                 height = container.offsetWidth / ratio;
@@ -792,15 +830,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let selectedTextIndex = 0;
         let startPos = null;
         if (this.props.activeAnnotation) {
-            [
-                startPos
-            ] = this.props.splitText.annotatedText.getPositionOfAnnotation(
-                this.props.activeAnnotation
-            );
+            [startPos] =
+                this.props.splitText.annotatedText.getPositionOfAnnotation(
+                    this.props.activeAnnotation
+                );
         } else if (this.props.selectedSearchResult) {
-            let segment = this.props.splitText.annotatedText.segmentAtOriginalPosition(
-                this.props.selectedSearchResult.start
-            );
+            let segment =
+                this.props.splitText.annotatedText.segmentAtOriginalPosition(
+                    this.props.selectedSearchResult.start
+                );
             if (segment instanceof TextSegment) {
                 startPos = segment.start;
             } else if (typeof segment === "number") {
@@ -808,19 +846,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }
         }
         if (startPos) {
-            selectedTextIndex = this.props.splitText.getTextIndexOfPosition(
-                startPos
-            );
+            selectedTextIndex =
+                this.props.splitText.getTextIndexOfPosition(startPos);
         }
         return selectedTextIndex;
     }
 
     getBaseAnnotation(annotation: Annotation): Annotation {
-        let [
-            start
-        ] = this.props.splitText.annotatedText.getPositionOfAnnotation(
-            annotation
-        );
+        let [start] =
+            this.props.splitText.annotatedText.getPositionOfAnnotation(
+                annotation
+            );
         if (start === null) start = 0;
         return this.props.splitText.annotatedText.getBaseAnnotation(
             start,
@@ -833,34 +869,31 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const rowRenderer = this.rowRenderer;
         const cache = this.cache;
         const key = props.selectedWitness ? props.selectedWitness.id : 0;
-     
+
         return (
             <div
                 className={styles.splitText}
-                ref={div => (this.splitText = div)}
+                ref={(div) => (this.splitText = div)}
                 key={key}
             >
-                <button id='updateList' 
-                style={{display:'none'}}
-                onClick={()=>this.updateList(true)} ></button>
+                <button
+                    id="updateList"
+                    style={{ display: "none" }}
+                    onClick={() => this.updateList(true)}
+                ></button>
                 <AutoSizer>
                     {({ height, width }) => (
-                    
                         <List
-                            ref={list => (this.list = list)}
+                            ref={(list) => (this.list = list)}
                             height={height}
                             rowCount={props.splitText.texts.length}
                             rowHeight={cache.rowHeight}
                             rowRenderer={rowRenderer}
                             width={width}
-                            overscanRowCount={3}
+                            overscanRowCount={1}
                             deferredMeasurementCache={cache}
-                            onScroll={(e)=>this.scrolling(e)}
-                           
-                         
-                        >
-                        </List>
-                       
+                            onScroll={(e) => this.scrolling(e)}
+                        ></List>
                     )}
                 </AutoSizer>
             </div>
@@ -890,13 +923,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         if (!_searchResultsCache.hasOwnProperty(uniqueId)) {
             _searchResultsCache = {
-                [uniqueId]: {}
+                [uniqueId]: {},
             };
         }
 
         if (!_searchResultsCache[uniqueId].hasOwnProperty(string)) {
             _searchResultsCache[uniqueId] = {
-                [string]: {}
+                [string]: {},
             };
         }
 
@@ -907,7 +940,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const splitter = new GraphemeSplitter();
         const content = text.getText();
         const firstSegment = text.segments[0];
-        const startingPosition = firstSegment.start;
+        const startingPosition = firstSegment?.start;
         let positions = [];
         let position = content.indexOf(string);
         while (position !== -1) {
@@ -929,7 +962,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     if (graphemeEnd >= expectedEnd) {
                         verifiedPositions[activePosition + startingPosition] = [
                             activePosition + startingPosition,
-                            graphemeEnd + startingPosition
+                            graphemeEnd + startingPosition,
                         ];
                         activePosition = null;
                     }
@@ -937,7 +970,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     if (string.length === grapheme.length) {
                         verifiedPositions[position + startingPosition] = [
                             position + startingPosition,
-                            graphemeEnd + startingPosition
+                            graphemeEnd + startingPosition,
                         ];
                     } else if (string.length > grapheme.length) {
                         activePosition = position;
@@ -959,27 +992,25 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         key,
         index,
         parent,
-        style
-    }:{
+        style,
+    }: {
         key: string,
         index: number,
         parent: {},
-        style: {}
+        style: {},
     }): React.Element<CellMeasurer> {
         const props = this.props;
         const cache = this.cache;
         const component = this;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
-        
 
-        let imageUrl = '';
+        let imageUrl = "";
         if (
             props.selectedWitness &&
             props.selectedWitness.properties &&
             props.selectedWitness.properties.hasOwnProperty(IMAGE_START_PRE_KEY)
         ) {
             imageUrl = this.getImageUrl(index);
-
         }
 
         let searchStringPositions = {};
@@ -997,7 +1028,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (props.showImages && pechaImageClass && this.calculatedImageHeight) {
             pechaStyles["height"] = this.calculatedImageHeight + "px";
         }
-        let newStyle={...style,height:style.height+10}
+        let newStyle = { ...style, height: style.height + 10 };
         return (
             <CellMeasurer
                 columnIndex={0}
@@ -1006,22 +1037,26 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 rowIndex={index}
                 cache={cache}
             >
-                <div key={key} style={newStyle} className={styles.splitTextRow}>
+                <div
+                    key={key}
+                    style={newStyle}
+                    className={styles.splitTextRow}
+                    ref={this.splitTextRef}
+                    id={`index_${index}`}
+                    data-group={`data-${index}`}
+                >
                     <div className={styles.splitTextRowContent}>
-                        {
-                        props.showImages
-                         && (
+                        {/* {props.showImages && (
                             <div
                                 className={pechaImageClass}
                                 style={pechaStyles}
                             >
-                          
-                                    <img
+                                <img
                                     alt="Text related Image"
                                     src={imageUrl}
                                     width="100%"
                                     height="100%"
-                                    onLoad={e => {
+                                    onLoad={(e) => {
                                         if (
                                             component.imageWidth === null &&
                                             e.target
@@ -1030,7 +1065,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                                 e.target.naturalWidth;
                                             component.imageHeight =
                                                 e.target.naturalHeight;
-                                            component.calculatedImageHeight = null;
+                                            component.calculatedImageHeight =
+                                                null;
                                             window.setTimeout(
                                                 component.updateList.bind(
                                                     component
@@ -1040,10 +1076,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                         }
                                     }}
                                 />
-                                  
-                               
                             </div>
-                        )}
+                        )} */}
                         <Text
                             ref={this.childRef}
                             segmentedText={props.splitText.texts[index]}
@@ -1066,10 +1100,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             }
                             searchStringPositions={searchStringPositions}
                             fontSize={props.fontSize}
+                            changeSyncIdOnClick={this.props.changeSyncIdOnClick}
+                            isPanelLinked={this.props.isPanelLinked}
+                            isAnnotating={this.props.isAnnotating}
                             // menuVisible={props.menuVisible}
                         />
                     </div>
-                    {this.selectedTextIndex === index &&
+
+                    {this.props.isAnnotating &&
+                        this.selectedTextIndex === index &&
                         this.props.activeAnnotation && (
                             <AnnotationControlsContainer
                                 annotationPositions={props.annotationPositions}

@@ -12,10 +12,10 @@ export type UIState = {
     selectedSearchResult: {
         textId: number,
         start: number,
-        length: number
+        length: number,
     } | null,
     searchValue: string,
-    searchTerm:String,
+    searchTerm: String,
     showPageImages: boolean,
     activeAnnotations: { [witnessId: number]: Annotation },
     activeTextAnnotations: { [textId: number]: Annotation },
@@ -23,26 +23,30 @@ export type UIState = {
     textListWidth: number,
     temporaryAnnotations: {
         [witnessId: number]: {
-            [tempAnnotationKey: string]: TemporaryAnnotation[]
-        }
+            [tempAnnotationKey: string]: TemporaryAnnotation[],
+        },
     },
     scrollPositions: {
-        [witnessId: number]: number
+        [witnessId: number]: number,
     },
     exportingWitness: {
-        [witnessId: number]: boolean
+        [witnessId: number]: boolean,
     },
     showAccountOverlay: boolean,
     textFontSize: number,
     textFontSize2: number,
-    notification:{
-        message:String,
-        time:Number,
-        type:String
+    notification: {
+        message: String,
+        time: Number,
+        type: String,
     },
-    showSecondWindow:Boolean,
-    SyncId:Number,
-    isPanelLinked:boolean
+    showSecondWindow: Boolean,
+
+    SyncIdOnScroll: String,
+    SyncIdOnClick: String,
+
+    isPanelLinked: boolean,
+    isAnnotating:Boolean
 };
 
 export const initialUIState = {
@@ -53,7 +57,7 @@ export const initialUIState = {
     selectedTextWitness2: {},
     selectedSearchResult: null,
     searchValue: "",
-    searchTerm:"",
+    searchTerm: "",
     showPageImages: false,
     activeAnnotations: {},
     activeTextAnnotations: {},
@@ -64,15 +68,17 @@ export const initialUIState = {
     exportingWitness: {},
     showAccountOverlay: false,
     textFontSize: constants.DEFAULT_TEXT_FONT_SIZE,
-    textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,    
-    notification:{
-        message:'',
-        time:null,
-        type:''
+    textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,
+    notification: {
+        message: "",
+        time: null,
+        type: "",
     },
-    showSecondWindow:true,
-    SyncId:0,
-    isPanelLinked:true
+    showSecondWindow: false,
+    SyncIdOnScroll: 0,
+    SyncIdOnClick: 0,
+    isPanelLinked: true,
+    isAnnotating:true
 };
 
 function loadedUserSettings(
@@ -95,7 +101,7 @@ function selectedText(
 ): UIState {
     state = {
         ...state,
-        selectedText: action.text
+        selectedText: action.text,
     };
 
     if (
@@ -114,7 +120,7 @@ function toggleSecondWindow(
 ): UIState {
     state = {
         ...state,
-        showSecondWindow: action.payload
+        showSecondWindow: action.payload,
     };
     return state;
 }
@@ -125,7 +131,7 @@ function selectedText2(
 ): UIState {
     state = {
         ...state,
-        selectedText2: action.text
+        selectedText2: action.text,
     };
 
     if (
@@ -138,13 +144,24 @@ function selectedText2(
     return state;
 }
 
-function changeSyncId(
+function changeSyncIdOnScroll(
     state: UIState,
     action: actions.SelectedTextAction
 ): UIState {
     state = {
         ...state,
-        SyncId: action.payload
+        SyncIdOnScroll: action.payload,
+    };
+
+    return state;
+}
+function changeSyncIdOnClick(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
+    state = {
+        ...state,
+        SyncIdOnClick: action.payload,
     };
 
     return state;
@@ -156,7 +173,7 @@ function changeLinkPanel(
 ): UIState {
     state = {
         ...state,
-        isPanelLinked: action.payload
+        isPanelLinked: action.payload,
     };
 
     return state;
@@ -168,7 +185,7 @@ function noSelectedText(
 ): UIState {
     state = {
         ...state,
-        selectedText: action.data
+        selectedText: action.data,
     };
     return state;
 }
@@ -181,8 +198,8 @@ function selectedTextWitness(
         ...state,
         selectedTextWitness: {
             ...selectedTextWitness,
-            [action.textId]: action.witnessId
-        }
+            [action.textId]: action.witnessId,
+        },
     };
 }
 
@@ -190,13 +207,12 @@ function selectedTextWitness2(
     state: UIState,
     action: actions.SelectedTextWitnessAction
 ): UIState {
-
     return {
         ...state,
         selectedTextWitness2: {
             ...selectedTextWitness2,
-            [action.textId]:action.witnessId
-        }
+            [action.textId]: action.witnessId,
+        },
     };
 }
 function changedSearchValue(
@@ -209,7 +225,7 @@ function changedSearchValue(
     }
     return {
         ...state,
-        searchValue: searchValue
+        searchValue: searchValue,
     };
 }
 
@@ -223,7 +239,7 @@ function changedSearchTerm(
     }
     return {
         ...state,
-        searchTerm: searchTerm
+        searchTerm: searchTerm,
     };
 }
 
@@ -240,18 +256,17 @@ function selectedSearchResult(
         resultState = {
             textId: action.textId,
             start: action.start,
-            length: action.length
+            length: action.length,
         };
     }
     state = {
         ...state,
-        selectedSearchResult: resultState
+        selectedSearchResult: resultState,
     };
 
     if (action.textId) {
-        const resetActiveTextAnnotation = actions.changedActiveTextAnnotation(
-            null
-        );
+        const resetActiveTextAnnotation =
+            actions.changedActiveTextAnnotation(null);
         state = changedActiveTextAnnotation(state, resetActiveTextAnnotation);
     }
 
@@ -264,17 +279,22 @@ function changedShowPageImages(
 ): UIState {
     return {
         ...state,
-        showPageImages: action.showPageImages
+        showPageImages: action.showPageImages,
     };
 }
-
+function changeIsAnnotating(state, action) {
+    return {
+        ...state,
+        isAnnotating:action.payload
+    }
+}
 function changedTextFontSize(
     state: UIState,
     action: actions.ChangedTextFontSizeAction
 ): UIState {
     return {
         ...state,
-        textFontSize: action.fontSize
+        textFontSize: action.fontSize,
     };
 }
 function changedTextFontSize2(
@@ -283,7 +303,7 @@ function changedTextFontSize2(
 ): UIState {
     return {
         ...state,
-        textFontSize2: action.fontSize
+        textFontSize2: action.fontSize,
     };
 }
 function changedNotification(
@@ -292,10 +312,9 @@ function changedNotification(
 ): UIState {
     return {
         ...state,
-        notification: {...action.data}
+        notification: { ...action.data },
     };
 }
-
 
 // TODO: delete? Doesn't seem to be used anywhere.
 // function changedSelectedSegment(state, action) {
@@ -324,8 +343,8 @@ function changedActiveAnnotation(
         ...state,
         activeAnnotations: {
             ...state.activeAnnotations,
-            [activeWitnessId]: action.annotation
-        }
+            [activeWitnessId]: action.annotation,
+        },
     };
 }
 
@@ -343,8 +362,8 @@ function changedActiveTextAnnotation(
         ...state,
         activeTextAnnotations: {
             ...state.activeTextAnnotations,
-            [activeTextId]: action.annotation
-        }
+            [activeTextId]: action.annotation,
+        },
     };
 
     if (action.annotation) {
@@ -365,11 +384,9 @@ function textListVisibleChanged(
 ): UIState {
     return {
         ...state,
-        textListVisible: action.isVisible
+        textListVisible: action.isVisible,
     };
 }
-
-
 
 function textListWidthChanged(
     state: UIState,
@@ -377,11 +394,9 @@ function textListWidthChanged(
 ): UIState {
     return {
         ...state,
-        textListWidth: action.width
+        textListWidth: action.width,
     };
 }
-
-
 
 function getTemporaryAnnotationKey(start: number, length: number): string {
     return [start, length].join("-");
@@ -411,9 +426,9 @@ function addedTemporaryAnnotation(
             ...state.temporaryAnnotations,
             [activeWitnessId]: {
                 ...temporaryAnnotations,
-                [key]: [...textTemporaryAnnotations, annotation]
-            }
-        }
+                [key]: [...textTemporaryAnnotations, annotation],
+            },
+        },
     };
 }
 
@@ -437,10 +452,10 @@ function removedTemporaryAnnotation(
             [activeWitnessId]: {
                 ...state.temporaryAnnotations[activeWitnessId],
                 [key]: state.temporaryAnnotations[activeWitnessId][key].filter(
-                    a => a.uniqueId !== annotation.uniqueId
-                )
-            }
-        }
+                    (a) => a.uniqueId !== annotation.uniqueId
+                ),
+            },
+        },
     };
 }
 
@@ -452,8 +467,8 @@ function changedScrollPosition(
         ...state,
         scrollPositions: {
             ...state.scrollPositions,
-            [action.witnessId]: action.scrollPosition
-        }
+            [action.witnessId]: action.scrollPosition,
+        },
     };
 }
 
@@ -465,8 +480,8 @@ function exportingWitness(
         ...state,
         exportingWitness: {
             ...state.exportingWitness,
-            [action.witnessId]: true
-        }
+            [action.witnessId]: true,
+        },
     };
 }
 
@@ -475,7 +490,7 @@ function exportedWitness(
     action: actions.ExportWitnessAction
 ): UIState {
     state = {
-        ...state
+        ...state,
     };
 
     delete state.exportingWitness[action.witnessId];
@@ -488,9 +503,9 @@ function changedAccountOverlay(
 ): UIState {
     state = {
         ...state,
-        showAccountOverlay: action.isVisible
+        showAccountOverlay: action.isVisible,
     };
-     
+
     return state;
 }
 
@@ -499,8 +514,9 @@ uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.NO_SELECTED_TEXT] = noSelectedText;
-uiReducers[actions.SYNC_ID]=changeSyncId;
-uiReducers[actions.LINK_PANEL]=changeLinkPanel;
+uiReducers[actions.SYNC_ID_ON_SCROLL] = changeSyncIdOnScroll;
+uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
+uiReducers[actions.LINK_PANEL] = changeLinkPanel;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.SELECTED_WITNESS2] = selectedTextWitness2;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
@@ -512,9 +528,8 @@ uiReducers[actions.CHANGED_TEXT_FONT_SIZE2] = changedTextFontSize2;
 
 // uiReducers[actions.CHANGED_SELECTED_SEGMENT] = changedSelectedSegment;
 uiReducers[actions.CHANGED_ACTIVE_ANNOTATION] = changedActiveAnnotation;
-uiReducers[
-    actions.CHANGED_ACTIVE_TEXT_ANNOTATION
-] = changedActiveTextAnnotation;
+uiReducers[actions.CHANGED_ACTIVE_TEXT_ANNOTATION] =
+    changedActiveTextAnnotation;
 uiReducers[actions.CHANGED_TEXT_LIST_VISIBLE] = textListVisibleChanged;
 uiReducers[actions.CHANGED_TEXT_LIST_WIDTH] = textListWidthChanged;
 uiReducers[actions.ADDED_TEMPORARY_ANNOTATION] = addedTemporaryAnnotation;
@@ -523,21 +538,22 @@ uiReducers[actions.CHANGED_WITNESS_SCROLL_POSITION] = changedScrollPosition;
 uiReducers[actions.EXPORT_WITNESS] = exportingWitness;
 uiReducers[actions.EXPORTED_WITNESS] = exportedWitness;
 uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
-uiReducers[actions.CHANGED_NOTIFICATION]= changedNotification;
-uiReducers[actions.SECOND_WINDOW]= toggleSecondWindow;
-
+uiReducers[actions.CHANGED_NOTIFICATION] = changedNotification;
+uiReducers[actions.SECOND_WINDOW] = toggleSecondWindow;
+uiReducers[actions.CHANGE_ANNOTATING] = changeIsAnnotating;
 export default uiReducers;
 
+export const isAnnotating = (state) => {
+    return state.isAnnotating;
+}
+
 export const getSelectedText = (state: UIState): api.TextData | null => {
-   
     return state.selectedText;
 };
 export const getSelectedText2 = (state: UIState): api.TextData | null => {
-   
     return state.selectedText2;
 };
 export const getNotification = (state: UIState): api.TextData | null => {
-   
     return state.notification;
 };
 export const getSelectedTextWitnessId = (
@@ -596,8 +612,11 @@ export const getTextListVisible = (state: UIState): boolean => {
 export const getTextListWidth = (state: UIState): number => {
     return state.textListWidth;
 };
-export const getSyncId = (state: UIState): number => {
-    return state.SyncId;
+export const getSyncIdOnScroll = (state: UIState): number => {
+    return state.SyncIdOnScroll;
+};
+export const getSyncIdOnCLick = (state: UIState): number => {
+    return state.SyncIdOnClick;
 };
 export const isPanelLinked = (state: UIState): number => {
     return state.isPanelLinked;
@@ -617,7 +636,7 @@ export const getTemporaryAnnotations = (
         state.temporaryAnnotations[witnessId][key]
     ) {
         annotations = state.temporaryAnnotations[witnessId][key].filter(
-            a => a.type === type
+            (a) => a.type === type
         );
     }
     return annotations;
@@ -641,9 +660,9 @@ export const getSearchValue = (state: UIState): string => {
     return state.searchValue;
 };
 
-export const getSearchTerm =(state:UIState): string =>{
+export const getSearchTerm = (state: UIState): string => {
     return state.searchTerm;
-}
+};
 
 export const getSelectedSearchResult = (
     state: UIState

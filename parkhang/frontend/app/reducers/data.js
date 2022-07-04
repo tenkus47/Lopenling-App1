@@ -14,7 +14,7 @@ import Question from "lib/Question";
 import Answer from "lib/Answer";
 
 export type AnnotationOperations = {
-    [api.AnnotationOp]: { [AnnotationUniqueId]: AnnotationUniqueId }
+    [api.AnnotationOp]: { [AnnotationUniqueId]: AnnotationUniqueId },
 };
 
 // TODO: move this and QuestionData into api/index.js?
@@ -22,8 +22,8 @@ export type AnswerData = {
     name: string,
     username: string,
     content: string,
-    created: Date
-}
+    created: Date,
+};
 
 export type QuestionData = {
     annotation_unique_id: AnnotationUniqueId,
@@ -33,8 +33,8 @@ export type QuestionData = {
     question: string,
     topic_id: number,
     created: Date,
-    answers: AnswerData[]
-}
+    answers: AnswerData[],
+};
 
 export type DataState = {
     texts: TextData[],
@@ -42,14 +42,14 @@ export type DataState = {
     sources: SourceData[],
     sourcesById: { [number]: SourceData },
     textWitnessesById: {
-        [textId: number]: { [witnessId: number]: WitnessData }
+        [textId: number]: { [witnessId: number]: WitnessData },
     },
     witnessesById: { [number]: WitnessData },
     witnessAnnotationsById: {
-        [witnessId: number]: { [AnnotationUniqueId]: AnnotationData }
+        [witnessId: number]: { [AnnotationUniqueId]: AnnotationData },
     },
     witnessAnnotationOperationsById: {
-        [witnessId: number]: AnnotationOperations
+        [witnessId: number]: AnnotationOperations,
     },
     loadingInitialData: boolean,
     loadedInitialData: boolean,
@@ -64,15 +64,17 @@ export type DataState = {
     loadedAnnotationOperations: boolean,
     searchResults: {
         [searchTerm: string]: {
-            [textId: number]: api.TextSearchResultData
-        }
+            [textId: number]: api.TextSearchResultData,
+        },
     },
     questions: {
-        [annotationId: AnnotationUniqueId]: QuestionData[]
+        [annotationId: AnnotationUniqueId]: QuestionData[],
     },
     questionsLoading: {
-        [annotationId: AnnotationUniqueId]: boolean
-    }
+        [annotationId: AnnotationUniqueId]: boolean,
+    },
+    alignment: {},
+    textAlignment: {},
 };
 
 // Data
@@ -100,14 +102,26 @@ export const initialDataState: DataState = {
     loadedAnnotationOperations: false,
     searchResults: {},
     questions: {},
-    questionsLoading: {}
+    questionsLoading: {},
+    alignment: {},
+    textAlignment: {},
 };
+function setTextAlignment(state: DataState, action) {
+    return { ...state, textAlignment: action.data };
+}
+
+function loadAlignment(state: DataState, action) {
+    return {
+        ...state,
+        alignment: action.payload,
+    };
+}
 
 function loadingInitialData(state: DataState): DataState {
     return {
         ...state,
         loadingInitialData: true,
-        loadedInitialData: false
+        loadedInitialData: false,
     };
 }
 
@@ -115,7 +129,7 @@ function loadedInitialData(state: DataState): DataState {
     return {
         ...state,
         loadingInitialData: false,
-        loadedInitialData: true
+        loadedInitialData: true,
     };
 }
 
@@ -123,7 +137,7 @@ function loadingTexts(state: DataState): DataState {
     return {
         ...state,
         loadingTexts: true,
-        loadedTexts: false
+        loadedTexts: false,
     };
 }
 
@@ -134,7 +148,7 @@ function loadedTexts(state: DataState, action: actions.TextsAction): DataState {
         texts: action.texts,
         textsById: textsById,
         loadingTexts: false,
-        loadedTexts: true
+        loadedTexts: true,
     };
 }
 
@@ -142,7 +156,7 @@ function loadingSources(state: DataState): DataState {
     return {
         ...state,
         loadingSources: true,
-        loadedSources: false
+        loadedSources: false,
     };
 }
 
@@ -156,19 +170,17 @@ function loadedSources(
         sources: action.sources,
         sourcesById: sourcesById,
         loadingSources: false,
-        loadedSources: true
+        loadedSources: true,
     };
 }
 
 function loadingWitnesses(state: DataState): DataState {
-    
     return {
         ...state,
         loadingWitnesses: true,
-        loadedWitnesses: false
+        loadedWitnesses: false,
     };
 }
-
 
 function loadedWitnesses(
     state: DataState,
@@ -177,18 +189,18 @@ function loadedWitnesses(
     const witnessesById = arrayToObject(action.witnesses, "id");
     const textWitnessesById = {
         ...state.textWitnessesById,
-        [action.text.id]: witnessesById
+        [action.text.id]: witnessesById,
     };
     const allWitnessesById = {
         ...state.witnessesById,
-        ...witnessesById
+        ...witnessesById,
     };
     return {
         ...state,
         textWitnessesById: textWitnessesById,
         witnessesById: allWitnessesById,
         loadingWitnesses: false,
-        loadedWitnesses: true
+        loadedWitnesses: true,
     };
 }
 
@@ -196,7 +208,7 @@ function loadingAnnotations(state: DataState): DataState {
     return {
         ...state,
         loadingAnnotations: true,
-        loadedAnnotations: false
+        loadedAnnotations: false,
     };
 }
 
@@ -215,13 +227,13 @@ function loadedAnnotations(
     const annotationsById = arrayToObject(action.annotations, "unique_id");
     const witnessAnnotationsById = {
         ...state.witnessAnnotationsById,
-        [action.witnessId]: annotationsById
+        [action.witnessId]: annotationsById,
     };
     return {
         ...state,
         witnessAnnotationsById: witnessAnnotationsById,
         loadingAnnotations: !state.loadedAnnotationOperations,
-        loadedAnnotations: true
+        loadedAnnotations: true,
     };
 }
 
@@ -231,7 +243,7 @@ function loadedAnnotationOperations(
 ): DataState {
     let operations = {
         [api.appliedOp]: {},
-        [api.removedOp]: {}
+        [api.removedOp]: {},
     };
     operations = action.annotationOperations.reduce(
         (
@@ -249,10 +261,10 @@ function loadedAnnotationOperations(
         ...state,
         witnessAnnotationOperationsById: {
             ...state.witnessAnnotationOperationsById,
-            [action.witnessId]: operations
+            [action.witnessId]: operations,
         },
         loadingAnnotations: !state.loadedAnnotations,
-        loadedAnnotationOperations: true
+        loadedAnnotationOperations: true,
     };
 }
 
@@ -299,7 +311,7 @@ function appliedAnnotation(
     if (!witnessAnnotationOperations) {
         witnessAnnotationOperations = {
             [api.appliedOp]: {},
-            [api.removedOp]: {}
+            [api.removedOp]: {},
         };
     }
 
@@ -311,10 +323,10 @@ function appliedAnnotation(
                 ...witnessAnnotationOperations,
                 [api.appliedOp]: {
                     ...witnessAnnotationOperations[api.appliedOp],
-                    [annotationId]: annotationId
-                }
-            }
-        }
+                    [annotationId]: annotationId,
+                },
+            },
+        },
     };
 }
 
@@ -325,7 +337,7 @@ function removedAppliedAnnotation(
     let annotationId = action.annotationId;
     let witness = action.witnessData;
     let witnessAnnotationOperations = {
-        ...state.witnessAnnotationOperationsById[witness.id]
+        ...state.witnessAnnotationOperationsById[witness.id],
     };
     if (
         witnessAnnotationOperations &&
@@ -337,7 +349,7 @@ function removedAppliedAnnotation(
             )
         ) {
             let appliedOps = {
-                ...witnessAnnotationOperations[api.appliedOp]
+                ...witnessAnnotationOperations[api.appliedOp],
             };
             delete appliedOps[annotationId];
 
@@ -347,9 +359,9 @@ function removedAppliedAnnotation(
                     ...state.witnessAnnotationOperationsById,
                     [witness.id]: {
                         ...witnessAnnotationOperations,
-                        [api.appliedOp]: appliedOps
-                    }
-                }
+                        [api.appliedOp]: appliedOps,
+                    },
+                },
             };
         }
     }
@@ -382,10 +394,10 @@ function removedDefaultAnnotation(
                     ...state.witnessAnnotationOperationsById[witnessId][
                         api.removedOp
                     ],
-                    [annotationId]: annotationId
-                }
-            }
-        }
+                    [annotationId]: annotationId,
+                },
+            },
+        },
     };
 }
 
@@ -397,7 +409,7 @@ function appliedDefaultAnnotation(
     let witnessId = action.witnessData.id;
     state = setupWitnessOperations({ ...state }, witnessId);
     let removeOperations = {
-        ...state.witnessAnnotationOperationsById[witnessId][api.removedOp]
+        ...state.witnessAnnotationOperationsById[witnessId][api.removedOp],
     };
     if (
         state.witnessAnnotationOperationsById[witnessId][
@@ -411,9 +423,9 @@ function appliedDefaultAnnotation(
         witnessAnnotationOperationsById: {
             [witnessId]: {
                 ...state.witnessAnnotationOperationsById[witnessId],
-                [api.removedOp]: removeOperations
-            }
-        }
+                [api.removedOp]: removeOperations,
+            },
+        },
     };
 }
 
@@ -432,9 +444,9 @@ function createdAnnotation(
             ...state.witnessAnnotationsById,
             [witness.id]: {
                 ...state.witnessAnnotationsById[witness.id],
-                [annotation.uniqueId]: annotationData
-            }
-        }
+                [annotation.uniqueId]: annotationData,
+            },
+        },
     };
 }
 
@@ -461,7 +473,7 @@ function deletedAnnotation(
     let witnessAnnotations = state.witnessAnnotationsById[witness.id];
     if (witnessAnnotations) {
         witnessAnnotations = {
-            ...witnessAnnotations
+            ...witnessAnnotations,
         };
         if (witnessAnnotations.hasOwnProperty(annotation.uniqueId)) {
             delete witnessAnnotations[annotation.uniqueId];
@@ -474,8 +486,8 @@ function deletedAnnotation(
         ...state,
         witnessAnnotationsById: {
             ...state.witnessAnnotationsById,
-            [witness.id]: witnessAnnotations
-        }
+            [witness.id]: witnessAnnotations,
+        },
     };
 }
 
@@ -496,7 +508,7 @@ function savedAnnotation(
     let witnessAnnotations = state.witnessAnnotationsById[witness.id];
     if (witnessAnnotations) {
         witnessAnnotations = {
-            ...witnessAnnotations
+            ...witnessAnnotations,
         };
     } else {
         witnessAnnotations = {};
@@ -508,33 +520,32 @@ function savedAnnotation(
             ...state.witnessAnnotationsById,
             [witness.id]: {
                 ...witnessAnnotations,
-                [annotation.uniqueId]: annotationData
-            }
-        }
+                [annotation.uniqueId]: annotationData,
+            },
+        },
     };
 }
 function searchedText(
     state: DataState,
     action: actions.SearchedTextAction
 ): DataState {
-
     if (
         action.searchValue in state.searchResults &&
         action.textId in state.searchResults[action.searchValue]
     ) {
         let searchResults = {
-            ...state.searchResults[action.searchValue]
+            ...state.searchResults[action.searchValue],
         };
         searchResults[action.textId] = {
             ...searchResults[action.textId],
-            loading: true
+            loading: true,
         };
         return {
             ...state,
             searchResults: {
                 ...state.searchResults,
-                [action.searchValue]: searchResults
-            }
+                [action.searchValue]: searchResults,
+            },
         };
     } else {
         return state;
@@ -547,7 +558,7 @@ function updatedSearchResults(
 ): DataState {
     if (action.searchValue in state.searchResults) {
         let searchResults = {
-            ...state.searchResults[action.searchValue]
+            ...state.searchResults[action.searchValue],
         };
         for (let textId in action.searchResults) {
             searchResults[textId] = action.searchResults[Number(textId)];
@@ -556,16 +567,16 @@ function updatedSearchResults(
             ...state,
             searchResults: {
                 ...state.searchResults,
-                [action.searchValue]: searchResults
-            }
+                [action.searchValue]: searchResults,
+            },
         };
     } else {
         return {
             ...state,
             searchResults: {
                 ...state.searchResults,
-                [action.searchValue]: action.searchResults
-            }
+                [action.searchValue]: action.searchResults,
+            },
         };
     }
 }
@@ -581,8 +592,8 @@ function loadingQuestion(
         ...state,
         questionsLoading: {
             ...state.questionsLoading,
-            [action.annotation.uniqueId]: true
-        }
+            [action.annotation.uniqueId]: true,
+        },
     };
 }
 
@@ -594,16 +605,18 @@ function loadedQuestion(
         ...state,
         questions: {
             ...state.questions,
-            [action.annotation.uniqueId]: action.data
+            [action.annotation.uniqueId]: action.data,
         },
         questionsLoading: {
             ...state.questionsLoading,
-            [action.annotation.uniqueId]: false
-        }
+            [action.annotation.uniqueId]: false,
+        },
     };
 }
 
 const dataReducers = {};
+dataReducers[actions.LOAD_ALIGNMENT] = loadAlignment;
+dataReducers[actions.TEXT_ALIGNMENTS] = setTextAlignment;
 dataReducers[actions.LOADING_INITIAL_DATA] = loadingInitialData;
 dataReducers[actions.LOADED_INITIAL_DATA] = loadedInitialData;
 dataReducers[actions.LOADING_TEXTS] = loadingTexts;
@@ -614,9 +627,8 @@ dataReducers[actions.LOADING_WITNESSES] = loadingWitnesses;
 dataReducers[actions.LOADED_WITNESSES] = loadedWitnesses;
 dataReducers[actions.LOADING_WITNESS_ANNOTATIONS] = loadingAnnotations;
 dataReducers[actions.LOADED_WITNESS_ANNOTATIONS] = loadedAnnotations;
-dataReducers[
-    actions.LOADED_WITNESS_ANNOTATION_OPERATIONS
-] = loadedAnnotationOperations;
+dataReducers[actions.LOADED_WITNESS_ANNOTATION_OPERATIONS] =
+    loadedAnnotationOperations;
 dataReducers[actions.APPLIED_ANNOTATION] = appliedAnnotation;
 dataReducers[actions.REMOVED_APPLIED_ANNOTATION] = removedAppliedAnnotation;
 dataReducers[actions.REMOVED_DEFAULT_ANNOTATION] = removedDefaultAnnotation;
@@ -633,9 +645,7 @@ export default dataReducers;
 
 // Selectors
 
-export const getTexts = (
-    state: DataState
-): Text | TextData | null => {
+export const getTexts = (state: DataState): Text | TextData | null => {
     const textData = state.texts;
     return textData;
 };
@@ -742,7 +752,7 @@ export const dataFromWitness = (witness: Witness): WitnessData => {
         revision: witness.revision,
         source: witness.source.id,
         text: witness.text.id,
-        properties: witness.properties
+        properties: witness.properties,
     };
 };
 
@@ -903,7 +913,7 @@ export function dataFromAnnotation(
         unique_id: annotation.uniqueId,
         original: annotation.basedOn ? annotation.basedOn.uniqueId : null,
         is_deleted: false,
-        is_saved: annotation.isSaved
+        is_saved: annotation.isSaved,
     };
 }
 
@@ -1084,6 +1094,12 @@ export const getSearchResults = (
         return null;
     }
 };
+export const getAlignment = (state) => {
+    return state.alignment;
+};
+export const getTextAlignment = (state) => {
+    return state.textAlignment;
+}
 
 export const questionIsLoading = (
     state: DataState,
@@ -1104,7 +1120,7 @@ export const getQuestions = (
     if (state.questions.hasOwnProperty(questionId)) {
         const questionsData = state.questions[questionId];
         if (questionsData) {
-            for (let i=0; i < questionsData.length; i++) {
+            for (let i = 0; i < questionsData.length; i++) {
                 const data = questionsData[i];
 
                 const question = new Question();
@@ -1114,10 +1130,10 @@ export const getQuestions = (
                 question.content = data.question;
                 question.topicId = data.topic_id;
                 question.annotationUniqueId = data.annotation_unique_id;
-                question.created = data.created
+                question.created = data.created;
                 question.answers = [];
                 if (data.answers.length > 0) {
-                    for (let j=0; j < data.answers.length; j++) {
+                    for (let j = 0; j < data.answers.length; j++) {
                         const answerData = data.answers[j];
                         const answer = new Answer();
                         answer.name = answerData.name;

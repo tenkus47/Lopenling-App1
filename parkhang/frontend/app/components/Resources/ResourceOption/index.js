@@ -1,6 +1,7 @@
+import About from "./About";
+import Resources from "./Resources";
+import Commentary from "./Commentary";
+import Dictionary from "./Dictionary";
+import Search from "./Search";
 
-import About from './About'
-import Comment from './Commentary'
-import Question from './Question'
-import Dictionary from './Dictionary'
-export default {About,Comment,Question,Dictionary}
+export default { About, Resources, Commentary, Dictionary, Search };

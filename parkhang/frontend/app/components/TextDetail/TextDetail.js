@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import classnames from "classnames";
-
+import imageStyle from "../Editors/MediaComponent/Image.css";
 import SplitTextComponent from "components/TextDetail/SplitText";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
@@ -11,14 +11,12 @@ import Witness from "lib/Witness";
 import AnnotatedText from "lib/AnnotatedText";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import positionSplitter from "lib/text_splitters/positionSplitter";
-
+import headerStyles from "components/Header/Header.css";
 import styles from "./TextDetail.css";
 import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
-
-
 
 export type Props = {
     paginated: boolean,
@@ -44,9 +42,12 @@ export type Props = {
     } | null,
     searchValue: string | null,
     fontSize: number,
-    isSecondWindowOpen:Boolean,
-    imageData:{},
-    isPanelLinked:boolean
+    isSecondWindowOpen: Boolean,
+    imageData: {},
+    isPanelLinked: boolean,
+    changeSyncIdOnClick: () => void,
+    changeSyncIdOnScroll: () => void,
+    changeSelectedImage: () => void,
 };
 
 let textDetailId = 0;
@@ -110,21 +111,27 @@ class TextDetail extends React.Component<Props> {
                     searchValue={this.props.searchValue}
                     fontSize={this.props.fontSize}
                     isSecondWindowOpen={this.props.isSecondWindowOpen}
-                    changeSyncId={this.props.changeSyncId}
+                    changeSyncIdOnScroll={this.props.changeSyncIdOnScroll}
+                    changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                     imageData={this.props.imageData}
                     isPanelLinked={this.props.isPanelLinked}
-                    >
-                      
-                    </SplitTextComponent>
+                    selectedImage={this.props.selectedImage}
+                    changeSelectedImage={this.props.changeSelectedImage}
+                    isAnnotating={this.props.isAnnotating}
+                ></SplitTextComponent>
             );
         }
 
         let textComponents = [textComponent];
-        
-    
+        let thirdWindowHeight = imageStyle.ThirdWindowHeight;
+        let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
+        let condition =
+            !this.props.isImagePortrait && this.props.isPanelVisible;
         return (
             <div
-                style={{height:'100%'}}
+                style={{
+                    height: condition ? bodyHeight : "100%",
+                }}
                 className={classnames(
                     styles.textDetail,
                     utilStyles.flex,
@@ -132,10 +139,9 @@ class TextDetail extends React.Component<Props> {
                 )}
                 key={this.key}
             >
-            
                 <TextDetailHeadingContainer />
-                <Loader loaded={!this.props.loading} />
-                    
+                <Loader loaded={!this.props.loading} zIndex={5} />
+
                 <div
                     className={classnames(
                         styles.textContainer,
@@ -143,9 +149,7 @@ class TextDetail extends React.Component<Props> {
                     )}
                 >
                     {!this.props.loading ? textComponents : <div />}
-                </div>   
-               
-                    
+                </div>
             </div>
         );
     }

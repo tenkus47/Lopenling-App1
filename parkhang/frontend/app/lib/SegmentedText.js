@@ -35,7 +35,7 @@ export default class SegmentedText {
         includeBoundaries: boolean = true
     ): [string, string, string] {
         // TODO: in future add options for length etc.
-        
+
         let totalSegments = this.segments.length;
         let index = this.indexOfSegmentAtPosition(start);
         let startIndex = null;
@@ -131,7 +131,6 @@ export default class SegmentedText {
                 );
             }
         }
-
         return this._sortedSegments;
     }
 
@@ -179,7 +178,6 @@ export default class SegmentedText {
         }
         return foundSegment;
     }
-
     /**
      * Get TextSegments within the given range of characters in the text.
      */
@@ -212,7 +210,6 @@ export default class SegmentedText {
                 }
             }
         }
-
         return segments;
     }
 }

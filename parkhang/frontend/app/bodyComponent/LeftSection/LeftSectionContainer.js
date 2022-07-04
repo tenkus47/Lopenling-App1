@@ -6,30 +6,32 @@ import LeftSection from "./LeftSection";
 
 let user;
 
-const mapStateToProps = state => {
-    if(!state.user.userId===-1){
-        user=state.user
+const mapStateToProps = (state) => {
+    if (!state.user.userId === -1) {
+        user = state.user;
     }
     return {
+        text: reducers.getTexts(state),
         title: reducers.getTranslation(state, "header.title"),
-        Textdata: reducers.getTextTitle(state)
+        Textdata: reducers.getTextTitle(state),
     };
 };
 
-const matchDispatchToProps = dispatch => {
+const matchDispatchToProps = (dispatch) => {
     return {
         onChangedTextWidth: (width: number) => {
             dispatch(actions.changedTextListWidth(width));
         },
-        onChangedTextTitle:(title:string | null)=>{
-          dispatch(actions.selectTextTitle(title))
+        onChangedTextTitle: (title: string | null) => {
+            dispatch(actions.selectTextTitle(title));
         },
-        dispatch
+        dispatch,
     };
 };
 
-const LeftSectionContainer = connect(mapStateToProps, matchDispatchToProps)(LeftSection);
-
-     
+const LeftSectionContainer = connect(
+    mapStateToProps,
+    matchDispatchToProps
+)(LeftSection);
 
 export default LeftSectionContainer;
