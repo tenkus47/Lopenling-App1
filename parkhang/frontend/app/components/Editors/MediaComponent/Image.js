@@ -12,6 +12,7 @@ import { useImage } from "react-image";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import classnames from "classnames";
 import _ from "lodash";
+import { selectImage } from "../../../actions";
 
 function HttpUrl(data = "") {
     if (data.includes("http")) return data;
@@ -110,7 +111,7 @@ function Image(props) {
         >
             <div className={styles.header}>
                 <div className={styles.ImageTitle}>
-                    Images :
+                    {imageSelected} Images :
                     <select
                         ref={selectRef}
                         defaultValue={props.witness}

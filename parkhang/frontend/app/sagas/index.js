@@ -328,9 +328,13 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     yield put(urlAction);
     yield call(loadImageData, action);
 
-    const VideoData = yield call(api.fetchVideoWithAlignmentId, 2);
-
-    yield put(actions.changeVideoData(VideoData));
+    if (textId !== 139) {
+        yield put(actions.changeVideoData({}));
+    }
+    if (textId === 139) {
+        const VideoData = yield call(api.fetchVideoWithAlignmentId, 0);
+        yield put(actions.changeVideoData(VideoData));
+    }
 }
 
 function* watchSelectedTextWitness() {
@@ -759,7 +763,7 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
         yield call(loadAlignmentData, action, textId);
         yield call(loadTextAlignment, action);
         let fetchedDataOfTextData = yield select(reducers.getTextAlignment);
-        const textId2 = _secondWindowTextId ? _secondWindowTextId : textId;
+        const textId2 = _secondWindowTextId ? _secondWindowTextId : 140;
 
         // fetchedDataOfTextData.target;
 
@@ -784,8 +788,10 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
         // );
         const witnesses = yield call(api.fetchTextWitnesses, textData);
 
-        const VideoData = yield call(api.fetchVideoWithAlignmentId, 3);
-        yield put(actions.changeVideoData(VideoData));
+        const VideoData = yield call(api.fetchVideoWithAlignmentId, 0);
+        if (textId === 139) {
+            yield put(actions.changeVideoData(VideoData));
+        }
 
         yield put(actions.loadedWitnesses(textData, witnesses));
         yield put(actions.loadedWitnesses2(textData2, witnesses));

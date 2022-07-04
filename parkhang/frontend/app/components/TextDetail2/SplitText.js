@@ -461,7 +461,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     l.target_segment.end > sourceId
             );
             let temp = Alignment[index];
-            let startPos = temp.target_segment.start;
+            let startPos = temp?.target_segment.start;
             if (startPos) {
                 let selectedTextIndex =
                     this.props.splitText.getTextIndexOfPosition(startPos);

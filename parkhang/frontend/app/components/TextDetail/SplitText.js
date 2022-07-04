@@ -772,7 +772,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 list.scrollToRow(selectedTextIndex);
                 setTimeout(() => {
                     if (list.props.scrollTop) {
-                        console.log(list.props);
                         list.scrollToPosition(list.props.scrollTop - 900);
                     } else {
                         if (
@@ -784,10 +783,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                     "index_",
                                     ""
                                 );
-                            if (parseInt(currentId) === selectedTextIndex + 1) {
+                            if (parseInt(currentId) < selectedTextIndex) {
                                 let position =
                                     this.splitTextRef.current.getBoundingClientRect();
-
                                 list.scrollToPosition(position.top - 100);
                             }
                         }
@@ -1045,6 +1043,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     className={styles.splitTextRow}
                     ref={this.splitTextRef}
                     id={`index_${index}`}
+                    data-group={`data-${index}`}
                 >
                     <div className={styles.splitTextRowContent}>
                         {/* {props.showImages && (

@@ -9,7 +9,7 @@ Named Concepts
 
 Big Idea
 ---
-- All alignments are created on the `witness` level because each `witness` will have diffirent alignment
+- All alignments are created on the `witness` level because each `witness` will have different alignment
 
 Text All Alignments API
 ---

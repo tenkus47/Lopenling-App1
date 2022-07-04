@@ -7,7 +7,7 @@ import type { AppState } from "reducers";
 import * as actions from "actions";
 import styles from "./App.css";
 import utilStyles from "css/util.css";
-
+import waterStyles from "./Water.css";
 import { handleKeyDown } from "../../shortcuts";
 import { useFlags } from "flagsmith/react";
 import favimage from "images/favicon.png";
@@ -17,7 +17,7 @@ import { history as his } from "redux-first-router";
 import Notification from "bodyComponent/utility/Notification";
 import Favicon from "react-favicon";
 import Editor from "components/Editors/EditorContainer";
-
+import useDelayUnmount from "../UI/useDelayUnmount";
 type Props = {
     title: string,
     textListIsVisible: boolean,
@@ -36,7 +36,8 @@ function setTitle(title: string) {
 const App = (props: Props) => {
     setTitle(props.title);
     const isActive = useActive(4000);
-
+    let [loadScreen, setLoadScreen] = useState(true);
+    const shouldRenderChild = useDelayUnmount(loadScreen, 500);
     useEffect(() => {
         if (isActive === false)
             props.onChangedNotification({
@@ -46,15 +47,22 @@ const App = (props: Props) => {
                 type: "warning",
             });
     }, [isActive]);
-
+    useEffect(() => {
+        let timer = setTimeout(() => {
+            setLoadScreen(false);
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, []);
     let SelectedText = props.state?.ui?.selectedText;
 
     if (!SelectedText) {
         setTitle("Parkhang");
     }
-
+    const mountedStyle = { opacity: 1, transition: "opacity 500ms ease-in" };
+    const unmountedStyle = { opacity: 0, transition: "opacity 500ms ease-in" };
     return (
         <div
+            style={{ position: "relative" }}
             className={classnames(
                 styles.container,
                 utilStyles.flex,
@@ -65,7 +73,14 @@ const App = (props: Props) => {
             }}
         >
             <Favicon url={favimage} />
-
+            {shouldRenderChild && (
+                <div
+                    style={loadScreen ? mountedStyle : unmountedStyle}
+                    className={waterStyles.divBody}
+                >
+                    <div className={waterStyles.water}></div>
+                </div>
+            )}
             <HeaderContainer />
             {SelectedText !== null ? <Editor props={props} /> : <Main />}
             {/* <Notification/> */}

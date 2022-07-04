@@ -485,6 +485,7 @@ export default class Text extends React.Component<Props, State> {
                     dangerouslySetInnerHTML={html}
                     style={{
                         fontSize: this.props.fontSize,
+                        
                     }}
                     onClick={(e) => {
                         this.selectedElement(e.target);

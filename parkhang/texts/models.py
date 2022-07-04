@@ -13,6 +13,7 @@ DEFAULT_MAX_LENGTH = 4000
 
 # Models
 
+
 class Text(models.Model):
     """
     Contains metadata about a text. The actual contents
@@ -22,11 +23,22 @@ class Text(models.Model):
     name = models.CharField(max_length=DEFAULT_MAX_LENGTH)
     """BDRC code for text"""
     code = models.CharField(max_length=DEFAULT_MAX_LENGTH)
-    topics = models.ManyToManyField('Topic')
-    author = models.ForeignKey('Author', on_delete=models.SET_NULL, blank=True, null=True)
+    topics = models.ManyToManyField("Topic")
+    author = models.ForeignKey(
+        "Author", on_delete=models.SET_NULL, blank=True, null=True
+    )
 
     def __str__(self):
         return self.name
+
+
+class FeaturedText(models.Model):
+    """Text to be featured in home page"""
+
+    text = models.ForeignKey(Text, on_delete=models.CASCADE)
+    # order in which the text should be displayed
+    order = models.IntegerField()
+    description = models.CharField(max_length=500, blank=True, null=True)
 
 
 class Topic(models.Model):
@@ -95,44 +107,56 @@ class AnnotationQuerySet(models.QuerySet):
 
 
 class AnnotationType(Enum):
-    variant = 'V'
-    note = 'N'
-    page_break = 'P'
-    line_break = 'L'
-    question = 'Q'
+    variant = "V"
+    note = "N"
+    page_break = "P"
+    line_break = "L"
+    question = "Q"
 
 
 class Annotation(models.Model):
     TYPE_CHOICES = (
-        (AnnotationType.variant.value, 'Variant'),
-        (AnnotationType.note.value, 'Note'),
-        (AnnotationType.page_break.value, 'Page Break'),
-        (AnnotationType.line_break.value, 'Line Break'),
-        (AnnotationType.question.value, 'Question')
+        (AnnotationType.variant.value, "Variant"),
+        (AnnotationType.note.value, "Note"),
+        (AnnotationType.page_break.value, "Page Break"),
+        (AnnotationType.line_break.value, "Line Break"),
+        (AnnotationType.question.value, "Question"),
     )
     unique_id = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
-    witness = models.ForeignKey(Witness, null=True, blank=True, on_delete=models.SET_NULL)
+    witness = models.ForeignKey(
+        Witness, null=True, blank=True, on_delete=models.SET_NULL
+    )
     start = models.IntegerField()
     length = models.IntegerField()
     content = models.CharField(max_length=DEFAULT_MAX_LENGTH, null=True, blank=True)
     """Set if added from another witness"""
-    creator_witness = models.ForeignKey(Witness, null=True, blank=True, related_name="creator_witness", on_delete=models.SET_NULL)
+    creator_witness = models.ForeignKey(
+        Witness,
+        null=True,
+        blank=True,
+        related_name="creator_witness",
+        on_delete=models.SET_NULL,
+    )
     """Set if created by a user"""
-    creator_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
-    type = models.CharField(max_length=1, choices=TYPE_CHOICES, default=AnnotationType.variant.value)
+    creator_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    type = models.CharField(
+        max_length=1, choices=TYPE_CHOICES, default=AnnotationType.variant.value
+    )
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
     """The annotation that has been changed to create this annotation"""
-    original = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
+    original = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.SET_NULL
+    )
 
     # see https://docs.djangoproject.com/en/1.11/topics/db/managers/#creating-a-manager-with-queryset-methods
     objects = AnnotationQuerySet.as_manager()
 
     class Meta:
-        indexes = [
-            models.Index(fields=['witness_id', 'start', 'length', 'type'])
-        ]
+        indexes = [models.Index(fields=["witness_id", "start", "length", "type"])]
 
     def creator(self):
         if self.creator_witness:
@@ -153,23 +177,33 @@ class Annotation(models.Model):
 
     def clean(self):
         if self.creator_witness and self.creator_user:
-            raise ValidationError(_('An annotation\'s creator can either be a user or '
-                                    'a witness, not both.'))
+            raise ValidationError(
+                _(
+                    "An annotation's creator can either be a user or "
+                    "a witness, not both."
+                )
+            )
 
     def __str__(self):
         name = self.creator_name()
-        return f'{self.witness.text.name} ({self.witness.source.name}): {self.start}-{self.start+self.length} - {name}'
+        return f"{self.witness.text.name} ({self.witness.source.name}): {self.start}-{self.start+self.length} - {name}"
 
 
 class UserAnnotationOperation(models.Model):
     OPERATION_CHOICES = (
-        ('A', 'Applied'),
-        ('R', 'Removed'),
+        ("A", "Applied"),
+        ("R", "Removed"),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
-    annotation = models.ForeignKey(Annotation, null=True, blank=True, on_delete=models.SET_NULL)
-    witness = models.ForeignKey(Witness, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    annotation = models.ForeignKey(
+        Annotation, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    witness = models.ForeignKey(
+        Witness, null=True, blank=True, on_delete=models.SET_NULL
+    )
     operation = models.CharField(max_length=1, choices=OPERATION_CHOICES)
     """Intended to allow a user to say why they applied this annotation"""
     note = models.TextField(null=True, blank=True)
@@ -183,8 +217,13 @@ class DefaultWitnessAnnotations(models.Model):
     or via automation, not by end users.
     """
 
-    witness = models.ForeignKey(Witness, null=True, blank=True, on_delete=models.SET_NULL)
-    annotation = models.ForeignKey(Annotation, null=True, blank=True, on_delete=models.SET_NULL)
+    witness = models.ForeignKey(
+        Witness, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    annotation = models.ForeignKey(
+        Annotation, null=True, blank=True, on_delete=models.SET_NULL
+    )
+
 
 class Question(models.Model):
     annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE)
@@ -201,5 +240,3 @@ class Question(models.Model):
     # Non-persisted data. These are intended to be set
     # after retrieving data from an external server.
     answers = []
-
-

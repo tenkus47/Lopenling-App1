@@ -140,7 +140,7 @@ class TextDetail extends React.Component<Props> {
                 key={this.key}
             >
                 <TextDetailHeadingContainer />
-                <Loader loaded={!this.props.loading} />
+                <Loader loaded={!this.props.loading} zIndex={5} />
 
                 <div
                     className={classnames(
