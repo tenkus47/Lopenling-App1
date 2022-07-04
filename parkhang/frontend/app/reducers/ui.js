@@ -42,10 +42,11 @@ export type UIState = {
     },
     showSecondWindow: Boolean,
 
-    SyncIdOnScroll: [Number],
+    SyncIdOnScroll: String,
     SyncIdOnClick: String,
 
     isPanelLinked: boolean,
+    isAnnotating:Boolean
 };
 
 export const initialUIState = {
@@ -77,6 +78,7 @@ export const initialUIState = {
     SyncIdOnScroll: 0,
     SyncIdOnClick: 0,
     isPanelLinked: true,
+    isAnnotating:true
 };
 
 function loadedUserSettings(
@@ -280,7 +282,12 @@ function changedShowPageImages(
         showPageImages: action.showPageImages,
     };
 }
-
+function changeIsAnnotating(state, action) {
+    return {
+        ...state,
+        isAnnotating:action.payload
+    }
+}
 function changedTextFontSize(
     state: UIState,
     action: actions.ChangedTextFontSizeAction
@@ -533,8 +540,12 @@ uiReducers[actions.EXPORTED_WITNESS] = exportedWitness;
 uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
 uiReducers[actions.CHANGED_NOTIFICATION] = changedNotification;
 uiReducers[actions.SECOND_WINDOW] = toggleSecondWindow;
-
+uiReducers[actions.CHANGE_ANNOTATING] = changeIsAnnotating;
 export default uiReducers;
+
+export const isAnnotating = (state) => {
+    return state.isAnnotating;
+}
 
 export const getSelectedText = (state: UIState): api.TextData | null => {
     return state.selectedText;

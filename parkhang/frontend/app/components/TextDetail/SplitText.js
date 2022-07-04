@@ -22,7 +22,6 @@ import { CONTROLS_MARGIN_LEFT } from "./AnnotationControls";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import styles from "./SplitText.css";
 import annotationControlsStyles from "./AnnotationControls.css";
-import textStyles from "./Text.css";
 import controlStyles from "./AnnotationControls.css";
 import _ from "lodash";
 import TextSegment from "lib/TextSegment";
@@ -110,20 +109,21 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     calculatedImageHeight: number | null;
     changeSyncIdOnScroll: () => void;
     changeSyncIdOnClick: () => void;
-
     scrolling: () => void;
-    spans: Node[] | null;
+    textlines: Node[] | null;
+    jump: number;
     isPanelLinked: Boolean;
+    splitTextRef;
     constructor(props: Props) {
         super(props);
         this.childRef = React.createRef("0");
-
         this.list = null;
         this.splitText = null;
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
             defaultHeight: 300,
         });
+        this.splitTextRef = React.createRef(null);
         this.rowRenderer = this.rowRenderer.bind(this);
         this.textListVisible = props.textListVisible;
         this.editMenuVisible = props.editMenuVisible;
@@ -140,41 +140,50 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.processProps(props);
         this.changeSyncIdOnScroll = props.changeSyncIdOnScroll;
         this.changeSyncIdOnClick = props.changeSyncIdOnClick;
+        this.scrollJump = props.scrollJump;
     }
 
     scrolling(e) {
         let newList = [];
-
+        this.props.changeSelectedImage(null);
         if (this.isPanelLinked) {
-            if (this.spans) {
-                this.spans.forEach((span) => {
-                    let position = span.getBoundingClientRect();
-                    let spanId = span.id.replace("s_", "");
-                    if (position.top > 100) {
-                        newList.push(spanId);
+            if (this.textlines) {
+                let textLineToSync = this.textlines[0];
+                if (textLineToSync !== undefined) {
+                    let position = textLineToSync.getBoundingClientRect();
+                    if (position.top < 100) {
+                        textLineToSync = this.textlines[1];
                     }
-                });
-            }
 
-            this.changeSyncIdOnScroll(newList);
+                    let span = textLineToSync?.firstChild;
+                    let spanId = 0;
+                    if (span) spanId = span.id.replace("s_", "");
+
+                    this.changeSyncIdOnScroll(spanId);
+                }
+            }
         }
     }
 
     updateId(id) {
-        // if(id && id.includes('s')){
-        //     let newId=id.replace('s','s2');
-        //     if(document.getElementById(newId)){
-        //         document?.getElementById(newId)?.scrollIntoView({block: 'center'});
-        //     let positionHighlight=  document.getElementById(newId).getBoundingClientRect();
-        //     let hightlighter= document.createElement('div');
-        //     hightlighter.classList.add(styles.hightlighter);
-        //    hightlighter.style.border='2px solid blue';
-        //     document.getElementById(newId).append(hightlighter)
-        //     document.getElementById(newId).style.color='blue';
-        //      setTimeout(()=>{
-        //         document.getElementById(newId).style.color='black';
-        //         hightlighter.remove();
-        //     },500)
+        // if (id && id.includes("s")) {
+        //     let newId = id.replace("s", "s2");
+        //     if (document.getElementById(newId)) {
+        //         document
+        //             ?.getElementById(newId)
+        //             ?.scrollIntoView({ block: "center" });
+        //         let positionHighlight = document
+        //             .getElementById(newId)
+        //             .getBoundingClientRect();
+        //         let hightlighter = document.createElement("div");
+        //         hightlighter.classList.add(styles.hightlighter);
+        //         hightlighter.style.border = "2px solid blue";
+        //         document.getElementById(newId).append(hightlighter);
+        //         document.getElementById(newId).style.color = "blue";
+        //         setTimeout(() => {
+        //             document.getElementById(newId).style.color = "black";
+        //             hightlighter.remove();
+        //         }, 500);
         //     }
         // }
     }
@@ -302,7 +311,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }
             return accumulator;
         }, nodeIds);
-
         return nodeIds;
     }
 
@@ -657,6 +665,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidMount() {
+        let list = this.list;
+
         this.resizeHandler = _.throttle(() => {
             this.calculatedImageHeight = null;
             this.updateList();
@@ -668,9 +678,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }, 200);
         };
 
-        // document
-        //     .querySelector("#doubleWindow")
-        //     .addEventListener("click", handler);
+        document
+            .querySelector("#doubleWindow")
+            .addEventListener("click", handler);
         window.addEventListener("resize", this.resizeHandler);
 
         this.selectionHandler = _.debounce((e) => {
@@ -687,7 +697,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidUpdate() {
-        this.spans = document.querySelectorAll(".Text---textContainer span");
+        this.textlines = document.querySelectorAll(".Text---textLine");
+
         this.isPanelLinked = this.props.isPanelLinked;
         if (this.selectedNodes && this.selectedNodes.length > 0) {
             const selectedNodes = this.selectedNodes;
@@ -737,11 +748,52 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     // scrollToRow often positions the annotation at the
                     // bottom of the screen, so scroll up a bit
                     setTimeout(() => {
-                        list.scrollToPosition(list.props.scrollTop - 100);
+                        if (list.props.scrollTop) {
+                            list.scrollToPosition(list.props.scrollTop - 100);
+                        } else {
+                            list.scrollToPosition(-100);
+                        }
                     }, 0);
                 }, 100);
             }
             this._didSetInitialScrollPosition = true;
+        }
+
+        let startPos = this.props.selectedImage?.source_segment?.start;
+
+        if (startPos) {
+            let list = this.list;
+            let selectedTextIndex = 0;
+            if (startPos) {
+                selectedTextIndex =
+                    this.props.splitText.getTextIndexOfPosition(startPos);
+            }
+            setTimeout(() => {
+                list.scrollToRow(selectedTextIndex);
+                setTimeout(() => {
+                    if (list.props.scrollTop) {
+                        console.log(list.props);
+                        list.scrollToPosition(list.props.scrollTop - 900);
+                    } else {
+                        if (
+                            this.splitTextRef.current !== null &&
+                            this.splitTextRef.current !== "undefined"
+                        ) {
+                            let currentId =
+                                this.splitTextRef.current.id.replace(
+                                    "index_",
+                                    ""
+                                );
+                            if (parseInt(currentId) === selectedTextIndex + 1) {
+                                let position =
+                                    this.splitTextRef.current.getBoundingClientRect();
+
+                                list.scrollToPosition(position.top - 100);
+                            }
+                        }
+                    }
+                }, 100);
+            }, 100);
         }
     }
 
@@ -840,7 +892,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             rowHeight={cache.rowHeight}
                             rowRenderer={rowRenderer}
                             width={width}
-                            overscanRowCount={3}
+                            overscanRowCount={1}
                             deferredMeasurementCache={cache}
                             onScroll={(e) => this.scrolling(e)}
                         ></List>
@@ -987,7 +1039,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 rowIndex={index}
                 cache={cache}
             >
-                <div key={key} style={newStyle} className={styles.splitTextRow}>
+                <div
+                    key={key}
+                    style={newStyle}
+                    className={styles.splitTextRow}
+                    ref={this.splitTextRef}
+                    id={`index_${index}`}
+                >
                     <div className={styles.splitTextRowContent}>
                         {/* {props.showImages && (
                             <div
@@ -1045,10 +1103,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             fontSize={props.fontSize}
                             changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                             isPanelLinked={this.props.isPanelLinked}
+                            isAnnotating={this.props.isAnnotating}
                             // menuVisible={props.menuVisible}
                         />
                     </div>
-                    {this.selectedTextIndex === index &&
+
+                    {this.props.isAnnotating &&
+                        this.selectedTextIndex === index &&
                         this.props.activeAnnotation && (
                             <AnnotationControlsContainer
                                 annotationPositions={props.annotationPositions}

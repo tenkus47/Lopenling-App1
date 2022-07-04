@@ -11,7 +11,7 @@ import {
     all,
     delay,
 } from "redux-saga/effects";
-
+import _ from "lodash";
 import FileSaver from "file-saver";
 import * as actions from "actions";
 import * as reducers from "reducers";
@@ -258,6 +258,8 @@ function* watchSelectedText2(): Saga<void> {
 
 function* loadInitialTextData(action: actions.TextDataAction) {
     try {
+        const witnessId = action.witnessId;
+        const { id: textId } = yield select(reducers.getSelectedText);
         const witnesses = yield call(api.fetchTextWitnesses, action.text);
         yield put(actions.loadedWitnesses(action.text, witnesses));
         let workingWitnessData: api.WitnessData | null = null;
@@ -286,20 +288,8 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 actions.selectedTextWitness(action.text.id, workingWitness.id)
             );
         }
-        let textId = action.text.id;
-        const AlignmentData = yield call(api.fetchAlignment, textId);
-
-        const ImageData = yield call(
-            api.fetchImageWithAlignmentId,
-            AlignmentData.alignments.image[0].alignment
-        );
-        const VideoData = yield call(
-            api.fetchVideoWithAlignmentId,
-            AlignmentData.alignments.video[0].alignment
-        );
-        //    console.log(AlignmentData)
-        yield put(actions.changeImageData(ImageData));
-        yield put(actions.changeVideoData(VideoData));
+        yield call(loadAlignmentData, action, textId);
+        yield call(loadImageData, action, witnessId);
     } catch (e) {
         console.log("FAILED loadInitialTextData %o", e);
     }
@@ -307,6 +297,7 @@ function* loadInitialTextData(action: actions.TextDataAction) {
 
 function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     const witnessId = action.witnessId;
+    const textId = action.textId;
     const hasLoadedAnnotations = yield select(
         reducers.hasLoadedWitnessAnnotations,
         witnessId
@@ -335,6 +326,11 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
         urlAction.payload.annotation = getAnnotationSlug(activeAnnotation);
     }
     yield put(urlAction);
+    yield call(loadImageData, action);
+
+    const VideoData = yield call(api.fetchVideoWithAlignmentId, 2);
+
+    yield put(actions.changeVideoData(VideoData));
 }
 
 function* watchSelectedTextWitness() {
@@ -387,9 +383,9 @@ function* selectedWitness2(action: actions.SelectedTextWitnessAction) {
         witnessId
     );
 
-    if (!hasLoadedAnnotations2) {
-        yield call(loadWitnessAnnotations2, action);
-    }
+    // if (!hasLoadedAnnotations2) {
+    //     yield call(loadWitnessAnnotations2, action);
+    // }
 }
 
 function* watchSelectedTextWitness2() {
@@ -733,10 +729,17 @@ function* dispatchedBatch(action): Saga<void> {
 function* watchBatchedActions() {
     yield takeEvery(BATCH, dispatchedBatch);
 }
-
+//
+function* loadAlignmentData(action, textId) {
+    if (textId) {
+        const AlignmentData = yield call(api.fetchAlignment, textId);
+        yield put(actions.loadAlignment(AlignmentData));
+    }
+}
 // URLS
 // loadedTextUrl should only be called when first loading
 let _loadedTextUrl = false;
+
 let _secondWindowTextId = null;
 let _secondWindowWitnessId = null;
 
@@ -745,12 +748,21 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
         return;
     }
     _loadedTextUrl = true;
+
     if (action.payload.witnessId) {
         const textId = action.payload.textId;
         const witnessId = action.payload.witnessId;
-        const textId2 = _secondWindowTextId ? _secondWindowTextId : textId;
         let textData: api.TextData;
         let textData2: api.TextData;
+
+        //Search image Alignment on basis of textId and WitnessId
+        yield call(loadAlignmentData, action, textId);
+        yield call(loadTextAlignment, action);
+        let fetchedDataOfTextData = yield select(reducers.getTextAlignment);
+        const textId2 = _secondWindowTextId ? _secondWindowTextId : textId;
+
+        // fetchedDataOfTextData.target;
+
         do {
             textData = yield select(reducers.getText, textId, true);
             textData2 = yield select(reducers.getText2, textId2, true);
@@ -766,28 +778,17 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
             textId,
             witnessId
         );
-
+        // const selectedWitnessAction2 = actions.selectedTextWitness2(
+        //     textId2,
+        //     witnessId2
+        // );
         const witnesses = yield call(api.fetchTextWitnesses, textData);
-        const AlignmentData = yield call(api.fetchAlignment, textId);
 
-        //Search image Alignment on basis of textId and WitnessId
-        console.log(witnessId);
-        let alignmentImage = AlignmentData.alignments.image.find(
-            (l) => l.witness === witnessId
-        );
-        const ImageData = yield call(
-            api.fetchImageWithAlignmentId,
-            alignmentImage
-        );
-        const VideoData = yield call(
-            api.fetchVideoWithAlignmentId,
-            AlignmentData.alignments.video[0].alignment
-        );
-        //    console.log(AlignmentData)
-        yield put(actions.changeImageData(ImageData));
+        const VideoData = yield call(api.fetchVideoWithAlignmentId, 3);
         yield put(actions.changeVideoData(VideoData));
 
         yield put(actions.loadedWitnesses(textData, witnesses));
+        yield put(actions.loadedWitnesses2(textData2, witnesses));
 
         let textWitnesses: Array<Witness> = [];
         do {
@@ -808,7 +809,7 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
         } while (!selectedWitnessId);
 
         yield put(selectedWitnessAction);
-
+        // yield put(selectedWitnessAction2);
         if (action.payload.annotation) {
             let matches = /([0-9]+)-([0-9]+)-?(.+)?/.exec(
                 action.payload.annotation
@@ -896,22 +897,36 @@ function* watchTextUrlActions() {
 
 function* loadedTextUrl2(action) {
     const textId = action.payload.textId;
+    const witnessId = action.payload.witnessId;
+
     const textId2 = action.payload.textId2;
+    const witnessId2 = action.payload.witnessId2;
     let textData: api.TextData;
     let textData2: api.TextData;
-    do {
-        textData = yield select(reducers.getText, textId, true);
-        textData2 = yield select(reducers.getText, textId2, true);
-        if (!textData) yield delay(100);
-        if (!textData2) yield delay(100);
-    } while (textData === null || textData2 === null);
-    const selectedTextAction = actions.selectedText(textData);
-    const selectedTextAction2 = actions.selectedText2(textData2);
-
     _secondWindowTextId = textId2;
+    // console.log("not load");
+    // do {
+    //     textData = yield select(reducers.getText, textId, true);
+    //     textData2 = yield select(reducers.getText, textId2, true);
+    //     if (!textData) yield delay(100);
+    //     if (!textData2) yield delay(100);
+    // } while (textData === null || textData2 === null);
+    // const selectedTextAction = actions.selectedText(textData);
+    // const selectedTextAction2 = actions.selectedText2(textData2);
+    // yield put(selectedTextAction);
+    // yield put(selectedTextAction2);
 
-    yield put(selectedTextAction);
-    yield put(selectedTextAction2);
+    // const selectedWitnessAction = actions.selectedTextWitness(
+    //     textId,
+    //     witnessId
+    // );
+    // const selectedWitnessAction2 = actions.selectedTextWitness2(
+    //     textId2,
+    //     witnessId2
+    // );
+
+    // yield put(selectedWitnessAction);
+    // yield put(selectedWitnessAction2);
 }
 
 function* watchTextUrlActions2() {
@@ -969,23 +984,23 @@ function* selectTextUrl(action) {
     yield put(noSelectedTextAction);
     const noTitleSelected = actions.selectTextTitle(null);
     yield put(noTitleSelected);
-
     const textdata = yield select(reducers.getTextTitle);
     let texts;
     let setTextData;
-    if (textdata.detail.length === 0) {
+    do {
         try {
             texts = yield call(api.fetchChapterDetail);
         } catch (e) {
-            console.log("error");
+            console.log(e);
         }
         if (texts) {
             setTextData = actions.setTextData(texts.data);
         } else {
             setTextData = actions.setTextData([]);
         }
+        console.log("fetching Home Component");
         yield put(setTextData);
-    }
+    } while (texts.data.length === 0);
 
     const trueLoaded = actions.changeIsLoaded(true);
     yield put(trueLoaded);
@@ -1062,8 +1077,74 @@ function* searchUrl(action) {
 function* watchSearchUrl() {
     yield takeEvery(actions.SEARCH, searchUrl);
 }
+//Text Alignment Load
+
+function* loadTextAlignment(action) {
+    let AlignmentData = yield select(reducers.getAlignment);
+    let Text = yield select(reducers.getSelectedText);
+    // let AlignmentId = AlignmentData.text[0].id;
+    console.log(AlignmentData);
+    let AlignmentId = 10;
+    let data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
+    yield put(actions.setTextAlignment(data));
+}
+//Media Load
+function* loadImageData(action, witnessid = null) {
+    let AlignmentData = yield select(reducers.getAlignment);
+    let TextId = yield select(reducers.getSelectedText);
+    let witness = null;
+    let textCondition = TextId.id === parseInt(AlignmentData.text);
+
+    do {
+        witness = yield select(reducers.getSelectedTextWitness);
+    } while (witness === null);
+    let ImageData;
+    if (!textCondition) {
+        ImageData = null;
+        yield put(actions.changeImageData(ImageData));
+    } else if (!_.isEmpty(AlignmentData)) {
+        let alignmentImage = AlignmentData.alignments.image;
+
+        let data = alignmentImage.filter((l) => {
+            if (witnessid === null) return l.source === parseInt(witness.id);
+            return l.source === parseInt(witnessid);
+        });
+        if (_.isEmpty(data) || !_.isEmpty(alignmentImage.length)) {
+            data = alignmentImage[0];
+            if (!_.isEmpty(data)) {
+                ImageData = yield call(
+                    api.fetchImageWithAlignmentId,
+                    data[0]?.alignment
+                );
+            }
+        }
+
+        if (!_.isEmpty(data)) {
+            ImageData = yield call(
+                api.fetchImageWithAlignmentId,
+                data[0]?.alignment
+            );
+        }
+        yield put(actions.changeImageData(ImageData));
+    }
+}
+
+function* watchLoadImageData() {
+    yield takeEvery(actions.ACTIVATE_MEDIA, loadImageData);
+}
 
 //notification
+
+//Image Alignment Source Change
+
+function* changeImageSource(action) {
+    let id = parseInt(action.payload);
+    yield call(loadImageData, action, id);
+}
+
+function* watchChangeImageSource() {
+    yield takeEvery(actions.SELECT_IMAGE_VERSION, changeImageSource);
+}
 
 /**
  * Stores functions by action type.
@@ -1103,6 +1184,8 @@ const typeCalls: {
     [actions.LOAD_QUESTION]: loadQuestion,
     [actions.EDITOR]: editorUrl,
     [actions.SEARCH]: searchUrl,
+    [actions.ACTIVATE_MEDIA]: loadImageData,
+    [actions.SELECT_IMAGE_VERSION]: changeImageSource,
 };
 
 /** Root **/
@@ -1143,5 +1226,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchSearchUrl),
         call(watchSelectedText2),
         call(watchSelectedTextWitness2),
+        call(watchLoadImageData),
+        call(watchChangeImageSource),
     ]);
 }

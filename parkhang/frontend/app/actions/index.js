@@ -12,7 +12,11 @@ export const ACTIVATE_MEDIA = "MEDIA_SELECTION";
 export const LOAD_IMAGE_DATA = "LOAD_IMAGE_DATA";
 export const LOAD_VIDEO_DATA = "LOAD_VIDEO_DATA";
 export const IS_IMAGE_PORTRAIT = "IS_IMAGE_PORTRAIT";
+export const SELECT_IMAGE_VERSION = "SELECT_IMAGE_VERSION";
+export const SELECT_IMAGE = "SELECT_IMAGE";
 // Data
+export const LOAD_ALIGNMENT = "LOAD_ALIGNMENT";
+export const TEXT_ALIGNMENTS = "TEXT_ALIGNMENTS";
 export const SEARCH_TERM = "SEARCH_TERM";
 export const LOAD_INITIAL_DATA = "LOAD_INITIAL_DATA";
 export const LOADING_INITIAL_DATA = "LOADING_INITIAL_DATA";
@@ -72,6 +76,7 @@ export const UPDATED_TEMPORARY_ANNOTATION = "text/UPDATED_TEMPORARY_ANNOTATION";
 export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 // UI
+export const CHANGE_ANNOTATING = "CHANGE_ANNOTATING";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
 export const NO_SELECTED_TEXT = "textList/NO_SELECTED_TEXT";
@@ -572,6 +577,12 @@ export function selectedText(text: api.TextData): SelectedTextAction {
     };
 }
 
+export function changeIsAnnotating(payload) {
+    return {
+        type: CHANGE_ANNOTATING,
+        payload,
+    };
+}
 export type SelectedTextAction2 = Action & TextDataAction;
 export function selectedText2(text: api.TextData): SelectedTextAction2 {
     return {
@@ -913,7 +924,18 @@ export function searchTerm(data) {
         payload: data,
     };
 }
-
+export function loadAlignment(payload) {
+    return {
+        type: LOAD_ALIGNMENT,
+        payload,
+    };
+}
+export function setTextAlignment(data) {
+    return {
+        type: TEXT_ALIGNMENTS,
+        data,
+    };
+}
 export function toggleSecondWindow(data) {
     return {
         type: SECOND_WINDOW,
@@ -965,6 +987,19 @@ export function mediaSelection(data) {
 export function setIsImagePortrait(payload) {
     return {
         type: IS_IMAGE_PORTRAIT,
+        payload,
+    };
+}
+
+export function selectImageVersion(payload) {
+    return {
+        type: SELECT_IMAGE_VERSION,
+        payload,
+    };
+}
+export function selectImage(payload) {
+    return {
+        type: SELECT_IMAGE,
         payload,
     };
 }

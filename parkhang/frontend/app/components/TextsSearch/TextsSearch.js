@@ -1,6 +1,7 @@
 // @flow
 import React, { useTransition } from "react";
 import styles from "./TextsSearch.css";
+import * as constants from "app_constants";
 
 import { injectIntl } from "react-intl";
 import Button from "components/UI/Button";
@@ -13,6 +14,7 @@ type Props = {
     minimiseButtonClicked: () => void,
     intl: { formatMessage: ({ [id: string]: string }) => string },
     searchTerm: string,
+    textListWidth: number,
 };
 
 const TextsSearch = (props: Props) => {
@@ -31,11 +33,19 @@ const TextsSearch = (props: Props) => {
 
     const handleChange = (e) => {
         startTransition(() => {
+            if (e.target.value === "") {
+                props.searchChanged(null);
+                return;
+            }
             props.searchChanged(e.target.value);
         });
     };
+    console.log(props.textListWidth);
     return (
-        <div className={styles.textsSearchContainer}>
+        <div
+            className={styles.textsSearchContainer}
+            style={{ maxWidth: props.textListWidth }}
+        >
             <div className={styles.textsSearch}>
                 <form onSubmit={initiateSearch}>
                     <input
@@ -51,10 +61,11 @@ const TextsSearch = (props: Props) => {
                     <Button
                         backgroundColor="#35BF5C"
                         onClick={initiateSearch}
-                        title={props.intl.formatMessage({
-                            id: "leftbar.search",
-                        })}
+                        // title={props.intl.formatMessage({
+                        //     id: "leftbar.search",
+                        // })}
                         noBezel={true}
+                        icon={<SearchIcon />}
                     />
                 </form>
             </div>

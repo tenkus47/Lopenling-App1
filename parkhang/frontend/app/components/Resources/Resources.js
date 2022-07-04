@@ -43,7 +43,7 @@ function Resources() {
         },
         {
             id: 3,
-            title: "Question",
+            title: "Commentary",
             effect: "solid",
             className: styles.ResourceIcon,
         },
@@ -89,7 +89,7 @@ function Resources() {
                 {selectedOption === 0 && <Index.About />}
                 {selectedOption === 1 && <Index.Resources />}
                 {selectedOption === 2 && <Index.Dictionary />}
-                {selectedOption === 3 && <Index.Question />}
+                {selectedOption === 3 && <Index.Commentary />}
                 {selectedOption === 4 && <Index.Search />}
             </div>
             <div className={styles.ResourceFooter}>

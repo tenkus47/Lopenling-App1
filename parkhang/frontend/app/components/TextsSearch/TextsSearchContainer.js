@@ -9,6 +9,7 @@ const mapStateToProps = (state: AppState) => {
     return {
         searchTerm: reducers.getSearchTerm(state),
         searchValue: state.ui.searchValue,
+        textListWidth: reducers.getTextListWidth(state),
     };
 };
 

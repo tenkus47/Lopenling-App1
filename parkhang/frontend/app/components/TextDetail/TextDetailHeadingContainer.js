@@ -66,6 +66,7 @@ const mapStateToProps = (state: AppState): {} => {
         exportingWitness,
         isPanelLinked: reducers.isPanelLinked(state),
         user: reducers.getUser(state),
+        isAnnotating: reducers.isAnnotating(state),
     };
 };
 
@@ -106,6 +107,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         onChangePanelLink: (data: boolean) => {
             dispatch(actions.changePanelLink(data));
+        },
+        changeIsAnnotating: (payload) => {
+            dispatch(actions.changeIsAnnotating(payload));
+            if (payload === false) {
+                const dismissTextAnnotation =
+                    actions.changedActiveTextAnnotation(null);
+                dispatch(dismissTextAnnotation);
+                dispatch(actions.changedActiveTextAnnotation(null));
+            }
         },
     };
 };

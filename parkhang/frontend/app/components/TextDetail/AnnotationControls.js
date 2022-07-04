@@ -66,7 +66,7 @@ export type Props = {
         content: string
     ) => void,
     list: List | null,
-    closeAnnotation:()=>void,
+    closeAnnotation: () => void,
 };
 
 type AnchorPoint = "top" | "left" | "bottom" | "right";
@@ -453,7 +453,10 @@ class AnnotationControls extends React.Component<Props> {
                 // the values option, so need to wrap it in a div
 
                 anonymousUserMessage = (
-                    <div className={styles.anonymousMessage}>
+                    <div
+                        className={styles.anonymousMessage}
+                        style={{ position: "relative" }}
+                    >
                         <FormattedMessage
                             id="annotations.loginMessage"
                             values={{
@@ -464,6 +467,19 @@ class AnnotationControls extends React.Component<Props> {
                                 ),
                             }}
                         />
+                        <div
+                            onClick={() => this.props.closeAnnotation()}
+                            style={{
+                                position: "absolute",
+                                left: 5,
+                                width: 10,
+                                height: 10,
+                                top: 5,
+                                cursor: "pointer",
+                            }}
+                        >
+                            x
+                        </div>
                     </div>
                 );
             }

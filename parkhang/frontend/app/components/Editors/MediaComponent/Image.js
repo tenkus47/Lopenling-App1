@@ -1,56 +1,85 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+    useState,
+    useRef,
+    useEffect,
+    memo,
+    Suspense,
+    useMemo,
+    useCallback,
+} from "react";
 import styles from "./Image.css";
+import { useImage } from "react-image";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import classnames from "classnames";
-import Draggable from "react-draggable";
 import _ from "lodash";
 
+function HttpUrl(data = "") {
+    if (data.includes("http")) return data;
+    return "http://" + data;
+}
+
 function Image(props) {
+    const selectRef = useRef(null);
+    let textIdfromAlignment = props.alignmentData.text;
     let isPortraitImage = props.isImagePortrait;
     let ImageArea = useRef(null);
     let [imageSelected, SetSelected] = useState(0);
     let [hide, SetHide] = useState(false);
-
-    let imageList = props.imageData.alignment || [];
+    let imageList = props.imageData?.alignment || [];
     let imageIdList = [];
-    let syncIdOnScroll = props.syncIdOnScroll;
+    let scrollingID = props.syncIdOnScroll;
+    let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
     let syncIdOnClick = props.syncIdOnClick;
-
-    let sourceId = parseInt(props.imageData.source);
     if (!_.isEmpty(imageList)) {
         imageIdList = imageList.map((l) => parseInt(l.source_segment.start));
     }
-
+    // useEffect(() => {
+    //     let IDtoSync = parseInt(syncIdOnScroll);
+    //     if (textIdfromAlignment === props.selectedText.id) {
+    //         if (imageList?.length > 0) {
+    //             let findSegment = imageList.filter(
+    //                 (l) =>
+    //                     l.source_segment.start <= IDtoSync &&
+    //                     l.source_segment.end > IDtoSync
+    //             );
+    //             let index = imageList.findIndex(
+    //                 (l) => l?.source_segment === findSegment[0]?.source_segment
+    //             );
+    //             if (index >= 0) {
+    //                 SetSelected(index);
+    //             }
+    //         }
+    //     }
+    // }, [syncIdOnScroll]);
     useEffect(() => {
-        //    if(sourceId===props.selectedText.id){
-        if (imageList.length > 0) {
-            let intersection = syncIdOnScroll.filter((element) =>
-                imageIdList.includes(parseInt(element))
-            );
-            let newList = imageList.filter(
-                (d) => d?.source_segment?.start === intersection[0]
-            );
-            let numberId = imageList.indexOf(newList[0]);
-            if (numberId >= 0) {
-                SetSelected(numberId);
-            }
-            // }
-        }
-    }, [syncIdOnScroll]);
-
+        selectRef.current.value = props.witness;
+    }, [props.witness]);
     useEffect(() => {
-        let ClickId = syncIdOnClick.toString().replace("s_", "");
-        let temp = 1;
-        imageIdList.sort().forEach((l) => {
-            if (l <= ClickId) {
-                temp = l;
+        if (textIdfromAlignment === props.selectedText.id) {
+            let ClickId = syncIdOnClick.toString().replace("s_", "");
+            if (imageList?.length > 0) {
+                let findSegment = imageList.filter(
+                    (l) =>
+                        l.source_segment.start < ClickId &&
+                        l.source_segment.end > ClickId
+                );
+                let index = imageList.findIndex(
+                    (l) => l?.source_segment === findSegment[0]?.source_segment
+                );
+                if (index >= 0) {
+                    SetSelected(index);
+                }
             }
-        });
-        let numberId = imageIdList.indexOf(temp);
-        if (numberId >= 0) {
-            SetSelected(numberId);
         }
     }, [syncIdOnClick]);
+
+    let change = useCallback(() => {
+        props.changeSelectedImage(imageList[imageSelected]);
+    }, [imageSelected]);
+
+    useEffect(() => {
+        change();
+    }, [imageSelected]);
 
     const isPortrait = ({ target: img }) => {
         //this Check if the provided Image is a portrait or a landScape
@@ -60,10 +89,14 @@ function Image(props) {
         props.changeIsImagePortrait(tempHeight >= tempWIdth);
     };
 
-    function HttpUrl(data = "") {
-        if (data.includes("http")) return data;
-        return "http://" + data;
-    }
+    const handleChangeImage = (data) => {
+        if (data === "prev" && imageSelected > 0) {
+            SetSelected((prev) => prev - 1);
+        }
+        if (data === "next" && imageSelected < imageIdList.length) {
+            SetSelected((prev) => prev + 1);
+        }
+    };
 
     return (
         <div
@@ -75,52 +108,25 @@ function Image(props) {
                     : styles.ThirdWindow
             }
         >
-            {/* <div className={styles.header}>
-                <div className={styles.ImageTitle}>Images :</div>
-                <button
-                    data-value="previousImage"
-                    onClick={() => {
-                        if (imageSelected <= 0) return;
-                        SetSelected((prev) => prev - 1);
-                    }}
-                >
-                    {"<"}
-                </button>
-                <div className={styles.listOfImages}>
-                    {imageList.length > 0 &&
-                        imageList.map((list, key) => {
+            <div className={styles.header}>
+                <div className={styles.ImageTitle}>
+                    Images :
+                    <select
+                        ref={selectRef}
+                        defaultValue={props.witness}
+                        onChange={(e) =>
+                            props.changeImageVersion(e.target.value)
+                        }
+                    >
+                        {props.witnesses.map((witness) => {
                             return (
-                                <div
-                                    key={`eachImage-${key}`}
-                                    className={
-                                        key === imageSelected
-                                            ? classnames(
-                                                  styles.eachImage,
-                                                  styles.selected
-                                              )
-                                            : styles.eachImage
-                                    }
-                                    id={`eachImage-${key}`}
-                                    onClick={() => SetSelected(key)}
-                                >
-                                    <img
-                                        src={HttpUrl(list.target_segment)}
-                                        alt={list}
-                                    />
-                                </div>
+                                <option key={witness.id} value={witness.id}>
+                                    {witness.source.name}
+                                </option>
                             );
                         })}
+                    </select>
                 </div>
-
-                <button
-                    data-value="nextImage"
-                    onClick={() => {
-                        if (imageSelected >= imageList.length - 1) return;
-                        SetSelected((prev) => prev + 1);
-                    }}
-                >
-                    {">"}
-                </button>
                 <div
                     className={styles.closeBtn}
                     onClick={() => props.changeMediaSelection(null)}
@@ -128,34 +134,52 @@ function Image(props) {
                     x
                 </div>
 
-                {!isPortraitImage && (
+                {/* {!isPortraitImage && (
                     <div
                         className={styles.hideButton}
                         onClick={() => SetHide((prev) => !prev)}
                     >
                         {hide ? "Show" : "Hide"}
                     </div>
-                )}
-            </div> */}
+                )} */}
+            </div>
             <div className={styles.imageRender} ref={ImageArea}>
-                {imageList.length > 0 && (
-                    <TransformWrapper>
-                        <TransformComponent>
-                            <img
-                                src={
-                                    HttpUrl(
-                                        imageList[imageSelected].target_segment
-                                    ) || ""
-                                }
-                                alt="SyncImage"
-                                onLoad={isPortrait}
-                            />
-                        </TransformComponent>
-                    </TransformWrapper>
-                )}
+                <Suspense fallback={<div style={{ height: 100 }}>loading</div>}>
+                    {imageList.length > 0 && (
+                        <TransformWrapper>
+                            <TransformComponent>
+                                <ImageComponent
+                                    imageList={imageList}
+                                    imageSelected={imageSelected}
+                                    isPortrait={isPortrait}
+                                />
+                            </TransformComponent>
+                        </TransformWrapper>
+                    )}
+                    <button
+                        style={{ position: "absolute", top: 20, left: 10 }}
+                        onClick={() => handleChangeImage("prev")}
+                    >
+                        {"<"}
+                    </button>
+                    <button
+                        style={{ position: "absolute", top: 20, right: 10 }}
+                        onClick={() => handleChangeImage("next")}
+                    >
+                        {">"}
+                    </button>
+                </Suspense>
             </div>
         </div>
     );
 }
 
-export default Image;
+function ImageComponent({ imageList, imageSelected, isPortrait }) {
+    let { src } = useImage({
+        srcList: HttpUrl(imageList[imageSelected]?.target_segment),
+    });
+
+    return <img src={src} alt="SyncImage" onLoad={isPortrait} />;
+}
+
+export default memo(Image);

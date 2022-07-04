@@ -16,7 +16,6 @@ import Witness from "lib/Witness";
 import { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
-
 export function idForSegment(segment: TextSegment): string {
     return "s_" + segment.start;
 }
@@ -136,9 +135,9 @@ export default class Text extends React.Component<Props, State> {
 
     selectedElement(element: Element) {
         const selection = document.getSelection();
-          if (element?.id.includes("s_") && this.props.isPanelLinked) {
-              this.props.changeSyncIdOnClick(element.id);
-          }
+        if (element?.id.includes("s_") && this.props.isPanelLinked) {
+            this.props.changeSyncIdOnClick(element.id);
+        }
         if (selection && selection.type === "Range") {
             return;
         }
@@ -147,6 +146,7 @@ export default class Text extends React.Component<Props, State> {
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
         let segments = renderState.segmentedText.segments;
+
         let textLineClass = styles.textLine;
         let segmentHTML = '<p class="' + textLineClass + '">';
         if (segments.length === 0) return { __html: segmentHTML };

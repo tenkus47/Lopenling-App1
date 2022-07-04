@@ -26,11 +26,11 @@ function calTimeToSeek(maxValue, currentTime) {
 }
 
 function Video(props) {
+    let textIdfromAlignment = props.alignmentData.text;
     const VideoData = props.videoData.alignment || [];
     const url = props.videoData.url || "";
     const sourceId = parseInt(props.videoData.source);
     const [interval, setInterval] = useState({});
-    const inter = useMemo(() => interval, [interval]);
     let VideoIdList = [];
     let newList = ["0"];
     const syncIdOnScroll = props.syncIdOnScroll;
@@ -41,11 +41,12 @@ function Video(props) {
         duration: 0,
         playing: true,
     });
+    let inter = useMemo(() => interval, [interval]);
     if (!_.isEmpty(VideoData)) {
         VideoIdList = VideoData.map((l) => parseInt(l.source_segment.start));
     }
     useEffect(() => {
-        if (139 === props.selectedText.id) {
+        if (textIdfromAlignment === props.selectedText.id) {
             //     let intersection = syncIdOnScroll.filter(element => VideoIdList.includes(element));
             //     newList= VideoData.filter(d=>d.source_segment===intersection[0]);
             //     jumpToTime(newList[0]?.target_segment.start)
@@ -68,11 +69,11 @@ function Video(props) {
 
     const changeTextBackground = useCallback(() => {
         let current = inter;
-        if (139 === props.selectedText.id) {
+        if (textIdfromAlignment === props.selectedText.id) {
             for (let i = current.start; i < current.end; i++) {
                 let currentIds = document.getElementById(`s_${i}`);
                 if (currentIds) {
-                    currentIds.style.background = "#eee";
+                    currentIds.style.background = "rgb(224, 224, 81)";
                     currentIds.style.fontWeight = "bold";
                 }
             }
@@ -80,8 +81,10 @@ function Video(props) {
     }, [inter]);
 
     useEffect(() => {
-        changeTextBackground();
+        let timer = setTimeout(() => changeTextBackground(), 300);
+        console.log("what");
         return () => {
+            clearTimeout(timer);
             let current = interval;
             for (let i = current.start; i < current.end; i++) {
                 let currentIds = document.getElementById(`s_${i}`);
@@ -91,7 +94,7 @@ function Video(props) {
                 }
             }
         };
-    }, [interval]);
+    }, [inter.start]);
 
     const videoRef = useRef();
 
@@ -104,6 +107,7 @@ function Video(props) {
     );
 
     const handleProgress = (e) => {
+        changeTextBackground();
         const played = e.playedSeconds;
         const Interval = VideoData.filter(
             (time) =>
@@ -112,7 +116,14 @@ function Video(props) {
         );
         if (!_.isEmpty(Interval)) {
             let source_segment = Interval[0].source_segment;
-            setInterval({ ...source_segment, ...e });
+            setInterval({ ...source_segment });
+            let length = source_segment.end - source_segment.start;
+            props.onSelectedSearchResult(
+                textIdfromAlignment,
+                source_segment.start,
+                length,
+                textIdfromAlignment
+            );
         }
     };
 

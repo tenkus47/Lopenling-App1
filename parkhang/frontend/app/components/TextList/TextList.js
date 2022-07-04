@@ -133,7 +133,7 @@ class TextList extends React.Component<Props> {
                     : styles.searchResult;
                 if (isSelected) {
                     // TODO: keeps getting rendered when selecting a syllable
-                    console.log("got selected result: %o", result);
+                    // console.log("got selected result: %o", result);
                 }
                 return (
                     <div
@@ -161,44 +161,48 @@ class TextList extends React.Component<Props> {
         const searchText = () => {
             this.props.onSearchText(text, searchTerm);
         };
-
-        return (
-            <CellMeasurer
-                columnIndex={0}
-                key={key}
-                parent={parent}
-                rowIndex={index}
-                cache={cache}
-            >
-                <div
-                    key={`listkeys-${key}`}
-                    style={style}
-                    className={className}
+        if (searchResults !== null)
+            return (
+                <CellMeasurer
+                    columnIndex={0}
+                    key={key}
+                    parent={parent}
+                    rowIndex={index}
+                    cache={cache}
                 >
-                    {searchTerm && (
-                        <div
-                            className={styles.textNameRow}
-                            onClick={() => {
-                                onSelectedText(texts[index]);
-                            }}
-                        >
-                            {nameHtml} {resultsCount}
-                        </div>
-                    )}
+                    <div
+                        key={`listkeys-${key}`}
+                        style={style}
+                        className={className}
+                    >
+                        {searchTerm && (
+                            <div
+                                className={styles.textNameRow}
+                                onClick={() => {
+                                    onSelectedText(texts[index]);
+                                }}
+                            >
+                                {nameHtml} {resultsCount}
+                            </div>
+                        )}
 
-                    {textSearchResults.length > 0 && (
-                        <div className={styles.searchResults}>
-                            {textSearchResultRows}
-                        </div>
-                    )}
-                    {extraRemaining && (
-                        <div className={styles.loadMore} onClick={searchText}>
-                            <LoadMore loading={loadingResults} />
-                        </div>
-                    )}
-                </div>
-            </CellMeasurer>
-        );
+                        {textSearchResults.length > 0 && (
+                            <div className={styles.searchResults}>
+                                {textSearchResultRows}
+                            </div>
+                        )}
+                        {extraRemaining && (
+                            <div
+                                className={styles.loadMore}
+                                onClick={searchText}
+                            >
+                                <LoadMore loading={loadingResults} />
+                            </div>
+                        )}
+                    </div>
+                </CellMeasurer>
+            );
+        else return null;
     }
     findRowHeight({ searchTerm }) {
         return searchTerm ? null : 40;

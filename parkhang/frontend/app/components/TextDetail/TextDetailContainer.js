@@ -47,6 +47,9 @@ import {
     getTextFontSize,
     isSecondWindowOpen,
     getImageData,
+    getSelectedImage,
+    isImagePortrait,
+    isPanelVisible,
 } from "reducers";
 import * as reducers from "reducers";
 import _ from "lodash";
@@ -322,6 +325,10 @@ const mapStateToProps = (state) => {
         isSecondWindowOpen: isSecondWindowOpen(state),
         imageData: getImageData(state),
         isPanelLinked,
+        selectedImage: getSelectedImage(state),
+        isImagePortrait: isImagePortrait(state),
+        isPanelVisible: isPanelVisible(state),
+        isAnnotating: reducers.isAnnotating(state),
     };
 };
 
@@ -503,7 +510,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
 
             let segmentAnnotations = annotationPositions[positionKey];
-            if (DISMISS_CONTROLS_ON_CLICK && stateProps.activeAnnotation) {
+            if (
+                (DISMISS_CONTROLS_ON_CLICK && stateProps.activeAnnotation) ||
+                segmentId === ""
+            ) {
                 const activeAnnotation = stateProps.activeAnnotation;
 
                 if (activeAnnotation) {
@@ -540,6 +550,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             dispatch(actions.changeSyncIdOnScroll(payload)),
         changeSyncIdOnClick: (payload) =>
             dispatch(actions.changeSyncIdOnClick(payload)),
+        changeSelectedImage: (payload) => {
+            dispatch(actions.selectImage(payload));
+        },
     };
 };
 

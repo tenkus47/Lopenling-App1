@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./textDetailHeading.css";
 import Check from "images/checkmark.png";
 import Refresh from "images/Refresh.svg";
@@ -8,6 +8,8 @@ import Witness from "lib/Witness";
 import Slider from "../UI/Slider";
 import TextList from "./TextListContainer";
 import useClickOutSide from "../UI/useClickOutSideClose";
+import useLocalStorage from "bodyComponent/utility/useLocalStorage";
+import Pen from "images/pen.png";
 type HeaderProps = {
     witnesses: Witness[],
     selectedWitness: Witness,
@@ -21,27 +23,27 @@ type HeaderProps = {
     onChangedFontSize: () => void,
     onChangeWindowOpen: () => void,
     isSecondWindowOpen: boolean,
+    changeIsAnnotating: () => void,
+    isAnnotating: Boolean,
 };
 
 function TextDetailHeading(props: HeaderProps) {
     const selectedText = props?.selectedText;
     let [showOption, setShowOption] = useState(false);
     let [showShare, setShowShare] = useState(false);
-
     let domNode = useClickOutSide(() => setShowOption(false));
     let domNode3 = useClickOutSide(() => setShowShare(false));
     const handleClick = () => {
         setShowOption((prev) => !prev);
     };
 
-    const handleRefresh = () => {
+    const handleRefresh = useCallback(() => {
         let updatelistBtn = document.getElementById("updateList");
         let updatelistBtn2 = document.getElementById("updateList2");
-        if (updatelistBtn && updatelistBtn2) {
-            updatelistBtn.click();
-            updatelistBtn2.click();
-        }
-    };
+
+        if (updatelistBtn) updatelistBtn.click();
+        if (updatelistBtn2) updatelistBtn2.click();
+    }, []);
     useEffect(() => {
         let timer = setInterval(() => {
             handleRefresh();
@@ -84,15 +86,38 @@ function TextDetailHeading(props: HeaderProps) {
                     user={props.user}
                 />
             </div>
-            <div style={{ position: "absolute", right: 20 }} ref={domNode3}>
+            <div style={{ position: "absolute", right: 80 }} ref={domNode3}>
                 <button id="doubleWindow" style={{ display: "none" }} />
                 <button onClick={() => setShowShare((prev) => !prev)}>
                     Share
                 </button>
                 {showShare && <ShareOption props={props} />}
             </div>
+            <div style={{ position: "absolute", right: 20 }}>
+                <ApplyTooltip tooltipName={"Annotate"} effect={"solid"}>
+                    <button
+                        style={{
+                            padding: 0,
+                            maxHeight: 25,
+                            maxWidth: 25,
+                            background: props.isAnnotating
+                                ? "darkgray"
+                                : "#eee",
+                        }}
+                        onClick={() =>
+                            props.changeIsAnnotating(!props.isAnnotating)
+                        }
+                    >
+                        <img
+                            src={Pen}
+                            alt="pencil"
+                            style={{ width: 20, height: 20 }}
+                        />
+                    </button>
+                </ApplyTooltip>
+            </div>
             <div style={{ position: "absolute", right: 20, top: 46 }}>
-                <ApplyTooltip tooltipName={"refresh"} effect={"float"}>
+                <ApplyTooltip tooltipName={"refresh"} effect={"solid"}>
                     <button
                         className={styles.buttonRefresh}
                         onClick={handleRefresh}
@@ -161,7 +186,7 @@ function ShareOption({ props }) {
     let witnessid2 = props.selectedWitness2.id;
     let url =
         window.location.origin +
-        `/texts/${textid}/witnesses/${witnessid}/texts2/${textid2}`;
+        `/texts/${textid}/witnesses/${witnessid}/texts2/${textid2}/witnesses2/${witnessid2}`;
 
     const handleCopy = () => {
         let copyButton = document.getElementById("copyButton");

@@ -4,13 +4,13 @@ import dataReducers, * as data from "./data";
 import dataReducers2, * as data2 from "./data2";
 import uiReducers, * as ui from "./ui";
 import userReducers, * as user from "./user";
-import categoryReducers,* as category from './category';
-import mediaReducers,* as media from './media';
+import categoryReducers, * as category from "./category";
+import mediaReducers, * as media from "./media";
 import * as actions from "actions";
 import * as api from "api";
 import Annotation, {
     ANNOTATION_TYPES,
-    TemporaryAnnotation
+    TemporaryAnnotation,
 } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
@@ -39,7 +39,10 @@ function createReducer(
         }
     };
 }
-export const dataReducer2= createReducer(data2.initialDataState,dataReducers2)
+export const dataReducer2 = createReducer(
+    data2.initialDataState,
+    dataReducers2
+);
 export const dataReducer = createReducer(data.initialDataState, dataReducers);
 export const uiReducer = createReducer(ui.initialUIState, uiReducers);
 export const userReducer = createReducer(user.initialUserState, userReducers);
@@ -47,17 +50,23 @@ export const localesReducer = createReducer(
     locales.initialLocalesState,
     localesReducers
 );
-export const categoryReducer =createReducer(category.initialCategoryState,categoryReducers);
-export const mediaReducer= createReducer(media.initialMediaState,mediaReducers)
+export const categoryReducer = createReducer(
+    category.initialCategoryState,
+    categoryReducers
+);
+export const mediaReducer = createReducer(
+    media.initialMediaState,
+    mediaReducers
+);
 
 export type AppState = {
     data: data.DataState,
-    data2:data.DataState,
+    data2: data.DataState,
     ui: ui.UIState,
     user: user.UserState,
     intl: { locale: string, messages: { [string]: string } },
     locales: locales.LocaleState,
-    category: any
+    category: any,
 };
 
 /* Selectors */
@@ -105,13 +114,13 @@ export const getUser = (state: AppState): User => {
 };
 
 // ui
-
+export const isAnnotating = (state) => {
+    return ui.isAnnotating(state.ui);
+};
 export const getSelectedText = (state: AppState): TextData | null => {
-   
     return ui.getSelectedText(state.ui);
 };
 export const getSelectedText2 = (state: AppState): TextData | null => {
-   
     return ui.getSelectedText2(state.ui);
 };
 export const getSelectedTextWitnessId = (
@@ -163,11 +172,9 @@ export const getTextListVisible = (state: AppState): boolean => {
     return ui.getTextListVisible(state.ui);
 };
 
-
 export const getTextListWidth = (state: AppState): number => {
     return ui.getTextListWidth(state.ui);
 };
-
 
 export const getTemporaryAnnotations = (
     state: AppState,
@@ -234,30 +241,35 @@ export const isPanelLinked = (state: AppState): number => {
 };
 
 //media
-
-export const getMediaData =(state)=>{
+export const isPanelVisible = (state) => {
+    return media.isPanelVisible(state.media);
+};
+export const getMediaData = (state) => {
     return media.getMediaData(state.media);
-}
-
-export const getImageData = (
-    state: AppState
-)=> {
+};
+export const getSelectedImageVersion = (state) => {
+    return media.getSelectedImageVersion(state.media);
+};
+export const getImageData = (state: AppState) => {
     return media.getImageData(state.media);
-}
-export const getVideoData = (
-    state: AppState
-)=> {
+};
+export const getVideoData = (state: AppState) => {
     return media.getVideoData(state.media);
-}
-export const isImagePortrait = (
-    state: AppState
-)=> {
+};
+export const isImagePortrait = (state: AppState) => {
     return media.isImagePortrait(state.media);
-}
+};
+export const getSelectedImage = (state: AppState) => {
+    return media.getSelectedImage(state.media);
+};
 // data
-export const getTexts = (
-    state: AppState
-): Text | TextData | null => {
+export const getAlignment = (state: AppState) => {
+    return data.getAlignment(state.data);
+};
+export const getTextAlignment = (state: AppState) => {
+    return data.getTextAlignment(state.data);
+};
+export const getTexts = (state: AppState): Text | TextData | null => {
     return data.getTexts(state.data);
 };
 export const getText = (
@@ -268,11 +280,9 @@ export const getText = (
     return data.getText(state.data, textId, asData);
 };
 
-
 export const getSources = (state: AppState): Source[] => {
     return data.getSources(state.data);
 };
-
 
 export const getSource = (state: AppState, sourceId: number): Source | null => {
     return data.getSource(state.data, sourceId);
@@ -316,7 +326,6 @@ export const getTextWitnesses2 = (
     return data2.getTextWitnesses(state.data2, textId);
 };
 
-
 export const getBaseWitness = (
     state: AppState,
     textId: number
@@ -334,7 +343,6 @@ export const getWorkingWitness = (
     state: AppState,
     textId: number
 ): Witness | null => {
-
     return data.getWorkingWitness(state.data, textId);
 };
 
@@ -498,7 +506,7 @@ export const getQuestions = (
     questionId: AnnotationUniqueId
 ): Question[] | null => {
     return data.getQuestions(state.data, questionId);
-}
+};
 
 //data2
 
@@ -513,33 +521,30 @@ export const getSources2 = (state: AppState): Source[] => {
     return data2.getSources(state.data);
 };
 
-
-export const getSource2 = (state: AppState, sourceId: number): Source | null => {
+export const getSource2 = (
+    state: AppState,
+    sourceId: number
+): Source | null => {
     return data2.getSource(state.data, sourceId);
 };
 
-
 // get selectedTextTitle
 
-
-export const getTextTitle = (
-    state: AppState
-): any | null => {
+export const getTextTitle = (state: AppState): any | null => {
     return category.getTextTitleData(state.category);
-}
-
+};
 
 // Root
 
 export const allReducers = {
     data: dataReducer,
-    data2:dataReducer2,
+    data2: dataReducer2,
     ui: uiReducer,
     user: userReducer,
     intl: intlReducer,
     locales: localesReducer,
     category: categoryReducer,
-    media:mediaReducer
+    media: mediaReducer,
 };
 
 const rootReducer = combineReducers(allReducers);

@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import classnames from "classnames";
-
+import imageStyle from "../Editors/MediaComponent/Image.css";
 import SplitTextComponent from "components/TextDetail/SplitText";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
@@ -11,7 +11,7 @@ import Witness from "lib/Witness";
 import AnnotatedText from "lib/AnnotatedText";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import positionSplitter from "lib/text_splitters/positionSplitter";
-
+import headerStyles from "components/Header/Header.css";
 import styles from "./TextDetail.css";
 import utilStyles from "css/util.css";
 import type { TextData } from "api";
@@ -47,6 +47,7 @@ export type Props = {
     isPanelLinked: boolean,
     changeSyncIdOnClick: () => void,
     changeSyncIdOnScroll: () => void,
+    changeSelectedImage: () => void,
 };
 
 let textDetailId = 0;
@@ -114,15 +115,23 @@ class TextDetail extends React.Component<Props> {
                     changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                     imageData={this.props.imageData}
                     isPanelLinked={this.props.isPanelLinked}
+                    selectedImage={this.props.selectedImage}
+                    changeSelectedImage={this.props.changeSelectedImage}
+                    isAnnotating={this.props.isAnnotating}
                 ></SplitTextComponent>
             );
         }
 
         let textComponents = [textComponent];
-
+        let thirdWindowHeight = imageStyle.ThirdWindowHeight;
+        let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
+        let condition =
+            !this.props.isImagePortrait && this.props.isPanelVisible;
         return (
             <div
-                style={{ height: "100%" }}
+                style={{
+                    height: condition ? bodyHeight : "100%",
+                }}
                 className={classnames(
                     styles.textDetail,
                     utilStyles.flex,

@@ -1,21 +1,29 @@
 @import 'css/colour.css';
+@value ThirdWindow-Height: 300px;
+@value header-Height: 30px;
+
+:export {
+    ThirdWindowHeight: 250px;
+}
 
 :root {
-    --ThirdWindowHeight: 35%;
-    --headerHeight: 70px;
+    --ThirdWindowHeight: ThirdWindow-Height;
+    --headerHeight: header-Height;
 }
+
 
 .ThirdWindow {
     transition: 0.5s all linear;
     resize: both;
     position: absolute;
-    height: fit-content;
+    height: var(--ThirdWindowHeight);
     width: 100%;
     z-index: 99999;
     bottom: 0;
     background-color: var(--text-bg);
     border: thick double var(--green);
     overflow: hidden;
+    max-height: 250px;
 }
 
 .ThirdWindowPortrait {
@@ -60,7 +68,7 @@
 .closeBtn {
     position: inherit;
     right: 10px;
-    top: 10px;
+    top: 2px;
     cursor: pointer;
     font-weight: bold;
     background-color: black;
@@ -78,10 +86,12 @@
 
 .imageRender {
     margin: 5px;
-    /* margin-top:80px; */
+    margin-top: 30px;
     border-radius: 10px;
     cursor: move;
     overflow: hidden;
+    position: relative;
+
 }
 
 .imageRender div {
@@ -92,8 +102,7 @@
     max-width: 100%;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    max-height: 80vh;
+    max-height: 200px;
 }
 
 [data-value='previousImage'] {
@@ -134,7 +143,7 @@
 
 .hideButton {
     position: inherit;
-    right: 10px;
+    right: 43px;
     bottom: 10px;
     cursor: pointer;
     font-weight: bold;

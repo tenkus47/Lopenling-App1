@@ -36,9 +36,6 @@ function setTitle(title: string) {
 const App = (props: Props) => {
     setTitle(props.title);
     const isActive = useActive(4000);
-    const history = his();
-    const path = history.location.pathname;
-    const isSearchActive = path.includes("/search/");
 
     useEffect(() => {
         if (isActive === false)

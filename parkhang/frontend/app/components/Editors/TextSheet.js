@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
 import MediaComponent from "./MediaComponent/MediaOptions";
-
+import { batchActions } from "redux-batched-actions";
 function TextSheet(props) {
     return (
         <div
@@ -33,6 +33,14 @@ function TextSheet(props) {
                     isImagePortrait={props.isImagePortrait}
                     changeIsImagePortrait={props.changeIsImagePortrait}
                     selectedSegmentId={props.selectedSegmentId}
+                    alignmentData={props.alignmentData}
+                    onSelectedSearchResult={props.onSelectedSearchResult}
+                    witness={props.witness}
+                    witnesses={props.witnesses}
+                    ImageVersion={props.ImageVersion}
+                    changeImageVersion={props.changeImageVersion}
+                    changeSelectedImage={props.changeSelectedImage}
+                    selectedImage={props.selectedImage}
                 />
             )}
         </div>
@@ -49,6 +57,10 @@ const mapStateToProps = (state: AppState): { user: User } => {
     const selectedText = reducers.getSelectedText(state);
     const isImagePortrait = reducers.isImagePortrait(state);
     //  const selectedSegmentId=reducers.getSelectedSegmentId(state);
+    const witness = reducers.getSelectedTextWitnessId(state, selectedText.id);
+    const ImageVersion = reducers.getSelectedImageVersion(state);
+    const alignmentData = reducers.getAlignment(state);
+    const selectedImage = reducers.getSelectedImage(state);
     return {
         isSecondWindowOpen,
         Media,
@@ -59,6 +71,11 @@ const mapStateToProps = (state: AppState): { user: User } => {
         selectedText,
         isImagePortrait,
         // selectedSegmentId
+        alignmentData,
+        witness,
+        witnesses: reducers.getTextWitnesses(state, selectedText.id),
+        ImageVersion,
+        selectedImage,
     };
 };
 
@@ -69,12 +86,36 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatch(actions.mediaSelection(data));
     const changeIsImagePortrait = (payload) =>
         dispatch(actions.setIsImagePortrait(payload));
+    const changeSelectedImage = (payload) => {
+        dispatch(actions.selectImage(payload));
+    };
     return {
         ...ownProps,
         ...stateProps,
         toggleImage,
+        changeSelectedImage,
         changeMediaSelection,
         changeIsImagePortrait,
+        changeImageVersion: (imageVersionId) => {
+            dispatch(actions.selectImageVersion(imageVersionId));
+        },
+        onSelectedSearchResult: (
+            text: api.TextData,
+            start: number,
+            length: number,
+            selectedText: api.TextData | null
+        ) => {
+            if (!selectedText || selectedText.id !== text.id) {
+                dispatch(
+                    batchActions([
+                        actions.selectedSearchResult(text.id, start, length),
+                        actions.selectedText(text),
+                    ])
+                );
+            } else {
+                dispatch(actions.selectedSearchResult(text.id, start, length));
+            }
+        },
     };
 };
 const TextSheetContainer = connect(

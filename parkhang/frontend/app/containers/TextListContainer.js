@@ -23,7 +23,9 @@ const mapStateToProps = (state: AppState) => {
             searching = true;
             texts = [];
         } else {
-            texts = texts.filter(text => searchResults.hasOwnProperty(text.id));
+            texts = texts.filter((text) =>
+                searchResults.hasOwnProperty(text.id)
+            );
         }
     }
 
@@ -33,11 +35,11 @@ const mapStateToProps = (state: AppState) => {
         searchTerm: searchValue,
         searchResults,
         selectedSearchResult,
-        searching
+        searching,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         onSelectedText: (text: api.TextData) => {
             dispatch(actions.selectedText(text));
@@ -52,7 +54,7 @@ const mapDispatchToProps = dispatch => {
                 dispatch(
                     batchActions([
                         actions.selectedSearchResult(text.id, start, length),
-                        actions.selectedText(text)
+                        actions.selectedText(text),
                     ])
                 );
             } else {
@@ -61,12 +63,13 @@ const mapDispatchToProps = dispatch => {
         },
         onSearchText: (text: api.TextData, searchTerm: string) => {
             dispatch(actions.searchedText(text.id, searchTerm));
-        }
+        },
     };
 };
 
-const TextListContainer = connect(mapStateToProps, mapDispatchToProps)(
-    TextList
-);
+const TextListContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TextList);
 
 export default TextListContainer;

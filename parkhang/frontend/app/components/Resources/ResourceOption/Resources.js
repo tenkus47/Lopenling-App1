@@ -10,6 +10,7 @@ import classnames from "classnames";
 import * as actions from "actions";
 import * as reducers from "reducers";
 function Resources(props) {
+    let TableContent = [{ id: 231 }, { id: 1000 }, { id: 6000 }];
     const handleMediaToggle = (data) => {
         props.changeMediaSelection(data);
     };
@@ -24,6 +25,11 @@ function Resources(props) {
         props.selectedMedia.isVideoVisible,
         props.selectedMedia.isAudioVisible,
     ]);
+
+    function handleScroll(id) {
+        console.log(id);
+        props.onSelectedSearchResult(139, id, 10, 139);
+    }
     return (
         <>
             <ul className={styles.ResourcesListed}>
@@ -48,26 +54,30 @@ function Resources(props) {
                     )}
                 </li>
             </ul>
-            <h2>Commentary Lists:</h2>
-            <details>
-                <summary>Commentary 1</summary>
-                <p>this is description for Commentary</p>
-            </details>
-            <details>
-                <summary>Commentary 2</summary>
-                <p>this is description for Commentary</p>
-            </details>{" "}
-            <details>
-                <summary>Commentary 3</summary>
-                <p>this is description for Commentary</p>
-            </details>
+
+            <h2>Table of Content</h2>
+            {TableContent.map((eachChapter, i) => {
+                return (
+                    <div
+                        className={styles.EachPage}
+                        style={{ cursor: "pointer" }}
+                        key={`TableContent-${i}`}
+                    >
+                        <div onClick={() => handleScroll(eachChapter.id)}>
+                            Chapter {i}
+                        </div>
+                    </div>
+                );
+            })}
         </>
     );
 }
 
 const mapStateToProps = (state: AppState): {} => {
     let selectedMedia = reducers.getMediaData(state);
+    const alignmentData = reducers.getAlignment(state);
     return {
+        alignmentData,
         selectedMedia,
     };
 };
@@ -79,6 +89,13 @@ const mapDispatchToProps = (dispatch) => {
         changeMediaSelection,
         onChangeWindowOpen: (data: boolean) => {
             dispatch(actions.toggleSecondWindow(data));
+        },
+        onSelectedSearchResult: (
+            text: number,
+            start: number,
+            length: number
+        ) => {
+            dispatch(actions.selectedSearchResult(text, start, length));
         },
     };
 };
