@@ -139,7 +139,7 @@ export const Header = (props: HeaderProps) => {
                             </NavLink>
                         </li>
                         <li>
-                            <a href="http://www.parkhang.lopenling.org">
+                            <a href="http://www.lopenling.org">
                                 <FormattedMessage id={"lopenlingForum"} />
                             </a>
                         </li>
