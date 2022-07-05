@@ -16,7 +16,7 @@ import { selectImage } from "../../../actions";
 
 function HttpUrl(data = "") {
     if (data.includes("http")) return data;
-    return "http://" + data;
+    return "https://" + data;
 }
 
 function Image(props) {
