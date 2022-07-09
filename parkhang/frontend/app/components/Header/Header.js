@@ -2,7 +2,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { getUser, getActiveLocale } from "reducers";
 import styles from "./Header.css";
 import User from "lib/User";
 import type { AppState } from "reducers";
@@ -11,13 +10,18 @@ import LocaleSwitcher from "components/LocaleSwitcher/LocaleSwitcher";
 import NavigationButton from "components/UI/NavigationButton";
 import AccountButton from "./AccountButton";
 import AccountOverlay from "./AccountOverlay";
-import { getTextListVisible, getAccountOverlayVisible } from "reducers";
+import {
+    getTextListVisible,
+    getAccountOverlayVisible,
+    getUser,
+    getActiveLocale,
+} from "reducers";
 import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo.png";
 import UserIcon from "images/discourse_user.svg";
 import { NavLink } from "redux-first-router-link";
 import TranslateButton from "bodyComponent/utility/TranslateButton";
-
+import { history } from "redux-first-router";
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
@@ -89,6 +93,7 @@ type HeaderProps = {
 };
 
 export const Header = (props: HeaderProps) => {
+    let locations = history();
     let controls = null;
     if (props.user.isLoggedIn) {
         controls = (
@@ -113,13 +118,8 @@ export const Header = (props: HeaderProps) => {
     const image_location = lopenlingLogo;
     return (
         <header className={styles.header}>
-            {/* <NavigationButton
-                onClick={props.navigationButtonClicked}
-                className={styles.navigationButton}
-                title={toggleTitle}
-            /> */}
             <div style={{ display: "flex" }}>
-                {!window.location.href.includes("witnesses") && (
+                {!locations.location.pathname.includes("/texts") && (
                     <NavLink to="/">
                         <div className={styles.logo}>
                             <img src={image_location} height="30" />
@@ -128,6 +128,16 @@ export const Header = (props: HeaderProps) => {
                 )}
                 <div className={styles.navlinks}>
                     <ul>
+                        <li>
+                            {locations.location.pathname.includes("/texts") && (
+                                <NavigationButton
+                                    onClick={props.navigationButtonClicked}
+                                    className={styles.navigationButton}
+                                    title={toggleTitle}
+                                    isListVisible={props.textListVisible}
+                                />
+                            )}
+                        </li>
                         <li>
                             <NavLink to="/textSelection">
                                 <FormattedMessage id={"header.texts"} />
@@ -168,6 +178,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
         activeLocale: activeLocale,
         textListIsVisible: getTextListVisible(state),
         accountOverlayVisible: getAccountOverlayVisible(state),
+        textListVisible: getTextListVisible(state),
         successRedirect: successRedirect,
         csrfToken: csrfToken,
     };

@@ -88,6 +88,7 @@ class TextDetail extends React.Component<Props> {
             }
 
             splitText = new SplitText(this.props.annotatedText, splitter);
+
             inlineControls = true;
             textComponent = (
                 <SplitTextComponent

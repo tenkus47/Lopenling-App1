@@ -1,22 +1,26 @@
-.shimmer{
+.shimmer {
     height: 20%;
-    width:46%;
-    background-image:linear-gradient(
-        90deg,
-        #eeeeee 0%,#eeeeee 40%,
-        #ddd 50%, #ddd 55%,
-        #eee 60%, #eee 100%
-    );
+    width: 40%;
+    background-image: linear-gradient(90deg,
+            #eeeeee 0%, #eeeeee 40%,
+            #ddd 50%, #ddd 55%,
+            #eee 60%, #eee 100%);
     background-size: 400%;
     animation: shimmer 1500ms infinite;
 
 }
 
 @keyframes shimmer {
-    from {background-position: 100% 100%;}
-    to {background-position: 0 0;}
+    from {
+        background-position: 100% 100%;
+    }
+
+    to {
+        background-position: 0 0;
+    }
 }
-.flex{
+
+.flex {
     width: 100%;
     height: 100%;
     margin-bottom: 30px;

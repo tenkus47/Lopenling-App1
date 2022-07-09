@@ -85,7 +85,6 @@ export const CHANGED_SEARCH_TERM = "textList/CHANGED_SEARCH_TERM";
 export const SEARCHED_TEXT = "textList/SEARCHED_TEXT";
 export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
-export const CHANGED_NOTIFICATION = "notification/CHANGED_NOTIFICATION";
 export const SECOND_WINDOW = "notification/SECOND_WINDOW";
 
 export const SELECTED_WITNESS = "text/SELECTED_WITNESS";
@@ -668,13 +667,6 @@ export function changedTextListWidth(width: number): ChangedTextListWidth {
     return {
         type: CHANGED_TEXT_LIST_WIDTH,
         width,
-    };
-}
-
-export function changedNotification(data) {
-    return {
-        type: CHANGED_NOTIFICATION,
-        data,
     };
 }
 

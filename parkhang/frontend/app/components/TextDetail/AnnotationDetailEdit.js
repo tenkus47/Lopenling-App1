@@ -7,18 +7,21 @@ import type { Props as AnnotationDetailProps } from "./AnnotationDetail";
 
 export type Props = AnnotationDetailProps & {
     saveAnnotationHandler: (text: string) => void,
-    cancelAnnotationHandler: () => void
+    cancelAnnotationHandler: () => void,
 };
 
 const AnnotationDetailEdit = (props: Props) => {
     let content = props.annotationData.content;
     let classes = [styles.annotationDetail];
+    let textarea = null;
 
     if (props.isActive) {
         classes.push(styles.active);
     }
-
-    let textarea = null;
+    let auto_grow = (element) => {
+        textarea.style.height = "5px";
+        textarea.style.height = textarea.scrollHeight + "px";
+    };
     let className = classnames(...classes);
     return (
         <div className={className}>
@@ -28,7 +31,8 @@ const AnnotationDetailEdit = (props: Props) => {
                 <textarea
                     defaultValue={content}
                     autoFocus={true}
-                    ref={ta => (textarea = ta)}
+                    onInput={auto_grow}
+                    ref={(ta) => (textarea = ta)}
                 />
                 <div className={styles.actionButtons}>
                     <div

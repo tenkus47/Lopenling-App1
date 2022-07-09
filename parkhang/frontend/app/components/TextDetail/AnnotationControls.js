@@ -83,7 +83,7 @@ class AnnotationControls extends React.Component<Props> {
     arrow: HTMLDivElement | null;
     arrowDs: HTMLDivElement | null;
     fake_login_toggle: null;
-
+    annotation: null;
     constructor(props: Props) {
         super(props);
 
@@ -384,42 +384,8 @@ class AnnotationControls extends React.Component<Props> {
                         />
                     );
                     temporaryAnnotations.push(annotationDetail);
-                } else {
-                    if (
-                        annotationData.name === " Working; སྡེ་དགེ" ||
-                        annotationData.name === " མཉམ་འབྲེལ་པར་མ།། སྡེ་དགེ" ||
-                        annotationData.name === " Working; སྡེ་དགེ Dominant;" ||
-                        annotationData.name ===
-                            " མཉམ་འབྲེལ་པར་མ།། སྡེ་དགེ Dominant;"
-                    ) {
-                        if (!isEditing) {
-                            let annotationDetail = (
-                                <AnnotationDetail
-                                    isWorkingSection={true}
-                                    fontSize={props.fontSize}
-                                    annotationData={annotationData}
-                                    key={annotationData.annotation.uniqueId}
-                                    isActive={isActive}
-                                    selectAnnotationHandler={() => {
-                                        if (isLoggedIn && !isEditing) {
-                                            props.didSelectAnnotation(
-                                                annotationData.annotation
-                                            );
-                                        }
-                                    }}
-                                    editAnnotationHandler={() => {
-                                        if (isLoggedIn && !isEditing) {
-                                            props.editAnnotation(
-                                                annotationData.annotation
-                                            );
-                                        }
-                                    }}
-                                    isLoggedIn={isLoggedIn}
-                                />
-                            );
-                            annotations.push(annotationDetail);
-                        }
-                    } else {
+                } 
+                    else {
                         let annotationDetail = (
                             <AnnotationDetail
                                 isWorkingSection={false}
@@ -436,6 +402,8 @@ class AnnotationControls extends React.Component<Props> {
                                 }}
                                 editAnnotationHandler={() => {
                                     if (isLoggedIn && !isEditing) {
+                                        this.annotation =
+                                            annotationData.annotation;
                                         props.editAnnotation(
                                             annotationData.annotation
                                         );
@@ -446,7 +414,7 @@ class AnnotationControls extends React.Component<Props> {
                         );
                         annotations.push(annotationDetail);
                     }
-                }
+                
             }, this);
             if (!this.fake_login_toggle === !props.user.isLoggedIn) {
                 // NOTE: FormattedMessage cannot take a child when using
@@ -455,7 +423,13 @@ class AnnotationControls extends React.Component<Props> {
                 anonymousUserMessage = (
                     <div
                         className={styles.anonymousMessage}
-                        style={{ position: "relative" }}
+                        style={{
+                            position: "relative",
+                            background: "#eee",
+                            width: "fit-content",
+                            border: "1px solid gray",
+                            paddingInline: 10,
+                        }}
                     >
                         <FormattedMessage
                             id="annotations.loginMessage"
@@ -467,19 +441,6 @@ class AnnotationControls extends React.Component<Props> {
                                 ),
                             }}
                         />
-                        <div
-                            onClick={() => this.props.closeAnnotation()}
-                            style={{
-                                position: "absolute",
-                                left: 5,
-                                width: 10,
-                                height: 10,
-                                top: 5,
-                                cursor: "pointer",
-                            }}
-                        >
-                            x
-                        </div>
                     </div>
                 );
             }
@@ -695,8 +656,15 @@ class AnnotationControls extends React.Component<Props> {
                         }
                         addQuestion={allowQuestion ? props.addQuestion : null}
                         closeAnnotation={props.closeAnnotation}
+                        editAnnotationHandler={() => {
+                            if (isLoggedIn && !isEditing) {
+                                props.editAnnotation(this.annotation);
+                            }
+                        }}
+                        userLoggedIn={isLoggedIn}
                     />
                 )}
+
                 <div className={styles.annotationContent}>
                     {anonymousUserMessage}
                     {nothingSelected}

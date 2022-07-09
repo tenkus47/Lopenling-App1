@@ -71,9 +71,14 @@
 }
 
 .editing textarea {
-    font-size: 18px;
+    font-size: 12px;
     font-family: var(--tibetan-fonts);
     flex-grow: 1;
+    max-width: 100%;
+     resize: none;
+     overflow: hidden;
+     min-height: 50px;
+     max-height: 100px;
 }
 
 .actionButtons {

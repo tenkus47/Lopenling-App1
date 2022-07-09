@@ -34,24 +34,25 @@ function Image(props) {
     if (!_.isEmpty(imageList)) {
         imageIdList = imageList.map((l) => parseInt(l.source_segment.start));
     }
-    // useEffect(() => {
-    //     let IDtoSync = parseInt(syncIdOnScroll);
-    //     if (textIdfromAlignment === props.selectedText.id) {
-    //         if (imageList?.length > 0) {
-    //             let findSegment = imageList.filter(
-    //                 (l) =>
-    //                     l.source_segment.start <= IDtoSync &&
-    //                     l.source_segment.end > IDtoSync
-    //             );
-    //             let index = imageList.findIndex(
-    //                 (l) => l?.source_segment === findSegment[0]?.source_segment
-    //             );
-    //             if (index >= 0) {
-    //                 SetSelected(index);
-    //             }
-    //         }
-    //     }
-    // }, [syncIdOnScroll]);
+    useEffect(() => {
+        let IDtoSync = parseInt(syncIdOnScroll);
+        if (textIdfromAlignment === props.selectedText.id) {
+            if (imageList?.length > 0) {
+                let findSegment = imageList.filter(
+                    (l) =>
+                        l.source_segment.start <= IDtoSync &&
+                        l.source_segment.end > IDtoSync
+                );
+                let index = imageList.findIndex(
+                    (l) => l?.source_segment === findSegment[0]?.source_segment
+                );
+                if (index >= 0) {
+                    SetSelected(index + 1);
+                }
+            }
+        }
+        console.log(syncIdOnScroll);
+    }, [syncIdOnScroll]);
     useEffect(() => {
         selectRef.current.value = props.witness;
     }, [props.witness]);
@@ -145,7 +146,9 @@ function Image(props) {
                 )} */}
             </div>
             <div className={styles.imageRender} ref={ImageArea}>
-                <Suspense fallback={<div style={{ height: 100 }}>loading</div>}>
+                <Suspense
+                    fallback={<div style={{ height: 100 }}>loading..</div>}
+                >
                     {imageList.length > 0 && (
                         <TransformWrapper>
                             <TransformComponent>

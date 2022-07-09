@@ -1,23 +1,23 @@
 @import '../../css/colour.css';
 
-.LeftSection{
-    width: 725px;
+.LeftSection {
     margin: 0 auto;
-    min-height: 520px;
-    max-width: 100%;
+    width: 80%;
     box-sizing: border-box;
     padding-bottom: 70px;
     padding-inline-start: 30px;
     padding-inline-end: 30px;
-    font-family:macondo;
+    font-family: macondo;
 }
-.Title{
+
+.Title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    
+
 }
-.Title h1{
+
+.Title h1 {
     text-align: start;
     color: #666;
     position: relative;
@@ -27,27 +27,29 @@
     height: auto;
     text-transform: none;
 }
+
 .readerNavCategories {
     width: 100%;
     margin-bottom: 30px;
     display: flex;
     flex-wrap: wrap;
-    gap:20px;
+    gap: 20px;
 }
 
-.gridBoxItem{
+.gridBoxItem {
     flex-shrink: 0;
     max-width: 45%;
-display: flex;
-gap:10px;
-flex-direction: column;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    text-decoration: none;
 }
 
-.navBlockDescription{
+.navBlockDescription {
     font-size: 14px;
     line-height: 18px;
     color: #666;
-    margin-inline-end: 20px;
+    margin: 10px;
     display: flex;
     overflow: hidden;
     flex-wrap: wrap;
@@ -57,14 +59,15 @@ flex-direction: column;
 
 
 
-.navBlockTitle{
-color: #000;
+.navBlockTitle {
+    color: #000;
     margin-inline-end: 20px;
     margin-top: 10px;
     text-decoration: none;
     font-size: larger;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
-.navBlockTitle:hover{
-    color:#666;
+
+.navBlockTitle:hover {
+    color: #666;
 }

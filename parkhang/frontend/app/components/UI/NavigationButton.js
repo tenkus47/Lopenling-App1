@@ -6,7 +6,8 @@ import HamburgerIcon from "images/hamburger.svg";
 type Props = {
     onClick?: () => void,
     className?: string,
-    title?: string
+    title?: string,
+    isListVisible: Boolean,
 };
 
 const NavigationButton = (props: Props) => {
@@ -14,6 +15,7 @@ const NavigationButton = (props: Props) => {
     if (props.className) {
         classNames.push(props.className);
     }
+    // if (props.isListVisible) return null;
     return (
         <div
             className={classnames(...classNames)}

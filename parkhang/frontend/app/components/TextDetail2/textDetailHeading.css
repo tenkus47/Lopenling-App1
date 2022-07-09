@@ -1,18 +1,11 @@
 .textDetailHeading {
     font-weight: bold;
     display: flex;
-    padding: 3px 0;
+    padding: 3px 10px;
     background-color: #f7f7f7;
     border-bottom: 1px solid #e3e3e3;
 }
 
-/* .textDetailHeading span{
-    height: 16px;
-    width: 16px;
-    justify-content: center;
-    align-items: center;
-    transition: .3s ease 0ms;
-} */
 .leftLogo svg:hover,
 .rightLogo svg:hover {
     background-color: darkgray;
@@ -55,23 +48,7 @@
     box-shadow: 0 0 10px black;
 }
 
-.OptionToggle {
-    position: relative;
-    top: 0;
-    z-index: 10;
 
-
-}
-
-.option {
-    padding: 10px;
-    background-color: #f9f9f8;
-    position: absolute;
-    width: 135px;
-    top: 50px;
-    box-shadow: 0 2px 10px black;
-    left: 20px;
-}
 
 .optionsList {
     list-style-type: none;
@@ -82,4 +59,36 @@
 
 .optionsList li {
     cursor: pointer;
+}
+
+.option {
+    padding: 10px;
+    background-color: #f9f9f8;
+    position: absolute;
+    min-width: 240px;
+    box-shadow: 0 2px 10px black;
+    right: 0;
+    z-index: 100;
+}
+
+.WindowOption {
+    flex: 1;
+    /* background-color: red; */
+    display: flex;
+    padding-inline: 20px;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.heading_buttons {
+    height: 1.8em;
+    width: 1.8em;
+    border: none;
+    outline: none;
+    transition: all ease-in-out 0.3s;
+    background-color: transparent;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

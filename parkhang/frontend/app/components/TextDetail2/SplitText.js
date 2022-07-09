@@ -214,27 +214,24 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     scrolling(e) {}
 
     updateId(id) {
-        if (id && id.includes("s2")) {
-            let newId = id.replace("s2", "s");
-            document
-                ?.getElementById(newId)
-                ?.scrollIntoView({ block: "center" });
-            let positionHighlight = document
-                .getElementById(newId)
-                .getBoundingClientRect();
-
-            let hightlighter = document.createElement("div");
-            hightlighter.classList.add(styles.hightlighter);
-            hightlighter.style.border = "2px solid blue";
-
-            document.getElementById(newId).append(hightlighter);
-            document.getElementById(newId).style.color = "blue";
-
-            setTimeout(() => {
-                document.getElementById(newId).style.color = "black";
-                hightlighter.remove();
-            }, 500);
-        }
+        // if (id && id.includes("s2")) {
+        //     let newId = id.replace("s2", "s");
+        //     document
+        //         ?.getElementById(newId)
+        //         ?.scrollIntoView({ block: "center" });
+        //     let positionHighlight = document
+        //         .getElementById(newId)
+        //         .getBoundingClientRect();
+        //     let hightlighter = document.createElement("div");
+        //     hightlighter.classList.add(styles.hightlighter);
+        //     hightlighter.style.border = "2px solid blue";
+        //     document.getElementById(newId).append(hightlighter);
+        //     document.getElementById(newId).style.color = "blue";
+        //     setTimeout(() => {
+        //         document.getElementById(newId).style.color = "black";
+        //         hightlighter.remove();
+        //     }, 500);
+        // }
     }
 
     updateList(

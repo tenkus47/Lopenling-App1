@@ -109,7 +109,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     calculatedImageHeight: number | null;
     changeSyncIdOnScroll: () => void;
     changeSyncIdOnClick: () => void;
-    scrolling: () => void;
+    wheelScrolling: () => void;
     textlines: Node[] | null;
     jump: number;
     isPanelLinked: Boolean;
@@ -125,6 +125,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         });
         this.splitTextRef = React.createRef(null);
         this.rowRenderer = this.rowRenderer.bind(this);
+        this.wheelScrolling = this.wheelScrolling.bind(this);
         this.textListVisible = props.textListVisible;
         this.editMenuVisible = props.editMenuVisible;
         this.isPanelLinked = props.isPanelLinked;
@@ -143,8 +144,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.scrollJump = props.scrollJump;
     }
 
-    scrolling(e) {
-        let newList = [];
+    wheelScrolling(e) {
         this.props.changeSelectedImage(null);
         if (this.isPanelLinked) {
             if (this.textlines) {
@@ -158,13 +158,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     let span = textLineToSync?.firstChild;
                     let spanId = 0;
                     if (span) spanId = span.id.replace("s_", "");
-
                     this.changeSyncIdOnScroll(spanId);
                 }
             }
         }
     }
-
     updateId(id) {
         // if (id && id.includes("s")) {
         //     let newId = id.replace("s", "s2");
@@ -241,9 +239,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     handleSelection(e: Event) {
         if (!this._modifyingSelection) {
             this.activeSelection = document.getSelection();
-            let selectedId =
-                this.activeSelection?.anchorNode?.parentElement?.id;
-            this.updateId(selectedId);
+            let selected = this.activeSelection?.anchorNode?.parentElement;
+
+            let position = selected?.getBoundingClientRect();
+            // console.log(position);
+
+            this.updateId(selected.id);
             if (!this._mouseDown) {
                 // sometimes, this gets called after the mouseDown event handler
                 this.mouseUp();
@@ -672,15 +673,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.updateList();
         }, 500).bind(this);
 
-        const handler = () => {
-            setTimeout(() => {
-                this.updateList();
-            }, 200);
-        };
-
-        document
-            .querySelector("#doubleWindow")
-            .addEventListener("click", handler);
         window.addEventListener("resize", this.resizeHandler);
 
         this.selectionHandler = _.debounce((e) => {
@@ -688,17 +680,19 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }, 200).bind(this);
 
         document.addEventListener("selectionchange", this.selectionHandler);
-
+        document.addEventListener(
+            "wheel",
+            this.wheelScrolling.bind(this),
+            true
+        );
         document.addEventListener("mousedown", this.mouseDown.bind(this), true);
         document.addEventListener("mouseup", this.mouseUp.bind(this), true);
-        this.scrolling.bind(this.props);
         this.processProps(this.props);
         this.componentDidUpdate();
     }
 
     componentDidUpdate() {
         this.textlines = document.querySelectorAll(".Text---textLine");
-
         this.isPanelLinked = this.props.isPanelLinked;
         if (this.selectedNodes && this.selectedNodes.length > 0) {
             const selectedNodes = this.selectedNodes;
@@ -748,67 +742,52 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     // scrollToRow often positions the annotation at the
                     // bottom of the screen, so scroll up a bit
                     setTimeout(() => {
-                        if (list.props.scrollTop) {
-                            list.scrollToPosition(list.props.scrollTop - 100);
-                        } else {
-                            list.scrollToPosition(-100);
-                        }
+                        list.scrollToPosition(list.props.scrollTop - 100);
                     }, 0);
                 }, 100);
             }
             this._didSetInitialScrollPosition = true;
         }
 
-        let startPos = this.props.selectedImage?.source_segment?.start;
-
+        // let startPos = this.props.selectedImage?.source_segment?.start;
+        let startPos = null;
         if (startPos) {
             let list = this.list;
             let selectedTextIndex = 0;
+            let currentId = this.splitTextRef.current?.id?.replace(
+                "index_",
+                ""
+            );
             if (startPos) {
                 selectedTextIndex =
                     this.props.splitText.getTextIndexOfPosition(startPos);
             }
-            setTimeout(() => {
-                list.scrollToRow(selectedTextIndex);
+            if (startPos < parseInt(currentId)) {
                 setTimeout(() => {
-                    if (list.props.scrollTop) {
-                        list.scrollToPosition(list.props.scrollTop - 900);
-                    } else {
+                    list.scrollToRow(selectedTextIndex);
+                    setTimeout(() => {
                         if (
                             this.splitTextRef.current !== null &&
                             this.splitTextRef.current !== "undefined"
                         ) {
-                            let currentId =
-                                this.splitTextRef.current.id.replace(
-                                    "index_",
-                                    ""
-                                );
                             if (parseInt(currentId) < selectedTextIndex) {
                                 let position =
                                     this.splitTextRef.current.getBoundingClientRect();
                                 list.scrollToPosition(position.top - 100);
                             }
                         }
-                    }
+                    }, 100);
                 }, 100);
-            }, 100);
+            }
         }
     }
 
     componentWillUnmount() {
-        const handler = () => {
-            setTimeout(() => {
-                this.updateList(true);
-            }, 200);
-        };
-
         document.removeEventListener("mousedown", this);
         document.removeEventListener("mouseup", this);
         window.removeEventListener("resize", this.resizeHandler);
         document.removeEventListener("selectionchange", this.selectionHandler);
-        document
-            .querySelector("#doubleWindow")
-            .removeEventListener("click", handler);
+        document.removeEventListener("wheel", this.wheelScrolling);
     }
 
     calculateImageHeight() {
@@ -892,7 +871,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             width={width}
                             overscanRowCount={1}
                             deferredMeasurementCache={cache}
-                            onScroll={(e) => this.scrolling(e)}
                         ></List>
                     )}
                 </AutoSizer>
@@ -1024,11 +1002,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
 
         let pechaStyles = {};
-        let imageHeight = null;
         if (props.showImages && pechaImageClass && this.calculatedImageHeight) {
             pechaStyles["height"] = this.calculatedImageHeight + "px";
         }
-        let newStyle = { ...style, height: style.height + 10 };
+        let newStyle = {
+            ...style,
+            height: style.height + 10,
+        };
         return (
             <CellMeasurer
                 columnIndex={0}

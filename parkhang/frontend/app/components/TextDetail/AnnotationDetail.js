@@ -6,7 +6,6 @@ import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
-import ShareButton from "../UI/ShareButton";
 import ApplyTooltip from "../UI/ApplyTooltip";
 export type Props = {
     annotationData: AnnotationData,
@@ -92,7 +91,7 @@ const AnnotationDetail = (props: Props) => {
                     </div>
                 )}
                 <h3>{props.annotationData.name}</h3>
-                {props.isLoggedIn && props.isActive && (
+                {/* {props.isLoggedIn && props.isActive && (
                     <button
                         className={styles.edit}
                         onClick={props.editAnnotationHandler}
@@ -115,10 +114,10 @@ const AnnotationDetail = (props: Props) => {
                                     />{" "}
                                 </g>{" "}
                             </svg>
-                            {/* <FormattedMessage id="annotation.edit" /> */}
+                            <FormattedMessage id="annotation.edit" />
                         </ApplyTooltip>
                     </button>
-                )}
+                )} */}
             </div>
 
             {!props.isWorkingSection && desc}

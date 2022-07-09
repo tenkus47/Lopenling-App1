@@ -67,6 +67,7 @@ const mapStateToProps = (state: AppState): {} => {
         isPanelLinked: reducers.isPanelLinked(state),
         user: reducers.getUser(state),
         isAnnotating: reducers.isAnnotating(state),
+        searchValue: state.ui.searchValue,
     };
 };
 
@@ -116,6 +117,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 dispatch(dismissTextAnnotation);
                 dispatch(actions.changedActiveTextAnnotation(null));
             }
+        },
+        searchChanged: (searchTerm: string) => {
+            dispatch(actions.changedSearchValue(searchTerm));
         },
     };
 };

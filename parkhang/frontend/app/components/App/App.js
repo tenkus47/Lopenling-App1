@@ -9,12 +9,8 @@ import styles from "./App.css";
 import utilStyles from "css/util.css";
 import waterStyles from "./Water.css";
 import { handleKeyDown } from "../../shortcuts";
-import { useFlags } from "flagsmith/react";
 import favimage from "images/favicon.png";
 import Main from "bodyComponent/Main";
-import { useActive } from "../UI/activeHook";
-import { history as his } from "redux-first-router";
-import Notification from "bodyComponent/utility/Notification";
 import Favicon from "react-favicon";
 import Editor from "components/Editors/EditorContainer";
 import useDelayUnmount from "../UI/useDelayUnmount";
@@ -26,7 +22,6 @@ type Props = {
     dispatch: (action: actions.Action) => void,
     onChangedTextWidth: (width: number) => void,
     onChangedTextListVisible: (isVisible: boolean) => void,
-    onChangedNotification: (data: Object) => void,
 };
 
 function setTitle(title: string) {
@@ -35,18 +30,8 @@ function setTitle(title: string) {
 
 const App = (props: Props) => {
     setTitle(props.title);
-    const isActive = useActive(4000);
     let [loadScreen, setLoadScreen] = useState(true);
-    const shouldRenderChild = useDelayUnmount(loadScreen, 500);
-    useEffect(() => {
-        if (isActive === false)
-            props.onChangedNotification({
-                message:
-                    "YOU ARE NOT ACTIVE FOR SOME TIME NOW, CAN WE HELP YOU?",
-                time: 8000,
-                type: "warning",
-            });
-    }, [isActive]);
+    const shouldRenderChild = useDelayUnmount(loadScreen, 1000);
     useEffect(() => {
         let timer = setTimeout(() => {
             setLoadScreen(false);
@@ -83,7 +68,6 @@ const App = (props: Props) => {
             )}
             <HeaderContainer />
             {SelectedText !== null ? <Editor props={props} /> : <Main />}
-            {/* <Notification/> */}
         </div>
     );
 };

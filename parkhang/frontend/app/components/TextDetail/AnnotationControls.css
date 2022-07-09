@@ -18,7 +18,9 @@
 
 .annotationControls {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    background-color: var(--controlsBackground);
+    /* background-color: var(--controlsBackground);
+     */
+    background-color: transparent;
     padding: var(--controlsPadding);
     display: flex;
     flex-direction: column;
@@ -51,7 +53,7 @@
 
 .sectionHeading {
     font-weight: normal;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 .text {
@@ -92,7 +94,7 @@
 }
 
 .inline {
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
+    /* box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8); */
     z-index: 1;
 }
 

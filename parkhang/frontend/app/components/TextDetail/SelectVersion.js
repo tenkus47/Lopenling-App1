@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
-
+import useLocaleStorage from "../../bodyComponent/utility/useLocalStorage";
 export type Props = {
     witnesses: Witness[],
     activeWitness: Witness | null,
@@ -16,7 +16,7 @@ const SelectVersion = (props: Props) => {
     let witnesses;
     let tabName = "";
     let r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
-    const [temp, setTemp] = useState(0);
+    const [temp, setTemp] = useLocaleStorage("selectedWitness", 0);
     let classes = [styles.selectOptions];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);
@@ -58,7 +58,7 @@ const SelectVersion = (props: Props) => {
                 if (witness.isWorking) {
                     tabName =
                         props.intl.locale === "en"
-                            ? props.user.name === "User"
+                            ? props.user?.name === "User"
                                 ? "Working"
                                 : "My Edition"
                             : "མཉམ་འབྲེལ་པར་མ།";

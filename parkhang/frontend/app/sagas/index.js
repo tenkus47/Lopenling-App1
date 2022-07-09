@@ -302,10 +302,6 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
         reducers.hasLoadedWitnessAnnotations,
         witnessId
     );
-    const hasLoadedAnnotations2 = yield select(
-        reducers.hasLoadedWitnessAnnotations2,
-        witnessId
-    );
     if (!hasLoadedAnnotations) {
         yield call(loadWitnessAnnotations, action);
     }
@@ -382,6 +378,9 @@ function* loadInitialTextData2(action: actions.TextDataAction) {
 
 function* selectedWitness2(action: actions.SelectedTextWitnessAction) {
     const witnessId = action.witnessId;
+    const textId = action.textId;
+    let witness = yield select(reducers.getWitness, witnessId);
+
     const hasLoadedAnnotations2 = yield select(
         reducers.hasLoadedWitnessAnnotations2,
         witnessId
@@ -744,63 +743,55 @@ function* loadAlignmentData(action, textId) {
 // loadedTextUrl should only be called when first loading
 let _loadedTextUrl = false;
 
-let _secondWindowTextId = null;
-let _secondWindowWitnessId = null;
-
-function* loadedTextUrl(action: actions.TextUrlAction) {
+function* loadedTextUrl(
+    action: actions.TextUrlAction,
+    t = null,
+    w = null,
+    t2 = null,
+    w2 = null
+) {
     if (_loadedTextUrl) {
         return;
     }
     _loadedTextUrl = true;
-
-    if (action.payload.witnessId) {
-        const textId = action.payload.textId;
-        const witnessId = action.payload.witnessId;
+    if (action) {
+        let textId = action.payload.textId;
+        let witnessId = action.payload.witnessId;
+        let textId2 = textId;
+        let witnessId2 = witnessId;
+        if (t !== null) textId = t;
+        if (w !== null) witnessId = w;
+        if (t2 !== null) textId2 = t2;
+        if (w2 !== null) witnessId2 = w2;
+        console.log(w2);
         let textData: api.TextData;
         let textData2: api.TextData;
-
         //Search image Alignment on basis of textId and WitnessId
         yield call(loadAlignmentData, action, textId);
         yield call(loadTextAlignment, action);
         let fetchedDataOfTextData = yield select(reducers.getTextAlignment);
-        let textId2;
-
         console.log(fetchedDataOfTextData);
-        if (parseInt(textId) === 139) {
-            textId2 = fetchedDataOfTextData.target || 139;
-            textData2 = yield select(reducers.getText2, textId2, true);
-        } else {
-            textId2 = _secondWindowTextId ? _secondWindowTextId : textId;
-            textData2 = yield select(reducers.getText2, textId2, true);
-        }
 
         do {
             textData = yield select(reducers.getText, textId, true);
+            textData2 = yield select(reducers.getText2, textId2, true);
+
             if (!textData) yield delay(100);
             if (!textData2) yield delay(100);
         } while (textData === null);
-        const selectedTextAction = actions.selectedText(textData);
-        const selectedTextAction2 = actions.selectedText2(textData2);
 
-        yield put(selectedTextAction);
-        yield put(selectedTextAction2);
-        const selectedWitnessAction = actions.selectedTextWitness(
-            textId,
-            witnessId
-        );
-        // const selectedWitnessAction2 = actions.selectedTextWitness2(
-        //     textId2,
-        //     witnessId2
-        // );
+        yield put(actions.selectedText(textData));
+        yield put(actions.selectedText2(textData2));
+
         const witnesses = yield call(api.fetchTextWitnesses, textData);
-
+        const witnesses2 = yield call(api.fetchTextWitnesses, textData2);
         const VideoData = yield call(api.fetchVideoWithAlignmentId, 0);
         if (textId === 139) {
             yield put(actions.changeVideoData(VideoData));
         }
 
         yield put(actions.loadedWitnesses(textData, witnesses));
-        yield put(actions.loadedWitnesses2(textData2, witnesses));
+        yield put(actions.loadedWitnesses2(textData2, witnesses2));
 
         let textWitnesses: Array<Witness> = [];
         do {
@@ -808,6 +799,11 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
             if (textWitnesses.length === 0) yield delay(100);
         } while (textWitnesses.length === 0);
 
+        let textWitnesses2: Array<Witness> = [];
+        do {
+            textWitnesses2 = yield select(reducers.getTextWitnesses2, textId2);
+            if (textWitnesses2.length === 0) yield delay(100);
+        } while (textWitnesses2.length === 0);
         // Wait until the initial text witness has been selected.
         // Otherwise a race condition can happen when the initial witness
         // gets selected after the url-defined witness.
@@ -820,8 +816,26 @@ function* loadedTextUrl(action: actions.TextUrlAction) {
             if (!selectedWitnessId) yield delay(100);
         } while (!selectedWitnessId);
 
+        let selectedWitnessId2;
+        do {
+            selectedWitnessId2 = yield select(
+                reducers.getSelectedTextWitnessId2,
+                textId2
+            );
+            if (!selectedWitnessId2) yield delay(100);
+        } while (!selectedWitnessId2);
+
+        const selectedWitnessAction = actions.selectedTextWitness(
+            textId,
+            witnessId
+        );
+        const selectedWitnessAction2 = actions.selectedTextWitness2(
+            textId2,
+            witnessId2
+        );
         yield put(selectedWitnessAction);
-        // yield put(selectedWitnessAction2);
+        yield put(selectedWitnessAction2);
+
         if (action.payload.annotation) {
             let matches = /([0-9]+)-([0-9]+)-?(.+)?/.exec(
                 action.payload.annotation
@@ -908,116 +922,38 @@ function* watchTextUrlActions() {
 }
 
 function* loadedTextUrl2(action) {
-    const textId = action.payload.textId;
-    const witnessId = action.payload.witnessId;
+    let textId = action.payload.textId;
+    let witnessId = action.payload.witnessId;
 
-    const textId2 = action.payload.textId2;
-    const witnessId2 = action.payload.witnessId2;
-    let textData: api.TextData;
-    let textData2: api.TextData;
-    _secondWindowTextId = textId2;
-    // console.log("not load");
-    // do {
-    //     textData = yield select(reducers.getText, textId, true);
-    //     textData2 = yield select(reducers.getText, textId2, true);
-    //     if (!textData) yield delay(100);
-    //     if (!textData2) yield delay(100);
-    // } while (textData === null || textData2 === null);
-    // const selectedTextAction = actions.selectedText(textData);
-    // const selectedTextAction2 = actions.selectedText2(textData2);
-    // yield put(selectedTextAction);
-    // yield put(selectedTextAction2);
-
-    // const selectedWitnessAction = actions.selectedTextWitness(
-    //     textId,
-    //     witnessId
-    // );
-    // const selectedWitnessAction2 = actions.selectedTextWitness2(
-    //     textId2,
-    //     witnessId2
-    // );
-
-    // yield put(selectedWitnessAction);
-    // yield put(selectedWitnessAction2);
+    let textId2 = action.payload.textId2;
+    let witnessId2 = action.payload.witnessId2;
+    yield call(loadedTextUrl, action, textId, witnessId, textId2, witnessId2);
 }
 
 function* watchTextUrlActions2() {
     yield takeEvery(actions.TEXT_URL2, loadedTextUrl2);
 }
 //URL to LOAD TEXTDATA AND AUTO WITNESS
+
 function* loadedTextIdonlyUrl(action) {
-    _loadedTextUrl = true;
+    _loadedTextUrl = false;
+    let textId = parseInt(action.payload.textId);
+    let textData = yield call(api.fetchTexts);
 
-    if (action.payload) {
-        const textId = action.payload.textId;
-        yield call(loadAlignmentData, action, textId);
-        yield call(loadTextAlignment, action);
-        let fetchedDataOfTextData = yield select(reducers.getTextAlignment);
+    let text = textData.find((s) => s.id === parseInt(textId));
+    const witnesses = yield call(api.fetchTextWitnesses, text);
 
-        let textId2;
-        if (parseInt(textId) === 139) {
-            textId2 = fetchedDataOfTextData.target || 139;
-            textData2 = yield select(reducers.getText2, textId2, true);
-        } else {
-            textId2 = _secondWindowTextId ? _secondWindowTextId : textId;
-            textData2 = yield select(reducers.getText2, textId2, true);
-        }
-
-        let textData: api.TextData;
-        let textData2;
-        do {
-            textData = yield select(reducers.getText, textId, true);
-            if (!textData) yield delay(100);
-        } while (textData === null);
-
-        do {
-            textData2 = yield select(reducers.getText, textId2, true);
-            if (!textData2) yield delay(100);
-        } while (textData2 === null);
-
-        yield put(actions.loadingWitnesses(textData));
-        yield put(actions.loadingWitnesses2(textData2));
-        const witnesses = yield call(api.fetchTextWitnesses, textData);
-        const witnesses2 = yield call(api.fetchTextWitnesses, textData2);
-
-        const selectedTextAction = actions.selectedText(textData);
-        const selectedTextAction2 = actions.selectedText2(textData2);
-
-        yield put(actions.loadedWitnesses(textData, witnesses));
-        yield put(actions.loadedWitnesses2(textData, witnesses2));
-
-        for (const witness of witnesses) {
-            if (witness.is_working) {
-                var workingWitnessData = witness;
-            }
-            if (witness.is_base) {
-                var baseWitnessData = witness;
-            }
-        }
-        for (const witness of witnesses2) {
-            if (witness.is_working) {
-                var workingWitnessData2 = witness;
-            }
-            if (witness.is_base) {
-                var baseWitnessData2 = witness;
-            }
-        }
-
-        const selectedWitnessAction = actions.selectedTextWitness(
-            textData.id,
-            workingWitnessData.id
-        );
-
-        const selectedWitnessAction2 = actions.selectedTextWitness2(
-            textData2.id,
-            workingWitnessData2.id
-        );
-        yield put(selectedTextAction);
-        yield put(selectedTextAction2);
-
-        yield put(selectedWitnessAction);
-        yield put(selectedWitnessAction2);
-    }
+    let witnessId = witnesses.find((l) => l.is_working === true);
+    let textId2 = textId;
+    let witnessId2 = witnessId;
+    yield call(
+        loadedTextUrl,
+        action,
+        textId,
+        witnessId.id,
+        textId2,
+        witnessId2.id
+    );
 }
 
 function* watchTextIdonlyUrlActions() {
@@ -1037,20 +973,19 @@ function* selectTextUrl(action) {
     const textdata = yield select(reducers.getTextTitle);
     let texts;
     let setTextData;
-    do {
-        try {
-            texts = yield call(api.fetchChapterDetail);
-        } catch (e) {
-            console.log(e);
-        }
-        if (texts) {
-            setTextData = actions.setTextData(texts.data);
-        } else {
-            setTextData = actions.setTextData([]);
-        }
-        console.log("fetching Home Component");
-        yield put(setTextData);
-    } while (texts.data.length === 0);
+    try {
+        texts = yield call(api.fetchChapterDetail);
+    } catch (e) {
+        texts = { data: null };
+        console.log(e);
+    }
+    if (texts) {
+        setTextData = actions.setTextData(texts.data);
+    } else {
+        setTextData = actions.setTextData([]);
+    }
+
+    yield put(setTextData);
 
     const trueLoaded = actions.changeIsLoaded(true);
     yield put(trueLoaded);
@@ -1070,8 +1005,7 @@ function* editorUrl(action) {
     if (action.payload) {
         // const textId = action.payload.textId;
         let texts = yield select(reducers.getTexts);
-
-        const textId = texts[3].id;
+        const textId = texts.length > 0 ? texts[3].id : 139;
         let textData: api.TextData;
         do {
             textData = yield select(reducers.getText, textId, true);
@@ -1133,7 +1067,7 @@ function* loadTextAlignment(action) {
     let AlignmentData = yield select(reducers.getAlignment);
     let Text = yield select(reducers.getSelectedText);
     // let AlignmentId = AlignmentData.text[0].id;
-    console.log(AlignmentData);
+
     let AlignmentId = 10;
     let data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
     yield put(actions.setTextAlignment(data));

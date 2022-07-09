@@ -1,5 +1,7 @@
-.Main{
-    margin-top:50px;
+.Main {
+    margin-top: 50px;
     display: grid;
     grid-template-columns: 4fr 1fr;
+    max-width: 100vw;
+    overflow: hidden;
 }

@@ -55,6 +55,10 @@
     margin-right: var(--controlsMargin);
 }
 
+.hide {
+    display: none;
+}
+
 .pageNumber {
     position: absolute;
     right: 20px;

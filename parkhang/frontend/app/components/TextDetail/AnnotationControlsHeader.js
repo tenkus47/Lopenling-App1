@@ -6,12 +6,16 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import NoteIcon from "images/note.svg";
 import QuestionIcon from "images/question_answer.svg";
 import TooltipCustom from "../UI/TooltipCustom";
+import ApplyTooltip from "../UI/ApplyTooltip";
 
 type Props = {
     addPageBreak: null | (() => void),
     addLineBreak: null | (() => void),
     addNote: null | (() => void),
     addQuestion: null | (() => void),
+    closeAnnotation: null | (() => void),
+    editAnnotationHandler: null | (() => void),
+    userLoggedIn: Boolean
 };
 
 class AnnotationControlsHeader extends React.Component<Props> {
@@ -93,20 +97,37 @@ class AnnotationControlsHeader extends React.Component<Props> {
                             backgroundColor="transparent"
                         />
                     </TooltipCustom>
+                    {this.props.userLoggedIn && <ApplyTooltip format="annotation.edit">
+                        <div
+                            onClick={this.props.editAnnotationHandler}
+                            className={styles.edit}
+                        >
+                            <svg
+                                version="1.1"
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                data-code="57940"
+                                data-tags="mode_edit"
+                            >
+                                {" "}
+                                <g transform="scale(0.0234375 0.0234375)">
+                                    {" "}
+                                    <path
+                                        className={styles.editImage}
+                                        d="M884 300l-78 78-160-160 78-78c16-16 44-16 60 0l100 100c16 16 16 44 0 60zM128 736l472-472 160 160-472 472h-160v-160z"
+                                    />{" "}
+                                </g>{" "}
+                            </svg>
+                        </div>
+                    </ApplyTooltip>}
                 </div>
-                <div
+                {/* <div
                     onClick={() => this.props.closeAnnotation()}
-                    style={{
-                        position: "absolute",
-                        left: 5,
-                        width: 10,
-                        height: 10,
-                        top: 5,
-                        cursor: "pointer",
-                    }}
+                    className={styles.Anotation_closeBtn}
                 >
                     x
-                </div>
+                </div> */}
             </>
         );
     }
