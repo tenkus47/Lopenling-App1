@@ -81,6 +81,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         // this.processProps(props);
     }
+    selectedListRow(props: Props): number | null {
+        let row = null;
+        if (props.activeAnnotation) {
+            row = props.splitText.getTextIndexOfPosition(
+                props.activeAnnotation.start
+            );
+        }
+        return row;
+    }
     handleSelection(e: Event) {
         if (!this._modifyingSelection) {
             this.activeSelection = document.getSelection();

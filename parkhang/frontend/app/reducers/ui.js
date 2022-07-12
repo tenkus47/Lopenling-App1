@@ -46,7 +46,7 @@ export type UIState = {
     SyncIdOnClick: String,
 
     isPanelLinked: boolean,
-    isAnnotating:Boolean
+    isAnnotating: Boolean,
 };
 
 export const initialUIState = {
@@ -74,11 +74,11 @@ export const initialUIState = {
         time: null,
         type: "",
     },
-    showSecondWindow: false,
+    showSecondWindow: true,
     SyncIdOnScroll: 0,
     SyncIdOnClick: 0,
     isPanelLinked: true,
-    isAnnotating:true
+    isAnnotating: true,
 };
 
 function loadedUserSettings(
@@ -285,8 +285,8 @@ function changedShowPageImages(
 function changeIsAnnotating(state, action) {
     return {
         ...state,
-        isAnnotating:action.payload
-    }
+        isAnnotating: action.payload,
+    };
 }
 function changedTextFontSize(
     state: UIState,
@@ -545,7 +545,7 @@ export default uiReducers;
 
 export const isAnnotating = (state) => {
     return state.isAnnotating;
-}
+};
 
 export const getSelectedText = (state: UIState): api.TextData | null => {
     return state.selectedText;
