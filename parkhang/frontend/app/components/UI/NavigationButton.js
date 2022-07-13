@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 import styles from "./NavigationButton.css";
 import HamburgerIcon from "images/hamburger.svg";
-
+import IconButton from "@mui/material/IconButton";
 type Props = {
     onClick?: () => void,
     className?: string,
@@ -17,13 +17,14 @@ const NavigationButton = (props: Props) => {
     }
     // if (props.isListVisible) return null;
     return (
-        <div
+        <IconButton
+            aria-label="Navigation"
             className={classnames(...classNames)}
             onClick={props.onClick}
             title={props.title}
         >
             <HamburgerIcon />
-        </div>
+        </IconButton>
     );
 };
 

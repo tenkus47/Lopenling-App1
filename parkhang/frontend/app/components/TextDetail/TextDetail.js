@@ -48,6 +48,7 @@ export type Props = {
     changeSyncIdOnClick: () => void,
     changeSyncIdOnScroll: () => void,
     changeSelectedImage: () => void,
+    closeAnnotation:()=>void
 };
 
 let textDetailId = 0;
@@ -119,6 +120,7 @@ class TextDetail extends React.Component<Props> {
                     selectedImage={this.props.selectedImage}
                     changeSelectedImage={this.props.changeSelectedImage}
                     isAnnotating={this.props.isAnnotating}
+                    closeAnnotation={this.props.closeAnnotation}
                 ></SplitTextComponent>
             );
         }

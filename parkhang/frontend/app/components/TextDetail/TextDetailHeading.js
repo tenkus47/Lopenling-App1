@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import styles from "./textDetailHeading.css";
-import Check from "images/checkmark.png";
-import Refresh from "images/Refresh.svg";
-import ApplyTooltip from "../UI/ApplyTooltip";
 import SelectVersion from "./SelectVersion";
-import Witness from "lib/Witness";
-import Slider from "../UI/Slider";
 import TextList from "./TextListContainer";
-import useClickOutSide from "../UI/useClickOutSideClose";
-import OptionsIcon from "images/options.svg";
-import Share from "images/share.svg";
-import Magnifier from "images/magnifier.svg";
-import Pen from "images/pen.png";
-import classnames from "classnames";
+import {
+    Stack,
+    Box,
+    TextField,
+    Button,
+    Collapse,
+    Divider,
+    ButtonGroup,
+} from "@mui/material";
+import Share from "./HeaderMenu/Share";
+import Annotate from "./HeaderMenu/Annotate";
+import Refresh from "./HeaderMenu/Refresh";
+import Search from "./HeaderMenu/Search";
+import WindowSplitter from "./HeaderMenu/WindowSplitter";
+import Settings from "./HeaderMenu/Settings";
+import TableOfContent from "./HeaderMenu/TableOfContent";
 type HeaderProps = {
     witnesses: Witness[],
     selectedWitness: Witness,
@@ -33,220 +38,112 @@ type HeaderProps = {
 };
 
 function TextDetailHeading(props: HeaderProps) {
-    const selectedText = props?.selectedText;
-    let [showOption, setShowOption] = useState(false);
-    let [showShare, setShowShare] = useState(false);
+    const [findvalue, setfindvalue] = useState("");
     let [showFind, setShowFind] = useState(false);
-    let domNode = useClickOutSide(() => setShowOption(false));
-    let domNode2 = useClickOutSide(() => setShowFind(false));
-    let domNode3 = useClickOutSide(() => setShowShare(false));
-    const handleClick = () => {
-        setShowOption((prev) => !prev);
-    };
+    const inputRef = useRef();
+    const handleSearch = useCallback(
+        (e) => {
+            e.preventDefault();
+            props.searchChanged(findvalue);
+        },
+        [findvalue]
+    );
     const handleWindowSearch = useCallback(() => {
         setShowFind((prev) => !prev);
     }, []);
-    const handleSearch = (e) => {
-        let value = e.target.value;
-        props.searchChanged(value);
-    };
-    const handleRefresh = useCallback(() => {
-        let updatelistBtn = document.getElementById("updateList");
-        let updatelistBtn2 = document.getElementById("updateList2");
-
-        if (updatelistBtn) updatelistBtn.click();
-        if (updatelistBtn2) updatelistBtn2.click();
-    }, []);
     useEffect(() => {
-        let timer = setInterval(() => {
-            handleRefresh();
-        }, 500);
-        let timer2 = setTimeout(() => {
-            clearInterval(timer);
-        }, 2000);
-
-        return () => clearTimeout(timer2);
-    }, [props.isSecondWindowOpen]);
+        if (showFind === true) {
+            inputRef.current.focus();
+        }
+    }, [showFind]);
 
     return (
-        <div className={styles.textDetailHeading}>
-            <div className={styles.selectVersion}>
-                <div className={styles.textHeadingTitle} style={{ flex: 1 }}>
+        <Stack
+            direction="column"
+            spacing={1}
+            px={2}
+            py={1}
+            style={{ background: "#f7f7f7" }}
+        >
+            <Stack direction="row" spacing={1} justifyContent="space-between">
+                <Box sx={{ display: "flex", gap: 2 }}>
                     <TextList />
-                </div>
-                <SelectVersion
-                    witnesses={props.witnesses}
-                    activeWitness={props.selectedWitness}
-                    onSelectedWitness={props.onSelectedWitness}
-                    user={props.user}
-                />
-            </div>
-            <div className={styles.WindowOption}>
-                <div ref={domNode3}>
-                    <button
-                        className={classnames(styles.heading_buttons)}
-                        onClick={() => setShowShare((prev) => !prev)}
-                    >
-                        <Share />
-                    </button>
-                    {showShare && <ShareOption props={props} />}
-                </div>
-                <div className={styles.annotateButton}>
-                    <ApplyTooltip tooltipName={"Annotate"} effect={"solid"}>
-                        <button
-                            className={classnames(styles.heading_buttons)}
-                            style={{
-                                background: props.isAnnotating
-                                    ? "darkgray"
-                                    : "#eee",
+                    <SelectVersion
+                        witnesses={props.witnesses}
+                        activeWitness={props.selectedWitness}
+                        onSelectedWitness={props.onSelectedWitness}
+                        user={props.user}
+                    />
+                </Box>
+                <ButtonGroup
+                    size="small"
+                    aria-label="small button group"
+                    sx={{
+                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "fit-content",
+                        border: (theme) => `1px solid ${theme.palette.divider}`,
+                        borderRadius: 1,
+                        bgcolor: "background.paper",
+                        color: "text.secondary",
+                        "& svg": {
+                            m: 1.5,
+                        },
+                        "& hr": {
+                            mx: 0.5,
+                        },
+                    }}
+                    className={styles.button_group_menu}
+                >
+                    <Refresh isSecondWindowOpen={props.isSecondWindowOpen} />
+                    <Divider orientation="vertical" variant="middle" flexItem />
+                    <Annotate {...props} />
+                    <WindowSplitter
+                        isSecondWindowOpen={props.isSecondWindowOpen}
+                        onChangeWindowOpen={props.onChangeWindowOpen}
+                    />
+                    <Divider orientation="vertical" variant="middle" flexItem />
+                    <Search handleWindowSearch={handleWindowSearch} />
+                    <Share {...props} />
+                    <Settings {...props} />
+                    <TableOfContent {...props} />
+                </ButtonGroup>
+            </Stack>
+
+            <Collapse in={showFind}>
+                <form onSubmit={handleSearch}>
+                    <Stack direction="row" spacing={2}>
+                        <TextField
+                            hiddenLabel
+                            id="filled-hidden-label-small"
+                            inputProps={{
+                                style: {
+                                    height: 25,
+                                    padding: "0 14px",
+                                },
                             }}
-                            onClick={() =>
-                                props.changeIsAnnotating(!props.isAnnotating)
-                            }
+                            style={{ height: 25, flex: 1 }}
+                            fullWidth
+                            inputRef={inputRef}
+                            value={findvalue}
+                            onChange={(e) => setfindvalue(e.target.value)}
+                            onBlur={() => setShowFind(false)}
+                        />
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={handleSearch}
+                            style={{ height: 25 }}
                         >
-                            <img
-                                src={Pen}
-                                alt="pencil"
-                                style={{ width: 20, height: 20 }}
-                            />
-                        </button>
-                    </ApplyTooltip>
-                </div>
-                <div className={styles.refreshButton}>
-                    <ApplyTooltip tooltipName={"refresh"} effect={"solid"}>
-                        <button
-                            className={classnames(styles.heading_buttons)}
-                            onClick={handleRefresh}
-                        >
-                            <Refresh />
-                        </button>
-                    </ApplyTooltip>
-                </div>
-                <div ref={domNode2} className={styles.searchWindow}>
-                    <button
-                        className={classnames(styles.heading_buttons)}
-                        onClick={handleWindowSearch}
-                    >
-                        <Magnifier />
-                    </button>
-                    {showFind && (
-                        <div className={styles.findTerm}>
-                            <input
-                                value={props.searchValue}
-                                type="text"
-                                placeholder="Search"
-                                onChange={handleSearch}
-                            />
-                        </div>
-                    )}
-                </div>
-                <div ref={domNode} className={styles.OptionToggle}>
-                    <button
-                        onClick={handleClick}
-                        className={classnames(styles.heading_buttons)}
-                    >
-                        <OptionsIcon />
-                    </button>
-                    {showOption && (
-                        <div className={styles.option}>
-                            <Slider
-                                max={24}
-                                min={14}
-                                initialvalue={props.textFontSize}
-                                changeSize={props.onChangedFontSize}
-                            />
-                            <Options props={props} />
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
+                            Search
+                        </Button>
+                    </Stack>
+                </form>
+            </Collapse>
+        </Stack>
     );
 }
 
 export default TextDetailHeading;
-
-function Options({ props }) {
-    return (
-        <ul className={styles.optionsList}>
-            <li onClick={() => props.onExport()}>
-                Export Document
-                {props.exportingWitness && <img src={Check}></img>}
-            </li>
-            <li>Table of Contents</li>
-            <hr />
-            <li
-                onClick={() => {
-                    props.onChangeWindowOpen(true);
-                }}
-            >
-                {props.isSecondWindowOpen && <img src={Check}></img>}Single
-                Column
-            </li>
-            <li
-                onClick={() => {
-                    props.onChangeWindowOpen(false);
-                }}
-            >
-                {!props.isSecondWindowOpen && <img src={Check}></img>}Stretch
-                across both column
-            </li>
-            <hr />
-            <li onClick={() => props.onChangePanelLink(!props.isPanelLinked)}>
-                {props.isPanelLinked && <img src={Check}></img>}
-                link panels
-            </li>
-        </ul>
-    );
-}
-
-function ShareOption({ props }) {
-    let textid = props.selectedText.id;
-    let textid2 = props.selectedText2.id;
-    let witnessid = props.selectedWitness.id;
-    let witnessid2 = props.selectedWitness2.id;
-    let url =
-        window.location.origin +
-        `/texts/${textid}/witnesses/${witnessid}/texts2/${textid2}/witnesses2/${witnessid2}`;
-
-    const handleCopy = () => {
-        let copyButton = document.getElementById("copyButton");
-        let inputForUrl = document.getElementById("inputForUrl");
-        navigator.clipboard
-            .writeText(url)
-            .then(() => {
-                console.log("text been copied");
-                inputForUrl.style.display = "none";
-                copyButton.innerText = "copied";
-                copyButton.disabled = true;
-            })
-            .catch((e) => console.log(e.message))
-            .finally(() => console.log("you are copying the url " + url));
-    };
-
-    return (
-        <div
-            style={{
-                position: "absolute",
-                top: 30,
-                background: "white",
-                width: 240,
-                right: 10,
-                boxShadow: "1px 1px 2px black",
-                zIndex: 9999,
-                padding: 10,
-                borderRadius: 10,
-            }}
-        >
-            <div style={{ textAlign: "center", marginBottom: 10 }}>
-                {props.selectedText.name}
-            </div>
-            <div style={{ textAlign: "center" }}>
-                <input type="text" defaultValue={url} id="inputForUrl"></input>
-                <button onClick={handleCopy} id="copyButton">
-                    copy
-                </button>
-            </div>
-        </div>
-    );
-}

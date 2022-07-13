@@ -140,7 +140,6 @@ function loadingTexts(state: DataState): DataState {
         loadedTexts: false,
     };
 }
-
 function loadedTexts(state: DataState, action: actions.TextsAction): DataState {
     const textsById = arrayToObject(action.texts, "id");
     return {
@@ -649,6 +648,7 @@ export const getTexts = (state: DataState): Text | TextData | null => {
     const textData = state.texts;
     return textData;
 };
+
 export const getText = (
     state: DataState,
     textId: number,
@@ -1099,7 +1099,7 @@ export const getAlignment = (state) => {
 };
 export const getTextAlignment = (state) => {
     return state.textAlignment;
-}
+};
 
 export const questionIsLoading = (
     state: DataState,

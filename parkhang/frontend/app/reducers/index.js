@@ -267,6 +267,7 @@ export const getAlignment = (state: AppState) => {
 export const getTextAlignment = (state: AppState) => {
     return data.getTextAlignment(state.data);
 };
+
 export const getTexts = (state: AppState): Text | TextData | null => {
     return data.getTexts(state.data);
 };

@@ -64,7 +64,7 @@ export const initialUIState = {
     showAccountOverlay: false,
     textFontSize: constants.DEFAULT_TEXT_FONT_SIZE,
     textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,
-    showSecondWindow: true,
+    showSecondWindow: false,
     SyncIdOnScroll: 0,
     SyncIdOnClick: 0,
     isPanelLinked: true,

@@ -21,7 +21,7 @@
     z-index: 99999;
     bottom: 0;
     background-color: var(--text-bg);
-    border: thick double var(--green);
+    border: 1px solid gray;
     overflow: hidden;
     max-height: 250px;
 }

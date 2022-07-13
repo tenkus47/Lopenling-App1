@@ -1,22 +1,26 @@
-.textlist{
-    width: 300px;
+.textlist {
+    min-width: 300px;
+    /* max-width: max-content; */
     height: 300px;
     cursor: pointer;
     overflow: hidden;
 
 }
-.textlist.open{
-    width:500px;
+
+.textlist.open {
+    width: 500px;
     height: 500px;
 }
-.listToggelBtn{
+
+.listToggelBtn {
     outline: none;
-    border:none;
+    border: none;
     background-color: transparent;
     font-weight: bold;
     font-size: 1rem;
 }
-.listToggelBtn:hover{
+
+.listToggelBtn:hover {
     background-color: #eee;
-    outline:2px solid goldenrod;
+    outline: 2px solid goldenrod;
 }

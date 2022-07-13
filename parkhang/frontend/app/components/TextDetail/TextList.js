@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import axios from "axios";
 import {
     List,
     AutoSizer,
@@ -9,46 +8,64 @@ import {
 import classname from "classnames";
 import styles from "./TextList.css";
 import useClickOutSide from "../UI/useClickOutSideClose";
-
+import { TextField } from "@mui/material";
 function TextList(props) {
-    const [textslist, setTextlist] = useState([]);
-    const fetchTextList = useCallback(async () => {
-        let response = await axios("/api/texts/");
-        setTextlist(response.data);
-    }, []);
-
+    const temptext = useRef(props.texts);
+    const [textslist, setTextList] = useState(temptext.current);
     const onSelectedText = props.onSelectedText;
     const selectedText = props.selectedText;
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState(textslist[0]?.name);
-    useEffect(() => {
-        fetchTextList();
-    }, []);
+    let selected = selectedText ? selectedText.name : textslist[0].name;
     const cache = useRef(
         new CellMeasurerCache({
             fixedHeight: true,
             defaultHeight: 30,
+            defaultWidth: 400,
         })
     );
 
     let classes = [styles.textlist];
 
+    const truncate = (string = "", limit) => {
+        if (string.length <= limit) {
+            return string;
+        }
+        return string.slice(0, limit) + "...";
+    };
+
     const handleClick = () => {
         setIsOpen((prev) => !prev);
         if (isOpen === false) classes.push(styles.open);
+    };
+    const handleChange = (e) => {
+        let value = e.target.value;
+        setTextList(temptext.current);
+        if (value === "" || value === null) {
+            return;
+        }
+
+        let newtextslist = textslist.filter((l) => l.name.includes(value));
+        setTextList(newtextslist);
     };
     const domNode2 = useClickOutSide(() => setIsOpen(false));
 
     return (
         <div style={{ position: "relative" }} ref={domNode2}>
             <button onClick={handleClick} className={styles.listToggelBtn}>
-                {selectedText ? selectedText.name : selected}
+                {truncate(selected, 30)}
             </button>
             {isOpen && (
                 <div
                     className={classname(classes)}
                     style={{ position: "absolute" }}
                 >
+                    <TextField
+                        onChange={handleChange}
+                        id="standard-basic"
+                        label="filter"
+                        variant="standard"
+                        style={{ width: "100%" }}
+                    />
                     <AutoSizer>
                         {({ width, height }) => (
                             <List
@@ -75,7 +92,6 @@ function TextList(props) {
                                             <div
                                                 style={style}
                                                 onClick={() => {
-                                                    setSelected(data.name);
                                                     setIsOpen(false);
                                                     onSelectedText(data);
                                                 }}

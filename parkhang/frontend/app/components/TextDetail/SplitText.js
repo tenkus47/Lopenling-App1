@@ -29,7 +29,7 @@ import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
-
+import { ClickAwayListener } from "@mui/material";
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
@@ -72,6 +72,7 @@ export type Props = {
     isSecondWindowOpen: Boolean,
     changeSyncIdOnScroll: () => void,
     changeSyncIdOnClick: () => void,
+    closeAnnotation: () => void,
     imageData: {},
     isPanelLinked: Boolean,
 };
@@ -110,6 +111,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     changeSyncIdOnScroll: () => void;
     changeSyncIdOnClick: () => void;
     wheelScrolling: () => void;
+    closeAnnotation: () => void;
     textlines: Node[] | null;
     jump: number;
     isPanelLinked: Boolean;
@@ -141,6 +143,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.processProps(props);
         this.changeSyncIdOnScroll = props.changeSyncIdOnScroll;
         this.changeSyncIdOnClick = props.changeSyncIdOnClick;
+        this.closeAnnotation = props.closeAnnotation;
         this.scrollJump = props.scrollJump;
     }
 
@@ -156,7 +159,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }
 
                     let span = textLineToSync?.firstChild;
-                    let spanId = 0;
+                    let spanId;
                     if (span) spanId = span.id.replace("s_", "");
                     this.changeSyncIdOnScroll(spanId);
                 }
@@ -240,11 +243,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (!this._modifyingSelection) {
             this.activeSelection = document.getSelection();
             let selected = this.activeSelection?.anchorNode?.parentElement;
-
-            let position = selected?.getBoundingClientRect();
-            // console.log(position);
-
-            this.updateId(selected.id);
+            this.updateId(selected?.id);
             if (!this._mouseDown) {
                 // sometimes, this gets called after the mouseDown event handler
                 this.mouseUp();
@@ -1086,7 +1085,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             // menuVisible={props.menuVisible}
                         />
                     </div>
-
                     {this.props.isAnnotating &&
                         this.selectedTextIndex === index &&
                         this.props.activeAnnotation && (

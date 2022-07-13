@@ -24,7 +24,7 @@ function Image(props) {
     let textIdfromAlignment = props.alignmentData.text;
     let isPortraitImage = props.isImagePortrait;
     let ImageArea = useRef(null);
-    let [imageSelected, SetSelected] = useState(0);
+    let [imageSelected, SetSelected] = useState(1);
     let [hide, SetHide] = useState(false);
     let imageList = props.imageData?.alignment || [];
     let imageIdList = [];
@@ -46,12 +46,11 @@ function Image(props) {
                 let index = imageList.findIndex(
                     (l) => l?.source_segment === findSegment[0]?.source_segment
                 );
-                if (index >= 0) {
+                if (parseInt(index)) {
                     SetSelected(index + 1);
                 }
             }
         }
-        console.log(syncIdOnScroll);
     }, [syncIdOnScroll]);
     useEffect(() => {
         selectRef.current.value = props.witness;

@@ -553,6 +553,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         changeSelectedImage: (payload) => {
             dispatch(actions.selectImage(payload));
         },
+        closeAnnotation: () => {
+            const dismissTextAnnotation =
+                actions.changedActiveTextAnnotation(null);
+            dispatch(dismissTextAnnotation);
+        },
     };
 };
 

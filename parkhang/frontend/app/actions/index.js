@@ -137,8 +137,6 @@ export const TEXT_URL = "urls/TEXT";
 export const TEXT_URL2 = "urls/TEXT2";
 export const USER_URL = "urls/USER";
 export const TEXTID_ONLY_URL = "urls/TEXTID";
-export const EDITOR = "urls/editor";
-export const SEARCH = "urls/search";
 
 /** Action creators **/
 
@@ -182,6 +180,12 @@ export type TextsAction = Action & {
 export function loadedTexts(texts: api.TextData[]): TextsAction {
     return {
         type: LOADED_TEXTS,
+        texts,
+    };
+}
+export function loadAllTexts(texts) {
+    return {
+        type: LOADED_TEXTS_ALL,
         texts,
     };
 }
@@ -928,10 +932,11 @@ export function setTextAlignment(data) {
         data,
     };
 }
-export function toggleSecondWindow(data) {
+export function toggleSecondWindow(data, textId) {
     return {
         type: SECOND_WINDOW,
         payload: data,
+        textId,
     };
 }
 

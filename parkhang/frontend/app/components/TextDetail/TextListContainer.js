@@ -15,7 +15,6 @@ const mapStateToProps = (state: AppState) => {
     const selectedSearchResult = reducers.getSelectedSearchResult(state);
     // TODO: display search results or spinner depending on when anything
     // returned
-
     let searching = false;
     let texts = reducers.getTexts(state);
     if (searchValue.length > 0) {

@@ -1,21 +1,14 @@
-import React,{useState} from 'react'
-import styles from './About.css'
-
-
+import React, { useState } from "react";
+import styles from "./About.css";
+import { Typography } from "@mui/material";
 
 function About() {
- 
-  return <>
-  An application that allow users to participate in creating critical editions of texts,
-   initially targeting the Tibetan language.
-  </>
-
+    return (
+        <Typography variant="body2" gutterBottom p={2}>
+            An application that allow users to participate in creating critical
+            editions of texts, initially targeting the Tibetan language.
+        </Typography>
+    );
 }
 
-
-
-
-
-
-
-export default About
+export default About;

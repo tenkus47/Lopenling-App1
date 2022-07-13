@@ -5,6 +5,8 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
 import useLocaleStorage from "../../bodyComponent/utility/useLocalStorage";
+import { NativeSelect } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 export type Props = {
     witnesses: Witness[],
@@ -13,12 +15,31 @@ export type Props = {
     user: {},
 };
 
+const style = (theme) => ({
+    root: {
+        minWidth: 60,
+        padding: 0,
+        textAlign: "center",
+        fontWeight: "bold",
+    },
+    selectEmpty: {
+        paddingLeft: "6px",
+        backgroundColor: "transparent",
+    },
+    select: {
+        color: "black",
+        "&:not([multiple]) option": {
+            backgroundColor: "#eee",
+        },
+    },
+});
+
 const SelectVersion = (props: Props) => {
     let witnesses;
     let tabName = "";
+    let { classes: classtype } = props;
     let r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
     const [temp, setTemp] = useLocaleStorage("selectedWitness2", 0);
-;
     let classes = [styles.selectOptions];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);
@@ -47,10 +68,15 @@ const SelectVersion = (props: Props) => {
         }
     }, [temp]);
     return (
-        <select
+        <NativeSelect
             onChange={(e) => setTemp(e.target.value)}
             className={styles.selectVersion}
-            value={r}
+            defaultValue={temp}
+            label="Version2"
+            classes={{
+                root: classtype.selectEmpty,
+                select: classtype.select,
+            }}
         >
             {witnesses.map((witness, key) => {
                 if (witness.id === props.activeWitness.id)
@@ -68,7 +94,7 @@ const SelectVersion = (props: Props) => {
 
                 return (
                     <option
-                        key={`versionSelect-${key}`}
+                        key={`versionSelect2-${key}`}
                         value={key}
                         className={classes}
                     >
@@ -76,8 +102,8 @@ const SelectVersion = (props: Props) => {
                     </option>
                 );
             })}
-        </select>
+        </NativeSelect>
     );
 };
 
-export default memo(injectIntl(SelectVersion));
+export default memo(injectIntl(withStyles(style)(SelectVersion)));

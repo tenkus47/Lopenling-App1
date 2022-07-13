@@ -14,6 +14,7 @@ import Main from "bodyComponent/Main";
 import Favicon from "react-favicon";
 import Editor from "components/Editors/EditorContainer";
 import useDelayUnmount from "../UI/useDelayUnmount";
+import { history } from "redux-first-router";
 type Props = {
     title: string,
     textListIsVisible: boolean,
@@ -39,7 +40,7 @@ const App = (props: Props) => {
         return () => clearTimeout(timer);
     }, []);
     let SelectedText = props.state?.ui?.selectedText;
-
+    let url = history();
     if (!SelectedText) {
         setTitle("Parkhang");
     }
@@ -67,7 +68,16 @@ const App = (props: Props) => {
                 </div>
             )}
             <HeaderContainer />
-            {SelectedText !== null ? <Editor props={props} /> : <Main />}
+            {url.location.pathname === "/textSelection" ||
+            url.location.pathname === "" ? (
+                <Main />
+            ) : SelectedText ? (
+                <Editor props={props} />
+            ) : (
+                <div>
+                    Refresh the page here <a href="/"> click </a>
+                </div>
+            )}
         </div>
     );
 };

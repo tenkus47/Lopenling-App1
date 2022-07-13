@@ -22,23 +22,33 @@ import UserIcon from "images/discourse_user.svg";
 import { NavLink } from "redux-first-router-link";
 import TranslateButton from "bodyComponent/utility/TranslateButton";
 import { history } from "redux-first-router";
+import { Container, Button, Tooltip, Stack, Box } from "@mui/material";
+import { useRef } from "react";
+
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
 };
 
 export const LoginControls = (props: LoginProps) => (
-    <div className={classnames(styles.notLoggedIn, styles.controls)}>
-        <div className={classnames(styles.signUp, styles.buttonLink)}>
-            <a href={SSO_SIGNUP_URL}>
+    <Stack direction="row" spacing={2}>
+        <a href={SSO_SIGNUP_URL}>
+            <Button
+                variant="contained"
+                size="small"
+                style={{ textDecoration: "none" }}
+            >
                 <FormattedMessage id="header.signUp" />
-            </a>
-        </div>
+            </Button>
+        </a>
+
         <form method="post" action="/discourse/login_redirect/">
-            <button className={classnames(styles.loginButton)} type="submit">
+            {/* <IconButton>
                 <UserIcon width="11" />
+            </IconButton> */}
+            <Button variant="contained" type="submit" size="small">
                 <FormattedMessage id="header.login" />
-            </button>
+            </Button>
             <input
                 type="hidden"
                 name="csrfmiddlewaretoken"
@@ -50,7 +60,7 @@ export const LoginControls = (props: LoginProps) => (
                 value={props.successRedirect}
             />
         </form>
-    </div>
+    </Stack>
 );
 
 type LoggedInControlsProps = {
@@ -71,7 +81,7 @@ export const LoggedInControls = (props: LoggedInControlsProps) => (
                 href="/discourse/logout"
                 style={{ color: "black", fontSize: 12 }}
             >
-                logout
+                <Button variant="text">logout</Button>
             </a>
         </div>
         {console.log(props.overlayVisible)}
@@ -116,53 +126,69 @@ export const Header = (props: HeaderProps) => {
         id: "header.toggleTextList",
     });
     const image_location = lopenlingLogo;
-    return (
-        <header className={styles.header}>
-            <div style={{ display: "flex" }}>
-                {!locations.location.pathname.includes("/texts") && (
-                    <NavLink to="/">
-                        <div className={styles.logo}>
-                            <img src={image_location} height="30" />
-                        </div>
-                    </NavLink>
-                )}
-                <div className={styles.navlinks}>
-                    <ul>
-                        <li>
-                            {locations.location.pathname.includes("/texts") && (
-                                <NavigationButton
-                                    onClick={props.navigationButtonClicked}
-                                    className={styles.navigationButton}
-                                    title={toggleTitle}
-                                    isListVisible={props.textListVisible}
-                                />
-                            )}
-                        </li>
-                        <li>
-                            <NavLink to="/textSelection">
-                                <FormattedMessage id={"header.texts"} />
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/editor">
-                                <FormattedMessage id={"header.editor"} />
-                            </NavLink>
-                        </li>
-                        <li>
-                            <a href="http://www.lopenling.org">
-                                <FormattedMessage id={"lopenlingForum"} />
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
 
-            <div className={styles.loginSection}>
-                {/* <LocaleSwitcher /> */}
-                <TranslateButton />
-                {controls}
-            </div>
-        </header>
+    const LinkRef = React.forwardRef((props, ref) => (
+        <div ref={ref}>
+            <NavLink {...props} />
+        </div>
+    ));
+
+    return (
+        <Container maxWidth="xl" className={styles.header}>
+            <Stack direction="row" alignItems="center">
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        gap: 3,
+                        display: { xs: "none", md: "flex" },
+                    }}
+                >
+                    {!locations.location.pathname.includes("/texts") && (
+                        <NavLink to="/">
+                            <div className={styles.logo}>
+                                <img src={image_location} height="30" />
+                            </div>
+                        </NavLink>
+                    )}
+
+                    {locations.location.pathname.includes("/texts") && (
+                        <NavigationButton
+                            onClick={props.navigationButtonClicked}
+                            className={styles.navigationButton}
+                            title={toggleTitle}
+                            isListVisible={props.textListVisible}
+                        />
+                    )}
+                    <Button
+                        to={"/textSelection"}
+                        style={{ color: "#676767" }}
+                        component={LinkRef}
+                    >
+                        <FormattedMessage id={"header.texts"} />
+                    </Button>
+                    <Button
+                        to={"/texts/2"}
+                        style={{ color: "#676767" }}
+                        component={LinkRef}
+                    >
+                        <FormattedMessage id={"header.editor"} />
+                    </Button>
+                    <Tooltip title="Forum">
+                        <Button
+                            style={{ color: "#676767" }}
+                            href="https://www.lopenling.org"
+                        >
+                            <FormattedMessage id={"lopenlingForum"} />
+                        </Button>
+                    </Tooltip>
+                </Box>
+                <Stack direction="row" alignItems="center">
+                    {/* <LocaleSwitcher /> */}
+                    <TranslateButton />
+                    {controls}
+                </Stack>
+            </Stack>
+        </Container>
     );
 };
 
