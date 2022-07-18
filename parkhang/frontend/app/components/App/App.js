@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import classnames from "classnames";
 import HeaderContainer from "components/Header";
-
+import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 import type { AppState } from "reducers";
 import * as actions from "actions";
 import styles from "./App.css";
 import utilStyles from "css/util.css";
-import waterStyles from "./Water.css";
 import { handleKeyDown } from "../../shortcuts";
 import favimage from "images/favicon.png";
 import Main from "bodyComponent/Main";
@@ -44,8 +44,6 @@ const App = (props: Props) => {
     if (!SelectedText) {
         setTitle("Parkhang");
     }
-    const mountedStyle = { opacity: 1, transition: "opacity 500ms ease-in" };
-    const unmountedStyle = { opacity: 0, transition: "opacity 500ms ease-in" };
     return (
         <div
             style={{ position: "relative" }}
@@ -60,12 +58,9 @@ const App = (props: Props) => {
         >
             <Favicon url={favimage} />
             {shouldRenderChild && (
-                <div
-                    style={loadScreen ? mountedStyle : unmountedStyle}
-                    className={waterStyles.divBody}
-                >
-                    <div className={waterStyles.water}></div>
-                </div>
+                <Box sx={{ width: "100%" }}>
+                    <LinearProgress />
+                </Box>
             )}
             <HeaderContainer />
             {url.location.pathname === "/textSelection" ||

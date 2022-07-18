@@ -117,6 +117,7 @@ export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 export const LINK_PANEL = "panel/LINKED";
 export const SYNC_ID_ON_SCROLL = "ScrollSync/ID";
 export const SYNC_ID_ON_CLICK = "ClickSync/ID";
+export const CHANGE_SELECTED_WINDOW = "CHANGE_SELECTED_WINDOW";
 
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
@@ -950,7 +951,14 @@ export function changeSyncIdOnScroll(payload) {
 export function changeSyncIdOnClick(payload) {
     return {
         type: SYNC_ID_ON_CLICK,
-        payload: payload,
+        payload,
+    };
+}
+
+export function changeSelectedWindow(payload) {
+    return {
+        type: CHANGE_SELECTED_WINDOW,
+        payload,
     };
 }
 

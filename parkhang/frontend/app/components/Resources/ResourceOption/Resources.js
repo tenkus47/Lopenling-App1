@@ -12,6 +12,7 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
+    Typography,
 } from "@mui/material";
 function Resources(props) {
     let TableContent = [{ id: 231 }, { id: 1000 }, { id: 6000 }];
@@ -36,6 +37,9 @@ function Resources(props) {
     }
     return (
         <>
+            <Typography variant="h6" gutterBottom component="div">
+                Media
+            </Typography>
             <List
                 sx={{
                     width: "100%",

@@ -45,21 +45,48 @@ export type Props = {
     isSecondWindowOpen: Boolean,
     imageData: {},
     isPanelLinked: boolean,
+    isPanelVisible: Boolean,
     changeSyncIdOnClick: () => void,
     changeSyncIdOnScroll: () => void,
     changeSelectedImage: () => void,
-    closeAnnotation:()=>void
+    closeAnnotation: () => void,
+    textAlignmentById: {},
+    selectedWindow: Number,
+    changeSelectedWindow: () => void,
 };
 
 let textDetailId = 0;
 
 class TextDetail extends React.Component<Props> {
     key: number;
-
+    ref;
+    selectedWindow;
     constructor() {
         super();
-
         this.key = textDetailId++;
+        this.ref = React.createRef();
+        this.selectedWindow = null;
+    }
+
+    mouseEnter() {
+        this.props.changeSelectedWindow(1);
+    }
+    mouseLeft() {
+        this.props.changeSelectedWindow(0);
+    }
+
+    componentDidMount() {
+        this.ref.current.addEventListener(
+            "mouseenter",
+            this.mouseEnter.bind(this)
+        );
+        this.ref.current.addEventListener(
+            "mouseleave",
+            this.mouseLeft.bind(this)
+        );
+    }
+    componentDidUpdate() {
+        this.selectedWindow = this.props.selectedWindow;
     }
 
     render() {
@@ -69,7 +96,6 @@ class TextDetail extends React.Component<Props> {
         if (this.props.text) {
             text = this.props.text;
         }
-
         let inlineControls = false;
         let textComponent = null;
         let splitText = null;
@@ -121,15 +147,19 @@ class TextDetail extends React.Component<Props> {
                     changeSelectedImage={this.props.changeSelectedImage}
                     isAnnotating={this.props.isAnnotating}
                     closeAnnotation={this.props.closeAnnotation}
+                    textAlignmentById={this.props.textAlignmentById}
+                    isPanelVisible={this.props.isPanelVisible}
+                    syncIdOnScroll={this.props.syncIdOnScroll}
+                    selectedWindow={this.props.selectedWindow}
                 ></SplitTextComponent>
             );
         }
-
         let textComponents = [textComponent];
         let thirdWindowHeight = imageStyle.ThirdWindowHeight;
         let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
         let condition =
             !this.props.isImagePortrait && this.props.isPanelVisible;
+
         return (
             <div
                 style={{
@@ -141,6 +171,7 @@ class TextDetail extends React.Component<Props> {
                     utilStyles.flexColumn
                 )}
                 key={this.key}
+                ref={this.ref}
             >
                 <TextDetailHeadingContainer />
                 <Loader loaded={!this.props.loading} zIndex={5} />

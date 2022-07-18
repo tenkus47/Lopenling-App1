@@ -7,8 +7,8 @@ import {
 } from "react-virtualized";
 import classname from "classnames";
 import styles from "./TextList.css";
-import useClickOutSide from "../UI/useClickOutSideClose";
-import { TextField } from "@mui/material";
+import { TextField, ClickAwayListener } from "@mui/material";
+
 function TextList(props) {
     const temptext = useRef(props.texts);
     const [textslist, setTextList] = useState(temptext.current);
@@ -47,72 +47,73 @@ function TextList(props) {
         let newtextslist = textslist.filter((l) => l.name.includes(value));
         setTextList(newtextslist);
     };
-    const domNode2 = useClickOutSide(() => setIsOpen(false));
 
     return (
-        <div style={{ position: "relative" }} ref={domNode2}>
-            <button onClick={handleClick} className={styles.listToggelBtn}>
-                {truncate(selected, 30)}
-            </button>
-            {isOpen && (
-                <div
-                    className={classname(classes)}
-                    style={{ position: "absolute" }}
-                >
-                    <TextField
-                        onChange={handleChange}
-                        id="standard-basic"
-                        label="filter"
-                        variant="standard"
-                        style={{ width: "100%" }}
-                    />
-                    <AutoSizer>
-                        {({ width, height }) => (
-                            <List
-                                width={width}
-                                height={height}
-                                rowHeight={cache.current.rowHeight}
-                                deferredMeasurementCache={cache.current}
-                                rowCount={textslist.length}
-                                rowRenderer={({
-                                    key,
-                                    index,
-                                    style,
-                                    parent,
-                                }) => {
-                                    let data = textslist[index];
-                                    return (
-                                        <CellMeasurer
-                                            key={`optionvalues-${key}`}
-                                            cache={cache.current}
-                                            parent={parent}
-                                            columnIndex={0}
-                                            rowIndex={index}
-                                        >
-                                            <div
-                                                style={style}
-                                                onClick={() => {
-                                                    setIsOpen(false);
-                                                    onSelectedText(data);
-                                                }}
+        <ClickAwayListener onClickAway={() => setIsOpen(false)}>
+            <div style={{ position: "relative" }}>
+                <button onClick={handleClick} className={styles.listToggelBtn}>
+                    {truncate(selected, 30)}
+                </button>
+                {isOpen && (
+                    <div
+                        className={classname(classes)}
+                        style={{ position: "absolute" }}
+                    >
+                        <TextField
+                            onChange={handleChange}
+                            id="standard-basic"
+                            label="filter"
+                            variant="standard"
+                            style={{ width: "100%" }}
+                        />
+                        <AutoSizer>
+                            {({ width, height }) => (
+                                <List
+                                    width={width}
+                                    height={height}
+                                    rowHeight={cache.current.rowHeight}
+                                    deferredMeasurementCache={cache.current}
+                                    rowCount={textslist.length}
+                                    rowRenderer={({
+                                        key,
+                                        index,
+                                        style,
+                                        parent,
+                                    }) => {
+                                        let data = textslist[index];
+                                        return (
+                                            <CellMeasurer
+                                                key={`optionvalues-${key}`}
+                                                cache={cache.current}
+                                                parent={parent}
+                                                columnIndex={0}
+                                                rowIndex={index}
                                             >
-                                                <span
-                                                    style={{
-                                                        paddingLeft: "10px",
+                                                <div
+                                                    style={style}
+                                                    onClick={() => {
+                                                        setIsOpen(false);
+                                                        onSelectedText(data);
                                                     }}
                                                 >
-                                                    {data.name}
-                                                </span>
-                                            </div>
-                                        </CellMeasurer>
-                                    );
-                                }}
-                            />
-                        )}
-                    </AutoSizer>
-                </div>
-            )}
-        </div>
+                                                    <span
+                                                        style={{
+                                                            paddingLeft: "10px",
+                                                        }}
+                                                    >
+                                                        {data.name}
+                                                    </span>
+                                                </div>
+                                            </CellMeasurer>
+                                        );
+                                    }}
+                                />
+                            )}
+                        </AutoSizer>
+                    </div>
+                )}
+            </div>
+        </ClickAwayListener>
     );
 }
 

@@ -1,64 +1,62 @@
-import React, {
-    useState,
-    useRef,
-    useEffect,
-    memo,
-    Suspense,
-    useMemo,
-    useCallback,
-} from "react";
+import React, { useState, useRef, useEffect, memo, useCallback } from "react";
 import styles from "./Image.css";
-import { useImage } from "react-image";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import classnames from "classnames";
 import _ from "lodash";
-import { selectImage } from "../../../actions";
+import Carousel from "react-material-ui-carousel";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import lopenlingLogo from "images/lopenling_logo.png";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 function HttpUrl(data = "") {
-    if (data.includes("http")) return data;
+    if (data.includes("https")) return data;
     return "https://" + data;
 }
 
 function Image(props) {
     const selectRef = useRef(null);
+    let imagedata = props.imageData?.alignment || [];
     let textIdfromAlignment = props.alignmentData.text;
+    const [imageList, setImageList] = useState([]);
     let isPortraitImage = props.isImagePortrait;
-    let ImageArea = useRef(null);
-    let [imageSelected, SetSelected] = useState(1);
-    let [hide, SetHide] = useState(false);
-    let imageList = props.imageData?.alignment || [];
+    let [imageSelected, SetSelected] = useState(0);
     let imageIdList = [];
     let scrollingID = props.syncIdOnScroll;
-    let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
+
+    useEffect(() => {
+        setImageList(imagedata);
+    }, [imagedata]);
+
+    // let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
     let syncIdOnClick = props.syncIdOnClick;
     if (!_.isEmpty(imageList)) {
         imageIdList = imageList.map((l) => parseInt(l.source_segment.start));
     }
-    useEffect(() => {
-        let IDtoSync = parseInt(syncIdOnScroll);
-        if (textIdfromAlignment === props.selectedText.id) {
-            if (imageList?.length > 0) {
-                let findSegment = imageList.filter(
-                    (l) =>
-                        l.source_segment.start <= IDtoSync &&
-                        l.source_segment.end > IDtoSync
-                );
-                let index = imageList.findIndex(
-                    (l) => l?.source_segment === findSegment[0]?.source_segment
-                );
-                if (parseInt(index)) {
-                    SetSelected(index + 1);
-                }
-            }
-        }
-    }, [syncIdOnScroll]);
+    // useEffect(() => {
+    //     let IDtoSync = parseInt(syncIdOnScroll);
+    //     if (textIdfromAlignment === props.selectedText.id) {
+    //         if (imageList?.length > 0) {
+    //             let findSegment = imageList.filter(
+    //                 (l) =>
+    //                     l.source_segment.start <= IDtoSync &&
+    //                     l.source_segment.end > IDtoSync
+    //             );
+    //             let index = imageList.findIndex(
+    //                 (l) => l?.source_segment === findSegment[0]?.source_segment
+    //             );
+    //             if (parseInt(index)) {
+    //                 SetSelected(index + 1);
+    //             }
+    //         }
+    //     }
+    // }, [syncIdOnScroll]);
     useEffect(() => {
         selectRef.current.value = props.witness;
     }, [props.witness]);
     useEffect(() => {
         if (textIdfromAlignment === props.selectedText.id) {
             let ClickId = syncIdOnClick.toString().replace("s_", "");
-            if (imageList?.length > 0) {
+            if (imageList?.length > 0 && ClickId > 0) {
                 let findSegment = imageList.filter(
                     (l) =>
                         l.source_segment.start < ClickId &&
@@ -74,12 +72,13 @@ function Image(props) {
         }
     }, [syncIdOnClick]);
 
-    let change = useCallback(() => {
-        props.changeSelectedImage(imageList[imageSelected]);
-    }, [imageSelected]);
-
     useEffect(() => {
-        change();
+        if (props.imageData.length > 0) {
+        }
+    }, [props.imageData]);
+
+    let change = useCallback(() => {
+        props.changeSelectedImage(imageList[imageSelected + 1]);
     }, [imageSelected]);
 
     const isPortrait = ({ target: img }) => {
@@ -97,15 +96,13 @@ function Image(props) {
         if (data === "next" && imageSelected < imageIdList.length) {
             SetSelected((prev) => prev + 1);
         }
+        change();
     };
-
     return (
         <div
             className={
                 isPortraitImage
                     ? styles.ThirdWindowPortrait
-                    : hide
-                    ? classnames(styles.ThirdWindow, styles.hideWindow)
                     : styles.ThirdWindow
             }
         >
@@ -144,45 +141,42 @@ function Image(props) {
                     </div>
                 )} */}
             </div>
-            <div className={styles.imageRender} ref={ImageArea}>
-                <Suspense
-                    fallback={<div style={{ height: 100 }}>loading..</div>}
+            <div className={styles.imageSection}>
+                <Carousel
+                    next={() => handleChangeImage("next")}
+                    prev={() => handleChangeImage("prev")}
+                    autoPlay={false}
+                    animation="slide"
+                    indicators={false}
+                    fullHeightHover={true}
+                    index={imageSelected}
+                    cycleNavigation={false}
+                    navButtonsAlwaysVisible={true}
+                    swipe={false}
+                    height={260}
                 >
-                    {imageList.length > 0 && (
-                        <TransformWrapper>
-                            <TransformComponent>
-                                <ImageComponent
-                                    imageList={imageList}
-                                    imageSelected={imageSelected}
-                                    isPortrait={isPortrait}
-                                />
-                            </TransformComponent>
-                        </TransformWrapper>
-                    )}
-                    <button
-                        style={{ position: "absolute", top: 20, left: 10 }}
-                        onClick={() => handleChangeImage("prev")}
-                    >
-                        {"<"}
-                    </button>
-                    <button
-                        style={{ position: "absolute", top: 20, right: 10 }}
-                        onClick={() => handleChangeImage("next")}
-                    >
-                        {">"}
-                    </button>
-                </Suspense>
+                    {imageList.map((image, i) => {
+                        return (
+                            <center key={`image_${i}`}>
+                                <TransformWrapper>
+                                    <TransformComponent>
+                                        <LazyLoadImage
+                                            className={styles.ImageStyle}
+                                            src={HttpUrl(image?.target_segment)}
+                                            alt="imagepecha"
+                                            effect="blur"
+                                            placeholderSrc={lopenlingLogo}
+                                            onLoad={isPortrait}
+                                        />
+                                    </TransformComponent>
+                                </TransformWrapper>
+                            </center>
+                        );
+                    })}
+                </Carousel>
             </div>
         </div>
     );
-}
-
-function ImageComponent({ imageList, imageSelected, isPortrait }) {
-    let { src } = useImage({
-        srcList: HttpUrl(imageList[imageSelected]?.target_segment),
-    });
-
-    return <img src={src} alt="SyncImage" onLoad={isPortrait} />;
 }
 
 export default memo(Image);

@@ -21,9 +21,6 @@ function LeftSection(props) {
         open: false,
         info: null,
     });
-    let chojukId = props.text.find(
-        (l) => l.name === "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་སོ།"
-    );
 
     const LinkRef = React.forwardRef((props, ref) => (
         <div ref={ref}>
@@ -104,7 +101,7 @@ function LeftSection(props) {
                                             <CardActions>
                                                 <Button
                                                     component={LinkRef}
-                                                    to={`/texts/${chojukId.id}`}
+                                                    to={`/texts/${139}`}
                                                     size="small"
                                                 >
                                                     Select

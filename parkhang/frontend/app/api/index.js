@@ -3,7 +3,6 @@ import axios from "axios";
 import Annotation from "lib/Annotation";
 import Witness from "lib/Witness";
 import User from "lib/User";
-
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
@@ -105,7 +104,6 @@ export function setUserSettings(
 
 // Alignment + Media
 export function fetchAlignment(textId = 0) {
-    // const url = `https://parkhang.lopenling.org/api/alignments/all/${textId}`;
     const url = `/api/alignments/all/${textId}`;
     return request(GET, url);
 }
@@ -118,8 +116,7 @@ export function fetchTextPairWithAlignmentId(AlignmentId = 1) {
     if (AlignmentId === 0) {
         return;
     }
-    // const url = `https://parkhang.lopenling.org/api/alignments/text/${AlignmentId}`;
-    const url = "https://api.npoint.io/d928ff7f38342714eade";
+    // const url = "https://api.npoint.io/d928ff7f38342714eade";
     return request(GET, url);
 }
 export function fetchImageWithAlignmentId(AlignmentId = 1) {

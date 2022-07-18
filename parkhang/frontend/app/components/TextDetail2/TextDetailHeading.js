@@ -3,7 +3,6 @@ import styles from "./textDetailHeading.css";
 import SelectVersion from "./SelectVersion";
 import Slider from "../UI/Slider";
 import TextListContainer from "./TextListContainer";
-import useClickOutSide from "../UI/useClickOutSideClose";
 import OptionsIcon from "images/options.svg";
 import Settings from "./HeaderMenu/Settings";
 import Search from "./HeaderMenu/Search";

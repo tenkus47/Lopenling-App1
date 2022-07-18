@@ -254,16 +254,13 @@ function* watchSelectedText2(): Saga<void> {
 }
 
 // WITNESSES
-
 function* loadInitialTextData(action: actions.TextDataAction) {
     try {
-        const witnessId = action.witnessId;
-        const { id: textId } = yield select(reducers.getSelectedText);
-        let witnesses = yield select(reducers.getWitness);
-        if (witnesses === null) {
-            witnesses = yield call(api.fetchTextWitnesses, action.text);
-            yield put(actions.loadedWitnesses(action.text, witnesses));
-        }
+        // const { id: textId } = yield select(reducers.getSelectedText);
+        const textId = action.text.id;
+        let witnesses = yield call(api.fetchTextWitnesses, action.text);
+        yield put(actions.loadedWitnesses(action.text, witnesses));
+
         let workingWitnessData: api.WitnessData | null = null;
         let baseWitnessData: api.WitnessData | null = null;
         for (const witness of witnesses) {
@@ -324,14 +321,6 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     }
     yield put(urlAction);
     yield call(loadImageData, action);
-
-    if (textId !== 139) {
-        yield put(actions.changeVideoData({}));
-    }
-    if (textId === 139) {
-        const VideoData = yield call(api.fetchVideoWithAlignmentId, 0);
-        yield put(actions.changeVideoData(VideoData));
-    }
 }
 
 function* watchSelectedTextWitness() {
@@ -767,7 +756,7 @@ function* loadedTextUrl(
         if (w2 !== null) witnessId2 = w2;
         let textData: api.TextData;
         //Search image Alignment on basis of textId and WitnessId
-        yield call(loadAlignmentData, action, textId);
+        // yield call(loadAlignmentData, action, textId);
 
         // yield call(loadTextAlignment, action);
         // let fetchedDataOfTextData = yield select(reducers.getTextAlignment);
@@ -783,12 +772,8 @@ function* loadedTextUrl(
         if (witnesses === null)
             witnesses = yield call(api.fetchTextWitnesses, textData);
 
-        const VideoData = yield call(api.fetchVideoWithAlignmentId, 0);
-        if (textId === 139) {
-            yield put(actions.changeVideoData(VideoData));
-        }
-
-        // yield put(actions.loadedWitnesses(textData, witnesses));
+        yield put(actions.loadedWitnesses(textData, witnesses));
+        yield call(loadTextAlignment, action);
 
         let textWitnesses: Array<Witness> = [];
         do {
@@ -922,25 +907,25 @@ function* watchTextUrlActions2() {
 function* loadedTextIdonlyUrl(action) {
     _loadedTextUrl = false;
     let textId = parseInt(action.payload.textId);
-    let textData = yield call(api.fetchTexts);
+    let witnessId;
+    let textId2 = textId;
+    let witnessId2;
 
-    let text = textData.find((s) => s.id === parseInt(textId));
-    let witnesses = yield select(reducers.getWitness);
-    if (witnesses === null) {
-        witnesses = yield call(api.fetchTextWitnesses, text);
+    let text = { id: textId };
+    let witnesses = yield select(reducers.getWorkingWitness, textId);
+    if (witnesses !== null) {
+        witnessId2 = witnesses.id;
+        witnessId = witnesses.id;
     }
 
-    let witnessId = witnesses.find((l) => l.is_working === true);
-    let textId2 = textId;
-    let witnessId2 = witnessId;
-    yield call(
-        loadedTextUrl,
-        action,
-        textId,
-        witnessId.id,
-        textId2,
-        witnessId2.id
-    );
+    if (witnesses === null) {
+        witnesses = yield call(api.fetchTextWitnesses, text);
+
+        witnessId2 = witnesses[0].id;
+        witnessId = witnesses[0].id;
+    }
+
+    yield call(loadedTextUrl, action, textId, witnessId, textId2, witnessId2);
 }
 
 function* watchTextIdonlyUrlActions() {
@@ -961,7 +946,90 @@ function* selectTextUrl(action) {
     let texts;
     let setTextData;
     try {
-        texts = yield call(api.fetchChapterDetail);
+        // texts = yield call(api.fetchChapterDetail);
+        texts = {
+            data: [
+                {
+                    id: "1",
+                    chapters: [
+                        {
+                            name: "chapter1",
+                            selection: [
+                                { id: "1", text: "url" },
+                                { id: "2", text: "url" },
+                            ],
+                        },
+                        {
+                            name: "chapter2",
+                            selection: [
+                                { id: "1", text: "url" },
+                                { id: "2", text: "url" },
+                            ],
+                        },
+                        {
+                            name: "chapter3",
+                            selection: [
+                                { id: "1", text: "url" },
+                                { id: "2", text: "url" },
+                            ],
+                        },
+                    ],
+                    texttitle: "chojuk",
+                },
+                {
+                    id: "2",
+                    chapters: [
+                        {
+                            name: "chapter1",
+                            selection: [
+                                { id: "1", text: "url" },
+                                { id: "2", text: "url" },
+                            ],
+                        },
+                    ],
+                    texttitle: "nalanda Text",
+                },
+                {
+                    id: "3",
+                    chapters: [
+                        {
+                            name: "chapter1",
+                            selection: [
+                                { id: "1", text: "url" },
+                                { id: "2", text: "url" },
+                            ],
+                        },
+                    ],
+                    texttitle: " Text example",
+                },
+                {
+                    id: "4",
+                    chapters: [
+                        {
+                            name: "chapter1",
+                            selection: [
+                                { id: "1", text: "url" },
+                                { id: "2", text: "url" },
+                            ],
+                        },
+                    ],
+                    texttitle: " Text example 2",
+                },
+                {
+                    id: "5",
+                    chapters: [
+                        {
+                            name: "chapter1",
+                            selection: [
+                                { id: "1", text: "url" },
+                                { id: "2", text: "url" },
+                            ],
+                        },
+                    ],
+                    texttitle: " Text example 3",
+                },
+            ],
+        };
     } catch (e) {
         texts = { data: null };
         console.log(e);
@@ -1010,55 +1078,72 @@ function* watchSecondWindowOpen() {
     yield takeEvery(actions.SECOND_WINDOW, loadSecondWindowOpen);
 }
 //Text Alignment Load
-
+import alignmentdata from "./alignmentdata.json";
 function* loadTextAlignment(action) {
     let AlignmentData = yield select(reducers.getAlignment);
     let Text = yield select(reducers.getSelectedText);
-    // let AlignmentId = AlignmentData.text[0].id;
 
     let AlignmentId = 10;
-    let data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
+    // let data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
+    let data = alignmentdata;
     yield put(actions.setTextAlignment(data));
 }
 //Media Load
+
 function* loadImageData(action, witnessid = null) {
+    let isImageSelected = yield select(reducers.getMediaData);
+    if (!isImageSelected.isImageVisible) return;
+
     let AlignmentData = yield select(reducers.getAlignment);
     let TextId = yield select(reducers.getSelectedText);
-    let witness = null;
+    let witness = yield select(reducers.getSelectedTextWitness);
     let textCondition = TextId.id === parseInt(AlignmentData.text);
-    witness = yield select(reducers.getSelectedTextWitness);
     let ImageData;
-    if (!textCondition && witness) {
+    if (!textCondition) {
         ImageData = null;
         yield put(actions.changeImageData(ImageData));
-    } else if (!_.isEmpty(AlignmentData)) {
+        return;
+    }
+    if (!_.isEmpty(AlignmentData)) {
         let alignmentImage = AlignmentData.alignments.image;
-
-        let data = alignmentImage.filter((l) => {
-            if (witnessid === null) return l.source === parseInt(witness.id);
+        let data = alignmentImage.find((l) => {
+            if (witnessid === null)
+                return parseInt(l.source) === parseInt(witness.id);
             return l.source === parseInt(witnessid);
         });
-        if (_.isEmpty(data) || !_.isEmpty(alignmentImage.length)) {
-            data = alignmentImage[0];
-            if (!_.isEmpty(data)) {
-                ImageData = yield call(
-                    api.fetchImageWithAlignmentId,
-                    data[0]?.alignment
-                );
-            }
-        }
 
-        if (!_.isEmpty(data)) {
+        if (_.isEmpty(data)) {
+            data = alignmentImage[0];
             ImageData = yield call(
                 api.fetchImageWithAlignmentId,
                 data[0]?.alignment
             );
         }
+        if (!_.isEmpty(data)) {
+            ImageData = yield call(
+                api.fetchImageWithAlignmentId,
+                data.alignment
+            );
+        }
         yield put(actions.changeImageData(ImageData));
     }
 }
+function* loadVideoData(action, witnessid = null) {
+    let data = yield call(api.fetchVideoWithAlignmentId);
+    yield put(actions.changeVideoData(data));
+}
+function* loadMediaAlignment(action) {
+    if (action.payload === "IMAGE") {
+        yield call(loadImageData, action);
+    }
+    if (action.payload === "VIDEO") {
+        yield call(loadVideoData, action);
+    }
+}
 
-//notification
+function* watchActivateMedia() {
+    yield takeEvery(actions.ACTIVATE_MEDIA, loadMediaAlignment);
+}
 
 //Image Alignment Source Change
 
@@ -1109,6 +1194,7 @@ const typeCalls: {
     [actions.LOAD_QUESTION]: loadQuestion,
     [actions.SELECT_IMAGE_VERSION]: changeImageSource,
     [actions.SECOND_WINDOW]: loadSecondWindowOpen,
+    [actions.ACTIVATE_MEDIA]: loadMediaAlignment,
 };
 
 /** Root **/
@@ -1149,5 +1235,6 @@ export default function* rootSaga(): Saga<void> {
         call(watchSelectedTextWitness2),
         call(watchChangeImageSource),
         call(watchSecondWindowOpen),
+        call(watchActivateMedia),
     ]);
 }

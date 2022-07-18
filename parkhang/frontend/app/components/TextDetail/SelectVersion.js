@@ -67,42 +67,41 @@ const SelectVersion = (props: Props) => {
         }
     }, [temp]);
     return (
-            <NativeSelect
-                onChange={(e) => setTemp(e.target.value)}
-                className={styles.selectVersion}
-                defaultValue={temp}
-                label="Version"
-                classes={{
-                    root: classtype.selectEmpty,
-                    select: classtype.select,
-                }}
-            >
-                {witnesses.map((witness, key) => {
-                    if (witness.id === props.activeWitness.id)
-                        classes.push(styles.selected);
-                    tabName = witness.source.name;
+        <NativeSelect
+            onChange={(e) => setTemp(e.target.value)}
+            className={styles.selectVersion}
+            value={r}
+            label="Version"
+            classes={{
+                root: classtype.selectEmpty,
+                select: classtype.select,
+            }}
+        >
+            {witnesses.map((witness, key) => {
+                if (witness.id === props.activeWitness.id)
+                    classes.push(styles.selected);
+                tabName = witness.source.name;
 
-                    if (witness.isWorking) {
-                        tabName =
-                            props.intl.locale === "en"
-                                ? props.user?.name === "User"
-                                    ? "Working"
-                                    : "My Edition"
-                                : "མཉམ་འབྲེལ་པར་མ།";
-                    }
+                if (witness.isWorking) {
+                    tabName =
+                        props.intl.locale === "en"
+                            ? props.user?.name === "User"
+                                ? "Working"
+                                : "My Edition"
+                            : "མཉམ་འབྲེལ་པར་མ།";
+                }
 
-                    return (
-                        <option
-                            key={`versionSelect-${key}`}
-                            value={key}
-                            className={classes}
-                        >
-                            {tabName}
-                        </option>
-                    );
-                })}
-            </NativeSelect>
-       
+                return (
+                    <option
+                        key={`versionSelect-${key}`}
+                        value={key}
+                        className={classes}
+                    >
+                        {tabName}
+                    </option>
+                );
+            })}
+        </NativeSelect>
     );
 };
 

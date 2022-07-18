@@ -32,6 +32,12 @@
 
 }
 
+.syncIdClass {
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
 .textFirstRow {
     padding-block: 5px;
     border-top: 15px;

@@ -36,7 +36,7 @@ export type UIState = {
     textFontSize: number,
     textFontSize2: number,
     showSecondWindow: Boolean,
-
+    selectedWindow: {},
     SyncIdOnScroll: String,
     SyncIdOnClick: String,
 
@@ -68,7 +68,8 @@ export const initialUIState = {
     SyncIdOnScroll: 0,
     SyncIdOnClick: 0,
     isPanelLinked: true,
-    isAnnotating: true,
+    isAnnotating: false,
+    selectedWindow: 1,
 };
 
 function loadedUserSettings(
@@ -489,7 +490,12 @@ function changedAccountOverlay(
 
     return state;
 }
-
+function changeSelectedWindow(state, action) {
+    return {
+        ...state,
+        selectedWindow: action.payload,
+    };
+}
 const uiReducers = {};
 uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
@@ -521,8 +527,12 @@ uiReducers[actions.EXPORTED_WITNESS] = exportedWitness;
 uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
 uiReducers[actions.SECOND_WINDOW] = toggleSecondWindow;
 uiReducers[actions.CHANGE_ANNOTATING] = changeIsAnnotating;
+uiReducers[actions.CHANGE_SELECTED_WINDOW] = changeSelectedWindow;
 export default uiReducers;
 
+export const getSelectedWindow = (state) => {
+    return state.selectedWindow;
+};
 export const isAnnotating = (state) => {
     return state.isAnnotating;
 };

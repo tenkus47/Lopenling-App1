@@ -18,6 +18,8 @@ import Search from "./HeaderMenu/Search";
 import WindowSplitter from "./HeaderMenu/WindowSplitter";
 import Settings from "./HeaderMenu/Settings";
 import TableOfContent from "./HeaderMenu/TableOfContent";
+import useDebounce from "components/UI/useDebounceHook";
+
 type HeaderProps = {
     witnesses: Witness[],
     selectedWitness: Witness,
@@ -40,7 +42,9 @@ type HeaderProps = {
 function TextDetailHeading(props: HeaderProps) {
     const [findvalue, setfindvalue] = useState("");
     let [showFind, setShowFind] = useState(false);
+    const headingRef = useRef();
     const inputRef = useRef();
+    const debouncedSearchTerm = useDebounce(findvalue, 800);
     const handleSearch = useCallback(
         (e) => {
             e.preventDefault();
@@ -48,17 +52,21 @@ function TextDetailHeading(props: HeaderProps) {
         },
         [findvalue]
     );
-    const handleWindowSearch = useCallback(() => {
+    const handleWindowSearch = () => {
         setShowFind((prev) => !prev);
-    }, []);
+    };
     useEffect(() => {
         if (showFind === true) {
             inputRef.current.focus();
         }
     }, [showFind]);
 
+    useEffect(() => {
+        props.searchChanged(debouncedSearchTerm);
+    }, [debouncedSearchTerm]);
     return (
         <Stack
+            ref={headingRef}
             direction="column"
             spacing={1}
             px={2}

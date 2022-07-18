@@ -3,7 +3,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/material";
 
 function Search({ handleWindowSearch }) {
-
     return (
         <Button
             size="small"
@@ -17,4 +16,3 @@ function Search({ handleWindowSearch }) {
 }
 
 export default Search;
-        

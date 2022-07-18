@@ -26,7 +26,7 @@ function WindowSplitter(props) {
                 value="secondWindow"
                 selected={isSecondWindowOpen}
                 onClick={() => {
-                    onChangeWindowOpen(!isSecondWindowOpen, 3);
+                    onChangeWindowOpen(!isSecondWindowOpen, 139);
                 }}
                 style={{
                     padding: 0,
