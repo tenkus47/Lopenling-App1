@@ -5,6 +5,7 @@
     --fontSize: 24px;
     --paddingSide: 20px;
     --maxWidth: 600px;
+
     --removedText: {
         color: #aaa;
         cursor: pointer;
@@ -23,7 +24,7 @@
     font-family: var(--tibetan-fonts);
     letter-spacing: 0.04em;
     background-color: var(--text-bg);
-        margin: 0px;
+    margin: 0px;
     min-width: 0;
     width: 100%;
     display: flex;
@@ -43,7 +44,7 @@
     margin: 0;
     padding: 0;
     white-space: pre;
-    cursor: pointer;
+    cursor: text;
 }
 
 .limitWidth.textFirstRow {
@@ -112,7 +113,7 @@
     display: flex;
 }
 
-.pageBreak > svg {
+.pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
 }

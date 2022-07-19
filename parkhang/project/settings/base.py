@@ -78,7 +78,6 @@ DJANGO_APP = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "webpack_loader",
-    "corsheaders",
     "django_extensions",
 ]
 
@@ -126,7 +125,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -207,17 +205,15 @@ DEFAULT_FROM_EMAIL = "Nalanda Works <server@nalanda.works>"
 
 # WEBPACK
 WEBPACK_LOADER = {
-    "DEFAULT": {
-        "CACHE": not DEBUG,
-        "BUNDLE_DIR_NAME": "/bundles/",
-        "POLL_INTERVAL": 0.1,
-        "TIMEOUT": None,
-        "IGNORE": [r".+\.hot-update.js", r".+\.map"],
-        "STATS_FILE": str(ROOT_DIR / "frontend/webpack-stats.json"),
-    }
+    'DEFAULT': {
+        'CACHE':not DEBUG,
+        'BUNDLE_DIR_NAME': '/bundles/',
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
+        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
+  }
 }
-
-CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 
 # Discourse SSO
 DISCOURSE_SSO_KEY = env("DISCOURSE_SSO_KEY")

@@ -1,5 +1,3 @@
-
-
 .splitText2 {
     background-color: white;
     flex-grow: 1;
@@ -21,7 +19,6 @@
 .splitTextRow {
     display: flex;
     flex-direction: row;
-    background-color: #ccc;
 }
 
 .splitTextRow .text {
@@ -63,28 +60,29 @@
     overflow: visible !important;
     margin-bottom: 300px;
 }
-span{
+
+span {
     position: relative
 }
 
 
 
-.hightlighter{
-    animation: pulse .3s infinite ;
+.hightlighter {
+    animation: pulse .3s infinite;
     height: 100%;
     width: 100%;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
     position: absolute;
     background-color: transparent;
 }
 
 @keyframes pulse {
-    0%{
-     transform: scale(1);
+    0% {
+        transform: scale(1);
     }
-    
-    100%{
+
+    100% {
 
         transform: scale(1.7);
     }

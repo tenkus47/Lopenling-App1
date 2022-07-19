@@ -14,13 +14,13 @@ import {
     INSERTION_KEY,
     DELETION_KEY,
     PAGE_BREAK_KEY,
-    LINE_BREAK_KEY
+    LINE_BREAK_KEY,
 } from "lib/AnnotatedText";
 import TextDetail from "components/TextDetail";
 import {
     changedActiveAnnotation,
     changedActiveTextAnnotation,
-    changedWitnessScrollPosition
+    changedWitnessScrollPosition,
 } from "actions";
 import {
     showPageImages,
@@ -46,9 +46,12 @@ import {
     getSearchValue,
     getTextFontSize,
     isSecondWindowOpen,
-    getImageData
+    getImageData,
+    getSelectedImage,
+    isImagePortrait,
+    isPanelVisible,
 } from "reducers";
-import * as reducers from 'reducers'
+import * as reducers from "reducers";
 import _ from "lodash";
 
 import AnnotatedText from "lib/AnnotatedText";
@@ -58,7 +61,7 @@ import * as actions from "actions";
 import * as constants from "app_constants";
 import * as TextStore from "state_helpers/TextStore";
 
-const DISMISS_CONTROLS_ON_CLICK = true;
+const DISMISS_CONTROLS_ON_CLICK = false;
 
 function getInsertionKey(annotation) {
     return [annotation.start, annotation.length].join("-");
@@ -85,9 +88,8 @@ const getAnnotationPositions = (
 
     for (let i = 0; i < annotations.length; i++) {
         let annotation = annotations[i];
-        let [startPos, length] = annotatedText.getPositionOfAnnotation(
-            annotation
-        );
+        let [startPos, length] =
+            annotatedText.getPositionOfAnnotation(annotation);
         if (startPos == null) {
             continue;
         }
@@ -97,7 +99,7 @@ const getAnnotationPositions = (
                 const activeKey = getInsertionKey(annotation);
                 const activeInsertionPositions = activeInsertions[activeKey];
                 if (activeInsertionPositions) {
-                    activeInsertionPositions.map(pos =>
+                    activeInsertionPositions.map((pos) =>
                         positions[pos].push(annotation)
                     );
                     continue;
@@ -149,12 +151,12 @@ const getAnnotationPositions = (
 
 let _selectedWitness = null;
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     const user = getUser(state);
     const loading =
         state.data.loadingWitnesses || state.data.loadingAnnotations;
     const textListVisible = getTextListVisible(state);
-    const isPanelLinked= reducers.isPanelLinked(state);
+    const isPanelLinked = reducers.isPanelLinked(state);
     if (loading) {
         return {
             text: null,
@@ -172,8 +174,8 @@ const mapStateToProps = state => {
             user: user,
             textListVisible,
             fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
-            isSecondWindowOpen:isSecondWindowOpen(state),
-            isPanelLinked
+            isSecondWindowOpen: isSecondWindowOpen(state),
+            isPanelLinked,
         };
     }
 
@@ -237,7 +239,6 @@ const mapStateToProps = state => {
                 annotatedText,
                 (Object.values(annotations): any)
             );
-
         }
 
         // Get the segments that are part of the current active annotation.
@@ -255,9 +256,8 @@ const mapStateToProps = state => {
                 );
             }
             if (activeAnnotation) {
-                selectedAnnotatedSegments = annotatedText.segmentsForAnnotation(
-                    activeAnnotation
-                );
+                selectedAnnotatedSegments =
+                    annotatedText.segmentsForAnnotation(activeAnnotation);
             }
         }
 
@@ -322,9 +322,13 @@ const mapStateToProps = state => {
         selectedSearchResult,
         searchValue,
         fontSize,
-        isSecondWindowOpen:isSecondWindowOpen(state),
-        imageData:getImageData(state),
-        isPanelLinked
+        isSecondWindowOpen: isSecondWindowOpen(state),
+        imageData: getImageData(state),
+        isPanelLinked,
+        selectedImage: getSelectedImage(state),
+        isImagePortrait: isImagePortrait(state),
+        isPanelVisible: isPanelVisible(state),
+        isAnnotating: reducers.isAnnotating(state),
     };
 };
 
@@ -363,9 +367,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         } else if (segmentVariants && segmentVariants.length > 0) {
             // get base text annotation for longest annotation highlighted in text
             let longestAvailable = getLongestAnnotation(segmentVariants);
-            let [start, textLength] = annotatedText.getPositionOfAnnotation(
-                longestAvailable
-            );
+            let [start, textLength] =
+                annotatedText.getPositionOfAnnotation(longestAvailable);
             if (longestAvailable && longestAvailable.isInsertion) {
                 textLength = 0;
             }
@@ -381,23 +384,23 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatch(changedActiveTextAnnotation(activeAnnotation));
     };
 
-    const isInsertion = id => {
+    const isInsertion = (id) => {
         return id.indexOf("i_") !== -1;
     };
 
-    const isDeletion = id => {
+    const isDeletion = (id) => {
         return id.indexOf("ds_") !== -1;
     };
 
-    const isPageBreak = id => {
+    const isPageBreak = (id) => {
         return id.indexOf("p_") !== -1;
     };
 
-    const isLineBreak = id => {
+    const isLineBreak = (id) => {
         return id.indexOf("l_") !== -1;
     };
 
-    const idFromSegmentId = id => {
+    const idFromSegmentId = (id) => {
         let start = 0;
         if (isInsertion(id)) {
             start = id.substr(2);
@@ -413,7 +416,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     return {
         ...stateProps,
         ...ownProps,
-        didSelectSegmentIds: segmentIds => {
+        didSelectSegmentIds: (segmentIds) => {
             if (segmentIds.length === 0) {
                 return;
             }
@@ -425,9 +428,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 }
 
                 let segmentPosition = idFromSegmentId(segmentId);
-                let textSegment = annotatedText.segmentedText.segmentAtPosition(
-                    segmentPosition
-                );
+                let textSegment =
+                    annotatedText.segmentedText.segmentAtPosition(
+                        segmentPosition
+                    );
                 segments.push(textSegment);
                 const annotations = annotationPositions[textSegment.start];
                 if (annotations) {
@@ -492,7 +496,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             dispatch(changedActiveTextAnnotation(activeAnnotation));
         },
-        selectedSegmentId: segmentId => {
+        selectedSegmentId: (segmentId) => {
             let start = idFromSegmentId(segmentId);
             let positionKey = start;
             if (isInsertion(segmentId)) {
@@ -506,12 +510,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
 
             let segmentAnnotations = annotationPositions[positionKey];
-            if (DISMISS_CONTROLS_ON_CLICK && stateProps.activeAnnotation) {
+            if (
+                (DISMISS_CONTROLS_ON_CLICK && stateProps.activeAnnotation) ||
+                segmentId === ""
+            ) {
                 const activeAnnotation = stateProps.activeAnnotation;
+
                 if (activeAnnotation) {
-                    const dismissTextAnnotation = actions.changedActiveTextAnnotation(
-                        null
-                    );
+                    const dismissTextAnnotation =
+                        actions.changedActiveTextAnnotation(null);
                     dispatch(dismissTextAnnotation);
                 }
             } else {
@@ -525,9 +532,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                     didSelectSegmentPosition(positionKey, start, length);
                 } else {
                     let segmentPosition = Number(idFromSegmentId(segmentId));
-                    let textSegment = annotatedText.segmentedText.segmentAtPosition(
-                        segmentPosition
-                    );
+                    let textSegment =
+                        annotatedText.segmentedText.segmentAtPosition(
+                            segmentPosition
+                        );
                     if (textSegment) {
                         didSelectSegmentPosition(
                             textSegment.start,
@@ -538,7 +546,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 }
             }
         },
-        changeSyncId:(payload)=> dispatch(actions.changeSyncId(payload))
+        changeSyncIdOnScroll: (payload) =>
+            dispatch(actions.changeSyncIdOnScroll(payload)),
+        changeSyncIdOnClick: (payload) =>
+            dispatch(actions.changeSyncIdOnClick(payload)),
+        changeSelectedImage: (payload) => {
+            dispatch(actions.selectImage(payload));
+        },
     };
 };
 
@@ -547,7 +561,7 @@ const getPageBreaks = (
     basePageBreaks: { [AnnotationUniqueId]: AnnotationData } | null
 ): number[] => {
     let witnessStarts = [];
-    _.forIn(witnessPageBreaks, o => witnessStarts.push(o.start));
+    _.forIn(witnessPageBreaks, (o) => witnessStarts.push(o.start));
     witnessStarts = witnessStarts.sort((a, b) => a - b);
 
     if (!basePageBreaks) {
@@ -555,7 +569,7 @@ const getPageBreaks = (
     }
 
     let baseStarts = [];
-    _.forIn(basePageBreaks, o => baseStarts.push(o.start));
+    _.forIn(basePageBreaks, (o) => baseStarts.push(o.start));
     baseStarts = baseStarts.sort((a, b) => a - b);
 
     if (witnessStarts.length === 0) {
@@ -616,10 +630,8 @@ const getSegmentsRange = (
         let annotationStart,
             annotationLength,
             annotationEnd = null;
-        [
-            annotationStart,
-            annotationLength
-        ] = annotatedText.getPositionOfAnnotation(annotation);
+        [annotationStart, annotationLength] =
+            annotatedText.getPositionOfAnnotation(annotation);
 
         if (activeAnnotations.indexOf(annotation) !== -1) {
             if (annotationStart && annotationStart < start) {
@@ -648,11 +660,11 @@ const getSegmentsRange = (
     if (startAnnotation && endAnnotation && startAnnotation === endAnnotation) {
         rangeAnnotation = startAnnotation;
     }
-    
+
     return {
         start: start,
         length: end - start + 1,
-        annotation: rangeAnnotation
+        annotation: rangeAnnotation,
     };
 };
 

@@ -7,8 +7,6 @@ import * as reducers from "reducers";
 import type { AppState } from "reducers";
 import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 
-
-
 const mapStateToProps = (state: AppState): {} => {
     const selectedText = reducers.getSelectedText(state);
     const selectedText2 = reducers.getSelectedText2(state);
@@ -54,62 +52,78 @@ const mapStateToProps = (state: AppState): {} => {
     }
 
     let textFontSize = reducers.getTextFontSize(state);
-    
+
     return {
         witnesses,
-        selectedText,  
-        selectedText2,   
+        selectedText,
+        selectedText2,
         selectedWitness,
         selectedWitness2,
         textListIsVisible: getTextListVisible(state),
         accountOverlayVisible: getAccountOverlayVisible(state),
         textFontSize,
-        isSecondWindowOpen:reducers.isSecondWindowOpen(state),
+        isSecondWindowOpen: reducers.isSecondWindowOpen(state),
         exportingWitness,
-        isPanelLinked: reducers.isPanelLinked(state)
+        isPanelLinked: reducers.isPanelLinked(state),
+        user: reducers.getUser(state),
+        isAnnotating: reducers.isAnnotating(state),
     };
 };
 
-
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-    const navigationButtonClicked= () => {
-     dispatchProps.dispatch(
-        actions.changedTextListVisible(!stateProps.textListIsVisible)
-    ); 
-} 
+    const navigationButtonClicked = () => {
+        dispatchProps.dispatch(
+            actions.changedTextListVisible(!stateProps.textListIsVisible)
+        );
+    };
 
-const { dispatch } = dispatchProps;
-const { selectedText } = stateProps;
+    const { dispatch } = dispatchProps;
+    const { selectedText } = stateProps;
 
-return {
-    ...ownProps,
-    ...stateProps,
-    navigationButtonClicked,
-    onSelectedWitness: (witness: Witness) => {
-        dispatch(actions.selectedTextWitness(selectedText.id, witness.id));
-    },
-    onChangedFontSize: (fontSize: number) => {
-        dispatch(actions.changedTextFontSize(fontSize));
-    },
-    onChangeWindowOpen: (data: boolean) => {
-        dispatch(actions.toggleSecondWindow(data));
-    },
-    onExport: () => {
-            dispatch(actions.exportWitness(stateProps.selectedWitness.id, "docx"));
+    return {
+        ...ownProps,
+        ...stateProps,
+        navigationButtonClicked,
+        onSelectedWitness: (witness: Witness) => {
+            dispatch(
+                actions.selectedTextWitness(selectedText?.id, witness?.id)
+            );
         },
-    navigationButtonClicked: () => {
+        onChangedFontSize: (fontSize: number) => {
+            dispatch(actions.changedTextFontSize(fontSize));
+        },
+        onChangeWindowOpen: (data: boolean) => {
+            dispatch(actions.toggleSecondWindow(data));
+        },
+        onExport: () => {
+            dispatch(
+                actions.exportWitness(stateProps.selectedWitness.id, "docx")
+            );
+        },
+        navigationButtonClicked: () => {
             dispatch(
                 actions.changedTextListVisible(!stateProps.textListIsVisible)
             );
         },
-    onChangePanelLink: (data:boolean)=>{
-        dispatch(actions.changePanelLink(data))
-    }
+        onChangePanelLink: (data: boolean) => {
+            dispatch(actions.changePanelLink(data));
+        },
+        changeIsAnnotating: (payload) => {
+            dispatch(actions.changeIsAnnotating(payload));
+            if (payload === false) {
+                const dismissTextAnnotation =
+                    actions.changedActiveTextAnnotation(null);
+                dispatch(dismissTextAnnotation);
+                dispatch(actions.changedActiveTextAnnotation(null));
+            }
+        },
+    };
 };
-}
 
-const TextDetailHeadingContainer = connect(mapStateToProps, null,mergeProps)(
-    TextDetailHeading
-);
+const TextDetailHeadingContainer = connect(
+    mapStateToProps,
+    null,
+    mergeProps
+)(TextDetailHeading);
 
 export default TextDetailHeadingContainer;

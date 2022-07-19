@@ -48,12 +48,12 @@ function request(method: ReqMethod, url, data: any = null): Promise<*> {
     const promiseReq = req;
     return new Promise((resolve, reject) => {
         promiseReq(url, data)
-            .then(response => {
+            .then((response) => {
                 resolve(response.data);
             })
-            .catch(error => {
+            .catch((error) => {
                 // console.dir(error);
-                console.log('couldnot get the data . check connection')
+                console.log("couldnot get the data . check connection");
                 reject(error);
             });
     });
@@ -72,14 +72,14 @@ export function setUserLocale(
     }
     const url = "/api/users/" + user.id;
     let data = {
-        locale: locale
+        locale: locale,
     };
     return request(PUT, url, data);
 }
 
 export type UserSettings = {
     showPageImages?: boolean,
-    textFontSize?: number
+    textFontSize?: number,
 };
 
 export function fetchUserSettings(
@@ -104,28 +104,36 @@ export function setUserSettings(
 }
 
 // Alignment + Media
-export function fetchAlignment(textId=0)
-{
-    const url="https://api.npoint.io/f73005415ff7a7f899df";
-    return request(GET, url); 
-
+export function fetchAlignment(textId = 0) {
+    // const url = `https://parkhang.lopenling.org/api/alignments/all/${textId}`;
+    const url = `/api/alignments/all/${textId}`;
+    return request(GET, url);
 }
 
-export function fetchChapterDetail(){
-  const  url="https://api.npoint.io/bf0ceeb6cdae14e09a17"
-  return request(GET, url); 
+export function fetchChapterDetail() {
+    const url = "https://api.npoint.io/bf0ceeb6cdae14e09a17";
+    return request(GET, url);
+}
+export function fetchTextPairWithAlignmentId(AlignmentId = 1) {
+    if (AlignmentId === 0) {
+        return;
+    }
+    // const url = `https://parkhang.lopenling.org/api/alignments/text/${AlignmentId}`;
+    const url = "https://api.npoint.io/d928ff7f38342714eade";
+    return request(GET, url);
+}
+export function fetchImageWithAlignmentId(AlignmentId = 1) {
+    if (AlignmentId === 0) {
+        return;
+    }
+    const url = `/api/alignments/image/${AlignmentId}`;
+    return request(GET, url);
 }
 
-export function fetchImageWithAlignmentId(AlignmentId=0){
-      const  url="https://api.npoint.io/760936be2b22b5744345"
-      return request(GET, url); 
-  }
-
-  export function fetchVideoWithAlignmentId(AlignmentId=0){
-      const  url="https://api.npoint.io/a52c16e1ceeb6c44add3"
-      return request(GET, url); 
-  }
-
+export function fetchVideoWithAlignmentId(AlignmentId = 0) {
+    const url = "https://api.npoint.io/a52c16e1ceeb6c44add3";
+    return request(GET, url);
+}
 
 // GET DATA
 
@@ -133,30 +141,28 @@ export type SourceData = {
     id: number,
     name: string,
     is_base: boolean,
-    is_working: boolean
+    is_working: boolean,
 };
 export function fetchSources(): Promise<SourceData[]> {
     const url = "/api/sources/";
 
     return request(GET, url);
-
 }
 
 export type TextData = {
     id: number,
-    name: string
+    name: string,
 };
 export function fetchTexts(): Promise<TextData[]> {
     const url = "/api/texts/";
     return request(GET, url);
 }
 
-
 export type TextSearchResultData = {
     results: [[number, string]],
     total: number,
     extra: boolean,
-    loading?: boolean
+    loading?: boolean,
 };
 export function searchTexts(
     searchTerm: string,
@@ -189,11 +195,11 @@ export type WitnessData = {
     revision: number,
     source: number,
     text: number,
-    properties: {} | null
+    properties: {} | null,
 };
 export function fetchTextWitnesses(text: TextData): Promise<WitnessData[]> {
     const url = "/api/texts/" + String(text.id) + "/witnesses/";
-   
+
     return request(GET, url);
 }
 
@@ -213,7 +219,7 @@ export type AnnotationData = {
     witness: number,
     modified?: Date,
     is_saved?: boolean,
-    name?: string
+    name?: string,
 };
 export function fetchWitnessAnnotations(
     witness: WitnessData,
@@ -242,7 +248,7 @@ export type AnnotationOperationData = {
     id: number,
     operation: AnnotationOp,
     annotation_unique_id: AnnotationUniqueId,
-    witness: number
+    witness: number,
 };
 
 function getAnnotationOperationsUrl(
@@ -275,7 +281,7 @@ export function applyAnnotation(
     const url = getAnnotationOperationsUrl(witnessData);
     let data = {
         annotation_unique_id: annotationId,
-        operation: appliedOp
+        operation: appliedOp,
     };
     return request(POST, url, data);
 }
@@ -297,7 +303,7 @@ export function removeDefaultAnnotation(
     const url = getAnnotationOperationsUrl(witnessData);
     let data = {
         annotation_unique_id: annotationId,
-        operation: removedOp
+        operation: removedOp,
     };
     return request(POST, url, data);
 }
@@ -333,7 +339,7 @@ export function dataFromAnnotation(annotation: Annotation): AnnotationData {
         type: annotation.type,
         original: annotation.basedOn ? annotation.basedOn.uniqueId : null,
         is_deleted: false,
-        is_saved: false
+        is_saved: false,
     };
 }
 
@@ -401,7 +407,7 @@ export function createQuestion(
     let data = {
         question_title: title,
         question_content: content,
-        ...dataFromAnnotation(annotation)
+        ...dataFromAnnotation(annotation),
     };
 
     return request(POST, url, data);

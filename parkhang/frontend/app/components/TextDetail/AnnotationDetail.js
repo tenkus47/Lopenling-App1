@@ -1,5 +1,5 @@
 // @flow
-import React,{useState} from "react";
+import React, { useState } from "react";
 import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
@@ -7,9 +7,7 @@ import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
 import ShareButton from "../UI/ShareButton";
-    
-
-
+import ApplyTooltip from "../UI/ApplyTooltip";
 export type Props = {
     annotationData: AnnotationData,
     isActive: boolean,
@@ -17,58 +15,53 @@ export type Props = {
     isLoggedIn: boolean,
     editAnnotationHandler: () => void,
     fontSize: Number,
-    isWorkingSection:boolean
-   }; 
+    isWorkingSection: boolean,
+};
 const MAXIMUM_TEXT_LENGTH = 250;
 
 const AnnotationDetail = (props: Props) => {
+    const [imageUrl, setImageUrl] = useState(null);
 
-   const [imageUrl,setImageUrl]=useState(null);
-     
-
-    function longest_str_in_array(arra)
-    {
-      var max_str = arra[0].length;
-      var ans = arra[0].length;
-      for (var i = 0; i < arra.length; i++) {
-          var maxi = arra[i].length;
-          if (maxi > max_str) {
-              ans = arra[i].length;
-              max_str = maxi;
-          }
-      }
-      return ans;
-  }
-     function mergeArray(arr){
-         var textCount=arr.length;
-         var maxPerLine=55;
-
-
-         for (var i=0;i<Math.ceil(arr.join().length/maxPerLine)+1;i++){
-            
-            if( arr[i] && arr[i+1] && arr[i].length < maxPerLine){
-                arr[i]=arr[i]+' '+arr[i+1];
-                arr.splice(i+1,1)
-                mergeArray(arr)
+    function longest_str_in_array(arra) {
+        var max_str = arra[0].length;
+        var ans = arra[0].length;
+        for (var i = 0; i < arra.length; i++) {
+            var maxi = arra[i].length;
+            if (maxi > max_str) {
+                ans = arra[i].length;
+                max_str = maxi;
             }
-         else if(arr[i] && arr[i+1] && arr[i].length > maxPerLine)
-              
-               {    
+        }
+        return ans;
+    }
+    function mergeArray(arr) {
+        var textCount = arr.length;
+        var maxPerLine = 55;
+
+        for (
+            var i = 0;
+            i < Math.ceil(arr.join().length / maxPerLine) + 1;
+            i++
+        ) {
+            if (arr[i] && arr[i + 1] && arr[i].length < maxPerLine) {
+                arr[i] = arr[i] + " " + arr[i + 1];
+                arr.splice(i + 1, 1);
+                mergeArray(arr);
+            } else if (arr[i] && arr[i + 1] && arr[i].length > maxPerLine) {
                 // code to cut selected text should be here
             }
-         }
-       return arr;
-       
-     }
-
+        }
+        return arr;
+    }
 
     let desc = (
-         <p>
-            &lt;<FormattedMessage id="annotation.delete" />&gt;
+        <p>
+            &lt;
+            <FormattedMessage id="annotation.delete" />
+            &gt;
         </p>
-       
     );
-    
+
     let content = props.annotationData.content;
 
     if (content.trim() !== "") {
@@ -80,8 +73,6 @@ const AnnotationDetail = (props: Props) => {
     }
 
     let classes = [styles.annotationDetail];
-  
-
 
     if (props.isActive) {
         classes.push(styles.active);
@@ -98,16 +89,15 @@ const AnnotationDetail = (props: Props) => {
                             width={15}
                             height={15}
                         />
-                        </div>
-                  
-                                  )}
+                    </div>
+                )}
                 <h3>{props.annotationData.name}</h3>
-                {props.isLoggedIn &&
-                   props.isActive && (
-                        <button
-                            className={styles.edit}
-                            onClick={props.editAnnotationHandler}
-                        >
+                {props.isLoggedIn && props.isActive && (
+                    <button
+                        className={styles.edit}
+                        onClick={props.editAnnotationHandler}
+                    >
+                        <ApplyTooltip format="annotation.edit">
                             <svg
                                 version="1.1"
                                 width="15"
@@ -125,21 +115,17 @@ const AnnotationDetail = (props: Props) => {
                                     />{" "}
                                 </g>{" "}
                             </svg>
-                            <FormattedMessage id="annotation.edit" />
-                        </button>
-                    )}
+                            {/* <FormattedMessage id="annotation.edit" /> */}
+                        </ApplyTooltip>
+                    </button>
+                )}
             </div>
 
-           {!props.isWorkingSection && desc}
-         
-         {props.isWorkingSection  && <ShareButton props={props}/>}
-                      
+            {!props.isWorkingSection && desc}
+
+            {/* {props.isWorkingSection  && <ShareButton props={props}/>} */}
         </div>
     );
 };
-
-
-
-
 
 export default AnnotationDetail;

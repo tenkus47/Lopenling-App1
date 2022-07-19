@@ -11,7 +11,7 @@ import * as actions from "actions";
 import { BASE_ANNOTATION_ID } from "lib/AnnotatedText";
 import Annotation, {
     ANNOTATION_TYPES,
-    TemporaryAnnotation
+    TemporaryAnnotation,
 } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import AnnotatedText from "lib/AnnotatedText";
@@ -24,7 +24,7 @@ import { changedActiveTextAnnotation } from "actions";
 import ReactDOMServer from "react-dom/server";
 import Question from "lib/Question";
 import type { QuestionData } from "./AnnotationControls";
-import {getTextFontSize} from 'reducers'
+import { getTextFontSize } from "reducers";
 
 const TEMPORARY_ANNOTATION_ID = -3;
 const BASE_NAME = "Working";
@@ -35,18 +35,19 @@ type AnnotationData = {
     id: AnnotationUniqueId,
     isTemporary: boolean,
     annotation: Annotation,
-    userCreated: boolean
+    userCreated: boolean,
 };
 const getAnnotationsData = (
     annotations,
     sources,
-    workingSourceName
+    workingSourceName,
+    selectedText
 ): AnnotationData[] => {
     let annotationsData = [];
     let baseSources = sources.filter(
-        source => source.isWorking || source.isBase
+        (source) => source.isWorking || source.isBase
     );
-    let baseSourceNames = baseSources.map(source => source.name);
+    let baseSourceNames = baseSources.map((source) => source.name);
     if (annotations) {
         let annotationsById = {};
         for (let i = 0; i < annotations.length; i++) {
@@ -58,10 +59,10 @@ const getAnnotationsData = (
                     content: annotation.content,
                     id: annotation.uniqueId,
                     isTemporary: true,
-                    annotation: annotation
+                    annotation: annotation,
                 };
                 baseSourceNames = baseSourceNames.filter(
-                    a => a !== annotation.getSourceName()
+                    (a) => a !== annotation.getSourceName()
                 );
                 id = TEMPORARY_ANNOTATION_ID;
             } else if (annotationsById[id]) {
@@ -69,7 +70,7 @@ const getAnnotationsData = (
                 existingAnnotation.name +=
                     " " + addTibetanShay(annotation.getSourceName());
                 baseSourceNames = baseSourceNames.filter(
-                    a => a !== annotation.getSourceName()
+                    (a) => a !== annotation.getSourceName()
                 );
             } else {
                 annotationsById[id] = {
@@ -77,10 +78,10 @@ const getAnnotationsData = (
                     content: annotation.content,
                     id: annotation.uniqueId,
                     userCreated: annotation.userCreated,
-                    annotation: annotation
+                    annotation: annotation,
                 };
                 baseSourceNames = baseSourceNames.filter(
-                    a => a !== annotation.getSourceName()
+                    (a) => a !== annotation.getSourceName()
                 );
             }
             if (
@@ -94,10 +95,20 @@ const getAnnotationsData = (
         }
         // Make sure Working source is first
         baseSourceNames.unshift(workingSourceName);
+        let Base = baseSourceNames;
+        if (
+            selectedText?.name !==
+            "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་སོ།"
+        ) {
+            //Dominant only awailable for chojuk text
+            Base = baseSourceNames.filter((l) => l !== "Dominant");
+        }
+
         annotationsData = Object.keys(annotationsById).reduce((arr, key) => {
             const annotationData = annotationsById[key];
+
             if (annotationData.isWorking) {
-                annotationData.name = baseSourceNames.reduce(
+                annotationData.name = Base.reduce(
                     (prev, cur) => (prev += " " + addTibetanShay(cur, ";")),
                     ""
                 );
@@ -126,9 +137,8 @@ const getAvailableAnnotations = (
     if (temporaryAnnotation) {
         availableAnnotations.push(temporaryAnnotation);
     }
-    let [start, length] = annotatedText.getPositionOfAnnotation(
-        activeAnnotation
-    );
+    let [start, length] =
+        annotatedText.getPositionOfAnnotation(activeAnnotation);
 
     if (!start) {
         return availableAnnotations;
@@ -141,9 +151,8 @@ const getAvailableAnnotations = (
     if (activeAnnotation.isInsertion) {
         const insertionAnnotations = annotationPositions["i" + start];
         if (insertionAnnotations) {
-            possibleAnnotations = possibleAnnotations.concat(
-                insertionAnnotations
-            );
+            possibleAnnotations =
+                possibleAnnotations.concat(insertionAnnotations);
         }
         const activeInsertionAnnotations = annotationPositions[String(start)];
         if (activeInsertionAnnotations) {
@@ -230,7 +239,7 @@ const getTemporaryAnnotation = (
 };
 
 type StateProps = ControlsProps & {
-    questionsData: { [annotationId: AnnotationUniqueId]: Question[] }
+    questionsData: { [annotationId: AnnotationUniqueId]: Question[] },
 };
 
 // These are the props that are expected to be set and available in ownProps
@@ -241,16 +250,16 @@ type ContainerProps = {
     inline?: boolean,
     firstSelectedSegment: TextSegment,
     splitTextRect: ClientRect | null,
-    splitText: SplitText | null
+    splitText: SplitText | null,
 };
 
 export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
     const user = reducers.getUser(state);
+    const selectedText = reducers.getSelectedText(state);
     const activeAnnotation = ownProps.activeAnnotation;
     const inline = ownProps.inline;
     let selectedWitness = reducers.getSelectedTextWitness(state);
     if (!selectedWitness) {
-        const selectedText = reducers.getSelectedText(state);
         if (selectedText) {
             selectedWitness = reducers.getWorkingWitness(
                 state,
@@ -298,15 +307,19 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         "annotation.workingEdition",
         BASE_NAME
     );
-    let variantsData = getAnnotationsData(variants, sources, workingSourceName);
+    let variantsData = getAnnotationsData(
+        variants,
+        sources,
+        workingSourceName,
+        selectedText
+    );
 
     let baseAnnotation = null;
     if (activeAnnotation.id == BASE_ANNOTATION_ID) {
         baseAnnotation = activeAnnotation;
     } else {
-        const [start, length] = ownProps.annotatedText.getPositionOfAnnotation(
-            activeAnnotation
-        );
+        const [start, length] =
+            ownProps.annotatedText.getPositionOfAnnotation(activeAnnotation);
         if (start === null || length === null) {
             variantsData = null;
         } else {
@@ -382,22 +395,18 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
     if (temporaryQuestions.length > 0) {
         const firstQuestion = temporaryQuestions[0];
 
-        let [start, end] = ownProps.annotatedText.getPositionOfAnnotation(
-            firstQuestion
-        );
+        let [start, end] =
+            ownProps.annotatedText.getPositionOfAnnotation(firstQuestion);
         if (start) {
             if (!end) {
                 end = start + 1;
             }
-            const [
-                startText,
-                mainText,
-                endText
-            ] = ownProps.annotatedText.segmentedText.extractTextAroundPosition(
-                start,
-                end,
-                ["།", " "]
-            );
+            const [startText, mainText, endText] =
+                ownProps.annotatedText.segmentedText.extractTextAroundPosition(
+                    start,
+                    end,
+                    ["།", " "]
+                );
 
             const linkUrl = document.location.href;
             questionQuote = (
@@ -428,7 +437,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         temporaryQuestions: temporaryQuestions,
         questionsData: questionsData,
         questionQuote: questionQuote,
-        fontSize
+        fontSize,
     };
 };
 
@@ -553,6 +562,14 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
     return {
         ...stateProps,
         ...ownProps,
+        closeAnnotation: () => {
+            const activeAnnotation = stateProps.activeAnnotation;
+            if (activeAnnotation) {
+                const dismissTextAnnotation =
+                    actions.changedActiveTextAnnotation(null);
+                dispatch(dismissTextAnnotation);
+            }
+        },
         didSelectAnnotation: (annotation: Annotation) => {
             let selectedAnnotation: Annotation | null = null;
             if (annotation.id == BASE_ANNOTATION_ID) {
@@ -561,7 +578,7 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
                 selectedAnnotation =
                     _.find(
                         stateProps.availableAnnotations,
-                        value => value.uniqueId == annotation.uniqueId
+                        (value) => value.uniqueId == annotation.uniqueId
                     ) || null;
             }
             let actionsBatch = [];
@@ -696,9 +713,8 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
                 return;
             }
 
-            const cancelAction = actions.removedTemporaryAnnotation(
-                selectedAnnotation
-            );
+            const cancelAction =
+                actions.removedTemporaryAnnotation(selectedAnnotation);
             dispatch(cancelAction);
         },
         deleteAnnotation: (annotation: Annotation) => {
@@ -718,10 +734,11 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
             } else {
                 // Assume this is a default annotation that was
                 // automatically imported from external data
-                const removeDefaultAnnotation = actions.removedDefaultAnnotation(
-                    annotation.uniqueId,
-                    selectedWitnessData
-                );
+                const removeDefaultAnnotation =
+                    actions.removedDefaultAnnotation(
+                        annotation.uniqueId,
+                        selectedWitnessData
+                    );
                 actionsBatch = [removeDefaultAnnotation];
             }
 
@@ -788,9 +805,8 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
             title: string,
             content: string
         ) => {
-            let [start, end] = ownProps.annotatedText.getPositionOfAnnotation(
-                question
-            );
+            let [start, end] =
+                ownProps.annotatedText.getPositionOfAnnotation(question);
 
             const questionQuoteText = ReactDOMServer.renderToStaticMarkup(
                 stateProps.questionQuote
@@ -804,7 +820,7 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
                 questionText
             );
             dispatch(createdQuestionAction);
-        }
+        },
     };
 };
 
@@ -815,4 +831,3 @@ const AnnotationControlsContainer = connect(
 )(AnnotationControls);
 
 export default AnnotationControlsContainer;
-

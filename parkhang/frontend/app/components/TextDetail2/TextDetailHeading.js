@@ -28,15 +28,17 @@ function TextDetailHeading(props: HeaderProps) {
                     />
                 </div>}
             </div>
+            
             <div className={styles.selectVersion}>
+            <div className={styles.textHeadingTitle} style={{ flex: 1 }}>
+              <TextListContainer/>
+                </div>
                 <SelectVersion
                     witnesses={props.witnesses}
                     activeWitness={props.selectedWitness}
                     onSelectedWitness={props.onSelectedWitness}
                 />
-                <div className={styles.textHeadingTitle} style={{ flex: 1 }}>
-              <TextListContainer/>
-                </div>
+               
             </div>
         </div>
     );

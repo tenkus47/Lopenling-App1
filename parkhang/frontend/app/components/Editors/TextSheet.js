@@ -1,71 +1,127 @@
-import React from 'react'
+import React, { memo } from "react";
 import TextDetailContainer from "components/TextDetail/TextDetailContainer";
 import TextDetailContainer2 from "components/TextDetail2/TextDetailContainer";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
-import MediaComponent from './MediaComponent/MediaOptions';
-
-
+import MediaComponent from "./MediaComponent/MediaOptions";
+import { batchActions } from "redux-batched-actions";
 function TextSheet(props) {
-
-  return (<div style={{display:'flex',width:'100%',height:props.bodyHeight,overflow:'hidden'}}>
+    return (
+        <div
+            style={{
+                display: "flex",
+                width: "100%",
+                height: props.bodyHeight,
+                overflow: "hidden",
+            }}
+        >
             <TextDetailContainer />
-          {props.isSecondWindowOpen  && <TextDetailContainer2 />}
-          {props.Media.isPanelVisible
-          //  && props.isSecondWindowOpen 
-           &&  
-          <MediaComponent
-           toggleImage={props.toggleImage}
-           syncId={props.syncId}
-           imageData={props.imageData}
-           videoData={props.videoData}
-           selectedMedia={props.Media}
-           changeMediaSelection={props.changeMediaSelection}
-           selectedText={props.selectedText}
-           isImagePortrait={props.isImagePortrait}
-           changeIsImagePortrait={props.changeIsImagePortrait}
-          />}
-      </div>)
+            {props.isSecondWindowOpen && <TextDetailContainer2 />}
+
+            {props.Media.isPanelVisible && (
+                //  && props.isSecondWindowOpen
+                <MediaComponent
+                    toggleImage={props.toggleImage}
+                    syncIdOnScroll={props.syncIdOnScroll}
+                    syncIdOnClick={props.syncIdOnClick}
+                    imageData={props.imageData}
+                    videoData={props.videoData}
+                    selectedMedia={props.Media}
+                    changeMediaSelection={props.changeMediaSelection}
+                    selectedText={props.selectedText}
+                    isImagePortrait={props.isImagePortrait}
+                    changeIsImagePortrait={props.changeIsImagePortrait}
+                    selectedSegmentId={props.selectedSegmentId}
+                    alignmentData={props.alignmentData}
+                    onSelectedSearchResult={props.onSelectedSearchResult}
+                    witness={props.witness}
+                    witnesses={props.witnesses}
+                    ImageVersion={props.ImageVersion}
+                    changeImageVersion={props.changeImageVersion}
+                    changeSelectedImage={props.changeSelectedImage}
+                    selectedImage={props.selectedImage}
+                />
+            )}
+        </div>
+    );
 }
 
 const mapStateToProps = (state: AppState): { user: User } => {
-  
-  const  syncId=reducers.getSyncId(state);
-  const isSecondWindowOpen=reducers.isSecondWindowOpen(state);
-  let Media =reducers.getMediaData(state)
-  const imageData=reducers.getImageData(state);
-  const videoData=reducers.getVideoData(state);
- const selectedText=reducers.getSelectedText(state);
- const isImagePortrait=reducers.isImagePortrait(state);
-  return {
-    isSecondWindowOpen,
-    Media,
-    syncId,
-    imageData,
-    videoData,
-    selectedText,
-    isImagePortrait
-  };
+    const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
+    const syncIdOnClick = reducers.getSyncIdOnClick(state);
+    const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
+    let Media = reducers.getMediaData(state);
+    const imageData = reducers.getImageData(state);
+    const videoData = reducers.getVideoData(state);
+    const selectedText = reducers.getSelectedText(state);
+    const isImagePortrait = reducers.isImagePortrait(state);
+    //  const selectedSegmentId=reducers.getSelectedSegmentId(state);
+    const witness = reducers.getSelectedTextWitnessId(state, selectedText.id);
+    const ImageVersion = reducers.getSelectedImageVersion(state);
+    const alignmentData = reducers.getAlignment(state);
+    const selectedImage = reducers.getSelectedImage(state);
+    return {
+        isSecondWindowOpen,
+        Media,
+        syncIdOnScroll,
+        syncIdOnClick,
+        imageData,
+        videoData,
+        selectedText,
+        isImagePortrait,
+        // selectedSegmentId
+        alignmentData,
+        witness,
+        witnesses: reducers.getTextWitnesses(state, selectedText.id),
+        ImageVersion,
+        selectedImage,
+    };
 };
-
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
- 
-const { dispatch } = dispatchProps;
-const toggleImage=(data)=>dispatch(actions.changedShowPageImages(data))
-const changeMediaSelection=(data)=>dispatch(actions.mediaSelection(data));
-const changeIsImagePortrait=(payload)=>dispatch(actions.setIsImagePortrait(payload));
-return {
-    ...ownProps,
-    ...stateProps,
-     toggleImage,
-     changeMediaSelection,
-     changeIsImagePortrait
+    const { dispatch } = dispatchProps;
+    const toggleImage = (data) => dispatch(actions.changedShowPageImages(data));
+    const changeMediaSelection = (data) =>
+        dispatch(actions.mediaSelection(data));
+    const changeIsImagePortrait = (payload) =>
+        dispatch(actions.setIsImagePortrait(payload));
+    const changeSelectedImage = (payload) => {
+        dispatch(actions.selectImage(payload));
+    };
+    return {
+        ...ownProps,
+        ...stateProps,
+        toggleImage,
+        changeSelectedImage,
+        changeMediaSelection,
+        changeIsImagePortrait,
+        changeImageVersion: (imageVersionId) => {
+            dispatch(actions.selectImageVersion(imageVersionId));
+        },
+        onSelectedSearchResult: (
+            text: api.TextData,
+            start: number,
+            length: number,
+            selectedText: api.TextData | null
+        ) => {
+            if (!selectedText || selectedText.id !== text.id) {
+                dispatch(
+                    batchActions([
+                        actions.selectedSearchResult(text.id, start, length),
+                        actions.selectedText(text),
+                    ])
+                );
+            } else {
+                dispatch(actions.selectedSearchResult(text.id, start, length));
+            }
+        },
+    };
 };
-}
-const TextSheetContainer=connect(mapStateToProps, null,mergeProps)(
-  TextSheet
-);
+const TextSheetContainer = connect(
+    mapStateToProps,
+    null,
+    mergeProps
+)(TextSheet);
 
-export default  TextSheetContainer;
+export default memo(TextSheetContainer);
