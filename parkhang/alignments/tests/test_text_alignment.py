@@ -54,5 +54,7 @@ class TextAlignmentTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], self.alignment.pk)
         self.assertEqual(response.data["source"]["text"], self.source_text.pk)
+        self.assertEqual(response.data["source"]["witness"], self.source_witness.pk)
         self.assertEqual(response.data["target"]["text"], self.target_text.pk)
+        self.assertEqual(response.data["target"]["witness"], self.target_witness.pk)
         self.assertEqual(response.data["type"], AlignmentTypes.TEXT.label)
