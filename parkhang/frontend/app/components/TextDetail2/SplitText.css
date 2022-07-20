@@ -7,6 +7,10 @@
     height: 90%;
 }
 
+.splitText2 * {
+    scroll-behavior: smooth;
+}
+
 .splitText2 *:focus {
     outline: none;
 }
@@ -14,6 +18,8 @@
 .splitTextRowContent {
     display: flex;
     flex-direction: column;
+    min-width: 100%;
+
 }
 
 .splitTextRow {

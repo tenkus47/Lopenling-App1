@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import TextDetailHeading from "./TextDetailHeadingContainer";
 import SplitTextComponent from "./SplitText";
 import SplitText from "lib/SplitText";
@@ -7,12 +7,31 @@ import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import styles from "./TextDetail.css";
 import imageStyle from "../Editors/MediaComponent/Image.css";
 function TextDetail(props) {
+    const ref = useRef();
     let text = {
         name: "",
     };
     if (props.text) {
         text = props.text;
     }
+    useEffect(() => {
+        let element = ref.current;
+        element.addEventListener("mouseenter", mouseEnter);
+        element.addEventListener("mouseleave", mouseLeft);
+        return () => {
+            element.removeEventListener("mouseenter", mouseEnter);
+            element.removeEventListener("mouseleave", mouseLeft);
+        };
+    }, []);
+
+    function mouseEnter() {
+        // props.changeSelectedWindow(2);
+        console.log("secondwindowSelected");
+    }
+    function mouseLeft() {
+        props.changeSelectedWindow(0);
+    }
+
     let inlineControls = false;
     let textComponent = null;
     let splitText = null;
@@ -52,6 +71,10 @@ function TextDetail(props) {
                 syncIdOnScroll={props.syncIdOnScroll}
                 syncIdOnClick={props.syncIdOnClick}
                 textAlignment={props.textAlignment}
+                textAlignmentById={props.textAlignmentById}
+                isPanelLinked={props.isPanelLinked}
+                changeSyncIdOnScroll={props.changeSyncIdOnScroll}
+                selectedWindow={props.selectedWindow}
             ></SplitTextComponent>
         );
     }
@@ -62,6 +85,7 @@ function TextDetail(props) {
     let condition = props.isPanelVisible;
     return (
         <div
+            ref={ref}
             className={styles.textDetail2}
             style={{
                 height: condition ? bodyHeight : "100%",

@@ -15,7 +15,7 @@
     background-color: var(--nav-bgcolor);
     font-family: var(--fonts);
     font-size: 1.5rem;
-    color:var(--nav-text);
+    color: var(--nav-text);
     padding: 0px 10px 0px 20px;
     height: var(--header-height);
     justify-content: space-between;
@@ -34,7 +34,7 @@
 }
 
 .logo {
-    margin: 0 0 0 20px;
+    margin-right: 20px;
     padding: 0;
     display: flex;
     align-items: center;
@@ -44,18 +44,6 @@
     margin-right: 10px;
 }
 
-.controls {
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.controls a:link,
-.controls a:visited {
-    text-decoration: none;
-    color: white;
-}
 
 .loginButton {
     font-family: var(--fonts);
@@ -77,10 +65,6 @@
     margin-right: 5px;
 }
 
-.textLink a:link,
-.textLink a:visited {
-    color: white;
-}
 
 .buttonLink {
     line-height: 1;
@@ -89,50 +73,6 @@
     padding: 6px 10px;
 }
 
-.buttonLink a:link,
-.buttonLink a:visited {
-    color: #ffffff;
-}
-
-.navlinks {
-    height:100%;
-}
-
-.navlinks ul {
-    height: 100%;
-    display: flex;
-    gap: 10px;
-    list-style: none;
-    margin:0;
-
-}
-.navlinks ul li{
-    display:flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.navlinks a {
-    font-weight: bold;
-    text-decoration: none;
-    color: var(--nav-text);
-    font-family: "Roboto", sans-serif;
-    font-size: 13px;
-    text-transform: uppercase;
-    transition: all 0.3s ease-in-out;
-    line-height: 26px;
-    vertical-align: middle;
-    margin-inline-end: 30px;
-}
-
-.navlinks a:hover {
-    color: #666;
-}
-
-.loginSection{
-    display:inline-flex;
-    min-width: 250px;
-    max-height: 100%;
-    overflow: hidden;
-    float:left;
+.controls {
+    position: relative;
 }

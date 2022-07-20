@@ -159,6 +159,8 @@ const mapStateToProps = (state: AppState): {} => {
     const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const textAlignment = reducers.getTextAlignment(state);
+    const selectedWindow = reducers.getSelectedWindow(state);
+
     return {
         text: selectedText,
         textFontSize,
@@ -175,6 +177,8 @@ const mapStateToProps = (state: AppState): {} => {
         syncIdOnScroll,
         syncIdOnClick,
         textAlignment,
+        textAlignmentById: reducers.getTextAlignmentById(state),
+        selectedWindow,
     };
 };
 
@@ -343,6 +347,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 activeAnnotation = baseAnnotation;
             }
             // dispatch(changedActiveTextAnnotation(activeAnnotation));
+        },
+        changeSyncIdOnScroll: (payload) =>
+            dispatch(actions.changeSyncIdOnScroll(payload)),
+        changeSelectedWindow: (payload) => {
+            dispatch(actions.changeSelectedWindow(payload));
         },
         selectedSegmentId: (segmentId) => {
             let start = idFromSegmentId(segmentId);

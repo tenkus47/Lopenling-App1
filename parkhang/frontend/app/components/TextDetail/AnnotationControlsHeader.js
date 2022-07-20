@@ -5,13 +5,18 @@ import styles from "./AnnotationControlsHeader.css";
 import PageBreakIcon from "images/page_break_icon.svg";
 import NoteIcon from "images/note.svg";
 import QuestionIcon from "images/question_answer.svg";
-import TooltipCustom from "../UI/TooltipCustom";
-
+import ApplyTooltip from "../UI/ApplyTooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import EditIcon from "@mui/icons-material/Edit";
 type Props = {
     addPageBreak: null | (() => void),
     addLineBreak: null | (() => void),
     addNote: null | (() => void),
     addQuestion: null | (() => void),
+    closeAnnotation: null | (() => void),
+    editAnnotationHandler: null | (() => void),
+    userLoggedIn: Boolean,
 };
 
 class AnnotationControlsHeader extends React.Component<Props> {
@@ -25,88 +30,81 @@ class AnnotationControlsHeader extends React.Component<Props> {
         return (
             <>
                 <div className={styles.header}>
-                    <TooltipCustom toolname={"Note"}>
-                        <Button
-                            noBezel={true}
-                            icon={
-                                <NoteIcon
-                                    width={21}
-                                    height={21}
-                                    style={{ fill: "#1A73E8" }}
-                                />
-                            }
-                            backgroundColor="transparent"
-                            accessoryType={this.props.addNote ? "ADD" : null}
-                            onClick={this.props.addNote}
-                            disabled={this.props.addNote ? false : true}
-                            align="center"
-                        />
-                    </TooltipCustom>
-                    <TooltipCustom toolname={"Questions"}>
-                        <Button
-                            noBezel={true}
-                            icon={
-                                <QuestionIcon
-                                    width={21}
-                                    height={21}
-                                    style={{ fill: "#F2A41F" }}
-                                />
-                            }
-                            accessoryType={
-                                this.props.addQuestion ? "ADD" : null
-                            }
-                            onClick={this.props.addQuestion}
-                            disabled={this.props.addQuestion ? false : true}
-                            align="left"
-                            backgroundColor="transparent"
-                        />
-                    </TooltipCustom>
+                    <Button
+                        noBezel={true}
+                        icon={
+                            <NoteIcon
+                                width={21}
+                                height={21}
+                                style={{ fill: "#1A73E8" }}
+                            />
+                        }
+                        backgroundColor="transparent"
+                        accessoryType={this.props.addNote ? "ADD" : null}
+                        onClick={this.props.addNote}
+                        disabled={this.props.addNote ? false : true}
+                        align="center"
+                    />
 
-                    <TooltipCustom toolname={"Line Break"}>
-                        <Button
-                            noBezel={true}
-                            color="#1E8E3E"
-                            fontSize="18px"
-                            icon="&#182;"
-                            accessoryType={allowLineBreak ? "ADD" : null}
-                            onClick={this.props.addLineBreak}
-                            disabled={!allowLineBreak}
-                            align="left"
-                            backgroundColor="transparent"
-                        />
-                    </TooltipCustom>
+                    <Button
+                        noBezel={true}
+                        icon={
+                            <QuestionIcon
+                                width={21}
+                                height={21}
+                                style={{ fill: "#F2A41F" }}
+                            />
+                        }
+                        accessoryType={this.props.addQuestion ? "ADD" : null}
+                        onClick={this.props.addQuestion}
+                        disabled={this.props.addQuestion ? false : true}
+                        align="left"
+                        backgroundColor="transparent"
+                    />
 
-                    <TooltipCustom toolname={"Page Break"}>
-                        <Button
-                            noBezel={true}
-                            icon={
-                                <PageBreakIcon
-                                    width={21}
-                                    height={21}
-                                    style={{ fill: "darkgray" }}
-                                />
-                            }
-                            accessoryType={allowPageBreak ? "ADD" : null}
-                            onClick={this.props.addPageBreak}
-                            disabled={!allowPageBreak}
-                            align="left"
-                            backgroundColor="transparent"
-                        />
-                    </TooltipCustom>
+                    <Button
+                        noBezel={true}
+                        color="#1E8E3E"
+                        fontSize="18px"
+                        icon="&#182;"
+                        accessoryType={allowLineBreak ? "ADD" : null}
+                        onClick={this.props.addLineBreak}
+                        disabled={!allowLineBreak}
+                        align="left"
+                        backgroundColor="transparent"
+                    />
+
+                    <Button
+                        noBezel={true}
+                        icon={
+                            <PageBreakIcon
+                                width={21}
+                                height={21}
+                                style={{ fill: "darkgray" }}
+                            />
+                        }
+                        accessoryType={allowPageBreak ? "ADD" : null}
+                        onClick={this.props.addPageBreak}
+                        disabled={!allowPageBreak}
+                        align="left"
+                        backgroundColor="transparent"
+                    />
+                    <ApplyTooltip format="annotation.edit">
+                        <div
+                            onClick={this.props.editAnnotationHandler}
+                            className={styles.edit}
+                        >
+                            {/* <Btn icon={faPencilAlt} /> */}
+                            <EditIcon />
+                        </div>
+                    </ApplyTooltip>
                 </div>
-                <div
+                {/* <div
                     onClick={() => this.props.closeAnnotation()}
-                    style={{
-                        position: "absolute",
-                        left: 5,
-                        width: 10,
-                        height: 10,
-                        top: 5,
-                        cursor: "pointer",
-                    }}
+                    className={styles.Anotation_closeBtn}
                 >
                     x
-                </div>
+                </div> */}
             </>
         );
     }

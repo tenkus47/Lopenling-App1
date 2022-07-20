@@ -157,6 +157,7 @@ const mapStateToProps = (state) => {
         state.data.loadingWitnesses || state.data.loadingAnnotations;
     const textListVisible = getTextListVisible(state);
     const isPanelLinked = reducers.isPanelLinked(state);
+    const textAlignmentById = reducers.getTextAlignmentById(state);
     if (loading) {
         return {
             text: null,
@@ -176,6 +177,7 @@ const mapStateToProps = (state) => {
             fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
             isSecondWindowOpen: isSecondWindowOpen(state),
             isPanelLinked,
+            textAlignmentById,
         };
     }
 
@@ -298,8 +300,10 @@ const mapStateToProps = (state) => {
             }
         }
     }
-
     _selectedWitness = selectedWitness;
+    const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
+    const syncIdOnClick = reducers.getSyncIdOnClick(state);
+    const selectedWindow = reducers.getSelectedWindow(state);
     return {
         text: selectedText,
         witnesses: witnesses,
@@ -329,6 +333,10 @@ const mapStateToProps = (state) => {
         isImagePortrait: isImagePortrait(state),
         isPanelVisible: isPanelVisible(state),
         isAnnotating: reducers.isAnnotating(state),
+        textAlignmentById,
+        syncIdOnScroll,
+        syncIdOnClick,
+        selectedWindow,
     };
 };
 
@@ -552,6 +560,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             dispatch(actions.changeSyncIdOnClick(payload)),
         changeSelectedImage: (payload) => {
             dispatch(actions.selectImage(payload));
+        },
+        changeSelectedWindow: (payload) => {
+            dispatch(actions.changeSelectedWindow(payload));
+        },
+        closeAnnotation: () => {
+            const dismissTextAnnotation =
+                actions.changedActiveTextAnnotation(null);
+            dispatch(dismissTextAnnotation);
         },
     };
 };

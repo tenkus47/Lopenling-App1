@@ -56,6 +56,7 @@ export type Props = {
     activeWitness: Witness,
     changeSyncIdOnClick: () => void,
     isPanelLinked: Boolean,
+    textAlignmentById: {},
 };
 
 export type State = {
@@ -68,21 +69,22 @@ const PARA_SYMBOL = String.fromCharCode(182);
 const pageBreakIconString = ReactDOMServer.renderToStaticMarkup(
     <PageBreakIcon />
 );
-
 export default class Text extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
     _renderedHtml: { __html: string } | null;
+
+    textAlignmentById;
     constructor(props: Props) {
         super(props);
+        this.textAlignmentById = [];
         this.textRef = React.createRef();
         this.state = {
             segmentedText: props.segmentedText,
         };
-
+        this.textAlignmentById = this.props.textAlignmentById;
         this._renderedSegments = null;
         this._renderedHtml = null;
     }
-
     UNSAFE_componentWillReceiveProps(nextProps: Props) {
         this.setState((prevState: State, props: Props) => {
             return {
@@ -388,7 +390,21 @@ export default class Text extends React.Component<Props, State> {
                     }
                 }
             }
-
+            if (this.props.textAlignmentById !== null) {
+                let r = this.props.textAlignmentById.find(
+                    (d) => d.start === segment.start
+                );
+                if (r) {
+                    segmentHTML +=
+                        "<span id='alignment_" +
+                        segment.start +
+                        "'>" +
+                        `<sup class=` +
+                        styles.syncIdClass +
+                        `>༼${r.id}༽</sup>` +
+                        "</span>";
+                }
+            }
             segmentHTML +=
                 "<span id=" +
                 id +
@@ -468,7 +484,6 @@ export default class Text extends React.Component<Props, State> {
         if (this.props.row === 0) {
             classes.push(styles.textFirstRow);
         }
-
         // Generate HTML manually as it is much faster when
         // creating large numbers of elements, such as these spans.
         const html = this._renderedHtml
@@ -485,7 +500,6 @@ export default class Text extends React.Component<Props, State> {
                     dangerouslySetInnerHTML={html}
                     style={{
                         fontSize: this.props.fontSize,
-                        
                     }}
                     onClick={(e) => {
                         this.selectedElement(e.target);

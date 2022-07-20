@@ -83,8 +83,6 @@ const routesMap = {
     USER: "/user/:id",
     [actions.TEXTID_ONLY_URL]: "/texts/:textId",
     [actions.TEXTS]: "/textSelection",
-    [actions.EDITOR]: "/editor",
-    [actions.SEARCH]: "/search/:search",
 };
 const routes = connectRoutes(routesMap, {
     initialDispatch: false,

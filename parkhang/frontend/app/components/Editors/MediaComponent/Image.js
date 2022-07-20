@@ -1,64 +1,75 @@
-import React, {
-    useState,
-    useRef,
-    useEffect,
-    memo,
-    Suspense,
-    useMemo,
-    useCallback,
-} from "react";
+import React, { useState, useRef, useEffect, memo, useCallback } from "react";
 import styles from "./Image.css";
-import { useImage } from "react-image";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import classnames from "classnames";
 import _ from "lodash";
-import { selectImage } from "../../../actions";
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import lopenlingLogo from "images/lopenling_logo.png";
+import { IconButton } from "@mui/material";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 function HttpUrl(data = "") {
-    if (data.includes("http")) return data;
+    if (data.includes("https")) return data;
     return "https://" + data;
 }
 
 function Image(props) {
     const selectRef = useRef(null);
+    let imageList = props.imageData?.alignment;
     let textIdfromAlignment = props.alignmentData.text;
+
     let isPortraitImage = props.isImagePortrait;
-    let ImageArea = useRef(null);
     let [imageSelected, SetSelected] = useState(0);
-    let [hide, SetHide] = useState(false);
-    let imageList = props.imageData?.alignment || [];
     let imageIdList = [];
     let scrollingID = props.syncIdOnScroll;
-    let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
+    let [loading, setLoading] = useState(false);
+    const [img, setImg] = useState();
+
+    const fetchImage = async () => {
+        if (_.isEmpty(imageList)) return;
+        let url = HttpUrl(imageList[imageSelected].target_segment);
+        const res = await fetch(url);
+        const imageBlob = await res.blob();
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        setLoading(false);
+        setImg(imageObjectURL);
+    };
+    useEffect(() => {
+        setLoading(true);
+        fetchImage();
+    }, [imageList, imageSelected]);
+    // let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
     let syncIdOnClick = props.syncIdOnClick;
     if (!_.isEmpty(imageList)) {
         imageIdList = imageList.map((l) => parseInt(l.source_segment.start));
     }
-    // useEffect(() => {
-    //     let IDtoSync = parseInt(syncIdOnScroll);
-    //     if (textIdfromAlignment === props.selectedText.id) {
-    //         if (imageList?.length > 0) {
-    //             let findSegment = imageList.filter(
-    //                 (l) =>
-    //                     l.source_segment.start <= IDtoSync &&
-    //                     l.source_segment.end > IDtoSync
-    //             );
-    //             let index = imageList.findIndex(
-    //                 (l) => l?.source_segment === findSegment[0]?.source_segment
-    //             );
-    //             if (index >= 0) {
-    //                 SetSelected(index);
-    //             }
-    //         }
-    //     }
-    // }, [syncIdOnScroll]);
+
     useEffect(() => {
-        selectRef.current.value = props.witness;
+        let IDtoSync = parseInt(scrollingID);
+        if (textIdfromAlignment === props.selectedText.id) {
+            if (imageList?.length > 0) {
+                let findSegment = imageList.filter(
+                    (l) =>
+                        l.source_segment.start <= IDtoSync &&
+                        l.source_segment.end > IDtoSync
+                );
+                let index = imageList.findIndex(
+                    (l) => l?.source_segment === findSegment[0]?.source_segment
+                );
+                if (parseInt(index)) {
+                    SetSelected(index);
+                }
+            }
+        }
+    }, [scrollingID]);
+    useEffect(() => {
+        if (selectRef.current) selectRef.current.value = props.witness;
+        setLoading(true);
+        fetchImage();
     }, [props.witness]);
     useEffect(() => {
         if (textIdfromAlignment === props.selectedText.id) {
             let ClickId = syncIdOnClick.toString().replace("s_", "");
-            if (imageList?.length > 0) {
+            if (imageList?.length > 0 && ClickId > 0) {
                 let findSegment = imageList.filter(
                     (l) =>
                         l.source_segment.start < ClickId &&
@@ -75,12 +86,8 @@ function Image(props) {
     }, [syncIdOnClick]);
 
     let change = useCallback(() => {
-        props.changeSelectedImage(imageList[imageSelected]);
-    }, [imageSelected]);
-
-    useEffect(() => {
-        change();
-    }, [imageSelected]);
+        props.changeSelectedImage(imageList[imageSelected + 1]);
+    }, [imageList, imageSelected]);
 
     const isPortrait = ({ target: img }) => {
         //this Check if the provided Image is a portrait or a landScape
@@ -91,6 +98,7 @@ function Image(props) {
     };
 
     const handleChangeImage = (data) => {
+        change();
         if (data === "prev" && imageSelected > 0) {
             SetSelected((prev) => prev - 1);
         }
@@ -99,13 +107,16 @@ function Image(props) {
         }
     };
 
+    const handleOnload = (e) => {
+        isPortrait(e);
+        setLoading(false);
+    };
+
     return (
         <div
             className={
                 isPortraitImage
                     ? styles.ThirdWindowPortrait
-                    : hide
-                    ? classnames(styles.ThirdWindow, styles.hideWindow)
                     : styles.ThirdWindow
             }
         >
@@ -144,43 +155,59 @@ function Image(props) {
                     </div>
                 )} */}
             </div>
-            <div className={styles.imageRender} ref={ImageArea}>
-                <Suspense fallback={<div style={{ height: 100 }}>loading</div>}>
-                    {imageList.length > 0 && (
-                        <TransformWrapper>
-                            <TransformComponent>
-                                <ImageComponent
-                                    imageList={imageList}
-                                    imageSelected={imageSelected}
-                                    isPortrait={isPortrait}
-                                />
-                            </TransformComponent>
-                        </TransformWrapper>
-                    )}
-                    <button
-                        style={{ position: "absolute", top: 20, left: 10 }}
+
+            {_.isEmpty(imageList) ? (
+                <Loading />
+            ) : (
+                <div className={styles.imageSection}>
+                    <center>
+                        {!loading ? (
+                            <TransformWrapper>
+                                <TransformComponent>
+                                    <LazyLoadImage
+                                        className={styles.ImageStyle}
+                                        src={img}
+                                        alt="imagepecha"
+                                        effect="blur"
+                                        onLoad={handleOnload}
+                                        onProgress={() =>
+                                            console.log("process")
+                                        }
+                                    />
+                                </TransformComponent>
+                            </TransformWrapper>
+                        ) : (
+                            <Loading />
+                        )}
+                    </center>
+                    <IconButton
                         onClick={() => handleChangeImage("prev")}
+                        sx={{
+                            position: "absolute",
+                            left: 20,
+                            top: 100,
+                        }}
                     >
-                        {"<"}
-                    </button>
-                    <button
-                        style={{ position: "absolute", top: 20, right: 10 }}
+                        <ChevronLeftIcon />
+                    </IconButton>
+                    <IconButton
                         onClick={() => handleChangeImage("next")}
+                        sx={{
+                            position: "absolute",
+                            right: 20,
+                            top: 100,
+                        }}
                     >
-                        {">"}
-                    </button>
-                </Suspense>
-            </div>
+                        <ChevronRightIcon />
+                    </IconButton>
+                </div>
+            )}
         </div>
     );
 }
 
-function ImageComponent({ imageList, imageSelected, isPortrait }) {
-    let { src } = useImage({
-        srcList: HttpUrl(imageList[imageSelected]?.target_segment),
-    });
-
-    return <img src={src} alt="SyncImage" onLoad={isPortrait} />;
-}
-
 export default memo(Image);
+
+function Loading() {
+    return <div style={{ position: "relative", top: 50 }}>Loading ...</div>;
+}

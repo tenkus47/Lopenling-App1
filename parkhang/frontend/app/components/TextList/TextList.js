@@ -185,7 +185,6 @@ class TextList extends React.Component<Props> {
                                 {nameHtml} {resultsCount}
                             </div>
                         )}
-
                         {textSearchResults.length > 0 && (
                             <div className={styles.searchResults}>
                                 {textSearchResultRows}
@@ -225,7 +224,7 @@ class TextList extends React.Component<Props> {
                                 }
                                 rowRenderer={this.rowRenderer}
                                 width={width}
-                                overscanRowCount={3}
+                                overscanRowCount={1}
                                 deferredMeasurementCache={this.cache}
                             ></List>
                         )}

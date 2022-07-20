@@ -105,9 +105,24 @@ export const initialDataState: DataState = {
     questionsLoading: {},
     alignment: {},
     textAlignment: {},
+    textAlignmentById: [],
 };
+
 function setTextAlignment(state: DataState, action) {
-    return { ...state, textAlignment: action.data };
+    let newArray = action.data.alignment;
+    let newList = [];
+    newArray.map((li, index) => {
+        newList.push({
+            id: index + 1,
+            start: li.source_segment.start,
+            TStart: li.target_segment.start,
+        });
+    });
+    return {
+        ...state,
+        textAlignment: action.data,
+        textAlignmentById: newList,
+    };
 }
 
 function loadAlignment(state: DataState, action) {
@@ -140,7 +155,6 @@ function loadingTexts(state: DataState): DataState {
         loadedTexts: false,
     };
 }
-
 function loadedTexts(state: DataState, action: actions.TextsAction): DataState {
     const textsById = arrayToObject(action.texts, "id");
     return {
@@ -649,6 +663,7 @@ export const getTexts = (state: DataState): Text | TextData | null => {
     const textData = state.texts;
     return textData;
 };
+
 export const getText = (
     state: DataState,
     textId: number,
@@ -739,7 +754,6 @@ export const getWitnessData = (
     witnessId: number
 ): WitnessData => {
     const witnessData = state.witnessesById[witnessId];
-
     return witnessData;
 };
 
@@ -1094,12 +1108,6 @@ export const getSearchResults = (
         return null;
     }
 };
-export const getAlignment = (state) => {
-    return state.alignment;
-};
-export const getTextAlignment = (state) => {
-    return state.textAlignment;
-}
 
 export const questionIsLoading = (
     state: DataState,
@@ -1151,4 +1159,14 @@ export const getQuestions = (
     }
 
     return questions;
+};
+
+export const getAlignment = (state) => {
+    return state.alignment;
+};
+export const getTextAlignment = (state) => {
+    return state.textAlignment;
+};
+export const getTextAlignmentById = (state) => {
+    return state.textAlignmentById;
 };

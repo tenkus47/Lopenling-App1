@@ -35,13 +35,8 @@ export type UIState = {
     showAccountOverlay: boolean,
     textFontSize: number,
     textFontSize2: number,
-    notification: {
-        message: String,
-        time: Number,
-        type: String,
-    },
     showSecondWindow: Boolean,
-
+    selectedWindow: {},
     SyncIdOnScroll: String,
     SyncIdOnClick: String,
 
@@ -69,16 +64,12 @@ export const initialUIState = {
     showAccountOverlay: false,
     textFontSize: constants.DEFAULT_TEXT_FONT_SIZE,
     textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,
-    notification: {
-        message: "",
-        time: null,
-        type: "",
-    },
-    showSecondWindow: true,
+    showSecondWindow: false,
     SyncIdOnScroll: 0,
     SyncIdOnClick: 0,
     isPanelLinked: true,
-    isAnnotating: true,
+    isAnnotating: false,
+    selectedWindow: 1,
 };
 
 function loadedUserSettings(
@@ -306,15 +297,6 @@ function changedTextFontSize2(
         textFontSize2: action.fontSize,
     };
 }
-function changedNotification(
-    state: UIState,
-    action: actions.ChangedTextFontSizeAction
-): UIState {
-    return {
-        ...state,
-        notification: { ...action.data },
-    };
-}
 
 // TODO: delete? Doesn't seem to be used anywhere.
 // function changedSelectedSegment(state, action) {
@@ -508,7 +490,12 @@ function changedAccountOverlay(
 
     return state;
 }
-
+function changeSelectedWindow(state, action) {
+    return {
+        ...state,
+        selectedWindow: action.payload,
+    };
+}
 const uiReducers = {};
 uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
@@ -538,11 +525,14 @@ uiReducers[actions.CHANGED_WITNESS_SCROLL_POSITION] = changedScrollPosition;
 uiReducers[actions.EXPORT_WITNESS] = exportingWitness;
 uiReducers[actions.EXPORTED_WITNESS] = exportedWitness;
 uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
-uiReducers[actions.CHANGED_NOTIFICATION] = changedNotification;
 uiReducers[actions.SECOND_WINDOW] = toggleSecondWindow;
 uiReducers[actions.CHANGE_ANNOTATING] = changeIsAnnotating;
+uiReducers[actions.CHANGE_SELECTED_WINDOW] = changeSelectedWindow;
 export default uiReducers;
 
+export const getSelectedWindow = (state) => {
+    return state.selectedWindow;
+};
 export const isAnnotating = (state) => {
     return state.isAnnotating;
 };
@@ -553,9 +543,7 @@ export const getSelectedText = (state: UIState): api.TextData | null => {
 export const getSelectedText2 = (state: UIState): api.TextData | null => {
     return state.selectedText2;
 };
-export const getNotification = (state: UIState): api.TextData | null => {
-    return state.notification;
-};
+
 export const getSelectedTextWitnessId = (
     state: UIState,
     textId: number
