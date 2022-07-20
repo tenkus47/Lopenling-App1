@@ -124,6 +124,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     textAlignmentById;
     scrollEvent: () => void;
     selectedWindow;
+    debouncedSearch;
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
@@ -153,7 +154,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.changeSyncIdOnClick = props.changeSyncIdOnClick;
         this.closeAnnotation = props.closeAnnotation;
         this.scrollJump = props.scrollJump;
-
+        this.textAlignmentById = [];
         this.scrollEvent = this.scrollEvent.bind(this);
         this.selectedWindow = props.selectedWindow;
     }
@@ -175,8 +176,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }
                 }
             });
-            if (list.length > 0) {
-                this.changeSyncIdOnScroll(list[0].target);
+            if (!_.isEmpty(list)) {
+                this.debouncedSearch(list);
             }
         }
     }
@@ -691,6 +692,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.calculatedImageHeight = null;
             this.updateList();
         }, 500).bind(this);
+        this.debouncedSearch = _.debounce((list) => {
+            this.changeSyncIdOnScroll(list[0].target);
+        }, 1000);
 
         window.addEventListener("resize", this.resizeHandler);
 

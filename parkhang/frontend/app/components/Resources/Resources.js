@@ -7,12 +7,11 @@ import FeedbackIcon from "@mui/icons-material/Feedback";
 import YoutubeSearchedForIcon from "@mui/icons-material/YoutubeSearchedFor";
 import Index from "./ResourceOption";
 import { NavLink } from "redux-first-router-link";
-import lopenlingLogo from "images/lopenling_logo.png";
+import lopenling_logo from "images/lopenling_logo_173x.png";
 import useLocalStorage from "bodyComponent/utility/useLocalStorage";
 import { Tabs, Tab, Typography, Box } from "@mui/material";
 
 function Resources() {
-    const image_location = lopenlingLogo;
     const [value, setValue] = useLocalStorage("selectedResources", 0);
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -63,11 +62,6 @@ function Resources() {
                         icon={<FeedbackIcon />}
                         {...a11yProps(3)}
                     ></Tab>
-                    <Tab
-                        style={{ minWidth: 0, flex: 1 }}
-                        icon={<YoutubeSearchedForIcon />}
-                        {...a11yProps(4)}
-                    ></Tab>
                 </Tabs>
             </Box>
             <Box flex={1}>
@@ -83,14 +77,16 @@ function Resources() {
                 <TabPanel value={value} index={3}>
                     <Index.Commentary />
                 </TabPanel>
-                <TabPanel value={value} index={4}>
-                    <Index.Search />
-                </TabPanel>
             </Box>
             <Box alignSelf="center">
                 <NavLink to="/">
                     <div className={styles.logo}>
-                        <img src={image_location} height="30" />
+                        <img
+                            src={lopenling_logo}
+                            alt={"lopenling-logo"}
+                            height={37}
+                            width={172}
+                        />
                     </div>
                 </NavLink>
             </Box>

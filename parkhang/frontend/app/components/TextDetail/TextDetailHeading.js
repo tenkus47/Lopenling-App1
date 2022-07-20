@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import styles from "./textDetailHeading.css";
 import SelectVersion from "./SelectVersion";
+import _ from "lodash";
 import TextList from "./TextListContainer";
 import {
     Stack,
@@ -18,7 +19,6 @@ import Search from "./HeaderMenu/Search";
 import WindowSplitter from "./HeaderMenu/WindowSplitter";
 import Settings from "./HeaderMenu/Settings";
 import TableOfContent from "./HeaderMenu/TableOfContent";
-import useDebounce from "components/UI/useDebounceHook";
 
 type HeaderProps = {
     witnesses: Witness[],
@@ -44,7 +44,12 @@ function TextDetailHeading(props: HeaderProps) {
     let [showFind, setShowFind] = useState(false);
     const headingRef = useRef();
     const inputRef = useRef();
-    const debouncedSearchTerm = useDebounce(findvalue, 800);
+
+    const debouncedSearch = React.useRef(
+        _.debounce((s) => {
+            props.searchChanged(s);
+        }, 500)
+    ).current;
     const handleSearch = useCallback(
         (e) => {
             e.preventDefault();
@@ -62,8 +67,8 @@ function TextDetailHeading(props: HeaderProps) {
     }, [showFind]);
 
     useEffect(() => {
-        props.searchChanged(debouncedSearchTerm);
-    }, [debouncedSearchTerm]);
+        debouncedSearch(findvalue);
+    }, [findvalue]);
     return (
         <Stack
             ref={headingRef}

@@ -116,7 +116,7 @@ export function fetchTextPairWithAlignmentId(AlignmentId = 1) {
     if (AlignmentId === 0) {
         return;
     }
-    // const url = "https://api.npoint.io/d928ff7f38342714eade";
+    const url = `/api/alignments/text/${AlignmentId}`;
     return request(GET, url);
 }
 export function fetchImageWithAlignmentId(AlignmentId = 1) {

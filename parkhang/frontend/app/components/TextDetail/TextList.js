@@ -7,7 +7,7 @@ import {
 } from "react-virtualized";
 import classname from "classnames";
 import styles from "./TextList.css";
-import { TextField, ClickAwayListener } from "@mui/material";
+import { TextField, ClickAwayListener, Box, Typography } from "@mui/material";
 
 function TextList(props) {
     const temptext = useRef(props.texts);
@@ -51,9 +51,18 @@ function TextList(props) {
     return (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
             <div style={{ position: "relative" }}>
-                <button onClick={handleClick} className={styles.listToggelBtn}>
-                    {truncate(selected, 30)}
-                </button>
+                <Box
+                    onClick={handleClick}
+                    className={styles.listToggelBtn}
+                    component="div"
+                    sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        width: "5rem",
+                    }}
+                >
+                    <Typography noWrap={true}>{selected}</Typography>
+                </Box>
                 {isOpen && (
                     <div
                         className={classname(classes)}

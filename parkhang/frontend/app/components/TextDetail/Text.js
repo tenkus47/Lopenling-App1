@@ -81,11 +81,10 @@ export default class Text extends React.Component<Props, State> {
         this.state = {
             segmentedText: props.segmentedText,
         };
-        this.textAlignmentById = [];
+        this.textAlignmentById = this.props.textAlignmentById;
         this._renderedSegments = null;
         this._renderedHtml = null;
     }
-
     UNSAFE_componentWillReceiveProps(nextProps: Props) {
         this.setState((prevState: State, props: Props) => {
             return {
@@ -93,10 +92,6 @@ export default class Text extends React.Component<Props, State> {
                 segmentedText: nextProps.segmentedText,
             };
         });
-    }
-    componentDidMount() {
-        if (this.props.textAlignmentById)
-            this.textAlignmentById = this.props.textAlignmentById;
     }
 
     annotationsForSegment(segment: TextSegment): Annotation[] {
@@ -489,7 +484,6 @@ export default class Text extends React.Component<Props, State> {
         if (this.props.row === 0) {
             classes.push(styles.textFirstRow);
         }
-
         // Generate HTML manually as it is much faster when
         // creating large numbers of elements, such as these spans.
         const html = this._renderedHtml

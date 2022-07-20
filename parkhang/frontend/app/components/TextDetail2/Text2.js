@@ -249,15 +249,14 @@ export default class Text2 extends React.Component<Props, State> {
                     }
                 }
             }
-            if (this.props.textAlignmentById !== null) {
-                if (
-                    this.props.textAlignmentById.some(
-                        (l) => l.TStart === segment.start
-                    )
-                ) {
-                    let r = this.props.textAlignmentById.find(
-                        (d) => d.TStart === segment.start
-                    );
+            if (
+                this.props.textAlignmentById !== null
+                // && selectedTextId === TargetId
+            ) {
+                let r = this.props.textAlignmentById.find(
+                    (d) => d.TStart === segment.start
+                );
+                if (r) {
                     segmentHTML +=
                         "<span id='alignment2_" +
                         segment.start +

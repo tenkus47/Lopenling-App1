@@ -6,7 +6,9 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import NoteIcon from "images/note.svg";
 import QuestionIcon from "images/question_answer.svg";
 import ApplyTooltip from "../UI/ApplyTooltip";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import EditIcon from "@mui/icons-material/Edit";
 type Props = {
     addPageBreak: null | (() => void),
     addLineBreak: null | (() => void),
@@ -92,23 +94,8 @@ class AnnotationControlsHeader extends React.Component<Props> {
                             onClick={this.props.editAnnotationHandler}
                             className={styles.edit}
                         >
-                            <svg
-                                version="1.1"
-                                width="15"
-                                height="15"
-                                viewBox="0 0 24 24"
-                                data-code="57940"
-                                data-tags="mode_edit"
-                            >
-                                {" "}
-                                <g transform="scale(0.0234375 0.0234375)">
-                                    {" "}
-                                    <path
-                                        className={styles.editImage}
-                                        d="M884 300l-78 78-160-160 78-78c16-16 44-16 60 0l100 100c16 16 16 44 0 60zM128 736l472-472 160 160-472 472h-160v-160z"
-                                    />{" "}
-                                </g>{" "}
-                            </svg>
+                            {/* <Btn icon={faPencilAlt} /> */}
+                            <EditIcon />
                         </div>
                     </ApplyTooltip>
                 </div>

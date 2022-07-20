@@ -6,14 +6,12 @@ import {
     Card,
     CardActions,
     CardContent,
-    CardMedia,
     Button,
     Typography,
     Grid,
     Container,
     Drawer,
 } from "@mui/material";
-import image1 from "images/1.jpg";
 function LeftSection(props) {
     var { Textdata } = props;
     var { activeText, isloaded } = Textdata;
@@ -53,7 +51,7 @@ function LeftSection(props) {
                     ) : (
                         <Grid
                             container
-                            rowSpacing={1}
+                            rowSpacing={3}
                             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                         >
                             {Textdata.detail.map((pechalist, i) => {
@@ -64,26 +62,21 @@ function LeftSection(props) {
                                         xs={12}
                                         md={3}
                                         sm={6}
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                        }}
                                     >
                                         <Card
-                                            sx={{ maxWidth: 345 }}
+                                            sx={{
+                                                maxWidth: 345,
+                                                borderLeft: "2px solid black",
+                                            }}
                                             key={pechalist.id}
                                         >
-                                            <CardMedia
-                                                component="img"
-                                                height="140"
-                                                image={image1}
-                                                alt="green iguana"
-                                            />
                                             <CardContent>
                                                 <Typography
                                                     gutterBottom
-                                                    variant="h5"
-                                                    component="div"
+                                                    variant="h6"
+                                                    textAlign="center"
+                                                    textTransform="capitalize"
+                                                    fontWeight="bold"
                                                 >
                                                     {pechalist.texttitle}
                                                 </Typography>

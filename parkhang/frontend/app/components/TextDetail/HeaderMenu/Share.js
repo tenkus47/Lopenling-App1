@@ -1,26 +1,56 @@
 import React, { useState, useRef } from "react";
 import classnames from "classnames";
 import ShareIcon from "@mui/icons-material/Share";
-import { Button, Tooltip, Fade, ClickAwayListener } from "@mui/material";
+import {
+    Button,
+    Tooltip,
+    Fade,
+    ClickAwayListener,
+    Snackbar,
+    Alert,
+} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 function Share(props) {
     let [showShare, setShowShare] = useState(false);
+    let [open, setOpen] = useState(false);
 
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        setOpen(false);
+    };
     return (
-        <ClickAwayListener onClickAway={() => setShowShare(false)}>
-            <Button
-                size="small"
-                // ref={domNode3}
-                variant="text"
-                style={{ padding: 0, color: "black" }}
-                onClick={() => setShowShare((prev) => !prev)}
-            >
-                <Tooltip title="Share">
-                    <ShareIcon />
-                </Tooltip>
-                <ShareOption {...props} showShare={showShare} />
-            </Button>
-        </ClickAwayListener>
+        <>
+            <ClickAwayListener onClickAway={() => setShowShare(false)}>
+                <Button
+                    size="small"
+                    // ref={domNode3}
+                    variant="text"
+                    style={{ padding: 0, color: "black" }}
+                    onClick={() => setShowShare((prev) => !prev)}
+                >
+                    <Tooltip title="Share">
+                        <ShareIcon />
+                    </Tooltip>
+                    <ShareOption
+                        {...props}
+                        showShare={showShare}
+                        setOpen={setOpen}
+                    />
+                </Button>
+            </ClickAwayListener>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    The Url Copied to Clipboard !
+                </Alert>
+            </Snackbar>
+        </>
     );
 }
 
@@ -52,7 +82,7 @@ function ShareOption(props) {
                 }, 3000);
             })
             .catch((e) => console.log(e.message))
-            .finally(() => console.log("you are copying the url " + url));
+            .finally(() => props.setOpen(true));
     };
 
     return (

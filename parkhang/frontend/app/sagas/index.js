@@ -259,8 +259,8 @@ function* loadInitialTextData(action: actions.TextDataAction) {
         // const { id: textId } = yield select(reducers.getSelectedText);
         const textId = action.text.id;
         let witnesses = yield call(api.fetchTextWitnesses, action.text);
+        yield call(loadAlignmentData, action, textId);
         yield put(actions.loadedWitnesses(action.text, witnesses));
-
         let workingWitnessData: api.WitnessData | null = null;
         let baseWitnessData: api.WitnessData | null = null;
         for (const witness of witnesses) {
@@ -287,7 +287,6 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 actions.selectedTextWitness(action.text.id, workingWitness.id)
             );
         }
-        yield call(loadAlignmentData, action, textId);
     } catch (e) {
         console.log("FAILED loadInitialTextData %o", e);
     }
@@ -728,6 +727,7 @@ function* loadAlignmentData(action, textId) {
     if (textId) {
         const AlignmentData = yield call(api.fetchAlignment, textId);
         yield put(actions.loadAlignment(AlignmentData));
+        yield call(loadTextAlignment, action, AlignmentData);
     }
 }
 // URLS
@@ -755,13 +755,6 @@ function* loadedTextUrl(
         if (t2 !== null) textId2 = t2;
         if (w2 !== null) witnessId2 = w2;
         let textData: api.TextData;
-        //Search image Alignment on basis of textId and WitnessId
-        // yield call(loadAlignmentData, action, textId);
-
-        // yield call(loadTextAlignment, action);
-        // let fetchedDataOfTextData = yield select(reducers.getTextAlignment);
-        // console.log(fetchedDataOfTextData);
-
         do {
             textData = yield select(reducers.getText, textId, true);
             if (!textData) yield delay(100);
@@ -773,7 +766,7 @@ function* loadedTextUrl(
             witnesses = yield call(api.fetchTextWitnesses, textData);
 
         yield put(actions.loadedWitnesses(textData, witnesses));
-        yield call(loadTextAlignment, action);
+        yield call(loadAlignmentData, action);
 
         let textWitnesses: Array<Witness> = [];
         do {
@@ -1054,10 +1047,11 @@ function* watchSelectTextUrlActions() {
 
 //Second window Open
 function* loadSecondWindowOpen(action, textId = null, witnessId) {
-    let textId2 = textId;
     let witnessId2 = witnessId;
+    let textId2 = null;
+    let AlignmentData = yield select(reducers.getAlignment);
     if (textId2 === null) {
-        textId2 = action.textId;
+        textId2 = 140;
     }
     let textData2;
     if (textId2 !== null) {
@@ -1078,22 +1072,21 @@ function* watchSecondWindowOpen() {
     yield takeEvery(actions.SECOND_WINDOW, loadSecondWindowOpen);
 }
 //Text Alignment Load
-import alignmentdata from "./alignmentdata.json";
-function* loadTextAlignment(action) {
-    let AlignmentData = yield select(reducers.getAlignment);
-    let Text = yield select(reducers.getSelectedText);
-
-    let AlignmentId = 10;
-    // let data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
-    let data = alignmentdata;
-    yield put(actions.setTextAlignment(data));
+function* loadTextAlignment(action, AlignmentData) {
+    let alignment = AlignmentData.alignments;
+    if (alignment.text.length > 0) {
+        let AlignmentId = alignment.text[0].alignment;
+        let data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
+        yield put(actions.setTextAlignment(data));
+    } else {
+        yield put(actions.setTextAlignment({ alignment: [] }));
+    }
 }
 //Media Load
 
 function* loadImageData(action, witnessid = null) {
     let isImageSelected = yield select(reducers.getMediaData);
     if (!isImageSelected.isImageVisible) return;
-
     let AlignmentData = yield select(reducers.getAlignment);
     let TextId = yield select(reducers.getSelectedText);
     let witness = yield select(reducers.getSelectedTextWitness);
@@ -1132,7 +1125,9 @@ function* loadVideoData(action, witnessid = null) {
     let data = yield call(api.fetchVideoWithAlignmentId);
     yield put(actions.changeVideoData(data));
 }
+
 function* loadMediaAlignment(action) {
+    yield delay(2000);
     if (action.payload === "IMAGE") {
         yield call(loadImageData, action);
     }

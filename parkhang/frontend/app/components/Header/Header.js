@@ -17,14 +17,13 @@ import {
     getActiveLocale,
 } from "reducers";
 import * as actions from "actions";
-import lopenlingLogo from "images/lopenling_logo.png";
+import lopenlingLogo from "images/lopenling_logo_173x.png";
 import UserIcon from "images/discourse_user.svg";
 import { NavLink } from "redux-first-router-link";
 import TranslateButton from "bodyComponent/utility/TranslateButton";
 import { history } from "redux-first-router";
-import { Container, Button, Tooltip, Stack, Box } from "@mui/material";
-import { useRef } from "react";
-
+import { Container, Button, Tooltip, Stack, Box, Menu } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
@@ -35,8 +34,11 @@ export const LoginControls = (props: LoginProps) => (
         <a href={SSO_SIGNUP_URL}>
             <Button
                 variant="contained"
-                size="small"
-                style={{ textDecoration: "none" }}
+                style={{
+                    padding: "6px 10px",
+                    boxShadow:
+                        "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
+                }}
             >
                 <FormattedMessage id="header.signUp" />
             </Button>
@@ -46,7 +48,18 @@ export const LoginControls = (props: LoginProps) => (
             {/* <IconButton>
                 <UserIcon width="11" />
             </IconButton> */}
-            <Button variant="contained" type="submit" size="small">
+            <Button
+                variant="contained"
+                type="submit"
+                style={{
+                    padding: "6px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    boxShadow:
+                        "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
+                }}
+            >
+                <PersonIcon style={{ height: 18, width: 19 }} />
                 <FormattedMessage id="header.login" />
             </Button>
             <input
@@ -75,19 +88,46 @@ export const LoggedInControls = (props: LoggedInControlsProps) => (
             name={props.user.name}
             onClick={props.accountButtonClicked}
         />
-        <div style={{ display: "flex", flexDirection: "column", fontSize: 10 }}>
-            <div>{props.user.name}</div>
-            <a
-                href="/discourse/logout"
-                style={{ color: "black", fontSize: 12 }}
-            >
-                <Button variant="text">logout</Button>
-            </a>
-        </div>
-        {console.log(props.overlayVisible)}
-        {/* {props.overlayVisible && (
+        <Menu
+            id="account-menu"
+            open={props.overlayVisible}
+            // onClick={props.accountButtonClicked}
+            onClose={props.accountButtonClicked}
+            MenuListProps={{
+                "aria-labelledby": "account-menu-button",
+            }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "top" }}
+            style={{ top: 20 }}
+            PaperProps={{
+                elevation: 0,
+                sx: {
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                    },
+                    "&:before": {
+                        content: '""',
+                        display: "block",
+                        position: "absolute",
+                        top: 0,
+                        right: 14,
+                        width: 10,
+                        height: 10,
+                        bgcolor: "background.paper",
+                        transform: "translateY(-50%) rotate(45deg)",
+                        zIndex: 0,
+                    },
+                },
+            }}
+        >
             <AccountOverlay top={60} right={0} user={props.user} />
-        )} */}
+        </Menu>
     </div>
 );
 
@@ -146,7 +186,12 @@ export const Header = (props: HeaderProps) => {
                     {!locations.location.pathname.includes("/texts") && (
                         <NavLink to="/">
                             <div className={styles.logo}>
-                                <img src={image_location} height="30" />
+                                <img
+                                    src={image_location}
+                                    height="37"
+                                    width={173}
+                                    alt="parkhang-logo"
+                                />
                             </div>
                         </NavLink>
                     )}

@@ -7,7 +7,7 @@ import {
 } from "react-virtualized";
 import classname from "classnames";
 import styles from "./TextList.css";
-import { TextField, ClickAwayListener } from "@mui/material";
+import { TextField, ClickAwayListener, Box, Typography } from "@mui/material";
 function TextList(props) {
     const temptext = useRef(props.texts);
     const [textslist, setTextList] = useState(temptext.current);
@@ -15,7 +15,7 @@ function TextList(props) {
     const onSelectedText = props.onSelectedText;
     const selectedText = props.selectedText;
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState(textslist[0]?.name);
+    const [selected, setSelected] = useState(selectedText.name);
 
     const cache = useRef(
         new CellMeasurerCache({
@@ -43,9 +43,18 @@ function TextList(props) {
     return (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
             <div style={{ position: "relative" }}>
-                <button onClick={handleClick} className={styles.listToggelBtn}>
-                    {selectedText ? selectedText.name : selected}
-                </button>
+                <Box
+                    onClick={handleClick}
+                    className={styles.listToggelBtn}
+                    component="div"
+                    sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        width: "5rem",
+                    }}
+                >
+                    <Typography noWrap={true}>{selected}</Typography>
+                </Box>
                 {isOpen && (
                     <div
                         className={classname(classes)}

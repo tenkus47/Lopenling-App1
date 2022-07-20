@@ -16,6 +16,8 @@ import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 
+const SCROLL_DEBOUNCE_DELAY = 500;
+
 export type Props = {
     splitText: SplitText,
     didSelectSegmentIds: (segmentIds: string[]) => void,
@@ -62,7 +64,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     firstSelectedSegment: TextSegment | null;
     selectedElementId: string | null;
     selectedElementIds: string[] | null;
-    splitTextRef;
     selectedWindow: Boolean;
     scrollEvent: () => void;
     mouseEnter: () => void;
@@ -70,7 +71,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     scrollTop;
     constructor(props: Props) {
         super(props);
-        this.splitTextRef = React.createRef(null);
         this.textAlignmentById = [];
         this.changeSyncIdOnScroll = props.changeSyncIdOnScroll;
 
@@ -97,25 +97,25 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.scrollTop = 0;
     }
     scrollEvent(e) {
-        if (this.selectedWindow === 2 && this.isPanelLinked) {
-            let list = [];
-            this.textAlignmentById.map((l) => {
-                let number = document.getElementById("s2_" + l.start);
-                if (number) {
-                    let position = number.getBoundingClientRect();
-                    if (position.top > 102) {
-                        list.push({
-                            id: l.id,
-                            start: l.start,
-                            target: l.TStart,
-                        });
-                    }
-                }
-            });
-            if (list.length > 0) {
-                this.changeSyncIdOnScroll(list[0].target);
-            }
-        }
+        // if (this.selectedWindow === 2 && this.isPanelLinked) {
+        //     let list = [];
+        //     this.textAlignmentById.map((l) => {
+        //         let number = document.getElementById("s2_" + l.start);
+        //         if (number) {
+        //             let position = number.getBoundingClientRect();
+        //             if (position.top > 102) {
+        //                 list.push({
+        //                     id: l.id,
+        //                     start: l.start,
+        //                     target: l.TStart,
+        //                 });
+        //             }
+        //         }
+        //     });
+        //     if (list.length > 0) {
+        //         this.changeSyncIdOnScroll(list[0].target);
+        //     }
+        // }
     }
 
     selectedListRow(props: Props): number | null {
@@ -495,13 +495,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             let list = this.list;
             let targetId = this.props.syncIdOnScroll;
             this.textAlignmentById = this.props.textAlignmentById;
+            this.splitText.style.scrollBehavior = "smooth";
 
             let Alignment = this.props.textAlignment.alignment;
             if (Alignment) {
-                if (targetId) {
+                if (targetId !== null) {
                     let selectedTextIndex =
                         this.props.splitText.getTextIndexOfPosition(targetId);
-                    
+
                     setTimeout(() => {
                         list.scrollToRow(selectedTextIndex);
                         setTimeout(() => {

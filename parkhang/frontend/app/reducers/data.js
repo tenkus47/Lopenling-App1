@@ -105,7 +105,7 @@ export const initialDataState: DataState = {
     questionsLoading: {},
     alignment: {},
     textAlignment: {},
-    textAlignmentById: null,
+    textAlignmentById: [],
 };
 
 function setTextAlignment(state: DataState, action) {

@@ -15,6 +15,36 @@ import Favicon from "react-favicon";
 import Editor from "components/Editors/EditorContainer";
 import useDelayUnmount from "../UI/useDelayUnmount";
 import { history } from "redux-first-router";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { green, lightBlue } from "@mui/material/colors";
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: "#6cf",
+            main: "#08c",
+            dark: "#069",
+            contrastText: "#fff",
+        },
+        secondary: {
+            light: "#ff7961",
+            main: "#f44336",
+            dark: "#ba000d",
+            contrastText: "#000",
+        },
+    },
+    typography: {
+        button: {
+            fontWeight: "normal",
+            lineHeight: "normal",
+            textTransform: "capitalize",
+            textDecoration: "none",
+            letterSpacing: 0,
+            borderRadius: "4px",
+            fontFamily: "'Qomolangma-UchenSarchen', 'Overpass', sans-serif",
+        },
+    },
+});
+
 type Props = {
     title: string,
     textListIsVisible: boolean,
@@ -45,35 +75,37 @@ const App = (props: Props) => {
         setTitle("Parkhang");
     }
     return (
-        <div
-            style={{ position: "relative" }}
-            className={classnames(
-                styles.container,
-                utilStyles.flex,
-                utilStyles.flexColumn
-            )}
-            onKeyDown={(e: SyntheticKeyboardEvent<*>) => {
-                handleKeyDown(e, props.state, props.dispatch);
-            }}
-        >
-            <Favicon url={favimage} />
-            {shouldRenderChild && (
-                <Box sx={{ width: "100%" }}>
-                    <LinearProgress />
-                </Box>
-            )}
-            <HeaderContainer />
-            {url.location.pathname === "/textSelection" ||
-            url.location.pathname === "" ? (
-                <Main />
-            ) : SelectedText ? (
-                <Editor props={props} />
-            ) : (
-                <div>
-                    Refresh the page here <a href="/"> click </a>
-                </div>
-            )}
-        </div>
+        <ThemeProvider theme={theme}>
+            <div
+                style={{ position: "relative" }}
+                className={classnames(
+                    styles.container,
+                    utilStyles.flex,
+                    utilStyles.flexColumn
+                )}
+                onKeyDown={(e: SyntheticKeyboardEvent<*>) => {
+                    handleKeyDown(e, props.state, props.dispatch);
+                }}
+            >
+                <Favicon url={favimage} />
+                {shouldRenderChild && (
+                    <Box sx={{ width: "100%" }}>
+                        <LinearProgress />
+                    </Box>
+                )}
+                <HeaderContainer />
+                {url.location.pathname === "/textSelection" ||
+                url.location.pathname === "" ? (
+                    <Main />
+                ) : SelectedText ? (
+                    <Editor props={props} />
+                ) : (
+                    <div>
+                        Refresh the page here <a href="/"> click </a>
+                    </div>
+                )}
+            </div>
+        </ThemeProvider>
     );
 };
 
