@@ -8,17 +8,12 @@ import headerStyles from "components/Header/Header.css";
 import Resources from 'components/Resources'
 import isMobile from 'bodyComponent/utility/isMobile'
 import SplitPane, { Pane } from "react-split-pane";
-import { useFlags } from 'flagsmith/react';
 import styles from "./EditorContainer.css";
 import classnames from "classnames";
 import utilStyles from "css/util.css";
 import TextSheet from './TextSheet';
 
 const Editor=({props})=>{
-   
-    const flags = useFlags(['navbar_parkhang']);
-   
-   let navbar_parkhang = flags?.navbar_parkhang?.enabled
 
     let textListClassnames = [styles.listContainer];
     let bodyHeight;

@@ -1,6 +1,6 @@
 @import 'css/colour.css';
 @value ThirdWindow-Height: 300px;
-@value header-Height: 30px;
+@value header-Height: 45px;
 
 :export {
     ThirdWindowHeight: 250px;
@@ -14,29 +14,24 @@
 
 .ThirdWindow {
     transition: 0.5s all linear;
-    resize: both;
     position: absolute;
     height: var(--ThirdWindowHeight);
     width: 100%;
-    z-index: 99999;
-    bottom: 0;
+    z-index: 999;
+    bottom: 0px;
     background-color: var(--text-bg);
-    border: 1px solid gray;
     overflow: hidden;
-    max-height: 250px;
 }
 
 .ThirdWindowPortrait {
-    resize: both;
     overflow: auto;
     transition: none;
     position: absolute;
     height: 100%;
     width: 50%;
-    z-index: 99999;
+    z-index: 999;
     right: 0;
     background-color: var(--text-bg);
-    border: thick double var(--green);
 }
 
 .header {
@@ -46,7 +41,6 @@
     right: 0;
     left: 0;
     background-color: var(--textDetail-heading);
-    border-bottom: 1px solid var(--dark-gray);
     display: flex;
     align-items: center;
     padding-inline: 30px;
@@ -65,41 +59,17 @@
     margin-inline: 10px;
 }
 
-.closeBtn {
-    position: inherit;
-    right: 10px;
-    top: 2px;
-    cursor: pointer;
-    font-weight: bold;
-    background-color: black;
-    color: white;
-    border-radius: 50%;
-    padding: 2px;
-    height: 25px;
-    width: 25px;
-    text-align: center;
-}
-
-.closeBtn:hover {
-    background-color: gray;
-}
-
 
 .ImageStyle {
     object-fit: contain;
-    max-height: 220px;
-    max-width: 90%;
-    margin: 0 auto;
+    height: 100%;
+    max-width: 100%;
+
 }
 
-.NavigationImage button:hover {
-    background-color: rgb(54, 52, 52);
-    color: gainsboro;
-}
 
 .imageSection {
     width: 100%;
-    height: calc(100%-30px);
+    height: calc(100%-45px);
     position: relative;
-    top: 30px;
 }

@@ -30,6 +30,8 @@ import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 import { ClickAwayListener } from "@mui/material";
+import flagsmith from "flagsmith";
+
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
@@ -78,6 +80,9 @@ export type Props = {
     isPanelVisible: Boolean,
     textAlignmentById: {},
     selectedWindow: Boolean,
+    syncIdOnScroll2: Number,
+    selectedTargetRange: [],
+    selectedSourceRange: [],
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -93,8 +98,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }) => React.Element<CellMeasurer>;
     resizeHandler: () => void;
     selectionHandler: (e: Event) => void;
-    mouseEnter: () => void;
-    mouseLeft: () => void;
+    fake_login_toggle: null;
     textListVisible: boolean;
     editMenuVisible: Boolean;
     activeSelection: Selection | null;
@@ -125,6 +129,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     scrollEvent: () => void;
     selectedWindow;
     debouncedSearch;
+    targetId;
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
@@ -157,14 +162,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.textAlignmentById = [];
         this.scrollEvent = this.scrollEvent.bind(this);
         this.selectedWindow = props.selectedWindow;
+        this.fake_login_toggle = flagsmith.hasFeature("fake_login_toggle");
     }
 
     scrollEvent(e) {
+        if (this.selectedWindow === 2) return null;
         if (this.selectedWindow === 1 && this.isPanelLinked) {
             let list = [];
             this.textAlignmentById.map((l) => {
                 let number = document.getElementById("s_" + l.start);
-
                 if (number) {
                     let position = number.getBoundingClientRect();
                     if (position.top > 102) {
@@ -177,32 +183,18 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
             });
             if (!_.isEmpty(list)) {
-                this.debouncedSearch(list);
+                if (this.selectedWindow === 1) {
+                    this.debouncedSearch(list);
+                }
             }
         }
     }
 
     updateId(id) {
-        // if (id && id.includes("s")) {
-        //     let newId = id.replace("s", "s2");
-        //     if (document.getElementById(newId)) {
-        //         document
-        //             ?.getElementById(newId)
-        //             ?.scrollIntoView({ block: "center" });
-        //         let positionHighlight = document
-        //             .getElementById(newId)
-        //             .getBoundingClientRect();
-        //         let hightlighter = document.createElement("div");
-        //         hightlighter.classList.add(styles.hightlighter);
-        //         hightlighter.style.border = "2px solid blue";
-        //         document.getElementById(newId).append(hightlighter);
-        //         document.getElementById(newId).style.color = "blue";
-        //         setTimeout(() => {
-        //             document.getElementById(newId).style.color = "black";
-        //             hightlighter.remove();
-        //         }, 500);
-        //     }
-        // }
+        let rangeUnique = this.textAlignmentById.find(
+            (l) => segment.start >= l.start && segment.start < l.end
+        );
+        console.log(rangeUnique);
     }
 
     updateList(
@@ -254,18 +246,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.activeSelection = null;
         }
     }
-    mouseEnter() {
-        this.windowSelected = true;
-    }
-    mouseLeft() {
-        this.windowSelected = false;
-    }
-
     handleSelection(e: Event) {
         if (!this._modifyingSelection) {
             this.activeSelection = document.getSelection();
-            let selected = this.activeSelection?.anchorNode?.parentElement;
-            this.updateId(selected?.id);
             if (!this._mouseDown) {
                 // sometimes, this gets called after the mouseDown event handler
                 this.mouseUp();
@@ -711,11 +694,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidUpdate() {
-        let list = this.list;
         this.textAlignmentById = this.props.textAlignmentById;
         this.isPanelLinked = this.props.isPanelLinked;
         this.selectedWindow = this.props.selectedWindow;
-        let targetId = this.props.syncIdOnScroll;
+        this.targetId = this.props.syncIdOnScroll2;
+        let list = this.list;
+        this.fake_login_toggle = true;
+
         if (this.selectedNodes && this.selectedNodes.length > 0) {
             const selectedNodes = this.selectedNodes;
             const selectedSegments = this.props.selectedAnnotatedSegments;
@@ -771,21 +756,23 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this._didSetInitialScrollPosition = true;
         }
 
-        if (this.selectedWindow === 2 && this.isPanelLinked) {
-            this.textAlignmentById = this.props.textAlignmentById;
-            if (this.textAlignmentById) {
-                if (targetId) {
-                    let selectedTextIndex =
-                        this.props.splitText.getTextIndexOfPosition(targetId);
-                    setTimeout(() => {
-                        list.scrollToRow(selectedTextIndex);
-                        setTimeout(() => {
-                            list.scrollToPosition(list.props.scrollTop - 300);
-                        }, 0);
-                    }, 100);
-                }
-            }
-        }
+        // if (this.selectedWindow === 2 && this.isPanelLinked) {
+        //     this.textAlignmentById = this.props.textAlignmentById;
+        //     if (this.textAlignmentById) {
+        //         if (this.targetId) {
+        //             let selectedTextIndex =
+        //                 this.props.splitText.getTextIndexOfPosition(
+        //                     this.targetId
+        //                 );
+        //             setTimeout(() => {
+        //                 list.scrollToRow(selectedTextIndex);
+        //                 setTimeout(() => {
+        //                     list.scrollToPosition(list.props.scrollTop - 300);
+        //                 }, 0);
+        //             }, 100);
+        //         }
+        //     }
+        // }
     }
 
     componentWillUnmount() {
@@ -1030,7 +1017,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     className={styles.splitTextRow}
                     ref={this.splitTextRef}
                     id={`index_${index}`}
-                    data-group={`data-${index}`}
                 >
                     <div className={styles.splitTextRowContent}>
                         {/* {props.showImages && (
@@ -1088,9 +1074,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             searchStringPositions={searchStringPositions}
                             fontSize={props.fontSize}
                             changeSyncIdOnClick={this.props.changeSyncIdOnClick}
+                            changeSyncIdOnScroll={
+                                this.props.changeSyncIdOnScroll
+                            }
                             isPanelLinked={this.props.isPanelLinked}
                             isAnnotating={this.props.isAnnotating}
                             textAlignmentById={this.props.textAlignmentById}
+                            selectedSourceRange={this.props.selectedSourceRange}
+                            selectedTargetRange={this.props.selectedTargetRange}
+                            changeSelectedRange={this.props.changeSelectedRange}
                             // menuVisible={props.menuVisible}
                         />
                     </div>
@@ -1109,6 +1101,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 splitText={props.splitText}
                                 selectedElementIds={this.selectedElementIds}
                                 list={this.list}
+                                fake_login_toggle={this.fake_login_toggle}
                             />
                         )}
                 </div>

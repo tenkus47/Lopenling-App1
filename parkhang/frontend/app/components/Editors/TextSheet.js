@@ -1,6 +1,10 @@
-import React, { memo } from "react";
-import TextDetailContainer from "components/TextDetail/TextDetailContainer";
-import TextDetailContainer2 from "components/TextDetail2/TextDetailContainer";
+import React, { memo, Suspense } from "react";
+const TextDetailContainer = React.lazy(() =>
+    import("components/TextDetail/TextDetailContainer")
+);
+const TextDetailContainer2 = React.lazy(() =>
+    import("components/TextDetail2/TextDetailContainer")
+);
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
@@ -11,14 +15,25 @@ function TextSheet(props) {
         <div
             style={{
                 display: "flex",
+                flexDirection: "column",
                 width: "100%",
-                height: props.bodyHeight,
                 overflow: "hidden",
+                position: "relative",
             }}
         >
-            <TextDetailContainer />
-            {props.isSecondWindowOpen && <TextDetailContainer2 />}
-
+            <Suspense fallback={<div> Loading</div>}>
+                <div
+                    style={{
+                        display: "flex",
+                        maxWidth: "100%",
+                        flex: 1,
+                        height: props.bodyHeight,
+                    }}
+                >
+                    <TextDetailContainer />
+                    {props.isSecondWindowOpen && <TextDetailContainer2 />}
+                </div>
+            </Suspense>
             {props.Media.isPanelVisible && (
                 //  && props.isSecondWindowOpen
                 <MediaComponent

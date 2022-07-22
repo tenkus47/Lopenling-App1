@@ -181,6 +181,7 @@ export const Header = (props: HeaderProps) => {
                         flexGrow: 1,
                         gap: 3,
                         display: { xs: "none", md: "flex" },
+                        alignItems: { md: "center" },
                     }}
                 >
                     {!locations.location.pathname.includes("/texts") && (
@@ -208,6 +209,7 @@ export const Header = (props: HeaderProps) => {
                         to={"/textSelection"}
                         style={{ color: "#676767" }}
                         component={LinkRef}
+                        variant="text"
                     >
                         <FormattedMessage id={"header.texts"} />
                     </Button>
@@ -215,13 +217,17 @@ export const Header = (props: HeaderProps) => {
                         to={"/texts/2"}
                         style={{ color: "#676767" }}
                         component={LinkRef}
+                        variant="text"
+                        disabled
                     >
                         <FormattedMessage id={"header.editor"} />
                     </Button>
                     <Tooltip title="Forum">
                         <Button
+                            href={"https://www.lopenling.org"}
                             style={{ color: "#676767" }}
-                            href="https://www.lopenling.org"
+                            variant="text"
+                            component={"a"}
                         >
                             <FormattedMessage id={"lopenlingForum"} />
                         </Button>

@@ -17,19 +17,13 @@ function TextDetail(props) {
     useEffect(() => {
         let element = ref.current;
         element.addEventListener("mouseenter", mouseEnter);
-        element.addEventListener("mouseleave", mouseLeft);
         return () => {
             element.removeEventListener("mouseenter", mouseEnter);
-            element.removeEventListener("mouseleave", mouseLeft);
         };
     }, []);
 
     function mouseEnter() {
-        // props.changeSelectedWindow(2);
-        console.log("secondwindowSelected");
-    }
-    function mouseLeft() {
-        props.changeSelectedWindow(0);
+        props.changeSelectedWindow(2);
     }
 
     let inlineControls = false;
@@ -73,8 +67,11 @@ function TextDetail(props) {
                 textAlignment={props.textAlignment}
                 textAlignmentById={props.textAlignmentById}
                 isPanelLinked={props.isPanelLinked}
-                changeSyncIdOnScroll={props.changeSyncIdOnScroll}
+                changeSyncIdOnScroll2={props.changeSyncIdOnScroll2}
                 selectedWindow={props.selectedWindow}
+                selectedSourceRange={props.selectedSourceRange}
+                selectedTargetRange={props.selectedTargetRange}
+                changeSelectedRange={props.changeSelectedRange}
             ></SplitTextComponent>
         );
     }
@@ -82,13 +79,13 @@ function TextDetail(props) {
     let textComponents = [textComponent];
     let thirdWindowHeight = imageStyle.ThirdWindowHeight;
     let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
-    let condition = props.isPanelVisible;
+    // let condition = props.isPanelVisible;
     return (
         <div
             ref={ref}
             className={styles.textDetail2}
             style={{
-                height: condition ? bodyHeight : "100%",
+                height: "100%",
             }}
         >
             <TextDetailHeading />
