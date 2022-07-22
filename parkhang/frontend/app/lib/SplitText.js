@@ -23,7 +23,6 @@ export default class SplitText {
         if (!this.annotatedText) {
             return [];
         }
-
         if (
             !this._texts ||
             this._textsId !== this.annotatedText.getUniqueId()
@@ -70,7 +69,6 @@ export default class SplitText {
             this._texts = texts.filter((l) => l.segments.length > 0);
             this._textsId = this.annotatedText.getUniqueId();
         }
-
         return this._texts || [];
     }
 

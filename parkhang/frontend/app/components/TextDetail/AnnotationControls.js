@@ -20,7 +20,6 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
-import flagsmith from "flagsmith";
 
 import type { AnnotationUniqueId } from "lib/Annotation";
 
@@ -82,7 +81,7 @@ class AnnotationControls extends React.Component<Props> {
     controls: HTMLDivElement | null;
     arrow: HTMLDivElement | null;
     arrowDs: HTMLDivElement | null;
-    fake_login_toggle: null;
+    fakeLogin: Boolean;
     annotation: null;
     constructor(props: Props) {
         super(props);
@@ -94,13 +93,13 @@ class AnnotationControls extends React.Component<Props> {
 
     componentDidMount() {
         this.updatePosition();
-        this.fake_login_toggle = flagsmith.hasFeature("fake_login_toggle");
     }
 
     componentDidUpdate() {
         // Need to delay calling this because the browser
         // may not have finished rendering when first called.
         setTimeout(this.updatePosition.bind(this), 0);
+        this.fakeLogin = this.props.fake_login_togle;
     }
 
     updatePosition() {
@@ -384,39 +383,37 @@ class AnnotationControls extends React.Component<Props> {
                         />
                     );
                     temporaryAnnotations.push(annotationDetail);
-                } 
-                    else {
-                        let annotationDetail = (
-                            <AnnotationDetail
-                                isWorkingSection={false}
-                                fontSize={props.fontSize}
-                                annotationData={annotationData}
-                                key={annotationData.annotation.uniqueId}
-                                isActive={isActive}
-                                selectAnnotationHandler={() => {
-                                    if (isLoggedIn && !isEditing) {
-                                        props.didSelectAnnotation(
-                                            annotationData.annotation
-                                        );
-                                    }
-                                }}
-                                editAnnotationHandler={() => {
-                                    if (isLoggedIn && !isEditing) {
-                                        this.annotation =
-                                            annotationData.annotation;
-                                        props.editAnnotation(
-                                            annotationData.annotation
-                                        );
-                                    }
-                                }}
-                                isLoggedIn={isLoggedIn}
-                            />
-                        );
-                        annotations.push(annotationDetail);
-                    }
-                
+                } else {
+                    let annotationDetail = (
+                        <AnnotationDetail
+                            isWorkingSection={false}
+                            fontSize={props.fontSize}
+                            annotationData={annotationData}
+                            key={annotationData.annotation.uniqueId}
+                            isActive={isActive}
+                            selectAnnotationHandler={() => {
+                                if (isLoggedIn && !isEditing) {
+                                    props.didSelectAnnotation(
+                                        annotationData.annotation
+                                    );
+                                }
+                            }}
+                            editAnnotationHandler={() => {
+                                if (isLoggedIn && !isEditing) {
+                                    this.annotation = annotationData.annotation;
+
+                                    props.editAnnotation(
+                                        annotationData.annotation
+                                    );
+                                }
+                            }}
+                            isLoggedIn={isLoggedIn}
+                        />
+                    );
+                    annotations.push(annotationDetail);
+                }
             }, this);
-            if (!this.fake_login_toggle === !props.user.isLoggedIn) {
+            if (!props.user.isLoggedIn) {
                 // NOTE: FormattedMessage cannot take a child when using
                 // the values option, so need to wrap it in a div
 
@@ -657,9 +654,8 @@ class AnnotationControls extends React.Component<Props> {
                         addQuestion={allowQuestion ? props.addQuestion : null}
                         closeAnnotation={props.closeAnnotation}
                         editAnnotationHandler={() => {
-                            if (isLoggedIn && !isEditing) {
-                                props.editAnnotation(this.annotation);
-                            }
+                            let editBtn = document.getElementById("editBtn");
+                            editBtn?.click();
                         }}
                         userLoggedIn={isLoggedIn}
                     />

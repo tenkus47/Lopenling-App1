@@ -56,6 +56,8 @@ export type Props = {
     fontSize?: number,
     activeWitness: Witness,
     textAlignmentById: {},
+    selectedSourceRange: [],
+    selectedTargetRange: [],
 };
 
 export type State = {
@@ -192,6 +194,9 @@ export default class Text2 extends React.Component<Props, State> {
             // ) {
             //     classes.push(styles.selectedAnnotation);
             // }
+            if (renderProps.selectedTargetRange?.includes(segment.start)) {
+                classes.push(styles.selectedRange);
+            }
 
             if (classes.length > 0) {
                 let className = classnames(...classes);

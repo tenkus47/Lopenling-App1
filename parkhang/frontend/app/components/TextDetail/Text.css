@@ -34,7 +34,7 @@
 
 .syncIdClass {
     font-weight: 900;
-
+    font-size: 10px;
     cursor: pointer;
 }
 
@@ -90,7 +90,8 @@
 }
 
 .selectedAnnotation {
-    background-color: #ccc;
+    background-color: rgb(212, 197, 197);
+
 }
 
 .removedByAnnotation {
@@ -130,4 +131,8 @@
 .pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
+}
+
+.selectedRange {
+    background-color: #eee;
 }

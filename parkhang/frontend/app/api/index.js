@@ -109,7 +109,7 @@ export function fetchAlignment(textId = 0) {
 }
 
 export function fetchChapterDetail() {
-    const url = "https://api.npoint.io/bf0ceeb6cdae14e09a17";
+    const url = "/api/texts/featured/";
     return request(GET, url);
 }
 export function fetchTextPairWithAlignmentId(AlignmentId = 1) {

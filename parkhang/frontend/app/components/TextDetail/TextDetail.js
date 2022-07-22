@@ -17,7 +17,8 @@ import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
-
+import { Box } from "@mui/material";
+import _ from "lodash";
 export type Props = {
     paginated: boolean,
     pageImagesVisible: boolean,
@@ -53,6 +54,11 @@ export type Props = {
     textAlignmentById: {},
     selectedWindow: Number,
     changeSelectedWindow: () => void,
+    changeSelectedRange: [],
+    syncIdOnScroll: Number,
+    syncIdOnScroll2: Number,
+    selectedSourceRange: [],
+    selectedTargetRange: [],
 };
 
 let textDetailId = 0;
@@ -69,26 +75,17 @@ class TextDetail extends React.Component<Props> {
     }
 
     mouseEnter() {
-        this.props.changeSelectedWindow(1);
+        if (this.selectedWindow === 2) this.props.changeSelectedWindow(1);
     }
-    mouseLeft() {
-        this.props.changeSelectedWindow(0);
-    }
-
     componentDidMount() {
         this.ref.current.addEventListener(
             "mouseenter",
             this.mouseEnter.bind(this)
         );
-        this.ref.current.addEventListener(
-            "mouseleave",
-            this.mouseLeft.bind(this)
-        );
     }
     componentDidUpdate() {
         this.selectedWindow = this.props.selectedWindow;
     }
-
     render() {
         let text = {
             name: "",
@@ -150,20 +147,19 @@ class TextDetail extends React.Component<Props> {
                     textAlignmentById={this.props.textAlignmentById}
                     isPanelVisible={this.props.isPanelVisible}
                     syncIdOnScroll={this.props.syncIdOnScroll}
+                    syncIdOnScroll2={this.props.syncIdOnScroll2}
                     selectedWindow={this.props.selectedWindow}
+                    selectedSourceRange={this.props.selectedSourceRange}
+                    selectedTargetRange={this.props.selectedTargetRange}
+                    changeSelectedRange={this.props.changeSelectedRange}
                 ></SplitTextComponent>
             );
         }
         let textComponents = [textComponent];
-        let thirdWindowHeight = imageStyle.ThirdWindowHeight;
-        let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
-        let condition =
-            !this.props.isImagePortrait && this.props.isPanelVisible;
-
         return (
-            <div
+            <Box
                 style={{
-                    height: condition ? bodyHeight : "100%",
+                    height: "100%",
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -184,7 +180,7 @@ class TextDetail extends React.Component<Props> {
                 >
                     {!this.props.loading ? textComponents : <div />}
                 </div>
-            </div>
+            </Box>
         );
     }
 }

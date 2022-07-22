@@ -76,6 +76,7 @@ const SelectVersion = (props: Props) => {
                 root: classtype.selectEmpty,
                 select: classtype.select,
             }}
+            style={{ border: 0 }}
         >
             {witnesses.map((witness, key) => {
                 if (witness.id === props.activeWitness.id)
@@ -96,6 +97,7 @@ const SelectVersion = (props: Props) => {
                         key={`versionSelect-${key}`}
                         value={key}
                         className={classes}
+                        styles={{ textAlign: "center" }}
                     >
                         {tabName}
                     </option>

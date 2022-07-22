@@ -50,6 +50,8 @@ import {
     getSelectedImage,
     isImagePortrait,
     isPanelVisible,
+    getSelectedSourceRange,
+    getSelectedTargetRange,
 } from "reducers";
 import * as reducers from "reducers";
 import _ from "lodash";
@@ -158,6 +160,7 @@ const mapStateToProps = (state) => {
     const textListVisible = getTextListVisible(state);
     const isPanelLinked = reducers.isPanelLinked(state);
     const textAlignmentById = reducers.getTextAlignmentById(state);
+
     if (loading) {
         return {
             text: null,
@@ -268,7 +271,7 @@ const mapStateToProps = (state) => {
                 annotatedText.getAnnotationsOfType(
                     ANNOTATION_TYPES.pageBreak
                 ) || {};
-
+            // console.log(witnessPageBreaks);
             let basePageBreaks = null;
             if (selectedWitness.id !== baseWitness.id) {
                 basePageBreaks = getAnnotationsForWitnessId(
@@ -302,6 +305,8 @@ const mapStateToProps = (state) => {
     }
     _selectedWitness = selectedWitness;
     const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
+    const syncIdOnScroll2 = reducers.getSyncIdOnScroll2(state);
+
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const selectedWindow = reducers.getSelectedWindow(state);
     return {
@@ -335,8 +340,11 @@ const mapStateToProps = (state) => {
         isAnnotating: reducers.isAnnotating(state),
         textAlignmentById,
         syncIdOnScroll,
+        syncIdOnScroll2,
         syncIdOnClick,
         selectedWindow,
+        selectedSourceRange: getSelectedSourceRange(state),
+        selectedTargetRange: getSelectedTargetRange(state),
     };
 };
 
@@ -563,6 +571,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         changeSelectedWindow: (payload) => {
             dispatch(actions.changeSelectedWindow(payload));
+        },
+        changeSelectedRange: (payload) => {
+            dispatch(actions.changeSelectedRange(payload));
         },
         closeAnnotation: () => {
             const dismissTextAnnotation =

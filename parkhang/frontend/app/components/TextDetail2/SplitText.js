@@ -34,8 +34,10 @@ export type Props = {
     fontSize: number,
     isPanelLinked: Boolean,
     textAlignmentById: {},
-    changeSyncIdOnScroll: () => void,
+    changeSyncIdOnScroll2: () => void,
     selectedWindow: Boolean,
+    selectedTargetRange: [],
+    selectedSourceRange: [],
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -57,7 +59,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     selectedNodes: Node[] | null;
     // Whether the mouse button is down
     textAlignmentById;
-    changeSyncIdOnScroll: () => void;
+    changeSyncIdOnScroll2: () => void;
 
     selectedTextIndex: number | null;
     splitTextRect: ClientRect | null;
@@ -72,7 +74,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
-        this.changeSyncIdOnScroll = props.changeSyncIdOnScroll;
+        this.changeSyncIdOnScroll2 = props.changeSyncIdOnScroll2;
 
         this.list = null;
         this.splitText = null;
@@ -97,25 +99,26 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.scrollTop = 0;
     }
     scrollEvent(e) {
-        // if (this.selectedWindow === 2 && this.isPanelLinked) {
-        //     let list = [];
-        //     this.textAlignmentById.map((l) => {
-        //         let number = document.getElementById("s2_" + l.start);
-        //         if (number) {
-        //             let position = number.getBoundingClientRect();
-        //             if (position.top > 102) {
-        //                 list.push({
-        //                     id: l.id,
-        //                     start: l.start,
-        //                     target: l.TStart,
-        //                 });
-        //             }
-        //         }
-        //     });
-        //     if (list.length > 0) {
-        //         this.changeSyncIdOnScroll(list[0].target);
-        //     }
-        // }
+        if (this.selectedWindow === 1) return null;
+        if (this.selectedWindow === 2 && this.isPanelLinked) {
+            let list = [];
+            this.textAlignmentById.map((l) => {
+                let number = document.getElementById("s2_" + l.start);
+                if (number) {
+                    let position = number.getBoundingClientRect();
+                    if (position.top > 102) {
+                        list.push({
+                            id: l.id,
+                            start: l.start,
+                            target: l.TStart,
+                        });
+                    }
+                }
+            });
+            if (list.length > 0) {
+                this.changeSyncIdOnScroll2(list[0].target);
+            }
+        }
     }
 
     selectedListRow(props: Props): number | null {
@@ -490,13 +493,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
     componentDidUpdate() {
         this.selectedWindow = this.props.selectedWindow;
+
         if (this.selectedWindow === 1 && this.isPanelLinked) {
+            let targetId = this.props.syncIdOnScroll;
+            let targetId2 = this.props.syncIdOnClick;
+
             this.isPanelLinked = this.props.isPanelLinked;
             let list = this.list;
-            let targetId = this.props.syncIdOnScroll;
             this.textAlignmentById = this.props.textAlignmentById;
             this.splitText.style.scrollBehavior = "smooth";
-
             let Alignment = this.props.textAlignment.alignment;
             if (Alignment) {
                 if (targetId !== null) {
@@ -505,6 +510,27 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
                     setTimeout(() => {
                         list.scrollToRow(selectedTextIndex);
+
+                        setTimeout(() => {
+                            list.scrollToPosition(list.props.scrollTop - 300);
+                        }, 0);
+                    }, 100);
+                } else {
+                    let clickIdObj = Alignment.find(
+                        (l) =>
+                            targetId2 >= l.source_segment.start &&
+                            targetId2 < l.source_segment.end
+                    );
+                    let syncClickTargetId = clickIdObj?.target_segment?.start;
+
+                    let selectedTextIndex =
+                        this.props.splitText.getTextIndexOfPosition(
+                            syncClickTargetId
+                        );
+
+                    setTimeout(() => {
+                        list.scrollToRow(selectedTextIndex);
+
                         setTimeout(() => {
                             list.scrollToPosition(list.props.scrollTop - 300);
                         }, 0);
@@ -748,7 +774,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
                             // scrollTop={0}
-                            scrollToAlignment="center"
+                            scrollToAlignment="start"
                         ></List>
                     )}
                 </AutoSizer>
@@ -879,8 +905,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             //     this.props.selectedSearchResult
                             // }
                             // searchStringPositions={searchStringPositions}
-                            textAlignmentById={this.props.textAlignmentById}
+                            textAlignmentById={props.textAlignmentById}
                             fontSize={props.fontSize}
+                            selectedSourceRange={props.selectedSourceRange}
+                            selectedTargetRange={props.selectedTargetRange}
+                            changeSelectedRange={props.changeSelectedRange}
                         ></Text2>
                     </div>
                 </div>

@@ -87,6 +87,8 @@ export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
 export const SECOND_WINDOW = "notification/SECOND_WINDOW";
 
+export const CHANGE_RANGE_SELECTION = "CHANGE_RANGE_SELECTION";
+
 export const SELECTED_WITNESS = "text/SELECTED_WITNESS";
 export const SELECTED_WITNESS2 = "text/SELECTED_WITNESS2";
 
@@ -116,6 +118,8 @@ export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 
 export const LINK_PANEL = "panel/LINKED";
 export const SYNC_ID_ON_SCROLL = "ScrollSync/ID";
+export const SYNC_ID_ON_SCROLL2 = "ScrollSync2/ID";
+
 export const SYNC_ID_ON_CLICK = "ClickSync/ID";
 export const CHANGE_SELECTED_WINDOW = "CHANGE_SELECTED_WINDOW";
 
@@ -901,10 +905,10 @@ export function selectTextTitle(textTitle: string) {
     };
 }
 
-export function setTextData(originData) {
+export function setTextData(featuredText) {
     return {
         type: SET_TEXTDATA,
-        payload: originData,
+        payload: featuredText,
     };
 }
 
@@ -947,10 +951,22 @@ export function changeSyncIdOnScroll(payload) {
         payload: payload,
     };
 }
+export function changeSyncIdOnScroll2(payload) {
+    return {
+        type: SYNC_ID_ON_SCROLL2,
+        payload: payload,
+    };
+}
 
 export function changeSyncIdOnClick(payload) {
     return {
         type: SYNC_ID_ON_CLICK,
+        payload,
+    };
+}
+export function changeSelectedRange(payload) {
+    return {
+        type: CHANGE_RANGE_SELECTION,
         payload,
     };
 }

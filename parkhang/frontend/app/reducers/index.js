@@ -234,11 +234,20 @@ export const isSecondWindowOpen = (state: AppState): number => {
 export const getSyncIdOnScroll = (state: AppState): number => {
     return ui.getSyncIdOnScroll(state.ui);
 };
+export const getSyncIdOnScroll2 = (state: AppState): number => {
+    return ui.getSyncIdOnScroll2(state.ui);
+};
 export const getSyncIdOnClick = (state: AppState): number => {
     return ui.getSyncIdOnCLick(state.ui);
 };
 export const isPanelLinked = (state: AppState): number => {
     return ui.isPanelLinked(state.ui);
+};
+export const getSelectedSourceRange = (state) => {
+    return ui.getSelectedSourceRange(state.ui);
+};
+export const getSelectedTargetRange = (state) => {
+    return ui.getSelectedTargetRange(state.ui);
 };
 
 //media

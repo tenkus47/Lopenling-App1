@@ -114,8 +114,11 @@ function setTextAlignment(state: DataState, action) {
     newArray.map((li, index) => {
         newList.push({
             id: index + 1,
+            uniqueAttr: `seg-${li.source_segment.start}`,
             start: li.source_segment.start,
+            end: li.source_segment.end,
             TStart: li.target_segment.start,
+            TEnd: li.target_segment.end,
         });
     });
     return {

@@ -38,7 +38,11 @@ export type UIState = {
     showSecondWindow: Boolean,
     selectedWindow: {},
     SyncIdOnScroll: String,
+    SyncIdOnScroll2: String,
+
     SyncIdOnClick: String,
+    selectedSourceRange: [],
+    selectedTargetRange: [],
 
     isPanelLinked: boolean,
     isAnnotating: Boolean,
@@ -66,7 +70,10 @@ export const initialUIState = {
     textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,
     showSecondWindow: false,
     SyncIdOnScroll: 0,
+    SyncIdOnScroll2: null,
     SyncIdOnClick: 0,
+    selectedSourceRange: [],
+    selectedTargetRange: [],
     isPanelLinked: true,
     isAnnotating: false,
     selectedWindow: 1,
@@ -146,6 +153,18 @@ function changeSyncIdOnScroll(
 
     return state;
 }
+function changeSyncIdOnScroll2(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
+    state = {
+        ...state,
+        SyncIdOnScroll2: action.payload,
+    };
+
+    return state;
+}
+
 function changeSyncIdOnClick(
     state: UIState,
     action: actions.SelectedTextAction
@@ -156,6 +175,14 @@ function changeSyncIdOnClick(
     };
 
     return state;
+}
+
+function changeRangeSelection(state, action) {
+    return {
+        ...state,
+        selectedSourceRange: action.payload.source,
+        selectedTargetRange: action.payload.target,
+    };
 }
 
 function changeLinkPanel(
@@ -502,7 +529,11 @@ uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.NO_SELECTED_TEXT] = noSelectedText;
 uiReducers[actions.SYNC_ID_ON_SCROLL] = changeSyncIdOnScroll;
+uiReducers[actions.SYNC_ID_ON_SCROLL2] = changeSyncIdOnScroll2;
+
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
+uiReducers[actions.CHANGE_RANGE_SELECTION] = changeRangeSelection;
+
 uiReducers[actions.LINK_PANEL] = changeLinkPanel;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.SELECTED_WITNESS2] = selectedTextWitness2;
@@ -532,6 +563,12 @@ export default uiReducers;
 
 export const getSelectedWindow = (state) => {
     return state.selectedWindow;
+};
+export const getSelectedSourceRange = (state) => {
+    return state.selectedSourceRange;
+};
+export const getSelectedTargetRange = (state) => {
+    return state.selectedTargetRange;
 };
 export const isAnnotating = (state) => {
     return state.isAnnotating;
@@ -602,6 +639,9 @@ export const getTextListWidth = (state: UIState): number => {
 };
 export const getSyncIdOnScroll = (state: UIState): number => {
     return state.SyncIdOnScroll;
+};
+export const getSyncIdOnScroll2 = (state: UIState): number => {
+    return state.SyncIdOnScroll2;
 };
 export const getSyncIdOnCLick = (state: UIState): number => {
     return state.SyncIdOnClick;

@@ -122,3 +122,7 @@
     font-weight: 900;
     cursor: pointer;
 }
+
+.selectedRange {
+    background-color: #eee;
+}

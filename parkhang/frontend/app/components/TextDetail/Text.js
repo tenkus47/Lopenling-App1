@@ -55,8 +55,11 @@ export type Props = {
     fontSize?: number,
     activeWitness: Witness,
     changeSyncIdOnClick: () => void,
+    changeSyncIdOnScroll: () => void,
     isPanelLinked: Boolean,
     textAlignmentById: {},
+    selectedSourceRange: [],
+    selectedTargetRange: [],
 };
 
 export type State = {
@@ -72,8 +75,8 @@ const pageBreakIconString = ReactDOMServer.renderToStaticMarkup(
 export default class Text extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
     _renderedHtml: { __html: string } | null;
-
     textAlignmentById;
+    rangeSelect;
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
@@ -84,6 +87,7 @@ export default class Text extends React.Component<Props, State> {
         this.textAlignmentById = this.props.textAlignmentById;
         this._renderedSegments = null;
         this._renderedHtml = null;
+        this.rangeSelect = [];
     }
     UNSAFE_componentWillReceiveProps(nextProps: Props) {
         this.setState((prevState: State, props: Props) => {
@@ -136,14 +140,40 @@ export default class Text extends React.Component<Props, State> {
     }
 
     selectedElement(element: Element) {
+        let sourceRangeSelection = [];
+        let targetRangeSelection = [];
         const selection = document.getSelection();
+
         if (element?.id.includes("s_") && this.props.isPanelLinked) {
-            this.props.changeSyncIdOnClick(element.id);
+            var clickId = parseInt(element.id.replace("s_", ""));
+            this.props.changeSyncIdOnClick(clickId);
+            this.props.changeSyncIdOnScroll(null);
+
+            let id = parseInt(element.id.replace("s_", ""));
+            let rangeUnique = this.textAlignmentById.find(
+                (l) => id >= l.start && id < l.end
+            );
+
+            for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
+                sourceRangeSelection.push(i);
+            }
+            for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
+                targetRangeSelection.push(i);
+            }
+            this.props.changeSelectedRange({
+                source: sourceRangeSelection,
+                target: targetRangeSelection,
+            });
         }
+
         if (selection && selection.type === "Range") {
             return;
         }
         this.props.selectedSegmentId(element.id);
+
+        if (!element.id) {
+            this.props.changeSelectedRange({ source: [], target: [] });
+        }
     }
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
@@ -185,6 +215,10 @@ export default class Text extends React.Component<Props, State> {
             let selectedCurrentLineBreak = false;
             let lineBreakAnnotation = false;
             let pageBreakAnnotation = null;
+            // let rangeUnique = this.textAlignmentById.find(
+            //     (l) => segment.start >= l.start && segment.start < l.end
+            // );
+
             if (annotations) {
                 let activeInsertions = [];
                 let inactiveInsertions = [];
@@ -312,6 +346,7 @@ export default class Text extends React.Component<Props, State> {
             if (segment.start === endPosition) {
                 break;
             }
+
             let id = null;
             if (segment.length === 0) {
                 id = idForDeletedSegment(segment);
@@ -331,6 +366,10 @@ export default class Text extends React.Component<Props, State> {
                 selectedCurrentDeletion
             ) {
                 classes.push(styles.selectedAnnotation);
+            }
+
+            if (renderProps.selectedSourceRange.includes(segment.start)) {
+                classes.push(styles.selectedRange);
             }
 
             if (classes.length > 0) {
@@ -390,6 +429,7 @@ export default class Text extends React.Component<Props, State> {
                     }
                 }
             }
+
             if (this.props.textAlignmentById !== null) {
                 let r = this.props.textAlignmentById.find(
                     (d) => d.start === segment.start
@@ -401,7 +441,7 @@ export default class Text extends React.Component<Props, State> {
                         "'>" +
                         `<sup class=` +
                         styles.syncIdClass +
-                        `>༼${r.id}༽</sup>` +
+                        `>${r.id}</sup>` +
                         "</span>";
                 }
             }
@@ -456,16 +496,17 @@ export default class Text extends React.Component<Props, State> {
         }
 
         this._renderedSegments = segments;
-        segmentHTML += "</p>";
 
+        segmentHTML += "</p>";
         const html = {
             __html: segmentHTML,
         };
         return html;
     }
-
+    componentDidUpdate() {}
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
+
         if (this.props.fontSize !== nextProps.fontSize) {
             return true;
         } else if (

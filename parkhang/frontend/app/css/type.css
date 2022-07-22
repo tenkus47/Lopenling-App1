@@ -1,10 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Macondo&display=swap');
-
-
 :root {
     --fonts: "Overpass", "arial", "sans-serif";
     --tibetan-fonts: "Tibetan", "Himalaya", "Kokonor";
-    --Macondo :Macondo;
+    --Macondo: Macondo;
 }
 
 @font-face {
@@ -19,6 +16,6 @@
     font-style: normal;
     font-weight: 400;
     src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
     unicode-range: U+0F00-0FFF;
 }

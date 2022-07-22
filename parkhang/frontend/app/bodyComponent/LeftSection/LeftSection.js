@@ -78,26 +78,25 @@ function LeftSection(props) {
                                                     textTransform="capitalize"
                                                     fontWeight="bold"
                                                 >
-                                                    {pechalist.texttitle}
+                                                    {pechalist.title}
                                                 </Typography>
                                                 <Typography
                                                     variant="body2"
                                                     color="text.secondary"
                                                 >
-                                                    {pechalist?.desc}
                                                     {truncate(
-                                                        "The Tibetan script is a segmental writing (abugida) of Indic origi to write certain Tibetic",
-                                                        30
+                                                        pechalist?.description,
+                                                        100
                                                     )}
                                                 </Typography>
                                             </CardContent>
                                             <CardActions>
                                                 <Button
                                                     component={LinkRef}
-                                                    to={`/texts/${139}`}
+                                                    to={`/texts/${pechalist.text}`}
                                                     size="small"
                                                 >
-                                                    Select
+                                                    Open
                                                 </Button>
                                                 <Button
                                                     size="small"
@@ -127,7 +126,10 @@ function LeftSection(props) {
                         }
                     >
                         {toggleDrawer.info && (
-                            <h1>{toggleDrawer.info.texttitle}</h1>
+                            <Container maxWidth="xs">
+                                <h1>{toggleDrawer.info.title}</h1>
+                                <p>{toggleDrawer.info.description}</p>
+                            </Container>
                         )}
                     </Drawer>
                 </React.Fragment>
