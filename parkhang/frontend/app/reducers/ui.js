@@ -41,18 +41,21 @@ export type UIState = {
     openTableContent: Boolean,
     openTableContent2: Boolean,
 
-    SyncIdOnScroll: String,
-    SyncIdOnScroll2: String,
-
-    SyncIdOnClick: String,
-    selectedSourceRange: [],
     selectedTargetRange: [],
+
+    selectedSourceRange: [],
 
     isPanelLinked: boolean,
     isAnnotating: Boolean,
+    scrollToId: String,
+    scrollToId2: String,
 
+    SyncIdOnClick: String,
+    SyncIdOnScroll: String,
     SyncIdOnSearch: String,
+
     SyncIdOnSearch2: String,
+    SyncIdOnScroll2: String,
 };
 
 export const initialUIState = {
@@ -77,16 +80,17 @@ export const initialUIState = {
     textFontSize: constants.DEFAULT_TEXT_FONT_SIZE,
     textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,
     showSecondWindow: true,
-    SyncIdOnScroll: 0,
-    SyncIdOnScroll2: null,
-    SyncIdOnClick: 0,
+    openTableContent2: false,
     selectedSourceRange: [],
     selectedTargetRange: [],
     isPanelLinked: true,
     isAnnotating: false,
     selectedWindow: 1,
     openTableContent: false,
-    openTableContent2: false,
+    scrollToId: null,
+    scrollToId2: null,
+
+    SyncIdOnClick: 0,
     SyncIdOnSearch: null,
     SyncIdOnSearch2: null,
 };
@@ -167,27 +171,18 @@ function selectedText2(
     return state;
 }
 
-function changeSyncIdOnScroll(
-    state: UIState,
-    action: actions.SelectedTextAction
-): UIState {
-    state = {
+function changeScrollToId(state, action) {
+    return {
         ...state,
-        SyncIdOnScroll: action.payload,
+        scrollToId: action.payload,
     };
-
-    return state;
 }
-function changeSyncIdOnScroll2(
-    state: UIState,
-    action: actions.SelectedTextAction
-): UIState {
-    state = {
-        ...state,
-        SyncIdOnScroll2: action.payload,
-    };
 
-    return state;
+function changeScrollToId2(state, action) {
+    return {
+        ...state,
+        scrollToId2: action.payload,
+    };
 }
 
 function changeSyncIdOnClick(
@@ -564,8 +559,8 @@ uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.NO_SELECTED_TEXT] = noSelectedText;
-uiReducers[actions.SYNC_ID_ON_SCROLL] = changeSyncIdOnScroll;
-uiReducers[actions.SYNC_ID_ON_SCROLL2] = changeSyncIdOnScroll2;
+uiReducers[actions.SCROLL_TO_ID] = changeScrollToId;
+uiReducers[actions.SCROLL_TO_ID2] = changeScrollToId2;
 
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
 uiReducers[actions.CHANGE_RANGE_SELECTION] = changeRangeSelection;
@@ -693,12 +688,15 @@ export const getTextListVisible = (state: UIState): boolean => {
 export const getTextListWidth = (state: UIState): number => {
     return state.textListWidth;
 };
-export const getSyncIdOnScroll = (state: UIState): number => {
-    return state.SyncIdOnScroll;
+
+export const getScrollToId = (state) => {
+    return state.scrollToId;
 };
-export const getSyncIdOnScroll2 = (state: UIState): number => {
-    return state.SyncIdOnScroll2;
+
+export const getScrollToId2 = (state) => {
+    return state.scrollToId2;
 };
+
 export const getSyncIdOnCLick = (state: UIState): number => {
     return state.SyncIdOnClick;
 };

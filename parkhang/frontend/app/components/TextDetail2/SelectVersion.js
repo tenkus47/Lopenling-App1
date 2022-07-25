@@ -38,7 +38,7 @@ const SelectVersion = (props: Props) => {
     let witnesses;
     let tabName = "";
     let { classes: classtype } = props;
-    let r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
+    let r = props.witnesses.findIndex((l) => l.id === props.activeWitness?.id);
     const [temp, setTemp] = useLocaleStorage("selectedWitness2", 0);
     let classes = [styles.selectOptions];
     if (props.witnesses) {
@@ -79,7 +79,7 @@ const SelectVersion = (props: Props) => {
             }}
         >
             {witnesses.map((witness, key) => {
-                if (witness.id === props.activeWitness.id)
+                if (witness.id === props.activeWitness?.id)
                     classes.push(styles.selected);
                 tabName = witness.source.name;
 

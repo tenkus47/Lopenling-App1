@@ -67,12 +67,12 @@ function TextDetail(props) {
                 // selectedSearchResult={this.props.selectedSearchResult}
                 // searchValue={this.props.searchValue}
                 fontSize={props.textFontSize}
-                syncIdOnScroll={props.syncIdOnScroll}
+                scrollToId={props.scrollToId}
                 syncIdOnClick={props.syncIdOnClick}
                 textAlignment={props.textAlignment}
                 textAlignmentById={props.textAlignmentById}
                 isPanelLinked={props.isPanelLinked}
-                changeSyncIdOnScroll2={props.changeSyncIdOnScroll2}
+                changeScrollToId2={props.changeScrollToId2}
                 selectedWindow={props.selectedWindow}
                 selectedSourceRange={props.selectedSourceRange}
                 selectedTargetRange={props.selectedTargetRange}

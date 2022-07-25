@@ -761,6 +761,9 @@ function* loadedTextUrl(
         let textId = action.payload.textId;
         let witnessId = action.payload.witnessId || w;
         let textId2 = textId;
+        if (textId === "139") {
+            textId2 = "140";
+        }
         let witnessId2 = witnessId;
         if (t !== null) textId = t;
         if (w !== null) witnessId = w;
@@ -971,6 +974,9 @@ function* watchSelectTextUrlActions() {
 function* loadSecondWindowOpen(action, textId = null, witnessId) {
     let witnessId2 = witnessId;
     let textId2 = textId;
+    if (textId === 139) {
+        textId2 = 140;
+    }
     let textData2;
     if (textId2 !== null) {
         do {

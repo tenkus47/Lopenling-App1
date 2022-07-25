@@ -158,7 +158,7 @@ const mapStateToProps = (state: AppState): {} => {
         );
     }
     const isPanelLinked = reducers.isPanelLinked(state);
-    const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
+    const scrollToId = reducers.getScrollToId(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const textAlignment = reducers.getTextAlignment(state);
     const selectedWindow = reducers.getSelectedWindow(state);
@@ -176,7 +176,7 @@ const mapStateToProps = (state: AppState): {} => {
         selectedImage: getSelectedImage(state),
         isImagePortrait: isImagePortrait(state),
         isPanelVisible: isPanelVisible(state),
-        syncIdOnScroll,
+        scrollToId,
         syncIdOnClick,
         textAlignment,
         textAlignmentById: reducers.getTextAlignmentById(state),
@@ -356,8 +356,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             // dispatch(changedActiveTextAnnotation(activeAnnotation));
         },
-        changeSyncIdOnScroll2: (payload) =>
-            dispatch(actions.changeSyncIdOnScroll2(payload)),
+        changeScrollToId2: (payload) =>
+            dispatch(actions.changeScrollToId2(payload)),
         changeSelectedWindow: (payload) => {
             dispatch(actions.changeSelectedWindow(payload));
         },

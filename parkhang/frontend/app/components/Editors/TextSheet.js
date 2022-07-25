@@ -65,7 +65,7 @@ function TextSheet(props) {
 }
 
 const mapStateToProps = (state: AppState): { user: User } => {
-    const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
+    const syncIdOnScroll = reducers.getScrollToId(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
     let Media = reducers.getMediaData(state);

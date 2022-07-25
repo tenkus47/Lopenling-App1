@@ -72,7 +72,7 @@ export type Props = {
     searchValue: string | null,
     fontSize: number,
     isSecondWindowOpen: Boolean,
-    changeSyncIdOnScroll: () => void,
+    changeScrollToId: () => void,
     changeSyncIdOnClick: () => void,
     closeAnnotation: () => void,
     imageData: {},
@@ -120,7 +120,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     imageWidth: number | null;
     imageHeight: number | null;
     calculatedImageHeight: number | null;
-    changeSyncIdOnScroll: () => void;
+    changeScrollToId: () => void;
     changeSyncIdOnClick: () => void;
     wheelScrolling: () => void;
     closeAnnotation: () => void;
@@ -131,7 +131,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     textAlignmentById;
     scrollEvent: () => void;
     selectedWindow;
-    debouncedSearch;
+    debouncedScroll;
     targetId;
     constructor(props: Props) {
         super(props);
@@ -158,7 +158,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.imageWidth = null;
         this.calculatedImageHeight = null;
         this.processProps(props);
-        this.changeSyncIdOnScroll = props.changeSyncIdOnScroll;
+        this.changeScrollToId = props.changeScrollToId;
         this.changeSyncIdOnClick = props.changeSyncIdOnClick;
         this.closeAnnotation = props.closeAnnotation;
         this.scrollJump = props.scrollJump;
@@ -187,7 +187,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             });
             if (!_.isEmpty(list)) {
                 if (this.selectedWindow === 1) {
-                    this.debouncedSearch(list);
+                    this.debouncedScroll(list);
                 }
             }
         }
@@ -678,8 +678,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.calculatedImageHeight = null;
             this.updateList();
         }, 500).bind(this);
-        this.debouncedSearch = _.debounce((list) => {
-            this.changeSyncIdOnScroll(list[0].target);
+        this.debouncedScroll = _.debounce((list) => {
+            this.changeScrollToId(list[0].start);
         }, 1000);
 
         window.addEventListener("resize", this.resizeHandler);
@@ -1100,9 +1100,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             searchStringPositions={searchStringPositions}
                             fontSize={props.fontSize}
                             changeSyncIdOnClick={this.props.changeSyncIdOnClick}
-                            changeSyncIdOnScroll={
-                                this.props.changeSyncIdOnScroll
-                            }
+                            changeScrollToId={this.props.changeScrollToId}
                             isPanelLinked={this.props.isPanelLinked}
                             isAnnotating={this.props.isAnnotating}
                             textAlignmentById={this.props.textAlignmentById}

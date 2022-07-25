@@ -55,7 +55,7 @@ export type Props = {
     fontSize?: number,
     activeWitness: Witness,
     changeSyncIdOnClick: () => void,
-    changeSyncIdOnScroll: () => void,
+    changeScrollToId: () => void,
     isPanelLinked: Boolean,
     textAlignmentById: {},
     selectedSourceRange: [],
@@ -147,7 +147,7 @@ export default class Text extends React.Component<Props, State> {
         if (element?.id.includes("s_") && this.props.isPanelLinked) {
             var clickId = parseInt(element.id.replace("s_", ""));
             this.props.changeSyncIdOnClick(clickId);
-            this.props.changeSyncIdOnScroll(null);
+            this.props.changeScrollToId(null);
 
             let id = parseInt(element.id.replace("s_", ""));
             let rangeUnique = this.textAlignmentById.find(

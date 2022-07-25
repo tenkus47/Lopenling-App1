@@ -41,7 +41,7 @@ export type Props = {
     isPanelLinked: Boolean,
     textAlignment: {},
     textAlignmentById: {},
-    changeSyncIdOnScroll2: () => void,
+    changeScrollToId2: () => void,
     selectedWindow: Boolean,
     selectedTargetRange: [],
     selectedSourceRange: [],
@@ -67,7 +67,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     selectedNodes: Node[] | null;
     // Whether the mouse button is down
     textAlignmentById;
-    changeSyncIdOnScroll2: () => void;
+    changeScrollToId2: () => void;
 
     selectedTextIndex: number | null;
     splitTextRect: ClientRect | null;
@@ -82,7 +82,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
-        this.changeSyncIdOnScroll2 = props.changeSyncIdOnScroll2;
+        this.changeScrollToId2 = props.changeScrollToId2;
 
         this.list = null;
         this.splitText = null;
@@ -124,7 +124,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
             });
             if (list.length > 0) {
-                this.changeSyncIdOnScroll2(list[0].target);
+                this.changeScrollToId2(list[0].target);
             }
         }
     }
@@ -500,6 +500,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        let sourceId = this.props.scrollToId;
+        let targetId2 = this.props.syncIdOnClick;
+
         this.selectedWindow = this.props.selectedWindow;
         let SearchSyncId = this.props.syncIdOnSearch || null;
         let list = this.list;
@@ -521,50 +524,53 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }, 100);
             }
         }
-        if (this.selectedWindow === 1 && this.isPanelLinked && condition) {
-            let targetId = this.props.syncIdOnScroll;
-            let targetId2 = this.props.syncIdOnClick;
 
+        if (
+            this.selectedWindow === 1 &&
+            this.isPanelLinked &&
+            condition &&
+            sourceId !== null
+        ) {
             this.isPanelLinked = this.props.isPanelLinked;
             let list = this.list;
-            this.textAlignmentById = this.props.textAlignmentById;
+            this.textAlignmentById = this.props.textAlignmentById || [];
             this.splitText.style.scrollBehavior = "smooth";
             if (Alignment && this.isPanelLinked) {
-                if (targetId !== null) {
+                let req = this.textAlignmentById.find(
+                    (l) => l.start === sourceId
+                );
+                let TStart = req?.TStart;
+                if (TStart !== null) {
                     let selectedTextIndex =
-                        this.props.splitText.getTextIndexOfPosition(targetId);
+                        this.props.splitText.getTextIndexOfPosition(TStart);
 
                     setTimeout(() => {
                         list.scrollToRow(selectedTextIndex);
 
                         setTimeout(() => {
                             list.scrollToPosition(list.props.scrollTop - 300);
-                            this.resizeHandler();
-                        }, 0);
-                    }, 100);
-                } else {
-                    let clickIdObj = Alignment.alignment.find(
-                        (l) =>
-                            targetId2 >= l.source_segment.start &&
-                            targetId2 < l.source_segment.end
-                    );
-                    let syncClickTargetId = clickIdObj?.target_segment?.start;
-
-                    let selectedTextIndex =
-                        this.props.splitText.getTextIndexOfPosition(
-                            syncClickTargetId
-                        );
-
-                    setTimeout(() => {
-                        list.scrollToRow(selectedTextIndex);
-
-                        setTimeout(() => {
-                            list.scrollToPosition(list.props.scrollTop - 300);
-                            this.resizeHandler();
                         }, 0);
                     }, 100);
                 }
             }
+        }
+        if (targetId2 && sourceId === null) {
+            let clickIdObj = Alignment.alignment.find(
+                (l) =>
+                    targetId2 >= l.source_segment.start &&
+                    targetId2 < l.source_segment.end
+            );
+            let syncClickTargetId = clickIdObj?.target_segment?.start;
+            let selectedTextIndex =
+                this.props.splitText.getTextIndexOfPosition(syncClickTargetId);
+
+            setTimeout(() => {
+                list.scrollToRow(selectedTextIndex);
+
+                setTimeout(() => {
+                    list.scrollToPosition(list.props.scrollTop - 300);
+                }, 0);
+            }, 100);
         }
 
         // if (this.selectedNodes && this.selectedNodes.length > 0) {

@@ -306,8 +306,7 @@ const mapStateToProps = (state) => {
         }
     }
     _selectedWitness = selectedWitness;
-    const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
-    const syncIdOnScroll2 = reducers.getSyncIdOnScroll2(state);
+    const scrollToId = reducers.getScrollToId(state);
 
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const selectedWindow = reducers.getSelectedWindow(state);
@@ -341,8 +340,7 @@ const mapStateToProps = (state) => {
         isPanelVisible: isPanelVisible(state),
         isAnnotating: reducers.isAnnotating(state),
         textAlignmentById,
-        syncIdOnScroll,
-        syncIdOnScroll2,
+        scrollToId,
         syncIdOnClick,
         selectedWindow,
         selectedSourceRange: getSelectedSourceRange(state),
@@ -567,8 +565,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 }
             }
         },
-        changeSyncIdOnScroll: (payload) =>
-            dispatch(actions.changeSyncIdOnScroll(payload)),
+        changeScrollToId: (payload) =>
+            dispatch(actions.changeScrollToId(payload)),
         changeSyncIdOnClick: (payload) =>
             dispatch(actions.changeSyncIdOnClick(payload)),
         changeSelectedImage: (payload) => {

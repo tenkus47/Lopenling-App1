@@ -50,7 +50,7 @@ export type Props = {
     isPanelLinked: boolean,
     isPanelVisible: Boolean,
     changeSyncIdOnClick: () => void,
-    changeSyncIdOnScroll: () => void,
+    changeScrollToId: () => void,
     changeSelectedImage: () => void,
     closeAnnotation: () => void,
     textAlignmentById: {},
@@ -142,7 +142,7 @@ class TextDetail extends React.Component<Props> {
                     searchValue={this.props.searchValue}
                     fontSize={this.props.fontSize}
                     isSecondWindowOpen={this.props.isSecondWindowOpen}
-                    changeSyncIdOnScroll={this.props.changeSyncIdOnScroll}
+                    changeScrollToId={this.props.changeScrollToId}
                     changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                     imageData={this.props.imageData}
                     isPanelLinked={this.props.isPanelLinked}

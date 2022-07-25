@@ -3297,7 +3297,7 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
 
     _this.processProps(props);
 
-    _this.changeSyncIdOnScroll = props.changeSyncIdOnScroll;
+    _this.changeScrollToId = props.changeScrollToId;
     _this.changeSyncIdOnClick = props.changeSyncIdOnClick;
     _this.closeAnnotation = props.closeAnnotation;
     _this.scrollJump = props.scrollJump;
@@ -3333,7 +3333,7 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
 
         if (!lodash_isEmpty__WEBPACK_IMPORTED_MODULE_2___default()(list)) {
           if (this.selectedWindow === 1) {
-            this.debouncedSearch(list);
+            this.debouncedScroll(list);
           }
         }
       }
@@ -3799,8 +3799,8 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
 
         _this3.updateList();
       }, 500).bind(this);
-      this.debouncedSearch = lodash_debounce__WEBPACK_IMPORTED_MODULE_0___default()(function (list) {
-        _this3.changeSyncIdOnScroll(list[0].target);
+      this.debouncedScroll = lodash_debounce__WEBPACK_IMPORTED_MODULE_0___default()(function (list) {
+        _this3.changeScrollToId(list[0].start);
       }, 1000);
       window.addEventListener("resize", this.resizeHandler);
       this.selectionHandler = lodash_debounce__WEBPACK_IMPORTED_MODULE_0___default()(function (e) {
@@ -4170,7 +4170,7 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
         searchStringPositions: searchStringPositions,
         fontSize: props.fontSize,
         changeSyncIdOnClick: this.props.changeSyncIdOnClick,
-        changeSyncIdOnScroll: this.props.changeSyncIdOnScroll,
+        changeScrollToId: this.props.changeScrollToId,
         isPanelLinked: this.props.isPanelLinked,
         isAnnotating: this.props.isAnnotating,
         textAlignmentById: this.props.textAlignmentById,
@@ -4411,7 +4411,7 @@ var Text = /*#__PURE__*/function (_React$Component) {
       if (element !== null && element !== void 0 && element.id.includes("s_") && this.props.isPanelLinked) {
         var clickId = parseInt(element.id.replace("s_", ""));
         this.props.changeSyncIdOnClick(clickId);
-        this.props.changeSyncIdOnScroll(null);
+        this.props.changeScrollToId(null);
 
         var _id = parseInt(element.id.replace("s_", ""));
 
@@ -4945,7 +4945,7 @@ var TextDetail = /*#__PURE__*/function (_React$Component) {
           searchValue: this.props.searchValue,
           fontSize: this.props.fontSize,
           isSecondWindowOpen: this.props.isSecondWindowOpen,
-          changeSyncIdOnScroll: this.props.changeSyncIdOnScroll,
+          changeScrollToId: this.props.changeScrollToId,
           changeSyncIdOnClick: this.props.changeSyncIdOnClick,
           imageData: this.props.imageData,
           isPanelLinked: this.props.isPanelLinked,
@@ -5329,8 +5329,7 @@ var mapStateToProps = function mapStateToProps(state) {
   }
 
   _selectedWitness = selectedWitness;
-  var syncIdOnScroll = reducers__WEBPACK_IMPORTED_MODULE_13__["getSyncIdOnScroll"](state);
-  var syncIdOnScroll2 = reducers__WEBPACK_IMPORTED_MODULE_13__["getSyncIdOnScroll2"](state);
+  var scrollToId = reducers__WEBPACK_IMPORTED_MODULE_13__["getScrollToId"](state);
   var syncIdOnClick = reducers__WEBPACK_IMPORTED_MODULE_13__["getSyncIdOnClick"](state);
   var selectedWindow = reducers__WEBPACK_IMPORTED_MODULE_13__["getSelectedWindow"](state);
   return {
@@ -5363,8 +5362,7 @@ var mapStateToProps = function mapStateToProps(state) {
     isPanelVisible: Object(reducers__WEBPACK_IMPORTED_MODULE_13__["isPanelVisible"])(state),
     isAnnotating: reducers__WEBPACK_IMPORTED_MODULE_13__["isAnnotating"](state),
     textAlignmentById: textAlignmentById,
-    syncIdOnScroll: syncIdOnScroll,
-    syncIdOnScroll2: syncIdOnScroll2,
+    scrollToId: scrollToId,
     syncIdOnClick: syncIdOnClick,
     selectedWindow: selectedWindow,
     selectedSourceRange: Object(reducers__WEBPACK_IMPORTED_MODULE_13__["getSelectedSourceRange"])(state),
@@ -5568,8 +5566,8 @@ var mergeProps = function mergeProps(stateProps, dispatchProps, ownProps) {
         }
       }
     },
-    changeSyncIdOnScroll: function changeSyncIdOnScroll(payload) {
-      return dispatch(actions__WEBPACK_IMPORTED_MODULE_12__["changeSyncIdOnScroll"](payload));
+    changeScrollToId: function changeScrollToId(payload) {
+      return dispatch(actions__WEBPACK_IMPORTED_MODULE_12__["changeScrollToId"](payload));
     },
     changeSyncIdOnClick: function changeSyncIdOnClick(payload) {
       return dispatch(actions__WEBPACK_IMPORTED_MODULE_12__["changeSyncIdOnClick"](payload));
@@ -6868,4 +6866,4 @@ function positionSplitter(positions) {
 /***/ })
 
 }]);
-//# sourceMappingURL=1-dev.js.map
+//# sourceMappingURL=1.parkhang-dev.js.map
