@@ -28,7 +28,6 @@ import {
     hasLoadedWitnessAppliedAnnotations,
     getScrollPosition,
     getSelectedSearchResult,
-    getSearchValue,
     getTextFontSize,
     isSecondWindowOpen,
     getImageData,
@@ -37,6 +36,7 @@ import {
     isPanelVisible,
     getSelectedTargetRange,
     getSelectedSourceRange,
+    getSearchResults2,
 } from "reducers";
 
 const DISMISS_CONTROLS_ON_CLICK = true;
@@ -162,7 +162,7 @@ const mapStateToProps = (state: AppState): {} => {
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const textAlignment = reducers.getTextAlignment(state);
     const selectedWindow = reducers.getSelectedWindow(state);
-
+    const searchValue = reducers.getSearchValue2(state);
     return {
         text: selectedText,
         textFontSize,
@@ -183,6 +183,10 @@ const mapStateToProps = (state: AppState): {} => {
         selectedWindow,
         selectedSourceRange: getSelectedSourceRange(state),
         selectedTargetRange: getSelectedTargetRange(state),
+        showTableContent: reducers.getShowTableContent2(state),
+        searchResults: getSearchResults2(state, searchValue),
+        searchValue,
+        syncIdOnSearch: reducers.getSyncIdOnSearch2(state),
     };
 };
 
@@ -359,6 +363,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         changeSelectedRange: (payload) => {
             dispatch(actions.changeSelectedRange(payload));
+        },
+        changeShowTableContent: (payload) => {
+            dispatch(actions.showTableContent2(payload));
         },
         selectedSegmentId: (segmentId) => {
             let start = idFromSegmentId(segmentId);

@@ -559,7 +559,7 @@ dataReducers[actions.CREATED_ANNOTATION] = createdAnnotation;
 dataReducers[actions.UPDATED_ANNOTATION] = updatedAnnotation;
 dataReducers[actions.DELETED_ANNOTATION] = deletedAnnotation;
 dataReducers[actions.SAVED_ANNOTATION] = savedAnnotation;
-dataReducers[actions.UPDATED_SEARCH_RESULTS] = updatedSearchResults;
+dataReducers[actions.UPDATED_SEARCH_RESULTS2] = updatedSearchResults;
 dataReducers[actions.SEARCHED_TEXT] = searchedText;
 
 export default dataReducers;

@@ -25,6 +25,8 @@ function HttpUrl(data = "") {
 function Image(props) {
     const selectRef = useRef(null);
     let imageList = props.imageData?.alignment;
+    let message = props.imageData?.message;
+
     let textIdfromAlignment = props.alignmentData.text;
 
     let isPortraitImage = props.isImagePortrait;
@@ -34,7 +36,6 @@ function Image(props) {
     let scrollingID = props.syncIdOnScroll;
     let [loading, setLoading] = useState(false);
     const [img, setImg] = useState();
-    const boxRef = useRef(null);
     const fetchImage = async () => {
         if (_.isEmpty(imageList)) return;
         let url = HttpUrl(imageList[imageSelected].target_segment);
@@ -49,7 +50,7 @@ function Image(props) {
         setLoading(true);
         fetchImage();
     }, [imageList, imageSelected]);
-    // let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
+
     let syncIdOnClick = props.syncIdOnClick;
     if (!_.isEmpty(imageList)) {
         imageIdList = imageList.map((l) => parseInt(l.source_segment.start));
@@ -111,7 +112,6 @@ function Image(props) {
         setLoading(false);
         console.log(tempHeight);
     };
-
     const handleChangeImage = (data) => {
         change();
         if (data === "prev" && imageSelected > 0) {
@@ -184,12 +184,19 @@ function Image(props) {
                     </div>
                 )} */}
             </div>
-            <Box className={styles.imageSection} sx={{ background: "#0A1929" }}>
+            <Box className={styles.imageSection}>
                 {_.isEmpty(imageList) ? (
-                    <CircularProgress color="secondary" />
+                    <>
+                        {message ? (
+                            <h1>{message}</h1>
+                        ) : (
+                            <CircularProgress color="secondary" />
+                        )}
+                    </>
                 ) : (
                     <>
                         <center height="100%">
+                            {}
                             {!loading ? (
                                 <TransformWrapper>
                                     <TransformComponent>
@@ -199,9 +206,6 @@ function Image(props) {
                                             src={img}
                                             alt="imagepecha"
                                             onLoad={isPortrait}
-                                            onProgress={() =>
-                                                console.log("process")
-                                            }
                                         />
                                     </TransformComponent>
                                 </TransformWrapper>

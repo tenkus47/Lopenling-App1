@@ -81,9 +81,12 @@ export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
 export const NO_SELECTED_TEXT = "textList/NO_SELECTED_TEXT";
 export const CHANGED_SEARCH_VALUE = "textList/CHANGED_SEARCH_VALUE";
-export const CHANGED_SEARCH_TERM = "textList/CHANGED_SEARCH_TERM";
+export const CHANGED_SEARCH_VALUE2 = "textList/CHANGED_SEARCH_VALUE2";
+
 export const SEARCHED_TEXT = "textList/SEARCHED_TEXT";
 export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
+export const UPDATED_SEARCH_RESULTS2 = "textList/UPDATED_SEARCH_RESULTS2";
+
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
 export const SECOND_WINDOW = "notification/SECOND_WINDOW";
 
@@ -122,6 +125,12 @@ export const SYNC_ID_ON_SCROLL2 = "ScrollSync2/ID";
 
 export const SYNC_ID_ON_CLICK = "ClickSync/ID";
 export const CHANGE_SELECTED_WINDOW = "CHANGE_SELECTED_WINDOW";
+
+export const SYNC_ID_ON_SEARCH = "SYNC_ID_ON_SEARCH";
+export const SYNC_ID_ON_SEARCH2 = "SYNC_ID_ON_SEARCH2";
+
+export const SHOW_TABLE_CONTENT = "SHOW_TABLE_CONTENT";
+export const SHOW_TABLE_CONTENT2 = "SHOW_TABLE_CONTENT2";
 
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
@@ -610,6 +619,14 @@ export function changedSearchValue(
         searchValue,
     };
 }
+export function changedSearchValue2(
+    searchValue: string
+): ChangedSearchValueAction {
+    return {
+        type: CHANGED_SEARCH_VALUE2,
+        searchValue,
+    };
+}
 
 export type ChangedSearchTermAction = Action & {
     searchTerm: string,
@@ -646,6 +663,17 @@ export function updatedSearchResults(
 ): UpdatedSearchResultsAction {
     return {
         type: UPDATED_SEARCH_RESULTS,
+        searchValue,
+        searchResults,
+    };
+}
+
+export function updatedSearchResults2(
+    searchValue: string,
+    searchResults: { [number]: api.TextSearchResultData }
+): UpdatedSearchResultsAction {
+    return {
+        type: UPDATED_SEARCH_RESULTS2,
         searchValue,
         searchResults,
     };
@@ -964,6 +992,20 @@ export function changeSyncIdOnClick(payload) {
         payload,
     };
 }
+
+export function changeSyncIdOnSearch(payload) {
+    return {
+        type: SYNC_ID_ON_SEARCH,
+        payload,
+    };
+}
+export function changeSyncIdOnSearch2(payload) {
+    return {
+        type: SYNC_ID_ON_SEARCH2,
+        payload,
+    };
+}
+
 export function changeSelectedRange(payload) {
     return {
         type: CHANGE_RANGE_SELECTION,
@@ -974,6 +1016,19 @@ export function changeSelectedRange(payload) {
 export function changeSelectedWindow(payload) {
     return {
         type: CHANGE_SELECTED_WINDOW,
+        payload,
+    };
+}
+
+export function showTableContent(payload) {
+    return {
+        type: SHOW_TABLE_CONTENT,
+        payload,
+    };
+}
+export function showTableContent2(payload) {
+    return {
+        type: SHOW_TABLE_CONTENT2,
         payload,
     };
 }

@@ -5,6 +5,11 @@ import SplitText from "lib/SplitText";
 import Loader from "react-loader";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import styles from "./TextDetail.css";
+import { Box, Slide } from "@mui/material";
+import TableOfContent from "./TableOfContent/TableOfContent";
+import utilStyles from "css/util.css";
+import classnames from "classnames";
+
 import imageStyle from "../Editors/MediaComponent/Image.css";
 function TextDetail(props) {
     const ref = useRef();
@@ -72,6 +77,10 @@ function TextDetail(props) {
                 selectedSourceRange={props.selectedSourceRange}
                 selectedTargetRange={props.selectedTargetRange}
                 changeSelectedRange={props.changeSelectedRange}
+                searchResults={props.searchResults}
+                searchValue={props.searchValue}
+                selectedText={props.text}
+                syncIdOnSearch={props.syncIdOnSearch}
             ></SplitTextComponent>
         );
     }
@@ -81,18 +90,55 @@ function TextDetail(props) {
     let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
     // let condition = props.isPanelVisible;
     return (
-        <div
+        <Box
             ref={ref}
             className={styles.textDetail2}
             style={{
                 height: "100%",
+                flex: 1,
             }}
         >
             <TextDetailHeading />
             <Loader loaded={!props.loading} />
+            <Box
+                style={{
+                    display: "flex",
+                    height: "100%",
+                    width: "100%",
+                    position: "relative",
+                }}
+            >
+                <Box
+                    style={{ flex: 1 }}
+                    className={classnames(
+                        styles.textContainer2,
+                        utilStyles.flex
+                    )}
+                >
+                    {!props.loading ? textComponents : <div />}
+                </Box>
 
-            {!props.loading ? textComponents : <div />}
-        </div>
+                <Slide
+                    direction="left"
+                    in={props.showTableContent}
+                    container={ref.current}
+                >
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            height: "100%",
+                            minWidth: "50%",
+                            right: 0,
+                            background: "#eee",
+                            borderLeft: "1px solid gray",
+                            padding: 2,
+                        }}
+                    >
+                        <TableOfContent />
+                    </Box>
+                </Slide>
+            </Box>
+        </Box>
     );
 }
 

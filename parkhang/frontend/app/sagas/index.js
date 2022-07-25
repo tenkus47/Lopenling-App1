@@ -256,11 +256,11 @@ function* watchSelectedText2(): Saga<void> {
 // WITNESSES
 function* loadInitialTextData(action: actions.TextDataAction) {
     try {
-        // const { id: textId } = yield select(reducers.getSelectedText);
         const textId = action.text.id;
         let witnesses = yield call(api.fetchTextWitnesses, action.text);
-        yield call(loadAlignmentData, action, textId);
         yield put(actions.loadedWitnesses(action.text, witnesses));
+        yield call(loadAlignmentData, action, textId);
+
         let workingWitnessData: api.WitnessData | null = null;
         let baseWitnessData: api.WitnessData | null = null;
         for (const witness of witnesses) {
@@ -276,16 +276,17 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 reducers.getWitness,
                 workingWitnessData.id
             ): any);
+            // auto-select the working witness
 
+            yield put(
+                actions.selectedTextWitness(action.text.id, workingWitness.id)
+            );
             yield put(actions.loadingWitnessAnnotations(workingWitness.id));
             yield all([
                 call(loadAnnotations, workingWitness.id),
                 call(loadAnnotationOperations, workingWitness.id),
             ]);
-            // auto-select the working witness
-            yield put(
-                actions.selectedTextWitness(action.text.id, workingWitness.id)
-            );
+            yield put(actions.changeSelectedRange({ source: [], target: [] }));
         }
     } catch (e) {
         console.log("FAILED loadInitialTextData %o", e);
@@ -310,6 +311,7 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
         },
     };
     let witness = yield select(reducers.getWitness, witnessId);
+
     let activeAnnotation = yield select(reducers.getActiveTextAnnotation);
 
     if (
@@ -389,8 +391,14 @@ function* watchSelectedTextWitness2() {
 
 function* loadAnnotations(witnessId: number) {
     const witnessData = yield select(reducers.getWitnessData, witnessId);
-    const annotations = yield call(api.fetchWitnessAnnotations, witnessData);
-    yield put(actions.loadedWitnessAnnotations(witnessId, annotations));
+    if (witnessData) {
+        const annotations = yield call(
+            api.fetchWitnessAnnotations,
+            witnessData
+        );
+
+        yield put(actions.loadedWitnessAnnotations(witnessId, annotations));
+    }
 }
 
 function* loadAnnotations2(witnessId: number) {
@@ -399,7 +407,7 @@ function* loadAnnotations2(witnessId: number) {
 
     const annotations = [];
 
-    yield put(actions.loadedWitnessAnnotations2(witnessId, annotations));
+    // yield put(actions.loadedWitnessAnnotations2(witnessId, annotations));
 }
 
 function* loadAnnotationOperations(witnessId: number) {
@@ -635,14 +643,18 @@ function* searchTexts(action: actions.ChangedSearchValueAction) {
 function* watchChangedSearchValue() {
     yield takeLatest(actions.CHANGED_SEARCH_VALUE, searchTexts);
 }
-
-function* searchTerm(action: actions.ChangedSearchValueAction) {
-    const searchTerm = action.searchTerm;
-    yield put(actions.changedSearchValue(searchTerm));
+function* searchTexts2(action: actions.ChangedSearchValueAction) {
+    yield delay(500);
+    const results = yield call(
+        api.searchTexts,
+        action.searchValue,
+        constants.MAX_SEARCH_RESULTS
+    );
+    yield put(actions.updatedSearchResults2(action.searchValue, results));
 }
 
-function* watchChangedSearchTerm() {
-    yield takeLatest(actions.CHANGED_SEARCH_TERM, searchTerm);
+function* watchChangedSearchValue2() {
+    yield takeLatest(actions.CHANGED_SEARCH_VALUE2, searchTexts2);
 }
 
 function* searchedText(action: actions.SearchedTextAction) {
@@ -747,7 +759,7 @@ function* loadedTextUrl(
     _loadedTextUrl = true;
     if (action) {
         let textId = action.payload.textId;
-        let witnessId = action.payload.witnessId;
+        let witnessId = action.payload.witnessId || w;
         let textId2 = textId;
         let witnessId2 = witnessId;
         if (t !== null) textId = t;
@@ -761,18 +773,9 @@ function* loadedTextUrl(
         } while (textData === null);
 
         yield put(actions.selectedText(textData));
-        let witnesses = yield select(reducers.getWitness);
-        if (witnesses === null)
-            witnesses = yield call(api.fetchTextWitnesses, textData);
+        let witnesses = yield call(api.fetchTextWitnesses, textData);
 
         yield put(actions.loadedWitnesses(textData, witnesses));
-        yield call(loadAlignmentData, action);
-
-        let textWitnesses: Array<Witness> = [];
-        do {
-            textWitnesses = yield select(reducers.getTextWitnesses, textId);
-            if (textWitnesses.length === 0) yield delay(100);
-        } while (textWitnesses.length === 0);
 
         // Wait until the initial text witness has been selected.
         // Otherwise a race condition can happen when the initial witness
@@ -785,6 +788,12 @@ function* loadedTextUrl(
             );
             if (!selectedWitnessId) yield delay(100);
         } while (!selectedWitnessId);
+
+        let textWitnesses: Array<Witness> = [];
+        do {
+            textWitnesses = yield select(reducers.getTextWitnesses, textId);
+            if (textWitnesses.length === 0) yield delay(100);
+        } while (textWitnesses.length === 0);
 
         const selectedWitnessAction = actions.selectedTextWitness(
             textId,
@@ -900,23 +909,20 @@ function* watchTextUrlActions2() {
 function* loadedTextIdonlyUrl(action) {
     _loadedTextUrl = false;
     let textId = parseInt(action.payload.textId);
+
     let witnessId;
     let textId2 = textId;
+    if (textId === 139) {
+        textId2 = 140;
+    }
     let witnessId2;
 
     let text = { id: textId };
-    let witnesses = yield select(reducers.getWorkingWitness, textId);
-    if (witnesses !== null) {
-        witnessId2 = witnesses.id;
-        witnessId = witnesses.id;
-    }
+    let witnesses = null;
 
-    if (witnesses === null) {
-        witnesses = yield call(api.fetchTextWitnesses, text);
-
-        witnessId2 = witnesses[0].id;
-        witnessId = witnesses[0].id;
-    }
+    witnesses = yield call(api.fetchTextWitnesses, text);
+    witnessId2 = witnesses[0].id;
+    witnessId = witnesses[0].id;
 
     yield call(loadedTextUrl, action, textId, witnessId, textId2, witnessId2);
 }
@@ -940,7 +946,6 @@ function* selectTextUrl(action) {
     let setTextData;
     try {
         texts = yield call(api.fetchChapterDetail);
-        console.log(texts);
     } catch (e) {
         texts = { data: null };
     }
@@ -965,11 +970,7 @@ function* watchSelectTextUrlActions() {
 //Second window Open
 function* loadSecondWindowOpen(action, textId = null, witnessId) {
     let witnessId2 = witnessId;
-    let textId2 = null;
-    let AlignmentData = yield select(reducers.getAlignment);
-    if (textId2 === null) {
-        textId2 = 140;
-    }
+    let textId2 = textId;
     let textData2;
     if (textId2 !== null) {
         do {
@@ -978,10 +979,17 @@ function* loadSecondWindowOpen(action, textId = null, witnessId) {
         } while (textData2 === null);
 
         yield put(actions.selectedText2(textData2));
-        let witnesses2 = yield select(reducers.getWitness2);
+        let witnesses2 = null;
         if (witnesses2 === null)
             witnesses2 = yield call(api.fetchTextWitnesses, textData2);
+        console.log(witnesses2);
         yield put(actions.loadedWitnesses2(textData2, witnesses2));
+        const selectedWitnessAction = actions.selectedTextWitness2(
+            textId2,
+            witnessId2
+        );
+
+        yield put(selectedWitnessAction);
     }
 }
 
@@ -1008,7 +1016,7 @@ function* loadImageData(action, witnessid = null) {
     let TextId = yield select(reducers.getSelectedText);
     let witness = yield select(reducers.getSelectedTextWitness);
     let textCondition = TextId.id === parseInt(AlignmentData.text);
-    let ImageData;
+    let ImageData = {};
     if (!textCondition) {
         ImageData = null;
         yield put(actions.changeImageData(ImageData));
@@ -1016,26 +1024,27 @@ function* loadImageData(action, witnessid = null) {
     }
     if (!_.isEmpty(AlignmentData)) {
         let alignmentImage = AlignmentData.alignments.image;
+        let message = null;
         let data = alignmentImage.find((l) => {
             if (witnessid === null)
                 return parseInt(l.source) === parseInt(witness.id);
             return l.source === parseInt(witnessid);
         });
+        console.log(alignmentImage);
 
         if (_.isEmpty(data)) {
-            data = alignmentImage[0];
-            ImageData = yield call(
-                api.fetchImageWithAlignmentId,
-                data[0]?.alignment
-            );
+            ImageData = {};
+            message = "Image not Available";
         }
+
         if (!_.isEmpty(data)) {
             ImageData = yield call(
                 api.fetchImageWithAlignmentId,
                 data.alignment
             );
+            message = null;
         }
-        yield put(actions.changeImageData(ImageData));
+        yield put(actions.changeImageData({ ...ImageData, message }));
     }
 }
 function* loadVideoData(action, witnessid = null) {
@@ -1130,7 +1139,7 @@ export default function* rootSaga(): Saga<void> {
         call(watchSelectedLocale),
         call(watchExportWitness),
         call(watchChangedSearchValue),
-        call(watchChangedSearchTerm),
+        call(watchChangedSearchValue2),
         call(watchSearchedText),
         call(watchChangedTextListWidth),
         call(watchChangedShowPageImages),

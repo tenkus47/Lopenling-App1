@@ -21,19 +21,21 @@ function TextSheet(props) {
                 position: "relative",
             }}
         >
-            <Suspense fallback={<div> Loading</div>}>
-                <div
-                    style={{
-                        display: "flex",
-                        maxWidth: "100%",
-                        flex: 1,
-                        height: props.bodyHeight,
-                    }}
-                >
+            <div
+                style={{
+                    display: "flex",
+                    flex: 1,
+                    height: props.bodyHeight,
+                }}
+            >
+                <Suspense fallback={<div> Loading</div>}>
                     <TextDetailContainer />
+                </Suspense>
+
+                <Suspense fallback={<div> Loading</div>}>
                     {props.isSecondWindowOpen && <TextDetailContainer2 />}
-                </div>
-            </Suspense>
+                </Suspense>
+            </div>
             {props.Media.isPanelVisible && (
                 //  && props.isSecondWindowOpen
                 <MediaComponent

@@ -5,7 +5,11 @@ import TextDetailHeading from "./TextDetailHeading";
 import * as actions from "actions";
 import * as reducers from "reducers";
 import type { AppState } from "reducers";
-import { getTextListVisible, getAccountOverlayVisible } from "reducers";
+import {
+    getTextListVisible,
+    getAccountOverlayVisible,
+    getShowTableContent2,
+} from "reducers";
 
 const mapStateToProps = (state: AppState): {} => {
     const user = reducers.getUser(state);
@@ -33,6 +37,8 @@ const mapStateToProps = (state: AppState): {} => {
         }
     }
     let textFontSize = reducers.getTextFontSize2(state);
+    let showTableContent = getShowTableContent2(state);
+    let searchValue = reducers.getSearchValue2(state);
     return {
         witnesses,
         selectedText,
@@ -41,6 +47,9 @@ const mapStateToProps = (state: AppState): {} => {
         accountOverlayVisible: getAccountOverlayVisible(state),
         textFontSize,
         user,
+        searchValue,
+        showTableContent,
+        searchResults: reducers.getSearchResults2(state, searchValue),
     };
 };
 
@@ -63,6 +72,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         onChangedFontSize: (fontSize: number) => {
             dispatch(actions.changedTextFontSize2(fontSize));
+        },
+        changeShowTableContent: (payload) => {
+            dispatch(actions.showTableContent2(payload));
+        },
+        searchChanged: (searchTerm: string) => {
+            dispatch(actions.changedSearchValue2(searchTerm));
+        },
+        changeSelectSyncId: (payload) => {
+            dispatch(actions.changeSyncIdOnSearch2(payload));
         },
     };
 };

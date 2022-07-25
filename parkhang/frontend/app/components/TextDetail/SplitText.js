@@ -83,6 +83,9 @@ export type Props = {
     syncIdOnScroll2: Number,
     selectedTargetRange: [],
     selectedSourceRange: [],
+    searchResults: [],
+    showTableContent: Boolean,
+    syncIdOnSearch: String,
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -686,19 +689,41 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }, 200).bind(this);
 
         document.addEventListener("selectionchange", this.selectionHandler);
-
         document.addEventListener("mousedown", this.mouseDown.bind(this), true);
         document.addEventListener("mouseup", this.mouseUp.bind(this), true);
         this.processProps(this.props);
         this.componentDidUpdate();
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
+        if (prevProps?.isSecondWindowOpen !== this.props?.isSecondWindowOpen) {
+            setTimeout(() => {
+                for (let i = 0; i < 2; i++) this.resizeHandler();
+            }, 1000);
+        }
+        let SearchSyncId = this.props.syncIdOnSearch || null;
+        let result = this.props.searchResults;
+        let list = this.list;
+        let con =
+            prevProps?.searchResults !== this.props?.searchResults ||
+            prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
+        if (con && result) {
+            if (SearchSyncId) {
+                let selectedTextIndex =
+                    this.props.splitText.getTextIndexOfPosition(SearchSyncId);
+                setTimeout(() => {
+                    list.scrollToRow(selectedTextIndex);
+                    setTimeout(() => {
+                        list.scrollToPosition(list.props.scrollTop - 300);
+                    }, 0);
+                }, 100);
+            }
+        }
         this.textAlignmentById = this.props.textAlignmentById;
         this.isPanelLinked = this.props.isPanelLinked;
         this.selectedWindow = this.props.selectedWindow;
         this.targetId = this.props.syncIdOnScroll2;
-        let list = this.list;
+
         this.fake_login_toggle = true;
 
         if (this.selectedNodes && this.selectedNodes.length > 0) {
@@ -774,11 +799,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         //     }
         // }
     }
-
     componentWillUnmount() {
         document.removeEventListener("mousedown", this);
         document.removeEventListener("mouseup", this);
         window.removeEventListener("resize", this.resizeHandler);
+        this.splitText.removeEventListener("resize", this.resizeHandler);
+
         document.removeEventListener("selectionchange", this.selectionHandler);
     }
 
@@ -864,7 +890,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             overscanRowCount={1}
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
-                            scrollToAlignment="center"
+                            scrollToAlignment="start"
                         ></List>
                     )}
                 </AutoSizer>

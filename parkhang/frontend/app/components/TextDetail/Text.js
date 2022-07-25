@@ -153,17 +153,18 @@ export default class Text extends React.Component<Props, State> {
             let rangeUnique = this.textAlignmentById.find(
                 (l) => id >= l.start && id < l.end
             );
-
-            for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
-                sourceRangeSelection.push(i);
+            if (rangeUnique) {
+                for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
+                    sourceRangeSelection.push(i);
+                }
+                for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
+                    targetRangeSelection.push(i);
+                }
+                this.props.changeSelectedRange({
+                    source: sourceRangeSelection,
+                    target: targetRangeSelection,
+                });
             }
-            for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
-                targetRangeSelection.push(i);
-            }
-            this.props.changeSelectedRange({
-                source: sourceRangeSelection,
-                target: targetRangeSelection,
-            });
         }
 
         if (selection && selection.type === "Range") {
@@ -215,9 +216,6 @@ export default class Text extends React.Component<Props, State> {
             let selectedCurrentLineBreak = false;
             let lineBreakAnnotation = false;
             let pageBreakAnnotation = null;
-            // let rangeUnique = this.textAlignmentById.find(
-            //     (l) => segment.start >= l.start && segment.start < l.end
-            // );
 
             if (annotations) {
                 let activeInsertions = [];
@@ -429,7 +427,6 @@ export default class Text extends React.Component<Props, State> {
                     }
                 }
             }
-
             if (this.props.textAlignmentById !== null) {
                 let r = this.props.textAlignmentById.find(
                     (d) => d.start === segment.start
@@ -473,7 +470,6 @@ export default class Text extends React.Component<Props, State> {
                     pageBreakIconString +
                     "</span>";
             }
-
             if (lineBreakAnnotation) {
                 let lineBreakClasses = [styles.lineBreak];
                 if (selectedCurrentLineBreak) {

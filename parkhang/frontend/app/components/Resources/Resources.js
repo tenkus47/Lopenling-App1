@@ -8,7 +8,7 @@ import YoutubeSearchedForIcon from "@mui/icons-material/YoutubeSearchedFor";
 import Index from "./ResourceOption";
 import { NavLink } from "redux-first-router-link";
 import lopenling_logo from "images/lopenling_logo_173x.png";
-import useLocalStorage from "bodyComponent/utility/useLocalStorage";
+import useLocalStorage from "components/utility/useLocalStorage";
 import { Tabs, Tab, Typography, Box } from "@mui/material";
 
 function Resources() {

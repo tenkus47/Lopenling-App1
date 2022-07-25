@@ -52,6 +52,8 @@ import {
     isPanelVisible,
     getSelectedSourceRange,
     getSelectedTargetRange,
+    getSearchResults,
+    getShowTableContent,
 } from "reducers";
 import * as reducers from "reducers";
 import _ from "lodash";
@@ -345,6 +347,9 @@ const mapStateToProps = (state) => {
         selectedWindow,
         selectedSourceRange: getSelectedSourceRange(state),
         selectedTargetRange: getSelectedTargetRange(state),
+        searchResults: getSearchResults(state, searchValue),
+        showTableContent: getShowTableContent(state),
+        syncIdOnSearch: reducers.getSyncIdOnSearch(state),
     };
 };
 
@@ -574,6 +579,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         changeSelectedRange: (payload) => {
             dispatch(actions.changeSelectedRange(payload));
+        },
+        changeShowTableContent: (payload) => {
+            dispatch(actions.showTableContent(payload));
         },
         closeAnnotation: () => {
             const dismissTextAnnotation =

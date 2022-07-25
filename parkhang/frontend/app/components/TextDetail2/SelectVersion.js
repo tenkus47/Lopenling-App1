@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
-import useLocaleStorage from "../../bodyComponent/utility/useLocalStorage";
+import useLocaleStorage from "components/utility/useLocalStorage";
 import { NativeSelect } from "@mui/material";
 import { withStyles } from "@mui/styles";
 

@@ -268,7 +268,7 @@ export default class Text2 extends React.Component<Props, State> {
                         "'>" +
                         `<sup class=` +
                         styles.syncIdClass +
-                        `>༼${r.id}༽</sup>` +
+                        `>${r.id}</sup>` +
                         "</span>";
                 }
             }

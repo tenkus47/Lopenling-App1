@@ -11,6 +11,8 @@ import {
     Collapse,
     Divider,
     ButtonGroup,
+    ListItem,
+    List,
 } from "@mui/material";
 import Share from "./HeaderMenu/Share";
 import Annotate from "./HeaderMenu/Annotate";
@@ -19,8 +21,10 @@ import Search from "./HeaderMenu/Search";
 import WindowSplitter from "./HeaderMenu/WindowSplitter";
 import Settings from "./HeaderMenu/Settings";
 import TableOfContent from "./HeaderMenu/TableOfContent";
+import Autocomplete from "@mui/material/Autocomplete";
 
 type HeaderProps = {
+    selectedText: {},
     witnesses: Witness[],
     selectedWitness: Witness,
     onSelectedWitness: () => void,
@@ -37,38 +41,47 @@ type HeaderProps = {
     isAnnotating: Boolean,
     searchChanged: () => void,
     searchValue: String,
+    changeShowTableContent: () => void,
+    searchResults: [],
 };
 
 function TextDetailHeading(props: HeaderProps) {
     const [findvalue, setfindvalue] = useState("");
     let [showFind, setShowFind] = useState(false);
+    let [visible, setVisible] = useState(false);
+
     const headingRef = useRef();
     const inputRef = useRef();
-
+    const handleListItemClick = (id) => {
+        props.changeSelectSyncId(id);
+        setVisible(false);
+    };
     const debouncedSearch = React.useRef(
         _.debounce((s) => {
             props.searchChanged(s);
-        }, 500)
+        }, 1000)
     ).current;
     const handleSearch = useCallback(
         (e) => {
             e.preventDefault();
-            props.searchChanged(findvalue);
+            setfindvalue("");
+            debouncedSearch(findvalue);
+            setVisible(true);
         },
         [findvalue]
     );
-    const handleWindowSearch = () => {
-        setShowFind((prev) => !prev);
-    };
+    const handleWindowSearch = useCallback(() => {
+        if (showFind === false) debouncedSearch(null);
+        setShowFind(!showFind);
+    }, [showFind]);
+
     useEffect(() => {
         if (showFind === true) {
             inputRef.current.focus();
         }
+        if (showFind === false) debouncedSearch(null);
     }, [showFind]);
 
-    useEffect(() => {
-        debouncedSearch(findvalue);
-    }, [findvalue]);
     return (
         <Stack
             ref={headingRef}
@@ -112,14 +125,14 @@ function TextDetailHeading(props: HeaderProps) {
                 >
                     <Refresh isSecondWindowOpen={props.isSecondWindowOpen} />
                     <Divider orientation="vertical" variant="middle" flexItem />
-                    <Annotate {...props} />
-                    <WindowSplitter
+                    {/* <Annotate {...props} /> */}
+                    {/* <WindowSplitter
                         isSecondWindowOpen={props.isSecondWindowOpen}
                         onChangeWindowOpen={props.onChangeWindowOpen}
-                    />
-                    <Divider orientation="vertical" variant="middle" flexItem />
+                    /> */}
+                    {/* <Divider orientation="vertical" variant="middle" flexItem /> */}
                     <Search handleWindowSearch={handleWindowSearch} />
-                    <Share {...props} />
+                    {/* <Share {...props} /> */}
                     <Settings {...props} />
                     <TableOfContent {...props} />
                 </ButtonGroup>
@@ -142,8 +155,8 @@ function TextDetailHeading(props: HeaderProps) {
                             inputRef={inputRef}
                             value={findvalue}
                             onChange={(e) => setfindvalue(e.target.value)}
-                            onBlur={() => setShowFind(false)}
                         />
+
                         <Button
                             variant="outlined"
                             size="small"
@@ -152,6 +165,43 @@ function TextDetailHeading(props: HeaderProps) {
                         >
                             Search
                         </Button>
+
+                        {props.searchResults && visible && (
+                            <List
+                                sx={{
+                                    position: "absolute",
+                                    top: 84,
+                                    zIndex: 1,
+                                    background: "#eee",
+                                    boxShadow: 3,
+                                }}
+                            >
+                                {_.isObject(props.searchResults) &&
+                                    props.searchResults.hasOwnProperty(
+                                        props.selectedText.id
+                                    ) &&
+                                    props.searchResults[
+                                        props.selectedText.id
+                                    ].results.map((l, i) => {
+                                        return (
+                                            <ListItem
+                                                onClick={() =>
+                                                    handleListItemClick(l[0])
+                                                }
+                                                sx={{
+                                                    cursor: "pointer",
+                                                    "&:hover": {
+                                                        background: "#fff",
+                                                    },
+                                                }}
+                                                key={l[0] + "listsearch"}
+                                            >
+                                                {l[1]}
+                                            </ListItem>
+                                        );
+                                    })}
+                            </List>
+                        )}
                     </Stack>
                 </form>
             </Collapse>

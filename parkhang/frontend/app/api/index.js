@@ -230,6 +230,7 @@ export function fetchWitnessAnnotations(
         "/witnesses/" +
         witness.id +
         "/annotations/";
+
     if (start && length) {
         url += start + "," + length;
     }
