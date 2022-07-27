@@ -39,7 +39,7 @@ const SelectVersion = (props: Props) => {
     let tabName = "";
     let { classes: classtype } = props;
     let r = props.witnesses.findIndex((l) => l.id === props.activeWitness?.id);
-    const [temp, setTemp] = useLocaleStorage("selectedWitness2", 0);
+    const [temp, setTemp] = useState(null);
     let classes = [styles.selectOptions];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);
