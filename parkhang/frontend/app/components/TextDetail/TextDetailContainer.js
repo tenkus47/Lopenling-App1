@@ -307,6 +307,7 @@ const mapStateToProps = (state) => {
     }
     _selectedWitness = selectedWitness;
     const scrollToId = reducers.getScrollToId(state);
+    const textAlignment = reducers.getTextAlignment(state);
 
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const selectedWindow = reducers.getSelectedWindow(state);
@@ -339,6 +340,7 @@ const mapStateToProps = (state) => {
         isImagePortrait: isImagePortrait(state),
         isPanelVisible: isPanelVisible(state),
         isAnnotating: reducers.isAnnotating(state),
+        textAlignment,
         textAlignmentById,
         scrollToId,
         syncIdOnClick,

@@ -47,8 +47,7 @@ export type UIState = {
 
     isPanelLinked: boolean,
     isAnnotating: Boolean,
-    scrollToId: String,
-    scrollToId2: String,
+    scrollToId: {},
 
     SyncIdOnClick: String,
     SyncIdOnScroll: String,
@@ -87,8 +86,7 @@ export const initialUIState = {
     isAnnotating: false,
     selectedWindow: 1,
     openTableContent: false,
-    scrollToId: null,
-    scrollToId2: null,
+    scrollToId: { from: 1, id: 0 },
 
     SyncIdOnClick: 0,
     SyncIdOnSearch: null,
@@ -174,14 +172,7 @@ function selectedText2(
 function changeScrollToId(state, action) {
     return {
         ...state,
-        scrollToId: action.payload,
-    };
-}
-
-function changeScrollToId2(state, action) {
-    return {
-        ...state,
-        scrollToId2: action.payload,
+        scrollToId: { from: action.payload.from, id: action.payload.id },
     };
 }
 
@@ -560,7 +551,6 @@ uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.NO_SELECTED_TEXT] = noSelectedText;
 uiReducers[actions.SCROLL_TO_ID] = changeScrollToId;
-uiReducers[actions.SCROLL_TO_ID2] = changeScrollToId2;
 
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
 uiReducers[actions.CHANGE_RANGE_SELECTION] = changeRangeSelection;
@@ -691,10 +681,6 @@ export const getTextListWidth = (state: UIState): number => {
 
 export const getScrollToId = (state) => {
     return state.scrollToId;
-};
-
-export const getScrollToId2 = (state) => {
-    return state.scrollToId2;
 };
 
 export const getSyncIdOnCLick = (state: UIState): number => {

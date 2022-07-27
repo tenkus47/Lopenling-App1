@@ -944,6 +944,13 @@ function* selectTextUrl(action) {
     yield put(noSelectedTextAction);
     const noTitleSelected = actions.selectTextTitle(null);
     yield put(noTitleSelected);
+
+    const scrollnull = actions.changeScrollToId({
+        id: null,
+        from: null,
+    });
+    yield put(scrollnull);
+
     const textdata = yield select(reducers.getTextTitle);
     let texts;
     let setTextData;

@@ -144,10 +144,14 @@ export default class Text extends React.Component<Props, State> {
         let targetRangeSelection = [];
         const selection = document.getSelection();
 
-        if (element?.id.includes("s_") && this.props.isPanelLinked) {
+        if (
+            element?.id.includes("s_") &&
+            this.props.isPanelLinked &&
+            this.props.condition
+        ) {
             var clickId = parseInt(element.id.replace("s_", ""));
             this.props.changeSyncIdOnClick(clickId);
-            this.props.changeScrollToId(null);
+            this.props.changeScrollToId({ id: null, from: null });
 
             let id = parseInt(element.id.replace("s_", ""));
             let rangeUnique = this.textAlignmentById.find(
@@ -499,7 +503,6 @@ export default class Text extends React.Component<Props, State> {
         };
         return html;
     }
-    componentDidUpdate() {}
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
 
@@ -537,6 +540,7 @@ export default class Text extends React.Component<Props, State> {
                     dangerouslySetInnerHTML={html}
                     style={{
                         fontSize: this.props.fontSize,
+                        cursor: !this.props.isAnnotating ? "pointer" : "text",
                     }}
                     onClick={(e) => {
                         this.selectedElement(e.target);

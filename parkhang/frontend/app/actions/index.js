@@ -121,7 +121,6 @@ export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 
 export const LINK_PANEL = "panel/LINKED";
 export const SCROLL_TO_ID = "SCROLL_TO_ID/ID";
-export const SCROLL_TO_ID2 = "SCROLL_TO_ID2/ID";
 
 export const SYNC_ID_ON_CLICK = "ClickSync/ID";
 export const CHANGE_SELECTED_WINDOW = "CHANGE_SELECTED_WINDOW";
@@ -976,12 +975,6 @@ export function toggleSecondWindow(data, textId) {
 export function changeScrollToId(payload) {
     return {
         type: SCROLL_TO_ID,
-        payload,
-    };
-}
-export function changeScrollToId2(payload) {
-    return {
-        type: SCROLL_TO_ID2,
         payload,
     };
 }

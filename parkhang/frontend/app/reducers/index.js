@@ -240,9 +240,6 @@ export const isSecondWindowOpen = (state: AppState): number => {
 export const getScrollToId = (state) => {
     return ui.getScrollToId(state.ui);
 };
-export const getScrollToId2 = (state) => {
-    return ui.getScrollToId2(state.ui);
-};
 
 export const getSyncIdOnClick = (state: AppState): number => {
     return ui.getSyncIdOnCLick(state.ui);

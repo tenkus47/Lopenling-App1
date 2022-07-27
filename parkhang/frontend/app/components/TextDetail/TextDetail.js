@@ -57,8 +57,7 @@ export type Props = {
     selectedWindow: Number,
     changeSelectedWindow: () => void,
     changeSelectedRange: [],
-    syncIdOnScroll: Number,
-    syncIdOnScroll2: Number,
+    scrollToId: {},
     selectedSourceRange: [],
     selectedTargetRange: [],
     searchResults: [],
@@ -150,10 +149,10 @@ class TextDetail extends React.Component<Props> {
                     changeSelectedImage={this.props.changeSelectedImage}
                     isAnnotating={this.props.isAnnotating}
                     closeAnnotation={this.props.closeAnnotation}
+                    textAlignment={this.props.textAlignment}
                     textAlignmentById={this.props.textAlignmentById}
                     isPanelVisible={this.props.isPanelVisible}
-                    syncIdOnScroll={this.props.syncIdOnScroll}
-                    syncIdOnScroll2={this.props.syncIdOnScroll2}
+                    scrollToId={this.props.scrollToId}
                     selectedWindow={this.props.selectedWindow}
                     selectedSourceRange={this.props.selectedSourceRange}
                     selectedTargetRange={this.props.selectedTargetRange}

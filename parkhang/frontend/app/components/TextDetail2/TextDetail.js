@@ -72,7 +72,7 @@ function TextDetail(props) {
                 textAlignment={props.textAlignment}
                 textAlignmentById={props.textAlignmentById}
                 isPanelLinked={props.isPanelLinked}
-                changeScrollToId2={props.changeScrollToId2}
+                changeScrollToId={props.changeScrollToId}
                 selectedWindow={props.selectedWindow}
                 selectedSourceRange={props.selectedSourceRange}
                 selectedTargetRange={props.selectedTargetRange}

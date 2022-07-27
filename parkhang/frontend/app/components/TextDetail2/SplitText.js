@@ -41,7 +41,7 @@ export type Props = {
     isPanelLinked: Boolean,
     textAlignment: {},
     textAlignmentById: {},
-    changeScrollToId2: () => void,
+    changeScrollToId: () => void,
     selectedWindow: Boolean,
     selectedTargetRange: [],
     selectedSourceRange: [],
@@ -67,7 +67,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     selectedNodes: Node[] | null;
     // Whether the mouse button is down
     textAlignmentById;
-    changeScrollToId2: () => void;
+    changeScrollToId: () => void;
 
     selectedTextIndex: number | null;
     splitTextRect: ClientRect | null;
@@ -79,10 +79,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     mouseEnter: () => void;
     mouseLeft: () => void;
     scrollTop;
+    debouncedScroll;
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
-        this.changeScrollToId2 = props.changeScrollToId2;
+        this.changeScrollToId = props.changeScrollToId;
 
         this.list = null;
         this.splitText = null;
@@ -111,20 +112,24 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (this.selectedWindow === 2 && this.isPanelLinked) {
             let list = [];
             this.textAlignmentById.map((l) => {
-                let number = document.getElementById("s2_" + l.start);
+                let number = document.getElementById("s2_" + l.TStart);
                 if (number) {
                     let position = number.getBoundingClientRect();
-                    if (position.top > 102) {
+                    if (position.top > 90) {
                         list.push({
                             id: l.id,
                             start: l.start,
-                            target: l.TStart,
+                            TStart: l.TStart,
+                            end: l.end,
+                            TEnd: l.TEnd,
                         });
                     }
                 }
             });
-            if (list.length > 0) {
-                this.changeScrollToId2(list[0].target);
+            if (!_.isEmpty(list)) {
+                if (this.selectedWindow === 2) {
+                    this.debouncedScroll(list);
+                }
             }
         }
     }
@@ -486,6 +491,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }, 500).bind(this);
         window.addEventListener("resize", this.resizeHandler);
 
+        this.debouncedScroll = _.debounce((list) => {
+            this.changeScrollToId({ id: list[0].TStart, from: 2 });
+        }, 1000);
         this.selectionHandler = _.debounce((e) => {
             this.handleSelection(e);
         }, 200).bind(this);
@@ -500,8 +508,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        let sourceId = this.props.scrollToId;
+        let scrollToId = this.props.scrollToId;
         let targetId2 = this.props.syncIdOnClick;
+        this.isPanelLinked = this.props.isPanelLinked;
 
         this.selectedWindow = this.props.selectedWindow;
         let SearchSyncId = this.props.syncIdOnSearch || null;
@@ -527,17 +536,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         if (
             this.selectedWindow === 1 &&
+            scrollToId.from === 1 &&
             this.isPanelLinked &&
             condition &&
-            sourceId !== null
+            scrollToId.id !== null
         ) {
-            this.isPanelLinked = this.props.isPanelLinked;
             let list = this.list;
             this.textAlignmentById = this.props.textAlignmentById || [];
             this.splitText.style.scrollBehavior = "smooth";
             if (Alignment && this.isPanelLinked) {
                 let req = this.textAlignmentById.find(
-                    (l) => l.start === sourceId
+                    (l) => l.start === scrollToId.id
                 );
                 let TStart = req?.TStart;
                 if (TStart !== null) {
@@ -554,7 +563,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
             }
         }
-        if (targetId2 && sourceId === null) {
+        if (
+            targetId2 &&
+            scrollToId.from === null &&
+            this.selectedWindow === 1
+        ) {
             let clickIdObj = Alignment.alignment.find(
                 (l) =>
                     targetId2 >= l.source_segment.start &&

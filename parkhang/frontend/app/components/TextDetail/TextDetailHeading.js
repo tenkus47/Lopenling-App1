@@ -3,6 +3,7 @@ import styles from "./textDetailHeading.css";
 import SelectVersion from "./SelectVersion";
 import _ from "lodash";
 import TextList from "./TextListContainer";
+import CloseIcon from "@mui/icons-material/Close";
 import {
     Stack,
     Box,
@@ -13,6 +14,7 @@ import {
     ButtonGroup,
     ListItem,
     List,
+    IconButton,
 } from "@mui/material";
 import Share from "./HeaderMenu/Share";
 import Annotate from "./HeaderMenu/Annotate";
@@ -54,7 +56,6 @@ function TextDetailHeading(props: HeaderProps) {
     const inputRef = useRef();
     const handleListItemClick = (id) => {
         props.changeSelectSyncId(id);
-        setVisible(false);
     };
     const debouncedSearch = React.useRef(
         _.debounce((s) => {
@@ -64,7 +65,6 @@ function TextDetailHeading(props: HeaderProps) {
     const handleSearch = useCallback(
         (e) => {
             e.preventDefault();
-            setfindvalue("");
             debouncedSearch(findvalue);
             setVisible(true);
         },
@@ -81,6 +81,12 @@ function TextDetailHeading(props: HeaderProps) {
         }
         if (showFind === false) debouncedSearch(null);
     }, [showFind]);
+
+    const closeSearchItemBox = () => {
+        setVisible(false);
+        debouncedSearch(null);
+        setfindvalue("");
+    };
 
     return (
         <Stack
@@ -140,7 +146,7 @@ function TextDetailHeading(props: HeaderProps) {
 
             <Collapse in={showFind}>
                 <form onSubmit={handleSearch}>
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} position="relative">
                         <TextField
                             hiddenLabel
                             id="filled-hidden-label-small"
@@ -170,7 +176,8 @@ function TextDetailHeading(props: HeaderProps) {
                             <List
                                 sx={{
                                     position: "absolute",
-                                    top: 84,
+                                    top: 35,
+                                    right: 0,
                                     zIndex: 1,
                                     background: "#eee",
                                     boxShadow: 3,
@@ -200,6 +207,18 @@ function TextDetailHeading(props: HeaderProps) {
                                             </ListItem>
                                         );
                                     })}
+                                <IconButton
+                                    aria-label="closeButton"
+                                    onClick={closeSearchItemBox}
+                                    size="small"
+                                    sx={{
+                                        right: 0,
+                                        top: 0,
+                                        position: "absolute",
+                                    }}
+                                >
+                                    <CloseIcon fontSize="inherit" />
+                                </IconButton>
                             </List>
                         )}
                     </Stack>

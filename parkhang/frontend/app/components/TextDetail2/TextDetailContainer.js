@@ -356,8 +356,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             // dispatch(changedActiveTextAnnotation(activeAnnotation));
         },
-        changeScrollToId2: (payload) =>
-            dispatch(actions.changeScrollToId2(payload)),
+        changeScrollToId: (payload) =>
+            dispatch(actions.changeScrollToId(payload)),
         changeSelectedWindow: (payload) => {
             dispatch(actions.changeSelectedWindow(payload));
         },
