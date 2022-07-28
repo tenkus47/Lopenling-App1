@@ -20,7 +20,6 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
-import flagsmith from "flagsmith";
 
 import type { AnnotationUniqueId } from "lib/Annotation";
 
@@ -82,8 +81,8 @@ class AnnotationControls extends React.Component<Props> {
     controls: HTMLDivElement | null;
     arrow: HTMLDivElement | null;
     arrowDs: HTMLDivElement | null;
-    fake_login_toggle: null;
-
+    fakeLogin: Boolean;
+    annotation: null;
     constructor(props: Props) {
         super(props);
 
@@ -94,13 +93,13 @@ class AnnotationControls extends React.Component<Props> {
 
     componentDidMount() {
         this.updatePosition();
-        this.fake_login_toggle = flagsmith.hasFeature("fake_login_toggle");
     }
 
     componentDidUpdate() {
         // Need to delay calling this because the browser
         // may not have finished rendering when first called.
         setTimeout(this.updatePosition.bind(this), 0);
+        this.fakeLogin = this.props.fake_login_togle;
     }
 
     updatePosition() {
@@ -385,77 +384,49 @@ class AnnotationControls extends React.Component<Props> {
                     );
                     temporaryAnnotations.push(annotationDetail);
                 } else {
-                    if (
-                        annotationData.name === " Working; སྡེ་དགེ" ||
-                        annotationData.name === " མཉམ་འབྲེལ་པར་མ།། སྡེ་དགེ" ||
-                        annotationData.name === " Working; སྡེ་དགེ Dominant;" ||
-                        annotationData.name ===
-                            " མཉམ་འབྲེལ་པར་མ།། སྡེ་དགེ Dominant;"
-                    ) {
-                        if (!isEditing) {
-                            let annotationDetail = (
-                                <AnnotationDetail
-                                    isWorkingSection={true}
-                                    fontSize={props.fontSize}
-                                    annotationData={annotationData}
-                                    key={annotationData.annotation.uniqueId}
-                                    isActive={isActive}
-                                    selectAnnotationHandler={() => {
-                                        if (isLoggedIn && !isEditing) {
-                                            props.didSelectAnnotation(
-                                                annotationData.annotation
-                                            );
-                                        }
-                                    }}
-                                    editAnnotationHandler={() => {
-                                        if (isLoggedIn && !isEditing) {
-                                            props.editAnnotation(
-                                                annotationData.annotation
-                                            );
-                                        }
-                                    }}
-                                    isLoggedIn={isLoggedIn}
-                                />
-                            );
-                            annotations.push(annotationDetail);
-                        }
-                    } else {
-                        let annotationDetail = (
-                            <AnnotationDetail
-                                isWorkingSection={false}
-                                fontSize={props.fontSize}
-                                annotationData={annotationData}
-                                key={annotationData.annotation.uniqueId}
-                                isActive={isActive}
-                                selectAnnotationHandler={() => {
-                                    if (isLoggedIn && !isEditing) {
-                                        props.didSelectAnnotation(
-                                            annotationData.annotation
-                                        );
-                                    }
-                                }}
-                                editAnnotationHandler={() => {
-                                    if (isLoggedIn && !isEditing) {
-                                        props.editAnnotation(
-                                            annotationData.annotation
-                                        );
-                                    }
-                                }}
-                                isLoggedIn={isLoggedIn}
-                            />
-                        );
-                        annotations.push(annotationDetail);
-                    }
+                    let annotationDetail = (
+                        <AnnotationDetail
+                            isWorkingSection={false}
+                            fontSize={props.fontSize}
+                            annotationData={annotationData}
+                            key={annotationData.annotation.uniqueId}
+                            isActive={isActive}
+                            selectAnnotationHandler={() => {
+                                if (isLoggedIn && !isEditing) {
+                                    props.didSelectAnnotation(
+                                        annotationData.annotation
+                                    );
+                                }
+                            }}
+                            editAnnotationHandler={() => {
+                                if (isLoggedIn && !isEditing) {
+                                    this.annotation = annotationData.annotation;
+
+                                    props.editAnnotation(
+                                        annotationData.annotation
+                                    );
+                                }
+                            }}
+                            isLoggedIn={isLoggedIn}
+                        />
+                    );
+                    annotations.push(annotationDetail);
                 }
             }, this);
-            if (!this.fake_login_toggle === !props.user.isLoggedIn) {
+            if (!props.user.isLoggedIn) {
                 // NOTE: FormattedMessage cannot take a child when using
                 // the values option, so need to wrap it in a div
 
                 anonymousUserMessage = (
                     <div
                         className={styles.anonymousMessage}
-                        style={{ position: "relative" }}
+                        style={{
+                            position: "relative",
+                            background: "#eee",
+                            width: "fit-content",
+                            border: "1px solid gray",
+                            paddingInline: 10,
+                        }}
                     >
                         <FormattedMessage
                             id="annotations.loginMessage"
@@ -467,19 +438,6 @@ class AnnotationControls extends React.Component<Props> {
                                 ),
                             }}
                         />
-                        <div
-                            onClick={() => this.props.closeAnnotation()}
-                            style={{
-                                position: "absolute",
-                                left: 5,
-                                width: 10,
-                                height: 10,
-                                top: 5,
-                                cursor: "pointer",
-                            }}
-                        >
-                            x
-                        </div>
                     </div>
                 );
             }
@@ -695,8 +653,14 @@ class AnnotationControls extends React.Component<Props> {
                         }
                         addQuestion={allowQuestion ? props.addQuestion : null}
                         closeAnnotation={props.closeAnnotation}
+                        editAnnotationHandler={() => {
+                            let editBtn = document.getElementById("editBtn");
+                            editBtn?.click();
+                        }}
+                        userLoggedIn={isLoggedIn}
                     />
                 )}
+
                 <div className={styles.annotationContent}>
                     {anonymousUserMessage}
                     {nothingSelected}

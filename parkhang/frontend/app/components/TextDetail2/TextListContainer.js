@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import TextList from "./TextList";
 import * as actions from "actions";
-import { getSelectedText2   } from "reducers";
+import { getSelectedText2 } from "reducers";
 import type { AppState } from "reducers";
 import * as api from "api";
 import * as reducers from "reducers";
@@ -23,7 +23,9 @@ const mapStateToProps = (state: AppState) => {
             searching = true;
             texts = [];
         } else {
-            texts = texts.filter(text => searchResults.hasOwnProperty(text.id));
+            texts = texts.filter((text) =>
+                searchResults.hasOwnProperty(text.id)
+            );
         }
     }
 
@@ -33,21 +35,21 @@ const mapStateToProps = (state: AppState) => {
         searchTerm: searchValue,
         searchResults,
         selectedSearchResult,
-        searching
+        searching,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         onSelectedText: (text: api.TextData) => {
             dispatch(actions.selectedText2(text));
-        }
-        
+        },
     };
 };
 
-const TextListContainer = connect(mapStateToProps, mapDispatchToProps)(
-    TextList
-);
+const TextListContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TextList);
 
 export default TextListContainer;

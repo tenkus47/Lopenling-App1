@@ -4,35 +4,35 @@
     height: 27px;
     display: flex;
     margin: 0 auto;
-    border-radius: 30%;
-    width: 50%;
-    justify-content: space-evenly;
+    width: fit-content;
+    background-color: #eee;
+    border: 1px solid darkgray;
 }
 
 .header>div {
-    background-color: var(--white);
     display: flex;
     justify-content: center;
-    width: 100%;
-    border-right: 1px solid #fff;
-    flex-grow: 1;
-
-}
-
-.header>div:nth-child(1) {
-    background-color: var(--white);
-    border-radius: 20px 0px 0px 20px;
-}
-
-.header>div:last-child {
-    border-radius: 0px 20px 20px 0px;
+    max-width: fit-content;
 }
 
 .header>div:hover {
     background-color: var(--white);
 }
 
+.Anotation_closeBtn {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    background-color: red;
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    cursor: pointer;
 
-.header>div:nth-last-of-type(1) {
-    border-right: 0;
+}
+
+.edit svg {
+    width: 20px;
+    height: 20px;
+
 }

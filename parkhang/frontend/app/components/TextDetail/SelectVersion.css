@@ -2,25 +2,21 @@
 
 .selectVersion {
     height: 30px;
-    overflow: hidden;
-    border:none;
-    outline:none;
-    padding:0 10px;
-    background-color: #eee;
-    flex:1
+    min-width: max-content;
+    font-size: 14px;
+    text-align: center;
 }
 
 .selected {
     width: 100%;
-    padding:10px;
+    padding: 10px;
     border-radius: 10px;
-}
-.selectVersion:hover{
-    color:green;
 }
 
 .styled-select select {
-    -moz-appearance:none; /* Firefox */
-    -webkit-appearance:none; /* Safari and Chrome */
-    appearance:none;
+    -moz-appearance: none;
+    /* Firefox */
+    -webkit-appearance: none;
+    /* Safari and Chrome */
+    appearance: none;
 }

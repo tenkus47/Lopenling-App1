@@ -16,6 +16,14 @@ import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 
+let _searchResultsCache: {
+    [splitTextUniqueId: string]: {
+        [searchTerm: string]: {
+            [index: number]: { [position: number]: [number, number] },
+        },
+    },
+} = {};
+
 export type Props = {
     splitText: SplitText,
     didSelectSegmentIds: (segmentIds: string[]) => void,
@@ -30,6 +38,14 @@ export type Props = {
     // } | null,
     // searchValue: string | null,
     fontSize: number,
+    isPanelLinked: Boolean,
+    textAlignment: {},
+    textAlignmentById: {},
+    changeScrollToId: () => void,
+    selectedWindow: Boolean,
+    selectedTargetRange: [],
+    selectedSourceRange: [],
+    syncIdOnSearch: String,
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -50,17 +66,24 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     activeSelection: Selection | null;
     selectedNodes: Node[] | null;
     // Whether the mouse button is down
+    textAlignmentById;
+    changeScrollToId: () => void;
 
     selectedTextIndex: number | null;
     splitTextRect: ClientRect | null;
     firstSelectedSegment: TextSegment | null;
     selectedElementId: string | null;
     selectedElementIds: string[] | null;
-    splitTextRef;
-
+    selectedWindow: Boolean;
+    scrollEvent: () => void;
+    mouseEnter: () => void;
+    mouseLeft: () => void;
+    scrollTop;
+    debouncedScroll;
     constructor(props: Props) {
         super(props);
-        this.splitTextRef = React.createRef(null);
+        this.textAlignmentById = [];
+        this.changeScrollToId = props.changeScrollToId;
 
         this.list = null;
         this.splitText = null;
@@ -69,6 +92,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             defaultHeight: 300,
         });
         this.rowRenderer = this.rowRenderer.bind(this);
+        this.isPanelLinked = this.props.isPanelLinked;
         this.activeSelection = null;
         this.selectedNodes = null;
         this._mouseDown = false;
@@ -78,9 +102,38 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.imageHeight = null;
         this.imageWidth = null;
         this.calculatedImageHeight = null;
-
+        this.selectedWindow = this.props.selectedWindow;
+        this.scrollEvent = this.scrollEvent.bind(this);
         // this.processProps(props);
+        this.scrollTop = 0;
     }
+    scrollEvent(e) {
+        if (this.selectedWindow === 1) return null;
+        if (this.selectedWindow === 2 && this.isPanelLinked) {
+            let list = [];
+            this.textAlignmentById.map((l) => {
+                let number = document.getElementById("s2_" + l.TStart);
+                if (number) {
+                    let position = number.getBoundingClientRect();
+                    if (position.top > 90) {
+                        list.push({
+                            id: l.id,
+                            start: l.start,
+                            TStart: l.TStart,
+                            end: l.end,
+                            TEnd: l.TEnd,
+                        });
+                    }
+                }
+            });
+            if (!_.isEmpty(list)) {
+                if (this.selectedWindow === 2) {
+                    this.debouncedScroll(list);
+                }
+            }
+        }
+    }
+
     selectedListRow(props: Props): number | null {
         let row = null;
         if (props.activeAnnotation) {
@@ -110,7 +163,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this._modifyingSelection = false;
         }
     }
-
     mouseDown() {
         this._mouseDown = true;
     }
@@ -211,30 +263,25 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         return span;
     }
 
-    scrolling(e) {}
-
     updateId(id) {
-        if (id && id.includes("s2")) {
-            let newId = id.replace("s2", "s");
-            document
-                ?.getElementById(newId)
-                ?.scrollIntoView({ block: "center" });
-            let positionHighlight = document
-                .getElementById(newId)
-                .getBoundingClientRect();
-
-            let hightlighter = document.createElement("div");
-            hightlighter.classList.add(styles.hightlighter);
-            hightlighter.style.border = "2px solid blue";
-
-            document.getElementById(newId).append(hightlighter);
-            document.getElementById(newId).style.color = "blue";
-
-            setTimeout(() => {
-                document.getElementById(newId).style.color = "black";
-                hightlighter.remove();
-            }, 500);
-        }
+        // if (id && id.includes("s2")) {
+        //     let newId = id.replace("s2", "s");
+        //     document
+        //         ?.getElementById(newId)
+        //         ?.scrollIntoView({ block: "center" });
+        //     let positionHighlight = document
+        //         .getElementById(newId)
+        //         .getBoundingClientRect();
+        //     let hightlighter = document.createElement("div");
+        //     hightlighter.classList.add(styles.hightlighter);
+        //     hightlighter.style.border = "2px solid blue";
+        //     document.getElementById(newId).append(hightlighter);
+        //     document.getElementById(newId).style.color = "blue";
+        //     setTimeout(() => {
+        //         document.getElementById(newId).style.color = "black";
+        //         hightlighter.remove();
+        //     }, 500);
+        // }
     }
 
     updateList(
@@ -444,6 +491,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }, 500).bind(this);
         window.addEventListener("resize", this.resizeHandler);
 
+        this.debouncedScroll = _.debounce((list) => {
+            this.changeScrollToId({ id: list[0].TStart, from: 2 });
+        }, 1000);
         this.selectionHandler = _.debounce((e) => {
             this.handleSelection(e);
         }, 200).bind(this);
@@ -457,46 +507,83 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.componentDidUpdate();
     }
 
-    componentDidUpdate() {
-        let list = this.list;
+    componentDidUpdate(prevProps, prevState) {
+        let scrollToId = this.props.scrollToId;
+        let targetId2 = this.props.syncIdOnClick;
+        this.isPanelLinked = this.props.isPanelLinked;
 
-        let sourceId = this.props.syncIdOnScroll;
-        // console.log(this.props.syncIdOnClick)
-        let Alignment = this.props.textAlignment.alignment;
-        if (Alignment) {
-            let index = Alignment.findIndex(
-                (l) =>
-                    l.target_segment.start <= sourceId &&
-                    l.target_segment.end > sourceId
-            );
-            let temp = Alignment[index];
-            let startPos = temp?.target_segment.start;
-            if (startPos) {
+        this.selectedWindow = this.props.selectedWindow;
+        let SearchSyncId = this.props.syncIdOnSearch || null;
+        let list = this.list;
+        let result = this.props.searchResults;
+        let Alignment = this.props.textAlignment;
+        let condition = Alignment.target === this.props.selectedWitness.id;
+        let con =
+            prevProps?.searchResults !== this.props?.searchResults ||
+            prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
+        if (con && result) {
+            if (SearchSyncId) {
                 let selectedTextIndex =
-                    this.props.splitText.getTextIndexOfPosition(startPos);
+                    this.props.splitText.getTextIndexOfPosition(SearchSyncId);
                 setTimeout(() => {
                     list.scrollToRow(selectedTextIndex);
-                    if (
-                        this.splitTextRef.current !== null &&
-                        this.splitTextRef.current !== "undefined"
-                    ) {
-                        {
-                            let currentId =
-                                this.splitTextRef.current.id.replace(
-                                    "index2_",
-                                    ""
-                                );
-
-                            if (parseInt(currentId) === selectedTextIndex + 1) {
-                                let position =
-                                    this.splitTextRef.current.getBoundingClientRect();
-
-                                list.scrollToPosition(position.top - 100);
-                            }
-                        }
-                    }
+                    setTimeout(() => {
+                        list.scrollToPosition(list.props.scrollTop - 300);
+                    }, 0);
                 }, 100);
             }
+        }
+
+        if (
+            this.selectedWindow === 1 &&
+            scrollToId.from === 1 &&
+            this.isPanelLinked &&
+            condition &&
+            scrollToId.id !== null
+        ) {
+            let list = this.list;
+            this.textAlignmentById = this.props.textAlignmentById || [];
+            this.splitText.style.scrollBehavior = "smooth";
+            if (Alignment && this.isPanelLinked) {
+                let req = this.textAlignmentById.find(
+                    (l) => l.start === scrollToId.id
+                );
+                let TStart = req?.TStart;
+                if (TStart !== null) {
+                    let selectedTextIndex =
+                        this.props.splitText.getTextIndexOfPosition(TStart);
+
+                    setTimeout(() => {
+                        list.scrollToRow(selectedTextIndex);
+
+                        setTimeout(() => {
+                            list.scrollToPosition(list.props.scrollTop - 300);
+                        }, 0);
+                    }, 100);
+                }
+            }
+        }
+        if (
+            targetId2 &&
+            scrollToId.from === null &&
+            this.selectedWindow === 1
+        ) {
+            let clickIdObj = Alignment.alignment.find(
+                (l) =>
+                    targetId2 >= l.source_segment.start &&
+                    targetId2 < l.source_segment.end
+            );
+            let syncClickTargetId = clickIdObj?.target_segment?.start;
+            let selectedTextIndex =
+                this.props.splitText.getTextIndexOfPosition(syncClickTargetId);
+
+            setTimeout(() => {
+                list.scrollToRow(selectedTextIndex);
+
+                setTimeout(() => {
+                    list.scrollToPosition(list.props.scrollTop - 300);
+                }, 0);
+            }, 100);
         }
 
         // if (this.selectedNodes && this.selectedNodes.length > 0) {
@@ -542,32 +629,31 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         document.removeEventListener("selectionchange", this.selectionHandler);
     }
 
-    // getSelectedTextIndex(): number {
-    //     let selectedTextIndex = 0;
-    //     let startPos = null;
-    //     if (this.props.activeAnnotation) {
-    //         [
-    //             startPos
-    //         ] = this.props.splitText.annotatedText.getPositionOfAnnotation(
-    //             this.props.activeAnnotation
-    //         );
-    //     } else if (this.props.selectedSearchResult) {
-    //         let segment = this.props.splitText.annotatedText.segmentAtOriginalPosition(
-    //             this.props.selectedSearchResult.start
-    //         );
-    //         if (segment instanceof TextSegment) {
-    //             startPos = segment.start;
-    //         } else if (typeof segment === "number") {
-    //             startPos = segment;
-    //         }
-    //     }
-    //     if (startPos) {
-    //         selectedTextIndex = this.props.splitText.getTextIndexOfPosition(
-    //             startPos
-    //         );
-    //     }
-    //     return selectedTextIndex;
-    // }
+    getSelectedTextIndex(): number {
+        let selectedTextIndex = 0;
+        let startPos = null;
+        if (this.props.activeAnnotation) {
+            [startPos] =
+                this.props.splitText.annotatedText.getPositionOfAnnotation(
+                    this.props.activeAnnotation
+                );
+        } else if (this.props.selectedSearchResult) {
+            let segment =
+                this.props.splitText.annotatedText.segmentAtOriginalPosition(
+                    this.props.selectedSearchResult.start
+                );
+            if (segment instanceof TextSegment) {
+                startPos = segment.start;
+            } else if (typeof segment === "number") {
+                startPos = segment;
+            }
+        }
+        if (startPos) {
+            selectedTextIndex =
+                this.props.splitText.getTextIndexOfPosition(startPos);
+        }
+        return selectedTextIndex;
+    }
     getControlsMeasurements(props: Props): {
         selectedTextIndex: number,
         firstSelectedSegment: TextSegment,
@@ -731,88 +817,89 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             rowHeight={cache.rowHeight}
                             rowRenderer={rowRenderer}
                             width={width}
-                            overscanRowCount={3}
+                            overscanRowCount={1}
                             deferredMeasurementCache={cache}
-                            // onScroll={this.scrolling}
+                            onScroll={this.scrollEvent}
+                            scrollToAlignment="start"
                         ></List>
                     )}
                 </AutoSizer>
             </div>
         );
     }
-    // getStringPositions(
-    //     text: SegmentedText,
-    //     string: string,
-    //     index: number
-    // ): { [position: number]: [number, number] } {
-    //     const uniqueId = this.props.splitText.annotatedText.getUniqueId();
+    getStringPositions(
+        text: SegmentedText,
+        string: string,
+        index: number
+    ): { [position: number]: [number, number] } {
+        const uniqueId = this.props.splitText.annotatedText.getUniqueId();
 
-    //     if (!_searchResultsCache.hasOwnProperty(uniqueId)) {
-    //         _searchResultsCache = {
-    //             [uniqueId]: {}
-    //         };
-    //     }
+        if (!_searchResultsCache.hasOwnProperty(uniqueId)) {
+            _searchResultsCache = {
+                [uniqueId]: {},
+            };
+        }
 
-    //     if (!_searchResultsCache[uniqueId].hasOwnProperty(string)) {
-    //         _searchResultsCache[uniqueId] = {
-    //             [string]: {}
-    //         };
-    //     }
+        if (!_searchResultsCache[uniqueId].hasOwnProperty(string)) {
+            _searchResultsCache[uniqueId] = {
+                [string]: {},
+            };
+        }
 
-    //     if (_searchResultsCache[uniqueId][string].hasOwnProperty(index)) {
-    //         return _searchResultsCache[uniqueId][string][index];
-    //     }
+        if (_searchResultsCache[uniqueId][string].hasOwnProperty(index)) {
+            return _searchResultsCache[uniqueId][string][index];
+        }
 
-    //     const splitter = new GraphemeSplitter();
-    //     const content = text.getText();
-    //     const firstSegment = text.segments[0];
-    //     const startingPosition = firstSegment.start;
-    //     let positions = [];
-    //     let position = content.indexOf(string);
-    //     while (position !== -1) {
-    //         positions.push(position);
-    //         position = content.indexOf(string, position + 1);
-    //     }
+        const splitter = new GraphemeSplitter();
+        const content = text.getText();
+        const firstSegment = text.segments[0];
+        const startingPosition = firstSegment.start;
+        let positions = [];
+        let position = content.indexOf(string);
+        while (position !== -1) {
+            positions.push(position);
+            position = content.indexOf(string, position + 1);
+        }
 
-    //     // Position needs to be position in complete text
-    //     let verifiedPositions: { [position: number]: [number, number] } = {};
-    //     if (positions.length > 0) {
-    //         const graphemes = splitter.splitGraphemes(content);
-    //         let position = 0;
-    //         let activePosition = null;
-    //         for (let i = 0; i < graphemes.length; i++) {
-    //             const grapheme = graphemes[i];
-    //             const graphemeEnd = position + (grapheme.length - 1);
-    //             if (activePosition !== null) {
-    //                 let expectedEnd = activePosition + (string.length - 1);
-    //                 if (graphemeEnd >= expectedEnd) {
-    //                     verifiedPositions[activePosition + startingPosition] = [
-    //                         activePosition + startingPosition,
-    //                         graphemeEnd + startingPosition
-    //                     ];
-    //                     activePosition = null;
-    //                 }
-    //             } else if (positions.indexOf(position) !== -1) {
-    //                 if (string.length === grapheme.length) {
-    //                     verifiedPositions[position + startingPosition] = [
-    //                         position + startingPosition,
-    //                         graphemeEnd + startingPosition
-    //                     ];
-    //                 } else if (string.length > grapheme.length) {
-    //                     activePosition = position;
-    //                 }
-    //             } else {
-    //                 activePosition = null;
-    //             }
+        // Position needs to be position in complete text
+        let verifiedPositions: { [position: number]: [number, number] } = {};
+        if (positions.length > 0) {
+            const graphemes = splitter.splitGraphemes(content);
+            let position = 0;
+            let activePosition = null;
+            for (let i = 0; i < graphemes.length; i++) {
+                const grapheme = graphemes[i];
+                const graphemeEnd = position + (grapheme.length - 1);
+                if (activePosition !== null) {
+                    let expectedEnd = activePosition + (string.length - 1);
+                    if (graphemeEnd >= expectedEnd) {
+                        verifiedPositions[activePosition + startingPosition] = [
+                            activePosition + startingPosition,
+                            graphemeEnd + startingPosition,
+                        ];
+                        activePosition = null;
+                    }
+                } else if (positions.indexOf(position) !== -1) {
+                    if (string.length === grapheme.length) {
+                        verifiedPositions[position + startingPosition] = [
+                            position + startingPosition,
+                            graphemeEnd + startingPosition,
+                        ];
+                    } else if (string.length > grapheme.length) {
+                        activePosition = position;
+                    }
+                } else {
+                    activePosition = null;
+                }
 
-    //             position += grapheme.length;
-    //         }
-    //     }
+                position += grapheme.length;
+            }
+        }
 
-    //     _searchResultsCache[uniqueId][string][index] = verifiedPositions;
+        _searchResultsCache[uniqueId][string][index] = verifiedPositions;
 
-    //     return verifiedPositions;
-    // }
+        return verifiedPositions;
+    }
 
     rowRenderer({
         key,
@@ -829,14 +916,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const cache = this.cache;
 
         let searchStringPositions = {};
-        let searchValue = props.searchValue;
-        // if (searchValue && searchValue.length > 0 && props.splitText) {
-        //     searchStringPositions = this.getStringPositions(
-        //         props.splitText.texts[index],
-        //         searchValue,
-        //         index
-        //     );
-        // }
+        let searchValue = this.props.searchValue;
+        if (searchValue && searchValue.length > 0 && props.splitText) {
+            searchStringPositions = this.getStringPositions(
+                props.splitText.texts[index],
+                searchValue,
+                index
+            );
+        }
 
         let newStyle = { ...style, height: style.height + 10 };
         return (
@@ -863,8 +950,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             // selectedSearchResult={
                             //     this.props.selectedSearchResult
                             // }
-                            // searchStringPositions={searchStringPositions}
+                            searchStringPositions={searchStringPositions}
+                            textAlignmentById={props.textAlignmentById}
                             fontSize={props.fontSize}
+                            selectedSourceRange={props.selectedSourceRange}
+                            selectedTargetRange={props.selectedTargetRange}
+                            changeSelectedRange={props.changeSelectedRange}
                         ></Text2>
                     </div>
                 </div>

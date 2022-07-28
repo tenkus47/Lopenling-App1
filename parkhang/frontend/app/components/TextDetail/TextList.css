@@ -1,25 +1,27 @@
-.textlist{
-    z-index: 999999;
-    width: 300px;
+.textlist {
+    z-index: 1;
+    min-width: 300px;
     height: 300px;
     cursor: pointer;
     overflow: hidden;
     background-color: #eee;
-    color:black;
+    color: black;
+    font-weight: 100;
 }
-.textlist.open{
-    width:500px;
+
+.textlist.open {
+    width: 500px;
     height: 500px;
 }
 
-.listToggelBtn{
+.listToggelBtn {
     outline: none;
-    border:none;
+    border: none;
     background-color: transparent;
-    font-weight: bold;
     font-size: 1rem;
 }
-.listToggelBtn:hover{
+
+.listToggelBtn:hover {
     background-color: #eee;
-    outline:2px solid goldenrod;
+    outline: 2px solid goldenrod;
 }

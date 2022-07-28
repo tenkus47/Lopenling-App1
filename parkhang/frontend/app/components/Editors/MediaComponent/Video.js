@@ -82,7 +82,6 @@ function Video(props) {
 
     useEffect(() => {
         let timer = setTimeout(() => changeTextBackground(), 300);
-        console.log("what");
         return () => {
             clearTimeout(timer);
             let current = interval;
