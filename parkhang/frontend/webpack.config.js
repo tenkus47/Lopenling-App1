@@ -6,30 +6,35 @@ var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 module.exports = (env, argv) => {
-    const devMode = (argv.mode !== 'production');
+    const devMode = argv.mode !== "production";
     return {
         context: __dirname,
         entry: {
-            parkhang: ["./app/index", "./website/index"]
+            parkhang: ["./app/index", "./website/index"],
         },
-        devtool: devMode ? 'eval-source-map' : false,
+        devtool: devMode ? "eval-source-map" : false,
         output: {
-            filename: devMode ? '[name]-dev.js' : '[name]-[hash].js',
-            path: path.resolve(__dirname, 'static/bundles'),
-            library: 'parkhang',
-            publicPath: "/static/bundles/"
+            filename: devMode ? "[name]-dev.js" : "[name]-[hash].js",
+            path: path.resolve(__dirname, "static/bundles"),
+            library: "parkhang",
+            publicPath: "/static/bundles/",
         },
-        mode: devMode ? 'development' : 'production',
+        mode: devMode ? "development" : "production",
         plugins: [
-            new BundleTracker({filename: devMode ? 'webpack-stats-dev.json' : 'webpack-stats.json'}),
+            new BundleTracker({
+                filename: devMode
+                    ? "webpack-stats-dev.json"
+                    : "webpack-stats.json",
+            }),
             new MiniCssExtractPlugin({
-                filename: devMode ? "styles-dev.css" : "styles-[hash].css"
+                filename: devMode ? "styles-dev.css" : "styles-[hash].css",
             }),
             new HtmlWebpackPlugin({
-                title:"Development"
-            })
+                title: "Development",
+            }),
+            new UglifyJSPlugin(),
         ],
         module: {
             rules: [
@@ -37,23 +42,22 @@ module.exports = (env, argv) => {
                     test: /\.(js|jsx)?$/,
                     exclude: /node_modules/,
                     use: {
-                            loader: "babel-loader",
-                            options: {
-                                presets: [
-                                    "@babel/preset-react",
-                                    "@babel/preset-env",
-                                    "@babel/preset-flow"
-                                ]
-                            }
-                        }
-                 
+                        loader: "babel-loader",
+                        options: {
+                            presets: [
+                                "@babel/preset-react",
+                                "@babel/preset-env",
+                                "@babel/preset-flow",
+                            ],
+                        },
+                    },
                 },
                 {
                     test: /\.css$/,
                     exclude: /accounts\.css/,
                     use: [
                         {
-                            loader: MiniCssExtractPlugin.loader
+                            loader: MiniCssExtractPlugin.loader,
                         },
                         {
                             loader: "css-loader",
@@ -62,9 +66,9 @@ module.exports = (env, argv) => {
                                 sourceMap: true,
                                 importLoaders: 1,
                                 modules: {
-                                    localIdentName: "[name]---[local]"
-                                }
-                            }
+                                    localIdentName: "[name]---[local]",
+                                },
+                            },
                         },
                         {
                             loader: "postcss-loader",
@@ -73,21 +77,21 @@ module.exports = (env, argv) => {
                                 plugins: () => [
                                     postcssImport({
                                         addDependencyTo: webpack,
-                                        path: path.resolve("./app")
+                                        path: path.resolve("./app"),
                                     }),
                                     postcssCssnext({
-                                        compress: true
-                                    })
-                                ]
-                            }
-                        }
-                    ]
+                                        compress: true,
+                                    }),
+                                ],
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /accounts\.css/,
                     use: [
                         {
-                            loader: MiniCssExtractPlugin.loader
+                            loader: MiniCssExtractPlugin.loader,
                         },
                         {
                             loader: "css-loader",
@@ -95,8 +99,8 @@ module.exports = (env, argv) => {
                                 url: false,
                                 sourceMap: true,
                                 importLoaders: 1,
-                                modules: false
-                            }
+                                modules: false,
+                            },
                         },
                         {
                             loader: "postcss-loader",
@@ -105,15 +109,15 @@ module.exports = (env, argv) => {
                                 plugins: () => [
                                     postcssImport({
                                         addDependencyTo: webpack,
-                                        path: path.resolve("./app")
+                                        path: path.resolve("./app"),
                                     }),
                                     postcssCssnext({
-                                        compress: true
-                                    })
-                                ]
-                            }
-                        }
-                    ]
+                                        compress: true,
+                                    }),
+                                ],
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /\.svg$/,
@@ -125,28 +129,28 @@ module.exports = (env, argv) => {
                                     plugins: [
                                         {
                                             inlineStyles: {
-                                                onlyMatchedOnce: false
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    ]
+                                                onlyMatchedOnce: false,
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /\.(png|jpe?g|gif)$/i,
                     use: [
                         {
-                            loader: "file-loader"
-                        }
-                    ]
-                }
+                            loader: "file-loader",
+                        },
+                    ],
+                },
             ],
         },
         resolve: {
             extensions: [".js", ".jsx"],
-            modules: [path.resolve("./node_modules"), path.resolve("./app")]
+            modules: [path.resolve("./node_modules"), path.resolve("./app")],
         },
-    }
-}
+    };
+};

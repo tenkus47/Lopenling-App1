@@ -117,3 +117,12 @@
     width: 0.8em;
     pointer-events: none;
 }
+
+.syncIdClass {
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.selectedRange {
+    background-color: #eee;
+}

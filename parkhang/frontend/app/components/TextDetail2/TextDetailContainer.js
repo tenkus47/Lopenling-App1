@@ -35,6 +35,8 @@ import {
     getSelectedImage,
     isImagePortrait,
     isPanelVisible,
+    getSelectedTargetRange,
+    getSelectedSourceRange,
 } from "reducers";
 
 const DISMISS_CONTROLS_ON_CLICK = true;
@@ -159,6 +161,8 @@ const mapStateToProps = (state: AppState): {} => {
     const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const textAlignment = reducers.getTextAlignment(state);
+    const selectedWindow = reducers.getSelectedWindow(state);
+
     return {
         text: selectedText,
         textFontSize,
@@ -175,6 +179,10 @@ const mapStateToProps = (state: AppState): {} => {
         syncIdOnScroll,
         syncIdOnClick,
         textAlignment,
+        textAlignmentById: reducers.getTextAlignmentById(state),
+        selectedWindow,
+        selectedSourceRange: getSelectedSourceRange(state),
+        selectedTargetRange: getSelectedTargetRange(state),
     };
 };
 
@@ -343,6 +351,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 activeAnnotation = baseAnnotation;
             }
             // dispatch(changedActiveTextAnnotation(activeAnnotation));
+        },
+        changeSyncIdOnScroll2: (payload) =>
+            dispatch(actions.changeSyncIdOnScroll2(payload)),
+        changeSelectedWindow: (payload) => {
+            dispatch(actions.changeSelectedWindow(payload));
+        },
+        changeSelectedRange: (payload) => {
+            dispatch(actions.changeSelectedRange(payload));
         },
         selectedSegmentId: (segmentId) => {
             let start = idFromSegmentId(segmentId);

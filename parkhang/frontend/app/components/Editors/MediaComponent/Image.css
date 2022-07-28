@@ -1,6 +1,6 @@
 @import 'css/colour.css';
 @value ThirdWindow-Height: 300px;
-@value header-Height: 30px;
+@value header-Height: 45px;
 
 :export {
     ThirdWindowHeight: 250px;
@@ -14,29 +14,24 @@
 
 .ThirdWindow {
     transition: 0.5s all linear;
-    resize: both;
     position: absolute;
     height: var(--ThirdWindowHeight);
     width: 100%;
-    z-index: 99999;
-    bottom: 0;
+    z-index: 999;
+    bottom: 0px;
     background-color: var(--text-bg);
-    border: thick double var(--green);
     overflow: hidden;
-    max-height: 250px;
 }
 
 .ThirdWindowPortrait {
-    resize: both;
     overflow: auto;
     transition: none;
     position: absolute;
     height: 100%;
     width: 50%;
-    z-index: 99999;
+    z-index: 999;
     right: 0;
     background-color: var(--text-bg);
-    border: thick double var(--green);
 }
 
 .header {
@@ -46,7 +41,6 @@
     right: 0;
     left: 0;
     background-color: var(--textDetail-heading);
-    border-bottom: 1px solid var(--dark-gray);
     display: flex;
     align-items: center;
     padding-inline: 30px;
@@ -65,96 +59,17 @@
     margin-inline: 10px;
 }
 
-.closeBtn {
-    position: inherit;
-    right: 10px;
-    top: 2px;
-    cursor: pointer;
-    font-weight: bold;
-    background-color: black;
-    color: white;
-    border-radius: 50%;
-    padding: 2px;
-    height: 25px;
-    width: 25px;
-    text-align: center;
-}
 
-.closeBtn:hover {
-    background-color: gray;
-}
-
-.imageRender {
-    margin: 5px;
-    margin-top: 30px;
-    border-radius: 10px;
-    cursor: move;
-    overflow: hidden;
-    position: relative;
-
-}
-
-.imageRender div {
-    width: 100%;
-}
-
-.imageRender img {
-    max-width: 100%;
-    width: 100%;
-    height: 100%;
-    max-height: 200px;
-}
-
-[data-value='previousImage'] {
-    background-color: black;
-    color: white;
-}
-
-[data-value='nextImage'] {
-    background-color: black;
-    color: white;
-}
-
-.NavigationImage button:hover {
-    background-color: rgb(54, 52, 52);
-    color: gainsboro;
-}
-
-.eachImage {
-    background-color: rgba(1, 2, 2, 0.4);
-    color: white;
-    height: 40px;
-    width: 40px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.eachImage>img {
-    width: 100%;
-    height: 100%;
+.ImageStyle {
     object-fit: contain;
+    height: 100%;
+    max-width: 100%;
+
 }
 
-.selected {
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-}
 
-.hideButton {
-    position: inherit;
-    right: 43px;
-    bottom: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    color: black;
-    padding: 2px;
-    font-size: 0.6rem;
-    text-align: center;
-}
-
-.hideWindow {
-    transition: all linear 1s;
-    transform: translateY(100%);
-    bottom: var(--headerHeight);
+.imageSection {
+    width: 100%;
+    height: calc(100%-45px);
+    position: relative;
 }

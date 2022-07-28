@@ -7,7 +7,7 @@ import {
     INSERTION_KEY,
     DELETION_KEY,
     PAGE_BREAK_KEY,
-    LINE_BREAK_KEY
+    LINE_BREAK_KEY,
 } from "lib/AnnotatedText";
 import _ from "lodash";
 import SegmentedText from "lib/SegmentedText";
@@ -50,15 +50,18 @@ export type Props = {
     selectedSearchResult: {
         textId: number,
         start: number,
-        length: number
+        length: number,
     } | null,
     searchStringPositions: { [position: number]: [number, number] },
     fontSize?: number,
-    activeWitness: Witness
+    activeWitness: Witness,
+    textAlignmentById: {},
+    selectedSourceRange: [],
+    selectedTargetRange: [],
 };
 
 export type State = {
-    segmentedText: SegmentedText
+    segmentedText: SegmentedText,
 };
 
 // import ReactDOMServer from "react-dom/server";
@@ -71,13 +74,15 @@ export type State = {
 export default class Text2 extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
     _renderedHtml: { __html: string } | null;
+    textAlignmentById;
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            segmentedText: props.segmentedText
+            segmentedText: props.segmentedText,
         };
+        this.textAlignmentById = [];
 
         this._renderedSegments = null;
         this._renderedHtml = null;
@@ -87,7 +92,7 @@ export default class Text2 extends React.Component<Props, State> {
         this.setState((prevState: State, props: Props) => {
             return {
                 ...prevState,
-                segmentedText: nextProps.segmentedText
+                segmentedText: nextProps.segmentedText,
             };
         });
     }
@@ -134,7 +139,6 @@ export default class Text2 extends React.Component<Props, State> {
     //     return false;
     // }
 
-
     selectedElement(element: Element) {
         const selection = document.getSelection();
         // console.log(selection)
@@ -145,15 +149,12 @@ export default class Text2 extends React.Component<Props, State> {
     }
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
-       
         let segments = renderState.segmentedText.segments;
         let textLineClass = styles.textLine;
         let segmentHTML = '<p class="' + textLineClass + '">';
         if (segments.length === 0) return { __html: segmentHTML };
 
         const endPosition = segments[segments.length - 1].end + 1;
-    
-
 
         let highlightClass = styles.highlight;
         let activeHighlightClass = styles.activeHighlight;
@@ -167,7 +168,6 @@ export default class Text2 extends React.Component<Props, State> {
             let selectedCurrentLineBreak = false;
             let lineBreakAnnotation = false;
             let pageBreakAnnotation = null;
-          
 
             // It's an insertion at the end of the text, which should have just been added to the html.
             // So break as we don't want anymore segment html adding.
@@ -194,6 +194,9 @@ export default class Text2 extends React.Component<Props, State> {
             // ) {
             //     classes.push(styles.selectedAnnotation);
             // }
+            if (renderProps.selectedTargetRange?.includes(segment.start)) {
+                classes.push(styles.selectedRange);
+            }
 
             if (classes.length > 0) {
                 let className = classnames(...classes);
@@ -236,9 +239,8 @@ export default class Text2 extends React.Component<Props, State> {
                             segmentContent += char;
                         }
                     } else if (position in renderProps.searchStringPositions) {
-                        let [start, end] = renderProps.searchStringPositions[
-                            position
-                        ];
+                        let [start, end] =
+                            renderProps.searchStringPositions[position];
                         segmentContent +=
                             '<span class="' + highlight + '">' + char;
                         if (j === segment.text.length - 1 || position === end) {
@@ -250,6 +252,24 @@ export default class Text2 extends React.Component<Props, State> {
                     } else {
                         segmentContent += char;
                     }
+                }
+            }
+            if (
+                this.props.textAlignmentById !== null
+                // && selectedTextId === TargetId
+            ) {
+                let r = this.props.textAlignmentById.find(
+                    (d) => d.TStart === segment.start
+                );
+                if (r) {
+                    segmentHTML +=
+                        "<span id='alignment2_" +
+                        segment.start +
+                        "'>" +
+                        `<sup class=` +
+                        styles.syncIdClass +
+                        `>༼${r.id}༽</sup>` +
+                        "</span>";
                 }
             }
 
@@ -269,7 +289,7 @@ export default class Text2 extends React.Component<Props, State> {
         segmentHTML += "</p>";
 
         const html = {
-            __html: segmentHTML
+            __html: segmentHTML,
         };
         return html;
     }
@@ -309,9 +329,9 @@ export default class Text2 extends React.Component<Props, State> {
                 <div
                     className={classnames(...classes)}
                     dangerouslySetInnerHTML={html}
-                    onClick={e => this.selectedElement(e.target)}
+                    onClick={(e) => this.selectedElement(e.target)}
                     style={{
-                        fontSize: this.props.fontSize
+                        fontSize: this.props.fontSize,
                     }}
                 />
             </div>

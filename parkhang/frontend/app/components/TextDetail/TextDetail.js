@@ -17,7 +17,8 @@ import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
-
+import { Box } from "@mui/material";
+import _ from "lodash";
 export type Props = {
     paginated: boolean,
     pageImagesVisible: boolean,
@@ -45,22 +46,46 @@ export type Props = {
     isSecondWindowOpen: Boolean,
     imageData: {},
     isPanelLinked: boolean,
+    isPanelVisible: Boolean,
     changeSyncIdOnClick: () => void,
     changeSyncIdOnScroll: () => void,
     changeSelectedImage: () => void,
+    closeAnnotation: () => void,
+    textAlignmentById: {},
+    selectedWindow: Number,
+    changeSelectedWindow: () => void,
+    changeSelectedRange: [],
+    syncIdOnScroll: Number,
+    syncIdOnScroll2: Number,
+    selectedSourceRange: [],
+    selectedTargetRange: [],
 };
 
 let textDetailId = 0;
 
 class TextDetail extends React.Component<Props> {
     key: number;
-
+    ref;
+    selectedWindow;
     constructor() {
         super();
-
         this.key = textDetailId++;
+        this.ref = React.createRef();
+        this.selectedWindow = null;
     }
 
+    mouseEnter() {
+        if (this.selectedWindow === 2) this.props.changeSelectedWindow(1);
+    }
+    componentDidMount() {
+        this.ref.current.addEventListener(
+            "mouseenter",
+            this.mouseEnter.bind(this)
+        );
+    }
+    componentDidUpdate() {
+        this.selectedWindow = this.props.selectedWindow;
+    }
     render() {
         let text = {
             name: "",
@@ -68,7 +93,6 @@ class TextDetail extends React.Component<Props> {
         if (this.props.text) {
             text = this.props.text;
         }
-
         let inlineControls = false;
         let textComponent = null;
         let splitText = null;
@@ -88,6 +112,7 @@ class TextDetail extends React.Component<Props> {
             }
 
             splitText = new SplitText(this.props.annotatedText, splitter);
+
             inlineControls = true;
             textComponent = (
                 <SplitTextComponent
@@ -118,19 +143,23 @@ class TextDetail extends React.Component<Props> {
                     selectedImage={this.props.selectedImage}
                     changeSelectedImage={this.props.changeSelectedImage}
                     isAnnotating={this.props.isAnnotating}
+                    closeAnnotation={this.props.closeAnnotation}
+                    textAlignmentById={this.props.textAlignmentById}
+                    isPanelVisible={this.props.isPanelVisible}
+                    syncIdOnScroll={this.props.syncIdOnScroll}
+                    syncIdOnScroll2={this.props.syncIdOnScroll2}
+                    selectedWindow={this.props.selectedWindow}
+                    selectedSourceRange={this.props.selectedSourceRange}
+                    selectedTargetRange={this.props.selectedTargetRange}
+                    changeSelectedRange={this.props.changeSelectedRange}
                 ></SplitTextComponent>
             );
         }
-
         let textComponents = [textComponent];
-        let thirdWindowHeight = imageStyle.ThirdWindowHeight;
-        let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
-        let condition =
-            !this.props.isImagePortrait && this.props.isPanelVisible;
         return (
-            <div
+            <Box
                 style={{
-                    height: condition ? bodyHeight : "100%",
+                    height: "100%",
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -138,6 +167,7 @@ class TextDetail extends React.Component<Props> {
                     utilStyles.flexColumn
                 )}
                 key={this.key}
+                ref={this.ref}
             >
                 <TextDetailHeadingContainer />
                 <Loader loaded={!this.props.loading} zIndex={5} />
@@ -150,7 +180,7 @@ class TextDetail extends React.Component<Props> {
                 >
                     {!this.props.loading ? textComponents : <div />}
                 </div>
-            </div>
+            </Box>
         );
     }
 }

@@ -7,9 +7,8 @@ import * as reducers from "reducers";
 import type { AppState } from "reducers";
 import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 
-
-
 const mapStateToProps = (state: AppState): {} => {
+    const user = reducers.getUser(state);
     const selectedText = reducers.getSelectedText2(state);
     let witnesses = [];
     let exportingWitness = false;
@@ -34,44 +33,44 @@ const mapStateToProps = (state: AppState): {} => {
         }
     }
     let textFontSize = reducers.getTextFontSize2(state);
-
     return {
         witnesses,
-        selectedText,   
+        selectedText,
         selectedWitness,
         textListIsVisible: getTextListVisible(state),
         accountOverlayVisible: getAccountOverlayVisible(state),
         textFontSize,
-
+        user,
     };
 };
 
-
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-    const navigationButtonClicked= () => {
-     dispatchProps.dispatch(
-        actions.changedTextListVisible(!stateProps.textListIsVisible)
-    ); 
-} 
+    const navigationButtonClicked = () => {
+        dispatchProps.dispatch(
+            actions.changedTextListVisible(!stateProps.textListIsVisible)
+        );
+    };
 
-const { dispatch } = dispatchProps;
-const { selectedText } = stateProps;
+    const { dispatch } = dispatchProps;
+    const { selectedText } = stateProps;
 
-return {
-    ...ownProps,
-    ...stateProps,
-    navigationButtonClicked,
-    onSelectedWitness: (witness: Witness) => {
-        dispatch(actions.selectedTextWitness2(selectedText.id, witness.id));
-    },
-    onChangedFontSize: (fontSize: number) => {
-        dispatch(actions.changedTextFontSize2(fontSize));
-    }
+    return {
+        ...ownProps,
+        ...stateProps,
+        navigationButtonClicked,
+        onSelectedWitness: (witness: Witness) => {
+            dispatch(actions.selectedTextWitness2(selectedText.id, witness.id));
+        },
+        onChangedFontSize: (fontSize: number) => {
+            dispatch(actions.changedTextFontSize2(fontSize));
+        },
+    };
 };
-}
 
-const TextDetailHeadingContainer = connect(mapStateToProps, null,mergeProps)(
-    TextDetailHeading
-);
+const TextDetailHeadingContainer = connect(
+    mapStateToProps,
+    null,
+    mergeProps
+)(TextDetailHeading);
 
 export default TextDetailHeadingContainer;

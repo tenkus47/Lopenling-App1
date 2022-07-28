@@ -35,15 +35,14 @@ export type UIState = {
     showAccountOverlay: boolean,
     textFontSize: number,
     textFontSize2: number,
-    notification: {
-        message: String,
-        time: Number,
-        type: String,
-    },
     showSecondWindow: Boolean,
-
+    selectedWindow: {},
     SyncIdOnScroll: String,
+    SyncIdOnScroll2: String,
+
     SyncIdOnClick: String,
+    selectedSourceRange: [],
+    selectedTargetRange: [],
 
     isPanelLinked: boolean,
     isAnnotating: Boolean,
@@ -69,16 +68,15 @@ export const initialUIState = {
     showAccountOverlay: false,
     textFontSize: constants.DEFAULT_TEXT_FONT_SIZE,
     textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,
-    notification: {
-        message: "",
-        time: null,
-        type: "",
-    },
-    showSecondWindow: true,
+    showSecondWindow: false,
     SyncIdOnScroll: 0,
+    SyncIdOnScroll2: null,
     SyncIdOnClick: 0,
+    selectedSourceRange: [],
+    selectedTargetRange: [],
     isPanelLinked: true,
-    isAnnotating: true,
+    isAnnotating: false,
+    selectedWindow: 1,
 };
 
 function loadedUserSettings(
@@ -155,6 +153,18 @@ function changeSyncIdOnScroll(
 
     return state;
 }
+function changeSyncIdOnScroll2(
+    state: UIState,
+    action: actions.SelectedTextAction
+): UIState {
+    state = {
+        ...state,
+        SyncIdOnScroll2: action.payload,
+    };
+
+    return state;
+}
+
 function changeSyncIdOnClick(
     state: UIState,
     action: actions.SelectedTextAction
@@ -165,6 +175,14 @@ function changeSyncIdOnClick(
     };
 
     return state;
+}
+
+function changeRangeSelection(state, action) {
+    return {
+        ...state,
+        selectedSourceRange: action.payload.source,
+        selectedTargetRange: action.payload.target,
+    };
 }
 
 function changeLinkPanel(
@@ -304,15 +322,6 @@ function changedTextFontSize2(
     return {
         ...state,
         textFontSize2: action.fontSize,
-    };
-}
-function changedNotification(
-    state: UIState,
-    action: actions.ChangedTextFontSizeAction
-): UIState {
-    return {
-        ...state,
-        notification: { ...action.data },
     };
 }
 
@@ -508,14 +517,23 @@ function changedAccountOverlay(
 
     return state;
 }
-
+function changeSelectedWindow(state, action) {
+    return {
+        ...state,
+        selectedWindow: action.payload,
+    };
+}
 const uiReducers = {};
 uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.NO_SELECTED_TEXT] = noSelectedText;
 uiReducers[actions.SYNC_ID_ON_SCROLL] = changeSyncIdOnScroll;
+uiReducers[actions.SYNC_ID_ON_SCROLL2] = changeSyncIdOnScroll2;
+
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
+uiReducers[actions.CHANGE_RANGE_SELECTION] = changeRangeSelection;
+
 uiReducers[actions.LINK_PANEL] = changeLinkPanel;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.SELECTED_WITNESS2] = selectedTextWitness2;
@@ -538,11 +556,20 @@ uiReducers[actions.CHANGED_WITNESS_SCROLL_POSITION] = changedScrollPosition;
 uiReducers[actions.EXPORT_WITNESS] = exportingWitness;
 uiReducers[actions.EXPORTED_WITNESS] = exportedWitness;
 uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
-uiReducers[actions.CHANGED_NOTIFICATION] = changedNotification;
 uiReducers[actions.SECOND_WINDOW] = toggleSecondWindow;
 uiReducers[actions.CHANGE_ANNOTATING] = changeIsAnnotating;
+uiReducers[actions.CHANGE_SELECTED_WINDOW] = changeSelectedWindow;
 export default uiReducers;
 
+export const getSelectedWindow = (state) => {
+    return state.selectedWindow;
+};
+export const getSelectedSourceRange = (state) => {
+    return state.selectedSourceRange;
+};
+export const getSelectedTargetRange = (state) => {
+    return state.selectedTargetRange;
+};
 export const isAnnotating = (state) => {
     return state.isAnnotating;
 };
@@ -553,9 +580,7 @@ export const getSelectedText = (state: UIState): api.TextData | null => {
 export const getSelectedText2 = (state: UIState): api.TextData | null => {
     return state.selectedText2;
 };
-export const getNotification = (state: UIState): api.TextData | null => {
-    return state.notification;
-};
+
 export const getSelectedTextWitnessId = (
     state: UIState,
     textId: number
@@ -614,6 +639,9 @@ export const getTextListWidth = (state: UIState): number => {
 };
 export const getSyncIdOnScroll = (state: UIState): number => {
     return state.SyncIdOnScroll;
+};
+export const getSyncIdOnScroll2 = (state: UIState): number => {
+    return state.SyncIdOnScroll2;
 };
 export const getSyncIdOnCLick = (state: UIState): number => {
     return state.SyncIdOnClick;

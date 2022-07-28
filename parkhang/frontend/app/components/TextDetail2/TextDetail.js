@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import TextDetailHeading from "./TextDetailHeadingContainer";
 import SplitTextComponent from "./SplitText";
 import SplitText from "lib/SplitText";
@@ -7,12 +7,25 @@ import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import styles from "./TextDetail.css";
 import imageStyle from "../Editors/MediaComponent/Image.css";
 function TextDetail(props) {
+    const ref = useRef();
     let text = {
         name: "",
     };
     if (props.text) {
         text = props.text;
     }
+    useEffect(() => {
+        let element = ref.current;
+        element.addEventListener("mouseenter", mouseEnter);
+        return () => {
+            element.removeEventListener("mouseenter", mouseEnter);
+        };
+    }, []);
+
+    function mouseEnter() {
+        props.changeSelectedWindow(2);
+    }
+
     let inlineControls = false;
     let textComponent = null;
     let splitText = null;
@@ -52,6 +65,13 @@ function TextDetail(props) {
                 syncIdOnScroll={props.syncIdOnScroll}
                 syncIdOnClick={props.syncIdOnClick}
                 textAlignment={props.textAlignment}
+                textAlignmentById={props.textAlignmentById}
+                isPanelLinked={props.isPanelLinked}
+                changeSyncIdOnScroll2={props.changeSyncIdOnScroll2}
+                selectedWindow={props.selectedWindow}
+                selectedSourceRange={props.selectedSourceRange}
+                selectedTargetRange={props.selectedTargetRange}
+                changeSelectedRange={props.changeSelectedRange}
             ></SplitTextComponent>
         );
     }
@@ -59,12 +79,13 @@ function TextDetail(props) {
     let textComponents = [textComponent];
     let thirdWindowHeight = imageStyle.ThirdWindowHeight;
     let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
-    let condition = props.isPanelVisible;
+    // let condition = props.isPanelVisible;
     return (
         <div
+            ref={ref}
             className={styles.textDetail2}
             style={{
-                height: condition ? bodyHeight : "100%",
+                height: "100%",
             }}
         >
             <TextDetailHeading />

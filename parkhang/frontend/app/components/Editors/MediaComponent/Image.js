@@ -1,64 +1,87 @@
-import React, {
-    useState,
-    useRef,
-    useEffect,
-    memo,
-    Suspense,
-    useMemo,
-    useCallback,
-} from "react";
+import React, { useState, useRef, useEffect, memo, useCallback } from "react";
 import styles from "./Image.css";
-import { useImage } from "react-image";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import classnames from "classnames";
 import _ from "lodash";
-import { selectImage } from "../../../actions";
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import lopenlingLogo from "images/lopenling_logo.png";
+import {
+    IconButton,
+    NativeSelect,
+    MenuItem,
+    FormControl,
+    Box,
+    InputLabel,
+} from "@mui/material";
+import { Resizable } from "re-resizable";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import CircularProgress from "@mui/material/CircularProgress";
+import CancelIcon from "@mui/icons-material/Cancel";
 function HttpUrl(data = "") {
-    if (data.includes("http")) return data;
+    if (data.includes("https")) return data;
     return "https://" + data;
 }
 
 function Image(props) {
     const selectRef = useRef(null);
+    let imageList = props.imageData?.alignment;
     let textIdfromAlignment = props.alignmentData.text;
+
     let isPortraitImage = props.isImagePortrait;
-    let ImageArea = useRef(null);
     let [imageSelected, SetSelected] = useState(0);
-    let [hide, SetHide] = useState(false);
-    let imageList = props.imageData?.alignment || [];
+    let [imageHeight, setImageHeight] = useState(240);
     let imageIdList = [];
     let scrollingID = props.syncIdOnScroll;
-    let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
+    let [loading, setLoading] = useState(false);
+    const [img, setImg] = useState();
+    const boxRef = useRef(null);
+    const fetchImage = async () => {
+        if (_.isEmpty(imageList)) return;
+        let url = HttpUrl(imageList[imageSelected].target_segment);
+
+        const res = await fetch(url);
+        const imageBlob = await res.blob();
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        setLoading(false);
+        setImg(imageObjectURL);
+    };
+    useEffect(() => {
+        setLoading(true);
+        fetchImage();
+    }, [imageList, imageSelected]);
+    // let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
     let syncIdOnClick = props.syncIdOnClick;
     if (!_.isEmpty(imageList)) {
         imageIdList = imageList.map((l) => parseInt(l.source_segment.start));
     }
-    // useEffect(() => {
-    //     let IDtoSync = parseInt(syncIdOnScroll);
-    //     if (textIdfromAlignment === props.selectedText.id) {
-    //         if (imageList?.length > 0) {
-    //             let findSegment = imageList.filter(
-    //                 (l) =>
-    //                     l.source_segment.start <= IDtoSync &&
-    //                     l.source_segment.end > IDtoSync
-    //             );
-    //             let index = imageList.findIndex(
-    //                 (l) => l?.source_segment === findSegment[0]?.source_segment
-    //             );
-    //             if (index >= 0) {
-    //                 SetSelected(index);
-    //             }
-    //         }
-    //     }
-    // }, [syncIdOnScroll]);
+
     useEffect(() => {
-        selectRef.current.value = props.witness;
+        let IDtoSync = parseInt(scrollingID);
+        if (textIdfromAlignment === props.selectedText.id) {
+            if (imageList?.length > 0) {
+                let findSegment = imageList.filter(
+                    (l) =>
+                        l.source_segment.start <= IDtoSync &&
+                        l.source_segment.end > IDtoSync
+                );
+                let index = imageList.findIndex(
+                    (l) => l?.source_segment === findSegment[0]?.source_segment
+                );
+                if (parseInt(index)) {
+                    SetSelected(index);
+                }
+            }
+        }
+    }, [scrollingID]);
+    useEffect(() => {
+        if (selectRef.current) selectRef.current.value = props.witness;
+        setLoading(true);
+        fetchImage();
     }, [props.witness]);
     useEffect(() => {
         if (textIdfromAlignment === props.selectedText.id) {
             let ClickId = syncIdOnClick.toString().replace("s_", "");
-            if (imageList?.length > 0) {
+            if (imageList?.length > 0 && ClickId > 0) {
                 let findSegment = imageList.filter(
                     (l) =>
                         l.source_segment.start < ClickId &&
@@ -75,22 +98,22 @@ function Image(props) {
     }, [syncIdOnClick]);
 
     let change = useCallback(() => {
-        props.changeSelectedImage(imageList[imageSelected]);
-    }, [imageSelected]);
-
-    useEffect(() => {
-        change();
-    }, [imageSelected]);
+        props.changeSelectedImage(imageList[imageSelected + 1]);
+    }, [imageList, imageSelected]);
 
     const isPortrait = ({ target: img }) => {
         //this Check if the provided Image is a portrait or a landScape
         let tempHeight = img.naturalHeight;
+        setImageHeight(img.naturalHeight);
         let tempWIdth = img.naturalWidth;
         if (tempHeight === 0 || tempWIdth === 0) return null;
         props.changeIsImagePortrait(tempHeight >= tempWIdth);
+        setLoading(false);
+        console.log(tempHeight);
     };
 
     const handleChangeImage = (data) => {
+        change();
         if (data === "prev" && imageSelected > 0) {
             SetSelected((prev) => prev - 1);
         }
@@ -98,42 +121,59 @@ function Image(props) {
             SetSelected((prev) => prev + 1);
         }
     };
-
+    const handleResize = (e, direction, ref) => {
+        setImageHeight(ref.style.height);
+    };
     return (
-        <div
+        <Resizable
             className={
                 isPortraitImage
                     ? styles.ThirdWindowPortrait
-                    : hide
-                    ? classnames(styles.ThirdWindow, styles.hideWindow)
                     : styles.ThirdWindow
             }
+            defaultSize={{
+                width: "100%",
+                height: imageHeight + 45,
+            }}
+            onResize={handleResize}
+            maxWidth="100%"
         >
             <div className={styles.header}>
-                <div className={styles.ImageTitle}>
-                    {imageSelected} Images :
-                    <select
-                        ref={selectRef}
-                        defaultValue={props.witness}
-                        onChange={(e) =>
-                            props.changeImageVersion(e.target.value)
-                        }
-                    >
-                        {props.witnesses.map((witness) => {
-                            return (
-                                <option key={witness.id} value={witness.id}>
-                                    {witness.source.name}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </div>
-                <div
-                    className={styles.closeBtn}
+                <Box position="relative" zIndex={2}>
+                    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                        <NativeSelect
+                            labelId="demo-select-small"
+                            ref={selectRef}
+                            defaultValue={props.witness}
+                            onChange={(e) =>
+                                props.changeImageVersion(e.target.value)
+                            }
+                            inputProps={{
+                                name: "age",
+                                id: "uncontrolled-native",
+                            }}
+                        >
+                            {props.witnesses.map((witness) => {
+                                return (
+                                    <option
+                                        key={witness.id}
+                                        value={witness.id}
+                                        style={{ textAlign: "center" }}
+                                    >
+                                        {witness.source.name}
+                                    </option>
+                                );
+                            })}
+                        </NativeSelect>
+                    </FormControl>
+                </Box>
+                <IconButton
+                    aria-label="close"
+                    style={{ position: "absolute", right: 10 }}
                     onClick={() => props.changeMediaSelection(null)}
                 >
-                    x
-                </div>
+                    <CancelIcon />
+                </IconButton>
 
                 {/* {!isPortraitImage && (
                     <div
@@ -144,43 +184,58 @@ function Image(props) {
                     </div>
                 )} */}
             </div>
-            <div className={styles.imageRender} ref={ImageArea}>
-                <Suspense fallback={<div style={{ height: 100 }}>loading</div>}>
-                    {imageList.length > 0 && (
-                        <TransformWrapper>
-                            <TransformComponent>
-                                <ImageComponent
-                                    imageList={imageList}
-                                    imageSelected={imageSelected}
-                                    isPortrait={isPortrait}
-                                />
-                            </TransformComponent>
-                        </TransformWrapper>
-                    )}
-                    <button
-                        style={{ position: "absolute", top: 20, left: 10 }}
-                        onClick={() => handleChangeImage("prev")}
-                    >
-                        {"<"}
-                    </button>
-                    <button
-                        style={{ position: "absolute", top: 20, right: 10 }}
-                        onClick={() => handleChangeImage("next")}
-                    >
-                        {">"}
-                    </button>
-                </Suspense>
-            </div>
-        </div>
+            <Box className={styles.imageSection} sx={{ background: "#0A1929" }}>
+                {_.isEmpty(imageList) ? (
+                    <CircularProgress color="secondary" />
+                ) : (
+                    <>
+                        <center height="100%">
+                            {!loading ? (
+                                <TransformWrapper>
+                                    <TransformComponent>
+                                        <LazyLoadImage
+                                            className={styles.ImageStyle}
+                                            height={imageHeight}
+                                            src={img}
+                                            alt="imagepecha"
+                                            onLoad={isPortrait}
+                                            onProgress={() =>
+                                                console.log("process")
+                                            }
+                                        />
+                                    </TransformComponent>
+                                </TransformWrapper>
+                            ) : (
+                                <CircularProgress color="secondary" />
+                            )}
+                        </center>
+                        <IconButton
+                            onClick={() => handleChangeImage("prev")}
+                            sx={{
+                                position: "absolute",
+                                left: 20,
+                                top: 100,
+                                color: "secondary",
+                            }}
+                        >
+                            <ChevronLeftIcon />
+                        </IconButton>
+                        <IconButton
+                            onClick={() => handleChangeImage("next")}
+                            sx={{
+                                position: "absolute",
+                                right: 20,
+                                top: 100,
+                                color: "secondary",
+                            }}
+                        >
+                            <ChevronRightIcon />
+                        </IconButton>
+                    </>
+                )}
+            </Box>
+        </Resizable>
     );
-}
-
-function ImageComponent({ imageList, imageSelected, isPortrait }) {
-    let { src } = useImage({
-        srcList: HttpUrl(imageList[imageSelected]?.target_segment),
-    });
-
-    return <img src={src} alt="SyncImage" onLoad={isPortrait} />;
 }
 
 export default memo(Image);

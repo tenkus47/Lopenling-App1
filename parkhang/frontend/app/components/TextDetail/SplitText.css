@@ -23,11 +23,6 @@
     background-color: white;
 }
 
-.splitTextRow:hover {
-    color: rgb(84, 84, 73);
-}
-
-
 .splitTextRow .text {
     max-width: 100%;
 }
@@ -53,6 +48,10 @@
     padding: var(--controlsPadding);
     margin-left: var(--controlsMargin);
     margin-right: var(--controlsMargin);
+}
+
+.hide {
+    display: none;
 }
 
 .pageNumber {

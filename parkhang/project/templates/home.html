@@ -1,34 +1,39 @@
 {% load render_bundle from webpack_loader %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-<!-- <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/all.js"></script> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Lopenling App contain Bhudhist scriptures">
+    <!-- <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/all.js"></script> -->
     <title>Parkhang</title>
     {% render_bundle 'parkhang' 'css' %}
     <script>
 
-{% if user.is_authenticated %}
-USER_LOGGED_IN = true;
-USER_USERNAME = "{{ user.username }}";
-USER_NAME = "{{ user.name }}";
-USER_ID = "{{ user.id }}";
-USER_LOCALE = "{{ user.locale }}";
-{% else %}
-USER_LOGGED_IN = false;
-USER_NAME = "";
-USER_ID = null;
-USER_LOCALE = "bo";
-{% endif %}
-CSRF_TOKEN = "{{ csrf_token }}";
-SSO_SIGNUP_URL = "{{ sso_signup_url }}";
+        {% if user.is_authenticated %}
+        USER_LOGGED_IN = true;
+        USER_USERNAME = "{{ user.username }}";
+        USER_NAME = "{{ user.name }}";
+        USER_ID = "{{ user.id }}";
+        USER_LOCALE = "{{ user.locale }}";
+        {% else %}
+        USER_LOGGED_IN = false;
+        USER_NAME = "";
+        USER_ID = null;
+        USER_LOCALE = "bo";
+        {% endif %}
+        CSRF_TOKEN = "{{ csrf_token }}";
+        SSO_SIGNUP_URL = "{{ sso_signup_url }}";
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Overpass&display=swap" rel="stylesheet">
 </head>
+
 <body>
-<div id="app" style="width: 100vw; height: 100vh;"></div>
-{% render_bundle 'parkhang' 'js' %}
+    <div id="app" style="width: 100vw; height: 100vh;"></div>
+    {% render_bundle 'parkhang' 'js' %}
 
 </body>
+
 </html>

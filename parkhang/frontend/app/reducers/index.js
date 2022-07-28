@@ -114,6 +114,9 @@ export const getUser = (state: AppState): User => {
 };
 
 // ui
+export const getSelectedWindow = (state) => {
+    return ui.getSelectedWindow(state.ui);
+};
 export const isAnnotating = (state) => {
     return ui.isAnnotating(state.ui);
 };
@@ -203,9 +206,7 @@ export const getExportingWitness = (
 export const getSearchValue = (state: AppState): string => {
     return ui.getSearchValue(state.ui);
 };
-export const getNotification = (state: AppState): string => {
-    return ui.getNotification(state.ui);
-};
+
 export const getSearchTerm = (state: AppState): string => {
     return ui.getSearchTerm(state.ui);
 };
@@ -233,11 +234,20 @@ export const isSecondWindowOpen = (state: AppState): number => {
 export const getSyncIdOnScroll = (state: AppState): number => {
     return ui.getSyncIdOnScroll(state.ui);
 };
+export const getSyncIdOnScroll2 = (state: AppState): number => {
+    return ui.getSyncIdOnScroll2(state.ui);
+};
 export const getSyncIdOnClick = (state: AppState): number => {
     return ui.getSyncIdOnCLick(state.ui);
 };
 export const isPanelLinked = (state: AppState): number => {
     return ui.isPanelLinked(state.ui);
+};
+export const getSelectedSourceRange = (state) => {
+    return ui.getSelectedSourceRange(state.ui);
+};
+export const getSelectedTargetRange = (state) => {
+    return ui.getSelectedTargetRange(state.ui);
 };
 
 //media
@@ -268,6 +278,9 @@ export const getAlignment = (state: AppState) => {
 };
 export const getTextAlignment = (state: AppState) => {
     return data.getTextAlignment(state.data);
+};
+export const getTextAlignmentById = (state: AppState) => {
+    return data.getTextAlignmentById(state.data);
 };
 export const getTexts = (state: AppState): Text | TextData | null => {
     return data.getTexts(state.data);

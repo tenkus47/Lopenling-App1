@@ -6,7 +6,7 @@
     position: relative;
     width: 50%;
     color: var(--text-color);
-    border: thick double var(--green);
+    border-left: 2px solid gray;
     transition: height 0.3s linear;
     overflow: hidden;
 }

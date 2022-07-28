@@ -4,7 +4,9 @@ import classnames from "classnames";
 import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
-
+import { NativeSelect } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import useLocaleStorage from "../../bodyComponent/utility/useLocalStorage";
 export type Props = {
     witnesses: Witness[],
     activeWitness: Witness | null,
@@ -12,11 +14,31 @@ export type Props = {
     user: {},
 };
 
+const style = (theme) => ({
+    root: {
+        minWidth: 60,
+        padding: 0,
+        textAlign: "center",
+        fontWeight: "bold",
+    },
+    selectEmpty: {
+        paddingLeft: "6px",
+        backgroundColor: "transparent",
+    },
+    select: {
+        color: "black",
+        "&:not([multiple]) option": {
+            backgroundColor: "#eee",
+        },
+    },
+});
+
 const SelectVersion = (props: Props) => {
     let witnesses;
     let tabName = "";
     let r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
-    const [temp, setTemp] = useState(0);
+    let { classes: classtype } = props;
+    const [temp, setTemp] = useLocaleStorage("selectedWitness", 0);
     let classes = [styles.selectOptions];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);
@@ -45,10 +67,16 @@ const SelectVersion = (props: Props) => {
         }
     }, [temp]);
     return (
-        <select
+        <NativeSelect
             onChange={(e) => setTemp(e.target.value)}
             className={styles.selectVersion}
             value={r}
+            label="Version"
+            classes={{
+                root: classtype.selectEmpty,
+                select: classtype.select,
+            }}
+            style={{ border: 0 }}
         >
             {witnesses.map((witness, key) => {
                 if (witness.id === props.activeWitness.id)
@@ -58,7 +86,7 @@ const SelectVersion = (props: Props) => {
                 if (witness.isWorking) {
                     tabName =
                         props.intl.locale === "en"
-                            ? props.user.name === "User"
+                            ? props.user?.name === "User"
                                 ? "Working"
                                 : "My Edition"
                             : "མཉམ་འབྲེལ་པར་མ།";
@@ -69,13 +97,14 @@ const SelectVersion = (props: Props) => {
                         key={`versionSelect-${key}`}
                         value={key}
                         className={classes}
+                        styles={{ textAlign: "center" }}
                     >
                         {tabName}
                     </option>
                 );
             })}
-        </select>
+        </NativeSelect>
     );
 };
 
-export default memo(injectIntl(SelectVersion));
+export default memo(injectIntl(withStyles(style)(SelectVersion)));
