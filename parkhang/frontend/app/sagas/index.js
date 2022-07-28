@@ -538,7 +538,7 @@ function* changeActiveAnnotation(
     let urlAction = {
         type: actions.TEXT_URL,
         payload: {
-            textId: selectedWitness.text.id,
+            textId: selectedWitness?.text.id,
             witnessId: selectedWitness.id,
         },
     };
@@ -845,6 +845,7 @@ function* loadedTextUrl(
                 const selectedWitness = yield select(
                     reducers.getSelectedTextWitness
                 );
+                console.log(selectedWitness);
                 let workingWitness = yield select(
                     reducers.getWorkingWitness,
                     textId

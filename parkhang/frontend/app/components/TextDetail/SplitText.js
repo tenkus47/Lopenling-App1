@@ -699,7 +699,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
     componentDidUpdate(prevProps) {
         let Alignment = this.props.textAlignment;
-        this.condition = Alignment.source === this.props.selectedWitness.id;
+        this.condition =
+            Alignment?.source?.witness === this.props.selectedWitness.id;
         let scrollToId = this.props.scrollToId;
         let list = this.list;
 

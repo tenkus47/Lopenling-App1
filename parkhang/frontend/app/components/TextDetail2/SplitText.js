@@ -517,7 +517,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let list = this.list;
         let result = this.props.searchResults;
         let Alignment = this.props.textAlignment;
-        let condition = Alignment.target === this.props.selectedWitness.id;
+        let condition =
+            Alignment?.target?.witness === this.props.selectedWitness.id;
         let con =
             prevProps?.searchResults !== this.props?.searchResults ||
             prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
@@ -533,7 +534,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }, 100);
             }
         }
-
         if (
             this.selectedWindow === 1 &&
             scrollToId.from === 1 &&
