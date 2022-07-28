@@ -179,6 +179,13 @@ export const getTextListWidth = (state: AppState): number => {
     return ui.getTextListWidth(state.ui);
 };
 
+export const getShowTableContent = (state) => {
+    return ui.getShowTableContent(state.ui);
+};
+
+export const getShowTableContent2 = (state) => {
+    return ui.getShowTableContent2(state.ui);
+};
 export const getTemporaryAnnotations = (
     state: AppState,
     witnessId: number,
@@ -206,11 +213,9 @@ export const getExportingWitness = (
 export const getSearchValue = (state: AppState): string => {
     return ui.getSearchValue(state.ui);
 };
-
-export const getSearchTerm = (state: AppState): string => {
-    return ui.getSearchTerm(state.ui);
+export const getSearchValue2 = (state: AppState): string => {
+    return ui.getSearchValue2(state.ui);
 };
-
 export const getSelectedSearchResult = (
     state: AppState
 ): null | { textId: number, start: number, length: number } => {
@@ -231,12 +236,11 @@ export const getTextFontSize2 = (state: AppState): number => {
 export const isSecondWindowOpen = (state: AppState): number => {
     return ui.isSecondWindowOpen(state.ui);
 };
-export const getSyncIdOnScroll = (state: AppState): number => {
-    return ui.getSyncIdOnScroll(state.ui);
+
+export const getScrollToId = (state) => {
+    return ui.getScrollToId(state.ui);
 };
-export const getSyncIdOnScroll2 = (state: AppState): number => {
-    return ui.getSyncIdOnScroll2(state.ui);
-};
+
 export const getSyncIdOnClick = (state: AppState): number => {
     return ui.getSyncIdOnCLick(state.ui);
 };
@@ -250,6 +254,13 @@ export const getSelectedTargetRange = (state) => {
     return ui.getSelectedTargetRange(state.ui);
 };
 
+export const getSyncIdOnSearch = (state) => {
+    return ui.getSyncIdOnSearch(state.ui);
+};
+
+export const getSyncIdOnSearch2 = (state) => {
+    return ui.getSyncIdOnSearch2(state.ui);
+};
 //media
 export const isPanelVisible = (state) => {
     return media.isPanelVisible(state.media);
@@ -505,6 +516,13 @@ export const getSearchResults = (
     searchTerm: string
 ): { [number]: api.TextSearchResultData } | null => {
     return data.getSearchResults(state.data, searchTerm);
+};
+
+export const getSearchResults2 = (
+    state: AppState,
+    searchTerm: string
+): { [number]: api.TextSearchResultData } | null => {
+    return data2.getSearchResults(state.data2, searchTerm);
 };
 
 export const questionIsLoading = (

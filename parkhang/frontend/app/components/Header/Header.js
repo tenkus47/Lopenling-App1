@@ -20,10 +20,23 @@ import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo_173x.png";
 import UserIcon from "images/discourse_user.svg";
 import { NavLink } from "redux-first-router-link";
-import TranslateButton from "bodyComponent/utility/TranslateButton";
+import TranslateButton from "components/utility/TranslateButton";
 import { history } from "redux-first-router";
-import { Container, Button, Tooltip, Stack, Box, Menu } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
+import Resources from "components/Resources";
+
+import {
+    Container,
+    Button,
+    Tooltip,
+    Stack,
+    Box,
+    Menu,
+    IconButton,
+    MenuItem,
+    Typography,
+    Drawer,
+} from "@mui/material";
+import { Person as PersonIcon, Menu as MenuIcon } from "@mui/icons-material";
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
@@ -143,6 +156,9 @@ type HeaderProps = {
 };
 
 export const Header = (props: HeaderProps) => {
+    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+        null
+    );
     let locations = history();
     let controls = null;
     if (props.user.isLoggedIn) {
@@ -173,9 +189,23 @@ export const Header = (props: HeaderProps) => {
         </div>
     ));
 
+    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElNav(event.currentTarget);
+    };
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+
     return (
         <Container maxWidth="xl" className={styles.header}>
-            <Stack direction="row" alignItems="center">
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent={"space-between"}
+                sx={{
+                    height: "100%",
+                }}
+            >
                 <Box
                     sx={{
                         flexGrow: 1,
@@ -205,40 +235,105 @@ export const Header = (props: HeaderProps) => {
                             isListVisible={props.textListVisible}
                         />
                     )}
-                    <Button
-                        to={"/textSelection"}
-                        style={{ color: "#676767" }}
-                        component={LinkRef}
-                        variant="text"
-                    >
-                        <FormattedMessage id={"header.texts"} />
-                    </Button>
-                    <Button
-                        to={"/texts/2"}
-                        style={{ color: "#676767" }}
-                        component={LinkRef}
-                        variant="text"
-                        disabled
-                    >
-                        <FormattedMessage id={"header.editor"} />
-                    </Button>
-                    <Tooltip title="Forum">
+                    <Box display={{ xs: "none", md: "flex" }}>
                         <Button
-                            href={"https://www.lopenling.org"}
+                            to={"/textSelection"}
                             style={{ color: "#676767" }}
+                            component={LinkRef}
                             variant="text"
-                            component={"a"}
                         >
-                            <FormattedMessage id={"lopenlingForum"} />
+                            <FormattedMessage id={"header.texts"} />
                         </Button>
-                    </Tooltip>
+                        <Button
+                            to={"/texts/2"}
+                            style={{ color: "#676767" }}
+                            component={LinkRef}
+                            variant="text"
+                            disabled
+                        >
+                            <FormattedMessage id={"header.editor"} />
+                        </Button>
+                        <Tooltip title="Forum">
+                            <Button
+                                href={"https://www.lopenling.org"}
+                                style={{ color: "#676767" }}
+                                variant="text"
+                                component={"a"}
+                            >
+                                <FormattedMessage id={"lopenlingForum"} />
+                            </Button>
+                        </Tooltip>
+                    </Box>
                 </Box>
-                <Stack direction="row" alignItems="center">
+                <Box sx={{ display: { xs: "block", md: "none" } }}>
+                    <IconButton
+                        size="large"
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleOpenNavMenu}
+                        color="inherit"
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorElNav}
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "left",
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                        }}
+                        open={Boolean(anchorElNav)}
+                        onClose={handleCloseNavMenu}
+                        sx={{ display: { xs: "block", md: "none" } }}
+                    >
+                        <MenuItem onClick={handleCloseNavMenu}>
+                            <Button
+                                to={"/textSelection"}
+                                style={{ color: "#676767" }}
+                                component={LinkRef}
+                                variant="text"
+                            >
+                                <FormattedMessage id={"header.texts"} />
+                            </Button>
+                        </MenuItem>
+                        <MenuItem onClick={handleCloseNavMenu}>
+                            <Button
+                                href={"https://www.lopenling.org"}
+                                style={{ color: "#676767" }}
+                                variant="text"
+                                component={"a"}
+                            >
+                                <FormattedMessage id={"lopenlingForum"} />
+                            </Button>
+                        </MenuItem>
+                    </Menu>
+                </Box>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    sx={{ float: { sx: "right" } }}
+                >
                     {/* <LocaleSwitcher /> */}
                     <TranslateButton />
                     {controls}
                 </Stack>
             </Stack>
+
+            <React.Fragment>
+                <Drawer
+                    anchor={"left"}
+                    open={props.textListIsVisible}
+                    onClose={props.navigationButtonClicked}
+                >
+                    <Resources />
+                </Drawer>
+            </React.Fragment>
         </Container>
     );
 };

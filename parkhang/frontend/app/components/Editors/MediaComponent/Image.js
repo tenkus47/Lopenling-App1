@@ -25,16 +25,19 @@ function HttpUrl(data = "") {
 function Image(props) {
     const selectRef = useRef(null);
     let imageList = props.imageData?.alignment;
+    let message = props.imageData?.message;
+
     let textIdfromAlignment = props.alignmentData.text;
 
     let isPortraitImage = props.isImagePortrait;
     let [imageSelected, SetSelected] = useState(0);
     let [imageHeight, setImageHeight] = useState(240);
     let imageIdList = [];
-    let scrollingID = props.syncIdOnScroll;
+    let scrollingID = props.scrollToId;
+    let syncIdOnClick = props.syncIdOnClick;
+
     let [loading, setLoading] = useState(false);
     const [img, setImg] = useState();
-    const boxRef = useRef(null);
     const fetchImage = async () => {
         if (_.isEmpty(imageList)) return;
         let url = HttpUrl(imageList[imageSelected].target_segment);
@@ -49,32 +52,36 @@ function Image(props) {
         setLoading(true);
         fetchImage();
     }, [imageList, imageSelected]);
-    // let syncIdOnScroll = useMemo(() => scrollingID, [scrollingID]);
-    let syncIdOnClick = props.syncIdOnClick;
+
     if (!_.isEmpty(imageList)) {
         imageIdList = imageList.map((l) => parseInt(l.source_segment.start));
     }
 
     useEffect(() => {
-        let IDtoSync = parseInt(scrollingID);
-        if (textIdfromAlignment === props.selectedText.id) {
-            if (imageList?.length > 0) {
-                let findSegment = imageList.filter(
+        let IDtoSync = parseInt(scrollingID.id);
+        if (
+            textIdfromAlignment === props.selectedText.id &&
+            scrollingID.from === 1
+        ) {
+            if (!_.isEmpty(imageList)) {
+                let findSegment = imageList.find(
                     (l) =>
                         l.source_segment.start <= IDtoSync &&
                         l.source_segment.end > IDtoSync
                 );
                 let index = imageList.findIndex(
-                    (l) => l?.source_segment === findSegment[0]?.source_segment
+                    (l) => l?.source_segment === findSegment.source_segment
                 );
-                if (parseInt(index)) {
+                if (parseInt(index) >= 0) {
                     SetSelected(index);
                 }
             }
         }
     }, [scrollingID]);
+
     useEffect(() => {
-        if (selectRef.current) selectRef.current.value = props.witness;
+        selectRef.current.value = props.witness;
+
         setLoading(true);
         fetchImage();
     }, [props.witness]);
@@ -82,13 +89,13 @@ function Image(props) {
         if (textIdfromAlignment === props.selectedText.id) {
             let ClickId = syncIdOnClick.toString().replace("s_", "");
             if (imageList?.length > 0 && ClickId > 0) {
-                let findSegment = imageList.filter(
+                let findSegment = imageList.find(
                     (l) =>
                         l.source_segment.start < ClickId &&
                         l.source_segment.end > ClickId
                 );
                 let index = imageList.findIndex(
-                    (l) => l?.source_segment === findSegment[0]?.source_segment
+                    (l) => l?.source_segment === findSegment?.source_segment
                 );
                 if (index >= 0) {
                     SetSelected(index);
@@ -109,9 +116,7 @@ function Image(props) {
         if (tempHeight === 0 || tempWIdth === 0) return null;
         props.changeIsImagePortrait(tempHeight >= tempWIdth);
         setLoading(false);
-        console.log(tempHeight);
     };
-
     const handleChangeImage = (data) => {
         change();
         if (data === "prev" && imageSelected > 0) {
@@ -143,8 +148,7 @@ function Image(props) {
                     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                         <NativeSelect
                             labelId="demo-select-small"
-                            ref={selectRef}
-                            defaultValue={props.witness}
+                            inputRef={selectRef}
                             onChange={(e) =>
                                 props.changeImageVersion(e.target.value)
                             }
@@ -184,12 +188,19 @@ function Image(props) {
                     </div>
                 )} */}
             </div>
-            <Box className={styles.imageSection} sx={{ background: "#0A1929" }}>
+            <Box className={styles.imageSection}>
                 {_.isEmpty(imageList) ? (
-                    <CircularProgress color="secondary" />
+                    <>
+                        {message ? (
+                            <h1>{message}</h1>
+                        ) : (
+                            <CircularProgress color="secondary" />
+                        )}
+                    </>
                 ) : (
                     <>
                         <center height="100%">
+                            {}
                             {!loading ? (
                                 <TransformWrapper>
                                     <TransformComponent>
@@ -199,9 +210,6 @@ function Image(props) {
                                             src={img}
                                             alt="imagepecha"
                                             onLoad={isPortrait}
-                                            onProgress={() =>
-                                                console.log("process")
-                                            }
                                         />
                                     </TransformComponent>
                                 </TransformWrapper>

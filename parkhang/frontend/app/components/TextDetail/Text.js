@@ -55,7 +55,7 @@ export type Props = {
     fontSize?: number,
     activeWitness: Witness,
     changeSyncIdOnClick: () => void,
-    changeSyncIdOnScroll: () => void,
+    changeScrollToId: () => void,
     isPanelLinked: Boolean,
     textAlignmentById: {},
     selectedSourceRange: [],
@@ -144,26 +144,31 @@ export default class Text extends React.Component<Props, State> {
         let targetRangeSelection = [];
         const selection = document.getSelection();
 
-        if (element?.id.includes("s_") && this.props.isPanelLinked) {
+        if (
+            element?.id.includes("s_") &&
+            this.props.isPanelLinked &&
+            this.props.condition
+        ) {
             var clickId = parseInt(element.id.replace("s_", ""));
             this.props.changeSyncIdOnClick(clickId);
-            this.props.changeSyncIdOnScroll(null);
+            this.props.changeScrollToId({ id: null, from: null });
 
             let id = parseInt(element.id.replace("s_", ""));
             let rangeUnique = this.textAlignmentById.find(
                 (l) => id >= l.start && id < l.end
             );
-
-            for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
-                sourceRangeSelection.push(i);
+            if (rangeUnique) {
+                for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
+                    sourceRangeSelection.push(i);
+                }
+                for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
+                    targetRangeSelection.push(i);
+                }
+                this.props.changeSelectedRange({
+                    source: sourceRangeSelection,
+                    target: targetRangeSelection,
+                });
             }
-            for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
-                targetRangeSelection.push(i);
-            }
-            this.props.changeSelectedRange({
-                source: sourceRangeSelection,
-                target: targetRangeSelection,
-            });
         }
 
         if (selection && selection.type === "Range") {
@@ -215,9 +220,6 @@ export default class Text extends React.Component<Props, State> {
             let selectedCurrentLineBreak = false;
             let lineBreakAnnotation = false;
             let pageBreakAnnotation = null;
-            // let rangeUnique = this.textAlignmentById.find(
-            //     (l) => segment.start >= l.start && segment.start < l.end
-            // );
 
             if (annotations) {
                 let activeInsertions = [];
@@ -429,7 +431,6 @@ export default class Text extends React.Component<Props, State> {
                     }
                 }
             }
-
             if (this.props.textAlignmentById !== null) {
                 let r = this.props.textAlignmentById.find(
                     (d) => d.start === segment.start
@@ -473,7 +474,6 @@ export default class Text extends React.Component<Props, State> {
                     pageBreakIconString +
                     "</span>";
             }
-
             if (lineBreakAnnotation) {
                 let lineBreakClasses = [styles.lineBreak];
                 if (selectedCurrentLineBreak) {
@@ -503,7 +503,6 @@ export default class Text extends React.Component<Props, State> {
         };
         return html;
     }
-    componentDidUpdate() {}
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
 
@@ -541,6 +540,7 @@ export default class Text extends React.Component<Props, State> {
                     dangerouslySetInnerHTML={html}
                     style={{
                         fontSize: this.props.fontSize,
+                        cursor: !this.props.isAnnotating ? "pointer" : "text",
                     }}
                     onClick={(e) => {
                         this.selectedElement(e.target);

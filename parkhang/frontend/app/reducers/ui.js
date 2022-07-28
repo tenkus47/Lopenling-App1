@@ -15,7 +15,7 @@ export type UIState = {
         length: number,
     } | null,
     searchValue: string,
-    searchTerm: String,
+    searchValue2: string,
     showPageImages: boolean,
     activeAnnotations: { [witnessId: number]: Annotation },
     activeTextAnnotations: { [textId: number]: Annotation },
@@ -37,15 +37,24 @@ export type UIState = {
     textFontSize2: number,
     showSecondWindow: Boolean,
     selectedWindow: {},
-    SyncIdOnScroll: String,
-    SyncIdOnScroll2: String,
 
-    SyncIdOnClick: String,
-    selectedSourceRange: [],
+    openTableContent: Boolean,
+    openTableContent2: Boolean,
+
     selectedTargetRange: [],
+
+    selectedSourceRange: [],
 
     isPanelLinked: boolean,
     isAnnotating: Boolean,
+    scrollToId: {},
+
+    SyncIdOnClick: String,
+    SyncIdOnScroll: String,
+    SyncIdOnSearch: String,
+
+    SyncIdOnSearch2: String,
+    SyncIdOnScroll2: String,
 };
 
 export const initialUIState = {
@@ -56,11 +65,12 @@ export const initialUIState = {
     selectedTextWitness2: {},
     selectedSearchResult: null,
     searchValue: "",
-    searchTerm: "",
+    searchValue2: "",
+
     showPageImages: false,
     activeAnnotations: {},
     activeTextAnnotations: {},
-    textListVisible: true,
+    textListVisible: false,
     textListWidth: 240,
     temporaryAnnotations: {},
     scrollPositions: {},
@@ -68,16 +78,33 @@ export const initialUIState = {
     showAccountOverlay: false,
     textFontSize: constants.DEFAULT_TEXT_FONT_SIZE,
     textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,
-    showSecondWindow: false,
-    SyncIdOnScroll: 0,
-    SyncIdOnScroll2: null,
-    SyncIdOnClick: 0,
+    showSecondWindow: true,
+    openTableContent2: false,
     selectedSourceRange: [],
     selectedTargetRange: [],
     isPanelLinked: true,
     isAnnotating: false,
     selectedWindow: 1,
+    openTableContent: false,
+    scrollToId: { from: 1, id: 0 },
+
+    SyncIdOnClick: 0,
+    SyncIdOnSearch: null,
+    SyncIdOnSearch2: null,
 };
+
+function changeSyncIdOnSearch(state, action) {
+    return {
+        ...state,
+        SyncIdOnSearch: action.payload,
+    };
+}
+function changeSyncIdOnSearch2(state, action) {
+    return {
+        ...state,
+        SyncIdOnSearch2: action.payload,
+    };
+}
 
 function loadedUserSettings(
     state: UIState,
@@ -142,27 +169,11 @@ function selectedText2(
     return state;
 }
 
-function changeSyncIdOnScroll(
-    state: UIState,
-    action: actions.SelectedTextAction
-): UIState {
-    state = {
+function changeScrollToId(state, action) {
+    return {
         ...state,
-        SyncIdOnScroll: action.payload,
+        scrollToId: { from: action.payload.from, id: action.payload.id },
     };
-
-    return state;
-}
-function changeSyncIdOnScroll2(
-    state: UIState,
-    action: actions.SelectedTextAction
-): UIState {
-    state = {
-        ...state,
-        SyncIdOnScroll2: action.payload,
-    };
-
-    return state;
 }
 
 function changeSyncIdOnClick(
@@ -246,18 +257,29 @@ function changedSearchValue(
         searchValue: searchValue,
     };
 }
-
-function changedSearchTerm(
+function changedSearchValue2(
     state: UIState,
-    action: actions.ChangedSearchTermAction
+    action: actions.ChangedSearchValueAction
 ): UIState {
-    let searchTerm = action.searchTerm;
-    if (!searchTerm) {
-        searchTerm = "";
+    let searchValue = action.searchValue;
+    if (!searchValue) {
+        searchValue = "";
     }
     return {
         ...state,
-        searchTerm: searchTerm,
+        searchValue2: searchValue,
+    };
+}
+function showTableContent(state, action) {
+    return {
+        ...state,
+        openTableContent: action.payload,
+    };
+}
+function showTableContent2(state, action) {
+    return {
+        ...state,
+        openTableContent2: action.payload,
     };
 }
 
@@ -528,8 +550,7 @@ uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.NO_SELECTED_TEXT] = noSelectedText;
-uiReducers[actions.SYNC_ID_ON_SCROLL] = changeSyncIdOnScroll;
-uiReducers[actions.SYNC_ID_ON_SCROLL2] = changeSyncIdOnScroll2;
+uiReducers[actions.SCROLL_TO_ID] = changeScrollToId;
 
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
 uiReducers[actions.CHANGE_RANGE_SELECTION] = changeRangeSelection;
@@ -538,7 +559,8 @@ uiReducers[actions.LINK_PANEL] = changeLinkPanel;
 uiReducers[actions.SELECTED_WITNESS] = selectedTextWitness;
 uiReducers[actions.SELECTED_WITNESS2] = selectedTextWitness2;
 uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
-uiReducers[actions.CHANGED_SEARCH_TERM] = changedSearchTerm;
+uiReducers[actions.CHANGED_SEARCH_VALUE2] = changedSearchValue2;
+
 uiReducers[actions.SELECTED_SEARCH_RESULT] = selectedSearchResult;
 uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
 uiReducers[actions.CHANGED_TEXT_FONT_SIZE] = changedTextFontSize;
@@ -559,8 +581,27 @@ uiReducers[actions.CHANGED_ACCOUNT_OVERLAY] = changedAccountOverlay;
 uiReducers[actions.SECOND_WINDOW] = toggleSecondWindow;
 uiReducers[actions.CHANGE_ANNOTATING] = changeIsAnnotating;
 uiReducers[actions.CHANGE_SELECTED_WINDOW] = changeSelectedWindow;
+uiReducers[actions.SHOW_TABLE_CONTENT] = showTableContent;
+uiReducers[actions.SHOW_TABLE_CONTENT2] = showTableContent2;
+uiReducers[actions.SYNC_ID_ON_SEARCH] = changeSyncIdOnSearch;
+uiReducers[actions.SYNC_ID_ON_SEARCH2] = changeSyncIdOnSearch2;
+
 export default uiReducers;
 
+export const getSyncIdOnSearch = (state) => {
+    return state.SyncIdOnSearch;
+};
+
+export const getSyncIdOnSearch2 = (state) => {
+    return state.SyncIdOnSearch2;
+};
+export const getShowTableContent = (state) => {
+    return state.openTableContent;
+};
+
+export const getShowTableContent2 = (state) => {
+    return state.openTableContent2;
+};
 export const getSelectedWindow = (state) => {
     return state.selectedWindow;
 };
@@ -637,12 +678,11 @@ export const getTextListVisible = (state: UIState): boolean => {
 export const getTextListWidth = (state: UIState): number => {
     return state.textListWidth;
 };
-export const getSyncIdOnScroll = (state: UIState): number => {
-    return state.SyncIdOnScroll;
+
+export const getScrollToId = (state) => {
+    return state.scrollToId;
 };
-export const getSyncIdOnScroll2 = (state: UIState): number => {
-    return state.SyncIdOnScroll2;
-};
+
 export const getSyncIdOnCLick = (state: UIState): number => {
     return state.SyncIdOnClick;
 };
@@ -687,11 +727,9 @@ export const getExportingWitness = (
 export const getSearchValue = (state: UIState): string => {
     return state.searchValue;
 };
-
-export const getSearchTerm = (state: UIState): string => {
-    return state.searchTerm;
+export const getSearchValue2 = (state: UIState): string => {
+    return state.searchValue2;
 };
-
 export const getSelectedSearchResult = (
     state: UIState
 ): null | { textId: number, start: number, length: number } => {

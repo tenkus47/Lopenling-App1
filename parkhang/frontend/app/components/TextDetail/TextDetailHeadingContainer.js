@@ -52,7 +52,7 @@ const mapStateToProps = (state: AppState): {} => {
     }
 
     let textFontSize = reducers.getTextFontSize(state);
-
+    let searchValue = reducers.getSearchValue(state);
     return {
         witnesses,
         selectedText,
@@ -67,7 +67,9 @@ const mapStateToProps = (state: AppState): {} => {
         isPanelLinked: reducers.isPanelLinked(state),
         user: reducers.getUser(state),
         isAnnotating: reducers.isAnnotating(state),
-        searchValue: state.ui.searchValue,
+        searchValue,
+        showTableContent: reducers.getShowTableContent(state),
+        searchResults: reducers.getSearchResults(state, searchValue),
     };
 };
 
@@ -93,8 +95,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         onChangedFontSize: (fontSize: number) => {
             dispatch(actions.changedTextFontSize(fontSize));
         },
-        onChangeWindowOpen: (data: boolean,textId) => {
-            dispatch(actions.toggleSecondWindow(data,textId));
+        onChangeWindowOpen: (data: boolean, textId) => {
+            dispatch(actions.toggleSecondWindow(data, textId));
         },
         onExport: () => {
             dispatch(
@@ -120,6 +122,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         searchChanged: (searchTerm: string) => {
             dispatch(actions.changedSearchValue(searchTerm));
+        },
+        changeShowTableContent: (payload) => {
+            dispatch(actions.showTableContent(payload));
+        },
+        changeSelectSyncId: (payload) => {
+            dispatch(actions.changeSyncIdOnSearch(payload));
         },
     };
 };

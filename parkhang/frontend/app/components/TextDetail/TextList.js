@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef } from "react";
 import {
     List,
     AutoSizer,
@@ -58,7 +58,7 @@ function TextList(props) {
                     sx={{
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        width: "5rem",
+                        width: "10rem",
                     }}
                 >
                     <Typography noWrap={true}>{selected}</Typography>

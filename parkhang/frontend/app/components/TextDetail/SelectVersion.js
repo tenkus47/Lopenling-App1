@@ -6,7 +6,7 @@ import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
 import { NativeSelect } from "@mui/material";
 import { withStyles } from "@mui/styles";
-import useLocaleStorage from "../../bodyComponent/utility/useLocalStorage";
+import useLocaleStorage from "components/utility/useLocalStorage";
 export type Props = {
     witnesses: Witness[],
     activeWitness: Witness | null,
@@ -36,9 +36,9 @@ const style = (theme) => ({
 const SelectVersion = (props: Props) => {
     let witnesses;
     let tabName = "";
-    let r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
+    let r = props.witnesses.findIndex((l) => l?.id === props.activeWitness?.id);
     let { classes: classtype } = props;
-    const [temp, setTemp] = useLocaleStorage("selectedWitness", 0);
+    const [temp, setTemp] = useState(null);
     let classes = [styles.selectOptions];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);

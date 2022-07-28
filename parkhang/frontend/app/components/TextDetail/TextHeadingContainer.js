@@ -9,7 +9,7 @@ import {
     changedActiveAnnotation,
     exportWitness,
     changedShowPageImages,
-    changedTextFontSize
+    changedTextFontSize,
 } from "actions";
 import * as reducers from "reducers";
 import Witness from "lib/Witness";
@@ -48,7 +48,7 @@ const mapStateToProps = (state: AppState): {} => {
         selectedWitness,
         exportingWitness,
         showPageImages,
-        textFontSize
+        textFontSize,
     };
 };
 
@@ -69,12 +69,14 @@ const mergeProps = (stateProps: Props, dispatchProps, ownProps): {} => {
         },
         onExport: () => {
             dispatch(exportWitness(stateProps.selectedWitness.id, "docx"));
-        }
+        },
     };
 };
 
-const TextHeadingContainer = connect(mapStateToProps, null, mergeProps)(
-    TextHeading
-);
+const TextHeadingContainer = connect(
+    mapStateToProps,
+    null,
+    mergeProps
+)(TextHeading);
 
 export default TextHeadingContainer;

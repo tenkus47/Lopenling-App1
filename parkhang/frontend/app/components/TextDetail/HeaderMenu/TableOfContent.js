@@ -1,55 +1,17 @@
-import React, { useState } from "react";
-import {
-    Button,
-    Drawer,
-    Box,
-    Typography,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemButton,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-function TableOfContent() {
-    const [toggleDrawer, setToggleDrawer] = useState();
-
+function TableOfContent(props) {
+    function handleClick() {
+        props.changeShowTableContent(!props.showTableContent);
+    }
     return (
         <React.Fragment key="right">
-            <Button onClick={() => setToggleDrawer(true)}>
+            <Button onClick={handleClick}>
                 <MenuIcon />
             </Button>
-            <Drawer
-                anchor="right"
-                open={toggleDrawer}
-                onClose={() => setToggleDrawer(false)}
-            >
-                <Content />
-            </Drawer>
         </React.Fragment>
     );
 }
 
 export default TableOfContent;
-
-const Content = () => {
-    return (
-        <Box>
-            <Typography variant="h6" gutterBottom component="div" p={2}>
-                Table of Content 1
-            </Typography>
-
-            <List>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemText primary="chapter1" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component="a" href="#simple-list">
-                        <ListItemText primary="chapter2" />
-                    </ListItemButton>
-                </ListItem>
-            </List>
-        </Box>
-    );
-};

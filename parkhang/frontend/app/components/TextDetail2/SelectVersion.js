@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
-import useLocaleStorage from "../../bodyComponent/utility/useLocalStorage";
+import useLocaleStorage from "components/utility/useLocalStorage";
 import { NativeSelect } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
@@ -38,8 +38,8 @@ const SelectVersion = (props: Props) => {
     let witnesses;
     let tabName = "";
     let { classes: classtype } = props;
-    let r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
-    const [temp, setTemp] = useLocaleStorage("selectedWitness2", 0);
+    let r = props.witnesses.findIndex((l) => l.id === props.activeWitness?.id);
+    const [temp, setTemp] = useState(null);
     let classes = [styles.selectOptions];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);
@@ -79,7 +79,7 @@ const SelectVersion = (props: Props) => {
             }}
         >
             {witnesses.map((witness, key) => {
-                if (witness.id === props.activeWitness.id)
+                if (witness.id === props.activeWitness?.id)
                     classes.push(styles.selected);
                 tabName = witness.source.name;
 

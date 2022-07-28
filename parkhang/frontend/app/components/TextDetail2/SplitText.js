@@ -16,7 +16,13 @@ import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 
-const SCROLL_DEBOUNCE_DELAY = 500;
+let _searchResultsCache: {
+    [splitTextUniqueId: string]: {
+        [searchTerm: string]: {
+            [index: number]: { [position: number]: [number, number] },
+        },
+    },
+} = {};
 
 export type Props = {
     splitText: SplitText,
@@ -33,11 +39,13 @@ export type Props = {
     // searchValue: string | null,
     fontSize: number,
     isPanelLinked: Boolean,
+    textAlignment: {},
     textAlignmentById: {},
-    changeSyncIdOnScroll2: () => void,
+    changeScrollToId: () => void,
     selectedWindow: Boolean,
     selectedTargetRange: [],
     selectedSourceRange: [],
+    syncIdOnSearch: String,
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -59,7 +67,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     selectedNodes: Node[] | null;
     // Whether the mouse button is down
     textAlignmentById;
-    changeSyncIdOnScroll2: () => void;
+    changeScrollToId: () => void;
 
     selectedTextIndex: number | null;
     splitTextRect: ClientRect | null;
@@ -71,10 +79,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     mouseEnter: () => void;
     mouseLeft: () => void;
     scrollTop;
+    debouncedScroll;
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
-        this.changeSyncIdOnScroll2 = props.changeSyncIdOnScroll2;
+        this.changeScrollToId = props.changeScrollToId;
 
         this.list = null;
         this.splitText = null;
@@ -103,20 +112,24 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         if (this.selectedWindow === 2 && this.isPanelLinked) {
             let list = [];
             this.textAlignmentById.map((l) => {
-                let number = document.getElementById("s2_" + l.start);
+                let number = document.getElementById("s2_" + l.TStart);
                 if (number) {
                     let position = number.getBoundingClientRect();
-                    if (position.top > 102) {
+                    if (position.top > 90) {
                         list.push({
                             id: l.id,
                             start: l.start,
-                            target: l.TStart,
+                            TStart: l.TStart,
+                            end: l.end,
+                            TEnd: l.TEnd,
                         });
                     }
                 }
             });
-            if (list.length > 0) {
-                this.changeSyncIdOnScroll2(list[0].target);
+            if (!_.isEmpty(list)) {
+                if (this.selectedWindow === 2) {
+                    this.debouncedScroll(list);
+                }
             }
         }
     }
@@ -478,6 +491,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }, 500).bind(this);
         window.addEventListener("resize", this.resizeHandler);
 
+        this.debouncedScroll = _.debounce((list) => {
+            this.changeScrollToId({ id: list[0].TStart, from: 2 });
+        }, 1000);
         this.selectionHandler = _.debounce((e) => {
             this.handleSelection(e);
         }, 200).bind(this);
@@ -491,42 +507,51 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.componentDidUpdate();
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
+        let scrollToId = this.props.scrollToId;
+        let targetId2 = this.props.syncIdOnClick;
+        this.isPanelLinked = this.props.isPanelLinked;
+
         this.selectedWindow = this.props.selectedWindow;
-
-        if (this.selectedWindow === 1 && this.isPanelLinked) {
-            let targetId = this.props.syncIdOnScroll;
-            let targetId2 = this.props.syncIdOnClick;
-
-            this.isPanelLinked = this.props.isPanelLinked;
-            let list = this.list;
-            this.textAlignmentById = this.props.textAlignmentById;
-            this.splitText.style.scrollBehavior = "smooth";
-            let Alignment = this.props.textAlignment.alignment;
-            if (Alignment) {
-                if (targetId !== null) {
-                    let selectedTextIndex =
-                        this.props.splitText.getTextIndexOfPosition(targetId);
-
+        let SearchSyncId = this.props.syncIdOnSearch || null;
+        let list = this.list;
+        let result = this.props.searchResults;
+        let Alignment = this.props.textAlignment;
+        let condition =
+            Alignment?.target?.witness === this.props.selectedWitness.id;
+        let con =
+            prevProps?.searchResults !== this.props?.searchResults ||
+            prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
+        if (con && result) {
+            if (SearchSyncId) {
+                let selectedTextIndex =
+                    this.props.splitText.getTextIndexOfPosition(SearchSyncId);
+                setTimeout(() => {
+                    list.scrollToRow(selectedTextIndex);
                     setTimeout(() => {
-                        list.scrollToRow(selectedTextIndex);
-
-                        setTimeout(() => {
-                            list.scrollToPosition(list.props.scrollTop - 300);
-                        }, 0);
-                    }, 100);
-                } else {
-                    let clickIdObj = Alignment.find(
-                        (l) =>
-                            targetId2 >= l.source_segment.start &&
-                            targetId2 < l.source_segment.end
-                    );
-                    let syncClickTargetId = clickIdObj?.target_segment?.start;
-
+                        list.scrollToPosition(list.props.scrollTop - 300);
+                    }, 0);
+                }, 100);
+            }
+        }
+        if (
+            this.selectedWindow === 1 &&
+            scrollToId.from === 1 &&
+            this.isPanelLinked &&
+            condition &&
+            scrollToId.id !== null
+        ) {
+            let list = this.list;
+            this.textAlignmentById = this.props.textAlignmentById || [];
+            this.splitText.style.scrollBehavior = "smooth";
+            if (Alignment && this.isPanelLinked) {
+                let req = this.textAlignmentById.find(
+                    (l) => l.start === scrollToId.id
+                );
+                let TStart = req?.TStart;
+                if (TStart !== null) {
                     let selectedTextIndex =
-                        this.props.splitText.getTextIndexOfPosition(
-                            syncClickTargetId
-                        );
+                        this.props.splitText.getTextIndexOfPosition(TStart);
 
                     setTimeout(() => {
                         list.scrollToRow(selectedTextIndex);
@@ -537,6 +562,28 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }, 100);
                 }
             }
+        }
+        if (
+            targetId2 &&
+            scrollToId.from === null &&
+            this.selectedWindow === 1
+        ) {
+            let clickIdObj = Alignment.alignment.find(
+                (l) =>
+                    targetId2 >= l.source_segment.start &&
+                    targetId2 < l.source_segment.end
+            );
+            let syncClickTargetId = clickIdObj?.target_segment?.start;
+            let selectedTextIndex =
+                this.props.splitText.getTextIndexOfPosition(syncClickTargetId);
+
+            setTimeout(() => {
+                list.scrollToRow(selectedTextIndex);
+
+                setTimeout(() => {
+                    list.scrollToPosition(list.props.scrollTop - 300);
+                }, 0);
+            }, 100);
         }
 
         // if (this.selectedNodes && this.selectedNodes.length > 0) {
@@ -770,10 +817,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             rowHeight={cache.rowHeight}
                             rowRenderer={rowRenderer}
                             width={width}
-                            overscanRowCount={3}
+                            overscanRowCount={1}
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
-                            // scrollTop={0}
                             scrollToAlignment="start"
                         ></List>
                     )}
@@ -781,79 +827,79 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             </div>
         );
     }
-    // getStringPositions(
-    //     text: SegmentedText,
-    //     string: string,
-    //     index: number
-    // ): { [position: number]: [number, number] } {
-    //     const uniqueId = this.props.splitText.annotatedText.getUniqueId();
+    getStringPositions(
+        text: SegmentedText,
+        string: string,
+        index: number
+    ): { [position: number]: [number, number] } {
+        const uniqueId = this.props.splitText.annotatedText.getUniqueId();
 
-    //     if (!_searchResultsCache.hasOwnProperty(uniqueId)) {
-    //         _searchResultsCache = {
-    //             [uniqueId]: {}
-    //         };
-    //     }
+        if (!_searchResultsCache.hasOwnProperty(uniqueId)) {
+            _searchResultsCache = {
+                [uniqueId]: {},
+            };
+        }
 
-    //     if (!_searchResultsCache[uniqueId].hasOwnProperty(string)) {
-    //         _searchResultsCache[uniqueId] = {
-    //             [string]: {}
-    //         };
-    //     }
+        if (!_searchResultsCache[uniqueId].hasOwnProperty(string)) {
+            _searchResultsCache[uniqueId] = {
+                [string]: {},
+            };
+        }
 
-    //     if (_searchResultsCache[uniqueId][string].hasOwnProperty(index)) {
-    //         return _searchResultsCache[uniqueId][string][index];
-    //     }
+        if (_searchResultsCache[uniqueId][string].hasOwnProperty(index)) {
+            return _searchResultsCache[uniqueId][string][index];
+        }
 
-    //     const splitter = new GraphemeSplitter();
-    //     const content = text.getText();
-    //     const firstSegment = text.segments[0];
-    //     const startingPosition = firstSegment.start;
-    //     let positions = [];
-    //     let position = content.indexOf(string);
-    //     while (position !== -1) {
-    //         positions.push(position);
-    //         position = content.indexOf(string, position + 1);
-    //     }
+        const splitter = new GraphemeSplitter();
+        const content = text.getText();
+        const firstSegment = text.segments[0];
+        const startingPosition = firstSegment.start;
+        let positions = [];
+        let position = content.indexOf(string);
+        while (position !== -1) {
+            positions.push(position);
+            position = content.indexOf(string, position + 1);
+        }
 
-    //     // Position needs to be position in complete text
-    //     let verifiedPositions: { [position: number]: [number, number] } = {};
-    //     if (positions.length > 0) {
-    //         const graphemes = splitter.splitGraphemes(content);
-    //         let position = 0;
-    //         let activePosition = null;
-    //         for (let i = 0; i < graphemes.length; i++) {
-    //             const grapheme = graphemes[i];
-    //             const graphemeEnd = position + (grapheme.length - 1);
-    //             if (activePosition !== null) {
-    //                 let expectedEnd = activePosition + (string.length - 1);
-    //                 if (graphemeEnd >= expectedEnd) {
-    //                     verifiedPositions[activePosition + startingPosition] = [
-    //                         activePosition + startingPosition,
-    //                         graphemeEnd + startingPosition
-    //                     ];
-    //                     activePosition = null;
-    //                 }
-    //             } else if (positions.indexOf(position) !== -1) {
-    //                 if (string.length === grapheme.length) {
-    //                     verifiedPositions[position + startingPosition] = [
-    //                         position + startingPosition,
-    //                         graphemeEnd + startingPosition
-    //                     ];
-    //                 } else if (string.length > grapheme.length) {
-    //                     activePosition = position;
-    //                 }
-    //             } else {
-    //                 activePosition = null;
-    //             }
+        // Position needs to be position in complete text
+        let verifiedPositions: { [position: number]: [number, number] } = {};
+        if (positions.length > 0) {
+            const graphemes = splitter.splitGraphemes(content);
+            let position = 0;
+            let activePosition = null;
+            for (let i = 0; i < graphemes.length; i++) {
+                const grapheme = graphemes[i];
+                const graphemeEnd = position + (grapheme.length - 1);
+                if (activePosition !== null) {
+                    let expectedEnd = activePosition + (string.length - 1);
+                    if (graphemeEnd >= expectedEnd) {
+                        verifiedPositions[activePosition + startingPosition] = [
+                            activePosition + startingPosition,
+                            graphemeEnd + startingPosition,
+                        ];
+                        activePosition = null;
+                    }
+                } else if (positions.indexOf(position) !== -1) {
+                    if (string.length === grapheme.length) {
+                        verifiedPositions[position + startingPosition] = [
+                            position + startingPosition,
+                            graphemeEnd + startingPosition,
+                        ];
+                    } else if (string.length > grapheme.length) {
+                        activePosition = position;
+                    }
+                } else {
+                    activePosition = null;
+                }
 
-    //             position += grapheme.length;
-    //         }
-    //     }
+                position += grapheme.length;
+            }
+        }
 
-    //     _searchResultsCache[uniqueId][string][index] = verifiedPositions;
+        _searchResultsCache[uniqueId][string][index] = verifiedPositions;
 
-    //     return verifiedPositions;
-    // }
+        return verifiedPositions;
+    }
 
     rowRenderer({
         key,
@@ -870,14 +916,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const cache = this.cache;
 
         let searchStringPositions = {};
-        let searchValue = props.searchValue;
-        // if (searchValue && searchValue.length > 0 && props.splitText) {
-        //     searchStringPositions = this.getStringPositions(
-        //         props.splitText.texts[index],
-        //         searchValue,
-        //         index
-        //     );
-        // }
+        let searchValue = this.props.searchValue;
+        if (searchValue && searchValue.length > 0 && props.splitText) {
+            searchStringPositions = this.getStringPositions(
+                props.splitText.texts[index],
+                searchValue,
+                index
+            );
+        }
 
         let newStyle = { ...style, height: style.height + 10 };
         return (
@@ -904,7 +950,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             // selectedSearchResult={
                             //     this.props.selectedSearchResult
                             // }
-                            // searchStringPositions={searchStringPositions}
+                            searchStringPositions={searchStringPositions}
                             textAlignmentById={props.textAlignmentById}
                             fontSize={props.fontSize}
                             selectedSourceRange={props.selectedSourceRange}

@@ -28,7 +28,6 @@ import {
     hasLoadedWitnessAppliedAnnotations,
     getScrollPosition,
     getSelectedSearchResult,
-    getSearchValue,
     getTextFontSize,
     isSecondWindowOpen,
     getImageData,
@@ -37,6 +36,7 @@ import {
     isPanelVisible,
     getSelectedTargetRange,
     getSelectedSourceRange,
+    getSearchResults2,
 } from "reducers";
 
 const DISMISS_CONTROLS_ON_CLICK = true;
@@ -158,11 +158,11 @@ const mapStateToProps = (state: AppState): {} => {
         );
     }
     const isPanelLinked = reducers.isPanelLinked(state);
-    const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
+    const scrollToId = reducers.getScrollToId(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const textAlignment = reducers.getTextAlignment(state);
     const selectedWindow = reducers.getSelectedWindow(state);
-
+    const searchValue = reducers.getSearchValue2(state);
     return {
         text: selectedText,
         textFontSize,
@@ -176,13 +176,17 @@ const mapStateToProps = (state: AppState): {} => {
         selectedImage: getSelectedImage(state),
         isImagePortrait: isImagePortrait(state),
         isPanelVisible: isPanelVisible(state),
-        syncIdOnScroll,
+        scrollToId,
         syncIdOnClick,
         textAlignment,
         textAlignmentById: reducers.getTextAlignmentById(state),
         selectedWindow,
         selectedSourceRange: getSelectedSourceRange(state),
         selectedTargetRange: getSelectedTargetRange(state),
+        showTableContent: reducers.getShowTableContent2(state),
+        searchResults: getSearchResults2(state, searchValue),
+        searchValue,
+        syncIdOnSearch: reducers.getSyncIdOnSearch2(state),
     };
 };
 
@@ -352,13 +356,16 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             // dispatch(changedActiveTextAnnotation(activeAnnotation));
         },
-        changeSyncIdOnScroll2: (payload) =>
-            dispatch(actions.changeSyncIdOnScroll2(payload)),
+        changeScrollToId: (payload) =>
+            dispatch(actions.changeScrollToId(payload)),
         changeSelectedWindow: (payload) => {
             dispatch(actions.changeSelectedWindow(payload));
         },
         changeSelectedRange: (payload) => {
             dispatch(actions.changeSelectedRange(payload));
+        },
+        changeShowTableContent: (payload) => {
+            dispatch(actions.showTableContent2(payload));
         },
         selectedSegmentId: (segmentId) => {
             let start = idFromSegmentId(segmentId);

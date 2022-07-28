@@ -15,7 +15,7 @@ function TextList(props) {
     const onSelectedText = props.onSelectedText;
     const selectedText = props.selectedText;
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState(selectedText.name);
+    let selected = selectedText ? selectedText.name : textslist[0].name;
 
     const cache = useRef(
         new CellMeasurerCache({
@@ -50,7 +50,7 @@ function TextList(props) {
                     sx={{
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        width: "5rem",
+                        width: "10rem",
                     }}
                 >
                     <Typography noWrap={true}>{selected}</Typography>
@@ -93,7 +93,6 @@ function TextList(props) {
                                                 <div
                                                     style={style}
                                                     onClick={() => {
-                                                        setSelected(data.name);
                                                         setIsOpen(false);
                                                         onSelectedText(data);
                                                     }}

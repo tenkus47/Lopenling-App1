@@ -17,8 +17,10 @@ import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
-import { Box } from "@mui/material";
+import { Box, Slide } from "@mui/material";
 import _ from "lodash";
+import TableOfContent from "./TableOfContent/TableOfContent";
+
 export type Props = {
     paginated: boolean,
     pageImagesVisible: boolean,
@@ -48,17 +50,20 @@ export type Props = {
     isPanelLinked: boolean,
     isPanelVisible: Boolean,
     changeSyncIdOnClick: () => void,
-    changeSyncIdOnScroll: () => void,
+    changeScrollToId: () => void,
     changeSelectedImage: () => void,
     closeAnnotation: () => void,
     textAlignmentById: {},
     selectedWindow: Number,
     changeSelectedWindow: () => void,
     changeSelectedRange: [],
-    syncIdOnScroll: Number,
-    syncIdOnScroll2: Number,
+    scrollToId: {},
     selectedSourceRange: [],
     selectedTargetRange: [],
+    searchResults: [],
+    changeShowTableContent: () => void,
+    showTableContent: Boolean,
+    syncIdOnSearch: String,
 };
 
 let textDetailId = 0;
@@ -136,7 +141,7 @@ class TextDetail extends React.Component<Props> {
                     searchValue={this.props.searchValue}
                     fontSize={this.props.fontSize}
                     isSecondWindowOpen={this.props.isSecondWindowOpen}
-                    changeSyncIdOnScroll={this.props.changeSyncIdOnScroll}
+                    changeScrollToId={this.props.changeScrollToId}
                     changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                     imageData={this.props.imageData}
                     isPanelLinked={this.props.isPanelLinked}
@@ -144,14 +149,18 @@ class TextDetail extends React.Component<Props> {
                     changeSelectedImage={this.props.changeSelectedImage}
                     isAnnotating={this.props.isAnnotating}
                     closeAnnotation={this.props.closeAnnotation}
+                    textAlignment={this.props.textAlignment}
                     textAlignmentById={this.props.textAlignmentById}
                     isPanelVisible={this.props.isPanelVisible}
-                    syncIdOnScroll={this.props.syncIdOnScroll}
-                    syncIdOnScroll2={this.props.syncIdOnScroll2}
+                    scrollToId={this.props.scrollToId}
                     selectedWindow={this.props.selectedWindow}
                     selectedSourceRange={this.props.selectedSourceRange}
                     selectedTargetRange={this.props.selectedTargetRange}
                     changeSelectedRange={this.props.changeSelectedRange}
+                    searchResults={this.props.searchResults}
+                    showTableContent={this.props.showTableContent}
+                    selectedText={this.props.text}
+                    syncIdOnSearch={this.props.syncIdOnSearch}
                 ></SplitTextComponent>
             );
         }
@@ -160,6 +169,7 @@ class TextDetail extends React.Component<Props> {
             <Box
                 style={{
                     height: "100%",
+                    flex: 1,
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -171,15 +181,43 @@ class TextDetail extends React.Component<Props> {
             >
                 <TextDetailHeadingContainer />
                 <Loader loaded={!this.props.loading} zIndex={5} />
-
-                <div
-                    className={classnames(
-                        styles.textContainer,
-                        utilStyles.flex
-                    )}
+                <Box
+                    style={{
+                        display: "flex",
+                        height: "100%",
+                        width: "100%",
+                        position: "relative",
+                    }}
                 >
-                    {!this.props.loading ? textComponents : <div />}
-                </div>
+                    <Box
+                        style={{ flex: 1 }}
+                        className={classnames(
+                            styles.textContainer,
+                            utilStyles.flex
+                        )}
+                    >
+                        {!this.props.loading ? textComponents : <div />}
+                    </Box>
+                    <Slide
+                        direction="left"
+                        in={this.props.showTableContent}
+                        container={this.ref.current}
+                    >
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                height: "100%",
+                                minWidth: "50%",
+                                right: 0,
+                                background: "#eee",
+                                borderLeft: "1px solid gray",
+                                padding: 2,
+                            }}
+                        >
+                            <TableOfContent />
+                        </Box>
+                    </Slide>
+                </Box>
             </Box>
         );
     }

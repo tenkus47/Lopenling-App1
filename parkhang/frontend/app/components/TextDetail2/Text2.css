@@ -44,7 +44,6 @@
     margin: 0;
     padding: 0;
     white-space: pre;
-    cursor: text;
 }
 
 .limitWidth.textFirstRow {
@@ -120,6 +119,7 @@
 
 .syncIdClass {
     font-weight: 900;
+    font-size: 10px;
     cursor: pointer;
 }
 
