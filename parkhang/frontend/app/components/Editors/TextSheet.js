@@ -40,7 +40,7 @@ function TextSheet(props) {
                 //  && props.isSecondWindowOpen
                 <MediaComponent
                     toggleImage={props.toggleImage}
-                    syncIdOnScroll={props.syncIdOnScroll}
+                    scrollToId={props.scrollToId}
                     syncIdOnClick={props.syncIdOnClick}
                     imageData={props.imageData}
                     videoData={props.videoData}
@@ -65,7 +65,7 @@ function TextSheet(props) {
 }
 
 const mapStateToProps = (state: AppState): { user: User } => {
-    const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
+    const scrollToId = reducers.getScrollToId(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
     let Media = reducers.getMediaData(state);
@@ -81,7 +81,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
     return {
         isSecondWindowOpen,
         Media,
-        syncIdOnScroll,
+        scrollToId,
         syncIdOnClick,
         imageData,
         videoData,

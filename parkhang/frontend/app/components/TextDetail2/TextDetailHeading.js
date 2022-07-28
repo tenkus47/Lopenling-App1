@@ -8,7 +8,8 @@ import Settings from "./HeaderMenu/Settings";
 import Search from "./HeaderMenu/Search";
 import TableOfContent from "./HeaderMenu/TableOfContent";
 import _ from "lodash";
-import classnames from "classnames";
+import CloseIcon from "@mui/icons-material/Close";
+
 import {
     Stack,
     Box,
@@ -19,6 +20,7 @@ import {
     ButtonGroup,
     ListItem,
     List,
+    IconButton,
 } from "@mui/material";
 
 type HeaderProps = {
@@ -37,7 +39,6 @@ function TextDetailHeading(props: HeaderProps) {
     const headingRef = useRef();
     const handleListItemClick = (id) => {
         props.changeSelectSyncId(id);
-        setVisible(false);
     };
     const debouncedSearch = React.useRef(
         _.debounce((s) => {
@@ -47,7 +48,6 @@ function TextDetailHeading(props: HeaderProps) {
     const handleSearch = useCallback(
         (e) => {
             e.preventDefault();
-            setfindvalue("");
             debouncedSearch(findvalue);
             setVisible(true);
         },
@@ -65,6 +65,12 @@ function TextDetailHeading(props: HeaderProps) {
 
         if (showFind === false) debouncedSearch(null);
     }, [showFind]);
+
+    const closeSearchItemBox = () => {
+        setVisible(false);
+        debouncedSearch(null);
+        setfindvalue("");
+    };
 
     return (
         <Stack
@@ -144,7 +150,8 @@ function TextDetailHeading(props: HeaderProps) {
                             <List
                                 sx={{
                                     position: "absolute",
-                                    top: 84,
+                                    top: 35,
+                                    right: 0,
                                     zIndex: 10,
                                     background: "#eee",
                                     boxShadow: 3,
@@ -176,6 +183,18 @@ function TextDetailHeading(props: HeaderProps) {
                                             </ListItem>
                                         );
                                     })}
+                                <IconButton
+                                    aria-label="closeButton"
+                                    onClick={closeSearchItemBox}
+                                    size="small"
+                                    sx={{
+                                        right: 0,
+                                        top: 0,
+                                        position: "absolute",
+                                    }}
+                                >
+                                    <CloseIcon fontSize="inherit" />
+                                </IconButton>
                             </List>
                         )}
                     </Stack>

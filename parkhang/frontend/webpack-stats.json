@@ -80,73 +80,13 @@
       "name": "5.styles-776615c949203b01d16d.css.map",
       "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\5.styles-776615c949203b01d16d.css.map",
       "publicPath": "/static/bundles/5.styles-776615c949203b01d16d.css.map"
-    },
-    "0-9816f9d5f4295f140fae.js": {
-      "name": "0-9816f9d5f4295f140fae.js",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\0-9816f9d5f4295f140fae.js",
-      "publicPath": "/static/bundles/0-9816f9d5f4295f140fae.js"
-    },
-    "styles-9816f9d5f4295f140fae.css": {
-      "name": "styles-9816f9d5f4295f140fae.css",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\styles-9816f9d5f4295f140fae.css",
-      "publicPath": "/static/bundles/styles-9816f9d5f4295f140fae.css"
-    },
-    "parkhang-9816f9d5f4295f140fae.js": {
-      "name": "parkhang-9816f9d5f4295f140fae.js",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\parkhang-9816f9d5f4295f140fae.js",
-      "publicPath": "/static/bundles/parkhang-9816f9d5f4295f140fae.js"
-    },
-    "vendors~docx-9816f9d5f4295f140fae.js": {
-      "name": "vendors~docx-9816f9d5f4295f140fae.js",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\vendors~docx-9816f9d5f4295f140fae.js",
-      "publicPath": "/static/bundles/vendors~docx-9816f9d5f4295f140fae.js"
-    },
-    "3.styles-9816f9d5f4295f140fae.css": {
-      "name": "3.styles-9816f9d5f4295f140fae.css",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\3.styles-9816f9d5f4295f140fae.css",
-      "publicPath": "/static/bundles/3.styles-9816f9d5f4295f140fae.css"
-    },
-    "3-9816f9d5f4295f140fae.js": {
-      "name": "3-9816f9d5f4295f140fae.js",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\3-9816f9d5f4295f140fae.js",
-      "publicPath": "/static/bundles/3-9816f9d5f4295f140fae.js"
-    },
-    "4-9816f9d5f4295f140fae.js": {
-      "name": "4-9816f9d5f4295f140fae.js",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\4-9816f9d5f4295f140fae.js",
-      "publicPath": "/static/bundles/4-9816f9d5f4295f140fae.js"
-    },
-    "5.styles-9816f9d5f4295f140fae.css": {
-      "name": "5.styles-9816f9d5f4295f140fae.css",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\5.styles-9816f9d5f4295f140fae.css",
-      "publicPath": "/static/bundles/5.styles-9816f9d5f4295f140fae.css"
-    },
-    "5-9816f9d5f4295f140fae.js": {
-      "name": "5-9816f9d5f4295f140fae.js",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\5-9816f9d5f4295f140fae.js",
-      "publicPath": "/static/bundles/5-9816f9d5f4295f140fae.js"
-    },
-    "styles-9816f9d5f4295f140fae.css.map": {
-      "name": "styles-9816f9d5f4295f140fae.css.map",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\styles-9816f9d5f4295f140fae.css.map",
-      "publicPath": "/static/bundles/styles-9816f9d5f4295f140fae.css.map"
-    },
-    "3.styles-9816f9d5f4295f140fae.css.map": {
-      "name": "3.styles-9816f9d5f4295f140fae.css.map",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\3.styles-9816f9d5f4295f140fae.css.map",
-      "publicPath": "/static/bundles/3.styles-9816f9d5f4295f140fae.css.map"
-    },
-    "5.styles-9816f9d5f4295f140fae.css.map": {
-      "name": "5.styles-9816f9d5f4295f140fae.css.map",
-      "path": "D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\static\\bundles\\5.styles-9816f9d5f4295f140fae.css.map",
-      "publicPath": "/static/bundles/5.styles-9816f9d5f4295f140fae.css.map"
     }
   },
   "chunks": {
     "parkhang": [
-      "styles-9816f9d5f4295f140fae.css",
-      "parkhang-9816f9d5f4295f140fae.js",
-      "styles-9816f9d5f4295f140fae.css.map"
+      "styles-776615c949203b01d16d.css",
+      "parkhang-776615c949203b01d16d.js",
+      "styles-776615c949203b01d16d.css.map"
     ]
   },
   "publicPath": "/static/bundles/"

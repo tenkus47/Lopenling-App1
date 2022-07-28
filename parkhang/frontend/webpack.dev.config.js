@@ -6,7 +6,6 @@ var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
     context: __dirname,
@@ -19,7 +18,7 @@ module.exports = {
 
     output: {
         path: path.resolve(__dirname, "static/bundles/"),
-        filename: "[name]-dev.js",
+        filename: "parkhang-dev.js",
         library: "parkhang",
         publicPath: "/static/bundles/",
     },

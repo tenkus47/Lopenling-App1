@@ -59,7 +59,7 @@ function HomePage(props) {
                                         <Card
                                             onClick={() =>
                                                 historyObj.push(
-                                                    `/texts/${pechalist.text}`
+                                                    `/texts/${pechalist?.text}`
                                                 )
                                             }
                                             sx={{
@@ -68,7 +68,7 @@ function HomePage(props) {
                                                 cursor: "pointer",
                                             }}
                                             elevation={3}
-                                            key={pechalist.id}
+                                            key={pechalist?.id}
                                         >
                                             <CardContent>
                                                 <Typography
@@ -78,7 +78,7 @@ function HomePage(props) {
                                                     textTransform="capitalize"
                                                     fontWeight="bold"
                                                 >
-                                                    {pechalist.title}
+                                                    {pechalist?.title}
                                                 </Typography>
                                                 <Typography
                                                     variant="body2"

@@ -99,7 +99,7 @@ const App = (props: Props) => {
     };
     const actions = [
         {
-            icon: <EditIcon />,
+            icon: <EditIcon htmlColor={props.isAnnotating && "#ff7961"} />,
             name: "Annotate",
             condition: props.isAnnotating,
             function: () => props.changeIsAnnotating(!props.isAnnotating),
@@ -115,7 +115,11 @@ const App = (props: Props) => {
             function: handleShare,
         },
         {
-            icon: <VerticalSplitIcon />,
+            icon: (
+                <VerticalSplitIcon
+                    htmlColor={props.isSecondWindowOpen && "#ff7961"}
+                />
+            ),
             name: "Split Window",
             condition: props.isSecondWindowOpen,
             function: () =>
@@ -196,6 +200,7 @@ const App = (props: Props) => {
                                     tooltipTitle={action.name}
                                     onClick={action.function}
                                     open={action.condition}
+                                    style={{ backgroundColor: "red" }}
                                 />
                             ))}
                         </SpeedDial>

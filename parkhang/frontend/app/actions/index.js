@@ -120,8 +120,7 @@ export const EXPORTED_WITNESS = "text/EXPORTED_WITNESS";
 export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 
 export const LINK_PANEL = "panel/LINKED";
-export const SYNC_ID_ON_SCROLL = "ScrollSync/ID";
-export const SYNC_ID_ON_SCROLL2 = "ScrollSync2/ID";
+export const SCROLL_TO_ID = "SCROLL_TO_ID/ID";
 
 export const SYNC_ID_ON_CLICK = "ClickSync/ID";
 export const CHANGE_SELECTED_WINDOW = "CHANGE_SELECTED_WINDOW";
@@ -973,16 +972,10 @@ export function toggleSecondWindow(data, textId) {
     };
 }
 
-export function changeSyncIdOnScroll(payload) {
+export function changeScrollToId(payload) {
     return {
-        type: SYNC_ID_ON_SCROLL,
-        payload: payload,
-    };
-}
-export function changeSyncIdOnScroll2(payload) {
-    return {
-        type: SYNC_ID_ON_SCROLL2,
-        payload: payload,
+        type: SCROLL_TO_ID,
+        payload,
     };
 }
 

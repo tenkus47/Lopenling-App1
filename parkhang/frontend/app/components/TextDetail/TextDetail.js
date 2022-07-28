@@ -50,15 +50,14 @@ export type Props = {
     isPanelLinked: boolean,
     isPanelVisible: Boolean,
     changeSyncIdOnClick: () => void,
-    changeSyncIdOnScroll: () => void,
+    changeScrollToId: () => void,
     changeSelectedImage: () => void,
     closeAnnotation: () => void,
     textAlignmentById: {},
     selectedWindow: Number,
     changeSelectedWindow: () => void,
     changeSelectedRange: [],
-    syncIdOnScroll: Number,
-    syncIdOnScroll2: Number,
+    scrollToId: {},
     selectedSourceRange: [],
     selectedTargetRange: [],
     searchResults: [],
@@ -142,7 +141,7 @@ class TextDetail extends React.Component<Props> {
                     searchValue={this.props.searchValue}
                     fontSize={this.props.fontSize}
                     isSecondWindowOpen={this.props.isSecondWindowOpen}
-                    changeSyncIdOnScroll={this.props.changeSyncIdOnScroll}
+                    changeScrollToId={this.props.changeScrollToId}
                     changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                     imageData={this.props.imageData}
                     isPanelLinked={this.props.isPanelLinked}
@@ -150,10 +149,10 @@ class TextDetail extends React.Component<Props> {
                     changeSelectedImage={this.props.changeSelectedImage}
                     isAnnotating={this.props.isAnnotating}
                     closeAnnotation={this.props.closeAnnotation}
+                    textAlignment={this.props.textAlignment}
                     textAlignmentById={this.props.textAlignmentById}
                     isPanelVisible={this.props.isPanelVisible}
-                    syncIdOnScroll={this.props.syncIdOnScroll}
-                    syncIdOnScroll2={this.props.syncIdOnScroll2}
+                    scrollToId={this.props.scrollToId}
                     selectedWindow={this.props.selectedWindow}
                     selectedSourceRange={this.props.selectedSourceRange}
                     selectedTargetRange={this.props.selectedTargetRange}
