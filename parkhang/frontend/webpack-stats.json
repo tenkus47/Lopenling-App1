@@ -1,5 +1,5 @@
 {
-  "status": "error",
+  "status": "done",
   "assets": {
     "ea9a1cd4d17aad5a9c5bdfde6acaad2e.png": {
       "name": "ea9a1cd4d17aad5a9c5bdfde6acaad2e.png",
@@ -89,7 +89,5 @@
       "styles-776615c949203b01d16d.css.map"
     ]
   },
-  "publicPath": "/static/bundles/",
-  "error": "ModuleNotFoundError",
-  "message": "Module not found: Error: Can't resolve 'react-image' in 'D:\\git Project work\\Lopenling-App\\parkhang\\frontend\\app\\components\\Editors\\MediaComponent'"
+  "publicPath": "/static/bundles/"
 }
