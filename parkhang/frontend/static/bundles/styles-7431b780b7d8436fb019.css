@@ -440,7 +440,7 @@
     display: flex;
 }
 .Accessory---accessory {
-    background-color: var(--light-gray-text);
+    background-color: gray;
     border-radius: 50%;
     color: #fff;
     font-size: 14px;
@@ -455,8 +455,6 @@
 .Accessory---accessory:hover {
     background-color: rgba(0, 0, 0, .2);
 }
-
-
 
 /* Collection default theme */
 
@@ -1292,4 +1290,4 @@ we require as we don't want to change the html.
 
 
 
-/*# sourceMappingURL=styles-0e62850275f6b1bc0289.css.map*/
+/*# sourceMappingURL=styles-7431b780b7d8436fb019.css.map*/

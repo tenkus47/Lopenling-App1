@@ -236,6 +236,7 @@ export function* watchLoadInitialData(): any {
 // SELECTED TEXT
 
 function* selectedText(action: actions.SelectedTextAction): Saga<void> {
+    if (action.text === null) return;
     yield put(actions.loadingWitnesses(action.text));
     yield all([call(loadInitialTextData, action)]);
 }
@@ -245,6 +246,8 @@ function* watchSelectedText(): Saga<void> {
 }
 
 function* selectedText2(action: actions.SelectedTextAction): Saga<void> {
+    if (action.text === null) return;
+
     yield put(actions.loadingWitnesses2(action.text));
     yield all([call(loadInitialTextData2, action)]);
 }
@@ -277,7 +280,6 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 workingWitnessData.id
             ): any);
             // auto-select the working witness
-
             yield put(
                 actions.selectedTextWitness(action.text.id, workingWitness.id)
             );
@@ -335,6 +337,7 @@ function* loadInitialTextData2(action: actions.TextDataAction) {
         let witnesses2 = yield select(reducers.getWitness2);
         if (witnesses2 === null)
             witnesses2 = yield call(api.fetchTextWitnesses, action.text);
+
         yield put(actions.loadedWitnesses2(action.text, witnesses2));
         let workingWitnessData: api.WitnessData | null = null;
         let baseWitnessData: api.WitnessData | null = null;
@@ -802,7 +805,7 @@ function* loadedTextUrl(
             textId,
             witnessId
         );
-
+        yield delay(1000);
         yield put(selectedWitnessAction);
 
         let secondWindowOpen = yield select(reducers.isSecondWindowOpen);
@@ -927,7 +930,6 @@ function* loadedTextIdonlyUrl(action) {
     witnesses = yield call(api.fetchTextWitnesses, text);
     witnessId2 = witnesses[0].id;
     witnessId = witnesses[0].id;
-
     yield call(loadedTextUrl, action, textId, witnessId, textId2, witnessId2);
 }
 
@@ -941,11 +943,11 @@ function* selectTextUrl(action) {
     _loadedTextUrl = false;
     const falseLoaded = actions.changeIsLoaded(false);
     yield put(falseLoaded);
-    const noSelectedTextAction = actions.noSelectedText(null);
-    yield put(noSelectedTextAction);
-    const noTitleSelected = actions.selectTextTitle(null);
-    yield put(noTitleSelected);
 
+    const nullSelect = actions.selectedText(null);
+    yield put(nullSelect);
+    const nullSelect2 = actions.selectedText2(null);
+    yield put(nullSelect2);
     const scrollnull = actions.changeScrollToId({
         id: null,
         from: null,
@@ -996,7 +998,7 @@ function* loadSecondWindowOpen(action, textId = null, witnessId) {
         let witnesses2 = null;
         if (witnesses2 === null)
             witnesses2 = yield call(api.fetchTextWitnesses, textData2);
-        console.log(witnesses2);
+
         yield put(actions.loadedWitnesses2(textData2, witnesses2));
         const selectedWitnessAction = actions.selectedTextWitness2(
             textId2,

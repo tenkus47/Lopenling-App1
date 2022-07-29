@@ -79,7 +79,6 @@ export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 export const CHANGE_ANNOTATING = "CHANGE_ANNOTATING";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
-export const NO_SELECTED_TEXT = "textList/NO_SELECTED_TEXT";
 export const CHANGED_SEARCH_VALUE = "textList/CHANGED_SEARCH_VALUE";
 export const CHANGED_SEARCH_VALUE2 = "textList/CHANGED_SEARCH_VALUE2";
 
@@ -577,13 +576,7 @@ export function loadedUserSettings(
 }
 
 /* UI */
-export type noSelectedTextAction = Action & TextDataAction;
-export function noSelectedText(data: api.TextData): noSelectedTextAction {
-    return {
-        type: NO_SELECTED_TEXT,
-        data,
-    };
-}
+
 
 export type SelectedTextAction = Action & TextDataAction;
 export function selectedText(text: api.TextData): SelectedTextAction {

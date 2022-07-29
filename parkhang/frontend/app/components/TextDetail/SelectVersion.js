@@ -1,12 +1,12 @@
 // @flow
 import React, { useState, useEffect, memo } from "react";
-import classnames from "classnames";
+import _ from "lodash";
+
 import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
 import { NativeSelect } from "@mui/material";
 import { withStyles } from "@mui/styles";
-import useLocaleStorage from "components/utility/useLocalStorage";
 export type Props = {
     witnesses: Witness[],
     activeWitness: Witness | null,
@@ -34,13 +34,14 @@ const style = (theme) => ({
 });
 
 const SelectVersion = (props: Props) => {
-    let witnesses;
+    let witnesses = [];
     let tabName = "";
-    let r = props.witnesses.findIndex((l) => l?.id === props.activeWitness?.id);
+    let r = "";
     let { classes: classtype } = props;
-    const [temp, setTemp] = useState(null);
+    const [temp, setTemp] = useState(1);
     let classes = [styles.selectOptions];
-    if (props.witnesses) {
+    if (props.witnesses && props.activeWitness) {
+        r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
         witnesses = props.witnesses.map((witness) => witness);
         classes = [styles.tab];
         witnesses.sort((a, b) => {
@@ -62,10 +63,12 @@ const SelectVersion = (props: Props) => {
     }
 
     useEffect(() => {
-        if (props.witnesses.length > 0) {
+        if (!_.isEmpty(witnesses) && temp >= 0) {
             props.onSelectedWitness(witnesses[temp]);
         }
     }, [temp]);
+    if (witnesses.length === 0) return null;
+
     return (
         <NativeSelect
             onChange={(e) => setTemp(e.target.value)}
@@ -76,7 +79,6 @@ const SelectVersion = (props: Props) => {
                 root: classtype.selectEmpty,
                 select: classtype.select,
             }}
-            style={{ border: 0 }}
         >
             {witnesses.map((witness, key) => {
                 if (witness.id === props.activeWitness.id)

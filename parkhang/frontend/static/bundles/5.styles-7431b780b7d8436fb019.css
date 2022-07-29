@@ -566,11 +566,11 @@ span {
 }
 .TextDetail---textDetail2 ::-moz-selection {
     color: black;
-    background-color: rgb(226, 226, 176);
+    background-color: #ccc;
 }
 .TextDetail---textDetail2 ::selection {
     color: black;
-    background-color: rgb(226, 226, 176);
+    background-color: #ccc;
 }
 .TextDetail---textContainer {
     -webkit-box-flex: 1;
@@ -587,4 +587,4 @@ span {
     border-radius: 5px;
 }
 
-/*# sourceMappingURL=5.styles-0e62850275f6b1bc0289.css.map*/
+/*# sourceMappingURL=5.styles-7431b780b7d8436fb019.css.map*/

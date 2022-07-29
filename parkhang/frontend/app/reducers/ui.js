@@ -208,16 +208,6 @@ function changeLinkPanel(
     return state;
 }
 
-function noSelectedText(
-    state: UIState,
-    action: actions.SelectedTextAction
-): UIState {
-    state = {
-        ...state,
-        selectedText: action.data,
-    };
-    return state;
-}
 
 function selectedTextWitness(
     state: UIState,
@@ -549,7 +539,6 @@ const uiReducers = {};
 uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
-uiReducers[actions.NO_SELECTED_TEXT] = noSelectedText;
 uiReducers[actions.SCROLL_TO_ID] = changeScrollToId;
 
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;

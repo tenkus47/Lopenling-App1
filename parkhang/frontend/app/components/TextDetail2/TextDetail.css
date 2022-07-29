@@ -13,7 +13,7 @@
 
 .textDetail2 ::selection {
     color: black;
-    background-color: rgb(226, 226, 176);
+    background-color: #ccc;
 }
 
 .textContainer {
