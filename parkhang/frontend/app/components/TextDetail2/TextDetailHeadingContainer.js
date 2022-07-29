@@ -68,9 +68,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...stateProps,
         navigationButtonClicked,
         onSelectedWitness: (witness: Witness) => {
-            dispatch(
-                actions.selectedTextWitness2(selectedText?.id, witness?.id)
-            );
+            dispatch(actions.selectedTextWitness2(selectedText.id, witness.id));
         },
         onChangedFontSize: (fontSize: number) => {
             dispatch(actions.changedTextFontSize2(fontSize));

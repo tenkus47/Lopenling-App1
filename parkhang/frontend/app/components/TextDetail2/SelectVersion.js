@@ -1,10 +1,9 @@
 // @flow
 import React, { useState, useEffect, memo } from "react";
-import classnames from "classnames";
+import _ from "lodash";
 import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
-import useLocaleStorage from "components/utility/useLocalStorage";
 import { NativeSelect } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
@@ -35,14 +34,18 @@ const style = (theme) => ({
 });
 
 const SelectVersion = (props: Props) => {
-    let witnesses;
+    let witnesses = [];
     let tabName = "";
     let { classes: classtype } = props;
-    let r = props.witnesses.findIndex((l) => l.id === props.activeWitness?.id);
-    const [temp, setTemp] = useState(null);
+    let r = "";
+    const [temp, setTemp] = useState(1);
     let classes = [styles.selectOptions];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);
+        if (props.activeWitness)
+            r = props.witnesses.findIndex(
+                (l) => l.id === props.activeWitness.id
+            );
         classes = [styles.tab];
         witnesses.sort((a, b) => {
             if (a.isWorking) {
@@ -63,15 +66,18 @@ const SelectVersion = (props: Props) => {
     }
 
     useEffect(() => {
-        if (props.witnesses.length > 0) {
+        if (!_.isEmpty(witnesses) && temp >= 0) {
             props.onSelectedWitness(witnesses[temp]);
         }
     }, [temp]);
+
+    if (_.isEmpty(witnesses) && !props.activeWitness) return null;
+
     return (
         <NativeSelect
             onChange={(e) => setTemp(e.target.value)}
             className={styles.selectVersion}
-            defaultValue={temp}
+            value={r}
             label="Version2"
             classes={{
                 root: classtype.selectEmpty,
@@ -97,6 +103,7 @@ const SelectVersion = (props: Props) => {
                         key={`versionSelect2-${key}`}
                         value={key}
                         className={classes}
+                        styles={{ textAlign: "center" }}
                     >
                         {tabName}
                     </option>
