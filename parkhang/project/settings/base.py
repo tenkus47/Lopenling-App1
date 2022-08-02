@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "webpack_loader",
     "django_extensions",
+    "drf_yasg",
 ]
 
 PROJECT_APPS = [
