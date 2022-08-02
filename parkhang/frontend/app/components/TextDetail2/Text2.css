@@ -44,7 +44,6 @@
     margin: 0;
     padding: 0;
     white-space: pre;
-    cursor: text;
 }
 
 .limitWidth.textFirstRow {
@@ -116,4 +115,14 @@
 .pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
+}
+
+.syncIdClass {
+    font-weight: 900;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.selectedRange {
+    background-color: #eee;
 }

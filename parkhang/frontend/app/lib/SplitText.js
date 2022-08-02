@@ -2,7 +2,7 @@
 import SegmentedText from "./SegmentedText";
 import AnnotatedText from "./AnnotatedText";
 
-export type Splitter = string => number[];
+export type Splitter = (string) => number[];
 
 export default class SplitText {
     annotatedText: AnnotatedText;
@@ -23,7 +23,6 @@ export default class SplitText {
         if (!this.annotatedText) {
             return [];
         }
-
         if (
             !this._texts ||
             this._textsId !== this.annotatedText.getUniqueId()
@@ -31,7 +30,9 @@ export default class SplitText {
             this._textsFinalPositions = [];
             const segmentedText = this.annotatedText.segmentedText;
             const textString = segmentedText.getText();
-            let splitPositions = this.splitter(textString);
+            let splitPositions = this.splitter(textString).filter(
+                (l) => l !== 0
+            );
             if (splitPositions.length === 0) {
                 this._textsFinalPositions.push(textString.length);
                 return [segmentedText];
@@ -65,10 +66,9 @@ export default class SplitText {
                 }
             }
 
-            this._texts = texts;
+            this._texts = texts.filter((l) => l.segments.length > 0);
             this._textsId = this.annotatedText.getUniqueId();
         }
-
         return this._texts || [];
     }
 

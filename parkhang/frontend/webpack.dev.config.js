@@ -13,28 +13,28 @@ module.exports = {
     mode: "development",
 
     entry: {
-        parkhang: ["./app/index", "./website/index"]
+        parkhang: ["./app/index", "./website/index"],
     },
 
     output: {
         path: path.resolve(__dirname, "static/bundles/"),
-        filename: "[name]-dev.js",
+        filename: "parkhang-dev.js",
         library: "parkhang",
-        publicPath: "/static/bundles/"
+        publicPath: "/static/bundles/",
     },
 
     plugins: [
         new BundleTracker({ filename: "./webpack-stats-dev.json" }),
         new MiniCssExtractPlugin({
-            filename: "styles-dev.css"
+            filename: "styles-dev.css",
         }),
+
         new webpack.DefinePlugin({
             "process.env": {
-                NODE_ENV: JSON.stringify("development")
-            }
+                NODE_ENV: JSON.stringify("production"),
+            },
         }),
-        new LodashModuleReplacementPlugin()
-        
+        new LodashModuleReplacementPlugin(),
     ],
 
     module: {
@@ -49,18 +49,18 @@ module.exports = {
                             presets: [
                                 "@babel/preset-react",
                                 "@babel/preset-env",
-                                "@babel/preset-flow"
-                            ]
-                        }
-                    }
-                ]
+                                "@babel/preset-flow",
+                            ],
+                        },
+                    },
+                ],
             },
             {
                 test: /\.css$/,
                 exclude: /accounts\.css/,
                 use: [
                     {
-                        loader: MiniCssExtractPlugin.loader
+                        loader: MiniCssExtractPlugin.loader,
                     },
                     {
                         loader: "css-loader",
@@ -68,8 +68,8 @@ module.exports = {
                             sourceMap: true,
                             importLoaders: 1,
                             modules: true,
-                            localIdentName: "[name]---[local]"
-                        }
+                            localIdentName: "[name]---[local]",
+                        },
                     },
                     {
                         loader: "postcss-loader",
@@ -78,29 +78,29 @@ module.exports = {
                             plugins: () => [
                                 postcssImport({
                                     addDependencyTo: webpack,
-                                    path: path.resolve("./app")
+                                    path: path.resolve("./app"),
                                 }),
                                 postcssCssnext({
-                                    compress: true
-                                })
-                            ]
-                        }
-                    }
-                ]
+                                    compress: true,
+                                }),
+                            ],
+                        },
+                    },
+                ],
             },
             {
                 test: /accounts\.css/,
                 use: [
                     {
-                        loader: MiniCssExtractPlugin.loader
+                        loader: MiniCssExtractPlugin.loader,
                     },
                     {
                         loader: "css-loader",
                         options: {
                             sourceMap: true,
                             importLoaders: 1,
-                            modules: false
-                        }
+                            modules: false,
+                        },
                     },
                     {
                         loader: "postcss-loader",
@@ -109,15 +109,15 @@ module.exports = {
                             plugins: () => [
                                 postcssImport({
                                     addDependencyTo: webpack,
-                                    path: path.resolve("./app")
+                                    path: path.resolve("./app"),
                                 }),
                                 postcssCssnext({
-                                    compress: true
-                                })
-                            ]
-                        }
-                    }
-                ]
+                                    compress: true,
+                                }),
+                            ],
+                        },
+                    },
+                ],
             },
             {
                 test: /\.svg$/,
@@ -129,30 +129,30 @@ module.exports = {
                                 plugins: [
                                     {
                                         inlineStyles: {
-                                            onlyMatchedOnce: false
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                ]
+                                            onlyMatchedOnce: false,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(png|jpe?g|gif)$/i,
                 use: [
                     {
-                        loader: "file-loader"
-                    }
-                ]
-            }
-        ]
+                        loader: "file-loader",
+                    },
+                ],
+            },
+        ],
     },
 
     resolve: {
         extensions: [".js", ".jsx"],
-        modules: [path.resolve("./node_modules"), path.resolve("./app")]
+        modules: [path.resolve("./node_modules"), path.resolve("./app")],
     },
 
-    devtool: "cheap-module-source-map"
+    devtool: "cheap-module-source-map",
 };

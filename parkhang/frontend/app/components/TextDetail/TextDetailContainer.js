@@ -50,6 +50,10 @@ import {
     getSelectedImage,
     isImagePortrait,
     isPanelVisible,
+    getSelectedSourceRange,
+    getSelectedTargetRange,
+    getSearchResults,
+    getShowTableContent,
 } from "reducers";
 import * as reducers from "reducers";
 import _ from "lodash";
@@ -157,6 +161,8 @@ const mapStateToProps = (state) => {
         state.data.loadingWitnesses || state.data.loadingAnnotations;
     const textListVisible = getTextListVisible(state);
     const isPanelLinked = reducers.isPanelLinked(state);
+    const textAlignmentById = reducers.getTextAlignmentById(state);
+
     if (loading) {
         return {
             text: null,
@@ -176,6 +182,7 @@ const mapStateToProps = (state) => {
             fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
             isSecondWindowOpen: isSecondWindowOpen(state),
             isPanelLinked,
+            textAlignmentById,
         };
     }
 
@@ -266,7 +273,7 @@ const mapStateToProps = (state) => {
                 annotatedText.getAnnotationsOfType(
                     ANNOTATION_TYPES.pageBreak
                 ) || {};
-
+            // console.log(witnessPageBreaks);
             let basePageBreaks = null;
             if (selectedWitness.id !== baseWitness.id) {
                 basePageBreaks = getAnnotationsForWitnessId(
@@ -298,8 +305,12 @@ const mapStateToProps = (state) => {
             }
         }
     }
-
     _selectedWitness = selectedWitness;
+    const scrollToId = reducers.getScrollToId(state);
+    const textAlignment = reducers.getTextAlignment(state);
+
+    const syncIdOnClick = reducers.getSyncIdOnClick(state);
+    const selectedWindow = reducers.getSelectedWindow(state);
     return {
         text: selectedText,
         witnesses: witnesses,
@@ -329,6 +340,16 @@ const mapStateToProps = (state) => {
         isImagePortrait: isImagePortrait(state),
         isPanelVisible: isPanelVisible(state),
         isAnnotating: reducers.isAnnotating(state),
+        textAlignment,
+        textAlignmentById,
+        scrollToId,
+        syncIdOnClick,
+        selectedWindow,
+        selectedSourceRange: getSelectedSourceRange(state),
+        selectedTargetRange: getSelectedTargetRange(state),
+        searchResults: getSearchResults(state, searchValue),
+        showTableContent: getShowTableContent(state),
+        syncIdOnSearch: reducers.getSyncIdOnSearch(state),
     };
 };
 
@@ -546,12 +567,26 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 }
             }
         },
-        changeSyncIdOnScroll: (payload) =>
-            dispatch(actions.changeSyncIdOnScroll(payload)),
+        changeScrollToId: (payload) =>
+            dispatch(actions.changeScrollToId(payload)),
         changeSyncIdOnClick: (payload) =>
             dispatch(actions.changeSyncIdOnClick(payload)),
         changeSelectedImage: (payload) => {
             dispatch(actions.selectImage(payload));
+        },
+        changeSelectedWindow: (payload) => {
+            dispatch(actions.changeSelectedWindow(payload));
+        },
+        changeSelectedRange: (payload) => {
+            dispatch(actions.changeSelectedRange(payload));
+        },
+        changeShowTableContent: (payload) => {
+            dispatch(actions.showTableContent(payload));
+        },
+        closeAnnotation: () => {
+            const dismissTextAnnotation =
+                actions.changedActiveTextAnnotation(null);
+            dispatch(dismissTextAnnotation);
         },
     };
 };

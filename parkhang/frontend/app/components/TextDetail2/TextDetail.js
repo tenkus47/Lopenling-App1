@@ -1,18 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import TextDetailHeading from "./TextDetailHeadingContainer";
 import SplitTextComponent from "./SplitText";
 import SplitText from "lib/SplitText";
 import Loader from "react-loader";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import styles from "./TextDetail.css";
+import { Box, Slide } from "@mui/material";
+import TableOfContent from "./TableOfContent/TableOfContent";
+import utilStyles from "css/util.css";
+import classnames from "classnames";
+
 import imageStyle from "../Editors/MediaComponent/Image.css";
 function TextDetail(props) {
+    const ref = useRef();
     let text = {
         name: "",
     };
     if (props.text) {
         text = props.text;
     }
+    useEffect(() => {
+        let element = ref.current;
+        element.addEventListener("mouseenter", mouseEnter);
+        return () => {
+            element.removeEventListener("mouseenter", mouseEnter);
+        };
+    }, []);
+
+    function mouseEnter() {
+        props.changeSelectedWindow(2);
+    }
+
     let inlineControls = false;
     let textComponent = null;
     let splitText = null;
@@ -49,9 +67,20 @@ function TextDetail(props) {
                 // selectedSearchResult={this.props.selectedSearchResult}
                 // searchValue={this.props.searchValue}
                 fontSize={props.textFontSize}
-                syncIdOnScroll={props.syncIdOnScroll}
+                scrollToId={props.scrollToId}
                 syncIdOnClick={props.syncIdOnClick}
                 textAlignment={props.textAlignment}
+                textAlignmentById={props.textAlignmentById}
+                isPanelLinked={props.isPanelLinked}
+                changeScrollToId={props.changeScrollToId}
+                selectedWindow={props.selectedWindow}
+                selectedSourceRange={props.selectedSourceRange}
+                selectedTargetRange={props.selectedTargetRange}
+                changeSelectedRange={props.changeSelectedRange}
+                searchResults={props.searchResults}
+                searchValue={props.searchValue}
+                selectedText={props.text}
+                syncIdOnSearch={props.syncIdOnSearch}
             ></SplitTextComponent>
         );
     }
@@ -59,19 +88,57 @@ function TextDetail(props) {
     let textComponents = [textComponent];
     let thirdWindowHeight = imageStyle.ThirdWindowHeight;
     let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
-    let condition = props.isPanelVisible;
+    // let condition = props.isPanelVisible;
     return (
-        <div
+        <Box
+            ref={ref}
             className={styles.textDetail2}
             style={{
-                height: condition ? bodyHeight : "100%",
+                height: "100%",
+                flex: 1,
             }}
         >
             <TextDetailHeading />
             <Loader loaded={!props.loading} />
+            <Box
+                style={{
+                    display: "flex",
+                    height: "100%",
+                    width: "100%",
+                    position: "relative",
+                }}
+            >
+                <Box
+                    style={{ flex: 1 }}
+                    className={classnames(
+                        styles.textContainer2,
+                        utilStyles.flex
+                    )}
+                >
+                    {!props.loading ? textComponents : <div />}
+                </Box>
 
-            {!props.loading ? textComponents : <div />}
-        </div>
+                <Slide
+                    direction="left"
+                    in={props.showTableContent}
+                    container={ref.current}
+                >
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            height: "100%",
+                            minWidth: "50%",
+                            right: 0,
+                            background: "#eee",
+                            borderLeft: "1px solid gray",
+                            padding: 2,
+                        }}
+                    >
+                        <TableOfContent />
+                    </Box>
+                </Slide>
+            </Box>
+        </Box>
     );
 }
 

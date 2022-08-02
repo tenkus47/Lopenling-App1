@@ -2,16 +2,17 @@ import React from "react";
 import { connect } from "react-redux";
 import * as actions from "actions";
 import * as reducers from "reducers";
+import { Typography, Box } from "@mui/material";
 function Commentary({ alignmentData, text, selectSecondWindowText }) {
     let targetId = alignmentData.target;
-    // console.log(textName);
     const handleSelectText = (text) => {
         selectSecondWindowText(text);
     };
-    console.log(text);
     return (
-        <div>
-            <h1>Commentary</h1>
+        <Box>
+            <Typography variant="h6" gutterBottom component="div">
+                Commentary
+            </Typography>
             {text && (
                 <ul style={{ paddingLeft: 18 }}>
                     <li
@@ -23,7 +24,7 @@ function Commentary({ alignmentData, text, selectSecondWindowText }) {
                     </li>
                 </ul>
             )}
-        </div>
+        </Box>
     );
 }
 

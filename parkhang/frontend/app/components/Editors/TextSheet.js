@@ -1,6 +1,10 @@
-import React, { memo } from "react";
-import TextDetailContainer from "components/TextDetail/TextDetailContainer";
-import TextDetailContainer2 from "components/TextDetail2/TextDetailContainer";
+import React, { memo, Suspense } from "react";
+const TextDetailContainer = React.lazy(() =>
+    import("components/TextDetail/TextDetailContainer")
+);
+const TextDetailContainer2 = React.lazy(() =>
+    import("components/TextDetail2/TextDetailContainer")
+);
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
@@ -11,19 +15,32 @@ function TextSheet(props) {
         <div
             style={{
                 display: "flex",
+                flexDirection: "column",
                 width: "100%",
-                height: props.bodyHeight,
                 overflow: "hidden",
+                position: "relative",
             }}
         >
-            <TextDetailContainer />
-            {props.isSecondWindowOpen && <TextDetailContainer2 />}
+            <div
+                style={{
+                    display: "flex",
+                    flex: 1,
+                    height: props.bodyHeight,
+                }}
+            >
+                <Suspense fallback={<div> Loading</div>}>
+                    <TextDetailContainer />
+                </Suspense>
 
+                <Suspense fallback={<div> Loading</div>}>
+                    {props.isSecondWindowOpen && <TextDetailContainer2 />}
+                </Suspense>
+            </div>
             {props.Media.isPanelVisible && (
                 //  && props.isSecondWindowOpen
                 <MediaComponent
                     toggleImage={props.toggleImage}
-                    syncIdOnScroll={props.syncIdOnScroll}
+                    scrollToId={props.scrollToId}
                     syncIdOnClick={props.syncIdOnClick}
                     imageData={props.imageData}
                     videoData={props.videoData}
@@ -48,7 +65,7 @@ function TextSheet(props) {
 }
 
 const mapStateToProps = (state: AppState): { user: User } => {
-    const syncIdOnScroll = reducers.getSyncIdOnScroll(state);
+    const scrollToId = reducers.getScrollToId(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
     let Media = reducers.getMediaData(state);
@@ -64,7 +81,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
     return {
         isSecondWindowOpen,
         Media,
-        syncIdOnScroll,
+        scrollToId,
         syncIdOnClick,
         imageData,
         videoData,

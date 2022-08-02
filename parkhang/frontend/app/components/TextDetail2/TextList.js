@@ -1,71 +1,121 @@
-import React,{useState,useRef} from 'react'
-import {List,AutoSizer,CellMeasurer,CellMeasurerCache} from 'react-virtualized';
-import classname from 'classnames';
-import styles from './TextList.css'
-import useClickOutSide from '../UI/useClickOutSideClose';
-
+import React, { useState, useRef } from "react";
+import {
+    List,
+    AutoSizer,
+    CellMeasurer,
+    CellMeasurerCache,
+} from "react-virtualized";
+import classname from "classnames";
+import styles from "./TextList.css";
+import { TextField, ClickAwayListener, Box, Typography } from "@mui/material";
 function TextList(props) {
-    let textslist=[];
-    const onSelectedText=props.onSelectedText;
-    const selectedText=props.selectedText;
+    const temptext = useRef(props.texts);
+    const [textslist, setTextList] = useState(temptext.current);
 
-    textslist=props.texts;
-    const [isOpen,setIsOpen]=useState(false);
-    const [selected,setSelected]=useState(textslist[0]?.name);
-  
-    const cache=useRef(new CellMeasurerCache({
-      fixedHeight:true,
-      defaultHeight:30,
+    const onSelectedText = props.onSelectedText;
+    const selectedText = props.selectedText;
+    const [isOpen, setIsOpen] = useState(false);
+    let selected = selectedText ? selectedText.name : textslist[0].name;
 
-    }))
+    const cache = useRef(
+        new CellMeasurerCache({
+            fixedHeight: true,
+            defaultHeight: 30,
+        })
+    );
 
-    let classes=[styles.textlist]
-   
+    let classes = [styles.textlist];
 
-const handleClick=()=>{
-    setIsOpen((prev=>!prev))
-    if(isOpen===false) classes.push(styles.open)
-}
-const domNode2=useClickOutSide(()=>setIsOpen(false))
+    const handleClick = () => {
+        setIsOpen((prev) => !prev);
+        if (isOpen === false) classes.push(styles.open);
+    };
+    const handleChange = (e) => {
+        let value = e.target.value;
+        setTextList(temptext.current);
+        if (value === "" || value === null) {
+            return;
+        }
 
-  return (<div style={{position:'relative'}} ref={domNode2}>     
-        <button onClick={handleClick} className={styles.listToggelBtn}>{selectedText?selectedText.name:selected}</button>
-        {isOpen && <div className={classname(classes)} style={{position:'absolute'}}>
-          <AutoSizer>{
-              ({width,height})=>(
-                <List
-                width={width}
-                 height={height}
-                 rowHeight={cache.current.rowHeight}
-                 deferredMeasurementCache={cache.current}
-                 rowCount={textslist.length}
-                 rowRenderer={
-                   ({key,index,style,parent})=>{
-                 let data=textslist[index]
-                  return (
-                  <CellMeasurer key={`optionvalues-${key}`} cache={cache.current } parent={parent}
-                  columnIndex={0} rowIndex={index}
-                  > 
-                    <div 
-                    style={style} 
-                  onClick={()=>{
-                    setSelected(data.name);
-                    setIsOpen(false);
-                    onSelectedText(data)
-                  }}>
-                    <span style={{paddingLeft:'10px'}}>{data.name}
-                      </span>
+        let newtextslist = textslist.filter((l) => l.name.includes(value));
+        setTextList(newtextslist);
+    };
+    return (
+        <ClickAwayListener onClickAway={() => setIsOpen(false)}>
+            <div style={{ position: "relative" }}>
+                <Box
+                    onClick={handleClick}
+                    className={styles.listToggelBtn}
+                    component="div"
+                    sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        width: "10rem",
+                    }}
+                >
+                    <Typography noWrap={true}>{selected}</Typography>
+                </Box>
+                {isOpen && (
+                    <div
+                        className={classname(classes)}
+                        style={{ position: "absolute" }}
+                    >
+                        <TextField
+                            onChange={handleChange}
+                            id="standard-basic"
+                            label="filter"
+                            variant="standard"
+                            style={{ width: "100%" }}
+                        />
+                        <AutoSizer>
+                            {({ width, height }) => (
+                                <List
+                                    width={width}
+                                    height={height}
+                                    rowHeight={cache.current.rowHeight}
+                                    deferredMeasurementCache={cache.current}
+                                    rowCount={textslist.length}
+                                    rowRenderer={({
+                                        key,
+                                        index,
+                                        style,
+                                        parent,
+                                    }) => {
+                                        let data = textslist[index];
+                                        return (
+                                            <CellMeasurer
+                                                key={`optionvalues-${key}`}
+                                                cache={cache.current}
+                                                parent={parent}
+                                                columnIndex={0}
+                                                rowIndex={index}
+                                            >
+                                                <div
+                                                    style={style}
+                                                    onClick={() => {
+                                                        setIsOpen(false);
+                                                        onSelectedText(data);
+                                                    }}
+                                                >
+                                                    <span
+                                                        style={{
+                                                            paddingLeft: "10px",
+                                                        }}
+                                                    >
+                                                        {data.name}
+                                                    </span>
+                                                </div>
+                                            </CellMeasurer>
+                                        );
+                                    }}
+                                />
+                            )}
+                        </AutoSizer>
                     </div>
-                  </CellMeasurer>)
-                 }}
-       
-               />
-              )}
-     
-        </AutoSizer>
-       </div>}
+                )}
             </div>
-  )
+        </ClickAwayListener>
+    );
 }
 
-export default TextList
+export default TextList;

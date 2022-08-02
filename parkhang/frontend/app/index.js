@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import AppContainer from "components/App/AppContainer";
 import flagsmith from "flagsmith";
 import { FlagsmithProvider } from "flagsmith/react";
+import * as serviceWorker from "./service-worker";
 // For dev only
 import { composeWithDevTools } from "redux-devtools-extension";
 import * as api from "api";
@@ -83,8 +84,6 @@ const routesMap = {
     USER: "/user/:id",
     [actions.TEXTID_ONLY_URL]: "/texts/:textId",
     [actions.TEXTS]: "/textSelection",
-    [actions.EDITOR]: "/editor",
-    [actions.SEARCH]: "/search/:search",
 };
 const routes = connectRoutes(routesMap, {
     initialDispatch: false,

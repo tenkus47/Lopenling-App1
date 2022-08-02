@@ -1,52 +1,19 @@
 @import 'css/type.css';
 @import 'css/colour.css';
 
-.Resources{
+.Resources {
     height: 100%;
     display: flex;
     flex-direction: column;
 }
-.ResourcesHeader{
-    background-color: var(--resource-header-bgcolor);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width:100%;
-    height:70px;
-}
-.ResourceIcon{
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    cursor: pointer;
-    height: 100%;
-}
-.ResourceIcon:hover svg>path{
-    fill:var(--text-color);
-}
-.ResourceIcon path{
-    fill:var(--light-gray);
-}
 
-.ResourceDetail{
-   background-color:var(--white);
-   flex:1;
-   padding-top:20px;
-}
-.activeResource{
+.ResourceDetail {
     background-color: var(--white);
-    height: 100%;
+    flex: 1;
+    padding-top: 20px;
 }
 
-
-.activeResource>.ResourceIcon{
-background-color: #cfcece;
-}
-
-.activeResource svg>path{
-    fill:var(--text-color);
-}
-.ResourceFooter{
-margin-left: 20px;
+.optionlist .css-heg063-MuiTabs-flexContainer button {
+    padding: 2px !important;
+    min-width: 10px !important;
 }

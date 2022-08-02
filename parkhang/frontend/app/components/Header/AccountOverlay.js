@@ -2,38 +2,51 @@
 import React from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import User from "lib/User";
-import Button from "components/UI/Button";
 import styles from "./AccountOverlay.css";
+import { Avatar, MenuItem, Divider, ListItemIcon, Link } from "@mui/material";
+import PersonAdd from "@mui/icons-material/PersonAdd";
+import Settings from "@mui/icons-material/Settings";
+import Logout from "@mui/icons-material/Logout";
 
 type Props = {
     top: number,
     right: number,
     user: User,
-    intl: { formatMessage: ({ [id: string]: string }) => string }
+    intl: { formatMessage: ({ [id: string]: string }) => string },
+    visible: Boolean,
 };
 
 const AccountOverlay = (props: Props) => {
     let signOutTitle = props.intl.formatMessage({
-        id: "header.logout"
+        id: "header.logout",
     });
-
     return (
-        <div
-            className={styles.overlay}
-            style={{
-                top: props.top + "px",
-                right: props.right + "px"
-            }}
-        >
-            <h3 className={styles.username}>{props.user.name}</h3>
-            <a href="/discourse/logout/">
-                <Button
-                    title={signOutTitle}
-                    color="black"
-                    backgroundColor="#bbb"
-                />
-            </a>
-        </div>
+        <>
+            <MenuItem>{props.user.name}</MenuItem>
+            <Divider />
+            <MenuItem>
+                <Link
+                    href="https://www.lopenling.org"
+                    style={{ textDecoration: "none", color: "gray" }}
+                >
+                    <ListItemIcon>
+                        <Settings fontSize="small" />
+                    </ListItemIcon>
+                    Settings
+                </Link>
+            </MenuItem>
+            <MenuItem>
+                <Link
+                    href="/discourse/logout/"
+                    style={{ textDecoration: "none", color: "gray" }}
+                >
+                    <ListItemIcon>
+                        <Logout fontSize="small" />
+                    </ListItemIcon>
+                    {signOutTitle}
+                </Link>
+            </MenuItem>
+        </>
     );
 };
 

@@ -79,14 +79,17 @@ export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 export const CHANGE_ANNOTATING = "CHANGE_ANNOTATING";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
-export const NO_SELECTED_TEXT = "textList/NO_SELECTED_TEXT";
 export const CHANGED_SEARCH_VALUE = "textList/CHANGED_SEARCH_VALUE";
-export const CHANGED_SEARCH_TERM = "textList/CHANGED_SEARCH_TERM";
+export const CHANGED_SEARCH_VALUE2 = "textList/CHANGED_SEARCH_VALUE2";
+
 export const SEARCHED_TEXT = "textList/SEARCHED_TEXT";
 export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
+export const UPDATED_SEARCH_RESULTS2 = "textList/UPDATED_SEARCH_RESULTS2";
+
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
-export const CHANGED_NOTIFICATION = "notification/CHANGED_NOTIFICATION";
 export const SECOND_WINDOW = "notification/SECOND_WINDOW";
+
+export const CHANGE_RANGE_SELECTION = "CHANGE_RANGE_SELECTION";
 
 export const SELECTED_WITNESS = "text/SELECTED_WITNESS";
 export const SELECTED_WITNESS2 = "text/SELECTED_WITNESS2";
@@ -116,8 +119,16 @@ export const EXPORTED_WITNESS = "text/EXPORTED_WITNESS";
 export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 
 export const LINK_PANEL = "panel/LINKED";
-export const SYNC_ID_ON_SCROLL = "ScrollSync/ID";
+export const SCROLL_TO_ID = "SCROLL_TO_ID/ID";
+
 export const SYNC_ID_ON_CLICK = "ClickSync/ID";
+export const CHANGE_SELECTED_WINDOW = "CHANGE_SELECTED_WINDOW";
+
+export const SYNC_ID_ON_SEARCH = "SYNC_ID_ON_SEARCH";
+export const SYNC_ID_ON_SEARCH2 = "SYNC_ID_ON_SEARCH2";
+
+export const SHOW_TABLE_CONTENT = "SHOW_TABLE_CONTENT";
+export const SHOW_TABLE_CONTENT2 = "SHOW_TABLE_CONTENT2";
 
 // User
 export const USER_LOGGED_IN = "users/USER_LOGGED_IN";
@@ -138,8 +149,6 @@ export const TEXT_URL = "urls/TEXT";
 export const TEXT_URL2 = "urls/TEXT2";
 export const USER_URL = "urls/USER";
 export const TEXTID_ONLY_URL = "urls/TEXTID";
-export const EDITOR = "urls/editor";
-export const SEARCH = "urls/search";
 
 /** Action creators **/
 
@@ -183,6 +192,12 @@ export type TextsAction = Action & {
 export function loadedTexts(texts: api.TextData[]): TextsAction {
     return {
         type: LOADED_TEXTS,
+        texts,
+    };
+}
+export function loadAllTexts(texts) {
+    return {
+        type: LOADED_TEXTS_ALL,
         texts,
     };
 }
@@ -561,13 +576,7 @@ export function loadedUserSettings(
 }
 
 /* UI */
-export type noSelectedTextAction = Action & TextDataAction;
-export function noSelectedText(data: api.TextData): noSelectedTextAction {
-    return {
-        type: NO_SELECTED_TEXT,
-        data,
-    };
-}
+
 
 export type SelectedTextAction = Action & TextDataAction;
 export function selectedText(text: api.TextData): SelectedTextAction {
@@ -599,6 +608,14 @@ export function changedSearchValue(
 ): ChangedSearchValueAction {
     return {
         type: CHANGED_SEARCH_VALUE,
+        searchValue,
+    };
+}
+export function changedSearchValue2(
+    searchValue: string
+): ChangedSearchValueAction {
+    return {
+        type: CHANGED_SEARCH_VALUE2,
         searchValue,
     };
 }
@@ -643,6 +660,17 @@ export function updatedSearchResults(
     };
 }
 
+export function updatedSearchResults2(
+    searchValue: string,
+    searchResults: { [number]: api.TextSearchResultData }
+): UpdatedSearchResultsAction {
+    return {
+        type: UPDATED_SEARCH_RESULTS2,
+        searchValue,
+        searchResults,
+    };
+}
+
 export type SelectedSearchResultAction = Action & {
     textId: number | null,
     start: number | null,
@@ -668,13 +696,6 @@ export function changedTextListWidth(width: number): ChangedTextListWidth {
     return {
         type: CHANGED_TEXT_LIST_WIDTH,
         width,
-    };
-}
-
-export function changedNotification(data) {
-    return {
-        type: CHANGED_NOTIFICATION,
-        data,
     };
 }
 
@@ -904,10 +925,10 @@ export function selectTextTitle(textTitle: string) {
     };
 }
 
-export function setTextData(originData) {
+export function setTextData(featuredText) {
     return {
         type: SET_TEXTDATA,
-        payload: originData,
+        payload: featuredText,
     };
 }
 
@@ -936,24 +957,65 @@ export function setTextAlignment(data) {
         data,
     };
 }
-export function toggleSecondWindow(data) {
+export function toggleSecondWindow(data, textId) {
     return {
         type: SECOND_WINDOW,
         payload: data,
+        textId,
     };
 }
 
-export function changeSyncIdOnScroll(payload) {
+export function changeScrollToId(payload) {
     return {
-        type: SYNC_ID_ON_SCROLL,
-        payload: payload,
+        type: SCROLL_TO_ID,
+        payload,
     };
 }
 
 export function changeSyncIdOnClick(payload) {
     return {
         type: SYNC_ID_ON_CLICK,
-        payload: payload,
+        payload,
+    };
+}
+
+export function changeSyncIdOnSearch(payload) {
+    return {
+        type: SYNC_ID_ON_SEARCH,
+        payload,
+    };
+}
+export function changeSyncIdOnSearch2(payload) {
+    return {
+        type: SYNC_ID_ON_SEARCH2,
+        payload,
+    };
+}
+
+export function changeSelectedRange(payload) {
+    return {
+        type: CHANGE_RANGE_SELECTION,
+        payload,
+    };
+}
+
+export function changeSelectedWindow(payload) {
+    return {
+        type: CHANGE_SELECTED_WINDOW,
+        payload,
+    };
+}
+
+export function showTableContent(payload) {
+    return {
+        type: SHOW_TABLE_CONTENT,
+        payload,
+    };
+}
+export function showTableContent2(payload) {
+    return {
+        type: SHOW_TABLE_CONTENT2,
+        payload,
     };
 }
 

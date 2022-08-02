@@ -17,6 +17,9 @@ import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
+import { Box, Slide } from "@mui/material";
+import _ from "lodash";
+import TableOfContent from "./TableOfContent/TableOfContent";
 
 export type Props = {
     paginated: boolean,
@@ -45,22 +48,49 @@ export type Props = {
     isSecondWindowOpen: Boolean,
     imageData: {},
     isPanelLinked: boolean,
+    isPanelVisible: Boolean,
     changeSyncIdOnClick: () => void,
-    changeSyncIdOnScroll: () => void,
+    changeScrollToId: () => void,
     changeSelectedImage: () => void,
+    closeAnnotation: () => void,
+    textAlignmentById: {},
+    selectedWindow: Number,
+    changeSelectedWindow: () => void,
+    changeSelectedRange: [],
+    scrollToId: {},
+    selectedSourceRange: [],
+    selectedTargetRange: [],
+    searchResults: [],
+    changeShowTableContent: () => void,
+    showTableContent: Boolean,
+    syncIdOnSearch: String,
 };
 
 let textDetailId = 0;
 
 class TextDetail extends React.Component<Props> {
     key: number;
-
+    ref;
+    selectedWindow;
     constructor() {
         super();
-
         this.key = textDetailId++;
+        this.ref = React.createRef();
+        this.selectedWindow = null;
     }
 
+    mouseEnter() {
+        if (this.selectedWindow === 2) this.props.changeSelectedWindow(1);
+    }
+    componentDidMount() {
+        this.ref.current.addEventListener(
+            "mouseenter",
+            this.mouseEnter.bind(this)
+        );
+    }
+    componentDidUpdate() {
+        this.selectedWindow = this.props.selectedWindow;
+    }
     render() {
         let text = {
             name: "",
@@ -68,7 +98,6 @@ class TextDetail extends React.Component<Props> {
         if (this.props.text) {
             text = this.props.text;
         }
-
         let inlineControls = false;
         let textComponent = null;
         let splitText = null;
@@ -88,6 +117,7 @@ class TextDetail extends React.Component<Props> {
             }
 
             splitText = new SplitText(this.props.annotatedText, splitter);
+
             inlineControls = true;
             textComponent = (
                 <SplitTextComponent
@@ -111,26 +141,35 @@ class TextDetail extends React.Component<Props> {
                     searchValue={this.props.searchValue}
                     fontSize={this.props.fontSize}
                     isSecondWindowOpen={this.props.isSecondWindowOpen}
-                    changeSyncIdOnScroll={this.props.changeSyncIdOnScroll}
+                    changeScrollToId={this.props.changeScrollToId}
                     changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                     imageData={this.props.imageData}
                     isPanelLinked={this.props.isPanelLinked}
                     selectedImage={this.props.selectedImage}
                     changeSelectedImage={this.props.changeSelectedImage}
                     isAnnotating={this.props.isAnnotating}
+                    closeAnnotation={this.props.closeAnnotation}
+                    textAlignment={this.props.textAlignment}
+                    textAlignmentById={this.props.textAlignmentById}
+                    isPanelVisible={this.props.isPanelVisible}
+                    scrollToId={this.props.scrollToId}
+                    selectedWindow={this.props.selectedWindow}
+                    selectedSourceRange={this.props.selectedSourceRange}
+                    selectedTargetRange={this.props.selectedTargetRange}
+                    changeSelectedRange={this.props.changeSelectedRange}
+                    searchResults={this.props.searchResults}
+                    showTableContent={this.props.showTableContent}
+                    selectedText={this.props.text}
+                    syncIdOnSearch={this.props.syncIdOnSearch}
                 ></SplitTextComponent>
             );
         }
-
         let textComponents = [textComponent];
-        let thirdWindowHeight = imageStyle.ThirdWindowHeight;
-        let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
-        let condition =
-            !this.props.isImagePortrait && this.props.isPanelVisible;
         return (
-            <div
+            <Box
                 style={{
-                    height: condition ? bodyHeight : "100%",
+                    height: "100%",
+                    flex: 1,
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -138,19 +177,48 @@ class TextDetail extends React.Component<Props> {
                     utilStyles.flexColumn
                 )}
                 key={this.key}
+                ref={this.ref}
             >
                 <TextDetailHeadingContainer />
                 <Loader loaded={!this.props.loading} zIndex={5} />
-
-                <div
-                    className={classnames(
-                        styles.textContainer,
-                        utilStyles.flex
-                    )}
+                <Box
+                    style={{
+                        display: "flex",
+                        height: "100%",
+                        width: "100%",
+                        position: "relative",
+                    }}
                 >
-                    {!this.props.loading ? textComponents : <div />}
-                </div>
-            </div>
+                    <Box
+                        style={{ flex: 1 }}
+                        className={classnames(
+                            styles.textContainer,
+                            utilStyles.flex
+                        )}
+                    >
+                        {!this.props.loading ? textComponents : <div />}
+                    </Box>
+                    <Slide
+                        direction="left"
+                        in={this.props.showTableContent}
+                        container={this.ref.current}
+                    >
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                height: "100%",
+                                minWidth: "50%",
+                                right: 0,
+                                background: "#eee",
+                                borderLeft: "1px solid gray",
+                                padding: 2,
+                            }}
+                        >
+                            <TableOfContent />
+                        </Box>
+                    </Slide>
+                </Box>
+            </Box>
         );
     }
 }
