@@ -9,7 +9,7 @@ from .serializers import (ImageAlignmentSerializer, TextAlignmentSerializer,
 
 
 @api_view(["GET"])
-def get_text_alignments(request, text_pk):
+def get_text_alignments(request, text_id):
 
     def _serialize_alignments(alignments):
         return [
@@ -18,7 +18,7 @@ def get_text_alignments(request, text_pk):
         ]
 
     output = {
-        "text": text_pk,
+        "text": text_id,
         "alignments": {
             "text": [],
             "image": [],
@@ -26,7 +26,7 @@ def get_text_alignments(request, text_pk):
         }
     }
 
-    for witness in Witness.objects.filter(text__id=text_pk):
+    for witness in Witness.objects.filter(text__id=text_id):
         text_alignments = TextAlignment.objects.filter(source__id=witness.id).values_list("id", "source", "target")
         image_alignments = ImageAlignment.objects.filter(source__id=witness.id).values_list("id","source", "target")
         video_alignments = VideoAlignment.objects.filter(source__id=witness.id).values_list("id", "source", "target")
