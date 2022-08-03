@@ -1,6 +1,6 @@
 .textlist {
     z-index: 1;
-    min-width: 300px;
+    min-width: 15rem;
     height: 300px;
     cursor: pointer;
     overflow: hidden;
@@ -16,12 +16,14 @@
 
 .listToggelBtn {
     outline: none;
-    border: none;
     background-color: transparent;
     font-size: 1rem;
+    cursor: pointer;
+    border: 1px solid lightgray;
+    padding-inline: 4px;
 }
 
 .listToggelBtn:hover {
     background-color: #eee;
-    outline: 2px solid goldenrod;
+
 }

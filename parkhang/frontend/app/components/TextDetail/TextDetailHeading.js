@@ -1,4 +1,10 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, {
+    useState,
+    useRef,
+    useCallback,
+    useEffect,
+    useMemo,
+} from "react";
 import styles from "./textDetailHeading.css";
 import SelectVersion from "./SelectVersion";
 import _ from "lodash";
@@ -24,6 +30,8 @@ import WindowSplitter from "./HeaderMenu/WindowSplitter";
 import Settings from "./HeaderMenu/Settings";
 import TableOfContent from "./HeaderMenu/TableOfContent";
 import Autocomplete from "@mui/material/Autocomplete";
+import { AutoSizer } from "react-virtualized";
+import SearchList from "./HeaderMenu/SearchList";
 
 type HeaderProps = {
     selectedText: {},
@@ -51,7 +59,6 @@ function TextDetailHeading(props: HeaderProps) {
     const [findvalue, setfindvalue] = useState("");
     let [showFind, setShowFind] = useState(false);
     let [visible, setVisible] = useState(false);
-
     const headingRef = useRef();
     const inputRef = useRef();
     const handleListItemClick = (id) => {
@@ -82,12 +89,21 @@ function TextDetailHeading(props: HeaderProps) {
         if (showFind === false) debouncedSearch(null);
     }, [showFind]);
 
-    const closeSearchItemBox = () => {
+    const closeSearchItemBox = useCallback(() => {
         setVisible(false);
         debouncedSearch(null);
         setfindvalue("");
-    };
+    }, []);
 
+    let condition = useMemo(
+        () =>
+            _.isObject(props.searchResults) &&
+            props.searchResults.hasOwnProperty(props.selectedText.id),
+        [props.searchResults, props.selectedText]
+    );
+    let results = condition
+        ? props.searchResults[props.selectedText.id].results
+        : [];
     return (
         <Stack
             ref={headingRef}
@@ -108,8 +124,6 @@ function TextDetailHeading(props: HeaderProps) {
                     />
                 </Box>
                 <ButtonGroup
-                    size="small"
-                    aria-label="small button group"
                     sx={{
                         position: "relative",
                         display: "flex",
@@ -121,7 +135,7 @@ function TextDetailHeading(props: HeaderProps) {
                         bgcolor: "background.paper",
                         color: "text.secondary",
                         "& svg": {
-                            m: 1.5,
+                            m: 1,
                         },
                         "& hr": {
                             mx: 0.5,
@@ -131,14 +145,7 @@ function TextDetailHeading(props: HeaderProps) {
                 >
                     <Refresh isSecondWindowOpen={props.isSecondWindowOpen} />
                     <Divider orientation="vertical" variant="middle" flexItem />
-                    {/* <Annotate {...props} /> */}
-                    {/* <WindowSplitter
-                        isSecondWindowOpen={props.isSecondWindowOpen}
-                        onChangeWindowOpen={props.onChangeWindowOpen}
-                    /> */}
-                    {/* <Divider orientation="vertical" variant="middle" flexItem /> */}
                     <Search handleWindowSearch={handleWindowSearch} />
-                    {/* <Share {...props} /> */}
                     <Settings {...props} />
                     <TableOfContent {...props} />
                 </ButtonGroup>
@@ -173,53 +180,46 @@ function TextDetailHeading(props: HeaderProps) {
                         </Button>
 
                         {props.searchResults && visible && (
-                            <List
+                            <Box
                                 sx={{
                                     position: "absolute",
                                     top: 35,
                                     right: 0,
                                     zIndex: 1,
                                     background: "#eee",
+                                    height: 350,
+                                    width: 350,
+                                    boxShadow: 3,
+                                    overflowX: "hidden",
                                     boxShadow: 3,
                                 }}
                             >
-                                {_.isObject(props.searchResults) &&
-                                    props.searchResults.hasOwnProperty(
-                                        props.selectedText.id
-                                    ) &&
-                                    props.searchResults[
-                                        props.selectedText.id
-                                    ].results.map((l, i) => {
-                                        return (
-                                            <ListItem
-                                                onClick={() =>
-                                                    handleListItemClick(l[0])
-                                                }
-                                                sx={{
-                                                    cursor: "pointer",
-                                                    "&:hover": {
-                                                        background: "#fff",
-                                                    },
-                                                }}
-                                                key={l[0] + "listsearch"}
-                                            >
-                                                {l[1]}
-                                            </ListItem>
-                                        );
-                                    })}
+                                {results.length === 0 && (
+                                    <p>no such word present</p>
+                                )}
+                                {condition && results.length > 0 && (
+                                    <SearchList
+                                        handleListItemClick={
+                                            handleListItemClick
+                                        }
+                                        searchValue={props.searchValue}
+                                        results={results}
+                                        selectedText={props.selectedText}
+                                    />
+                                )}
                                 <IconButton
                                     aria-label="closeButton"
                                     onClick={closeSearchItemBox}
                                     size="small"
                                     sx={{
-                                        right: 0,
+                                        right: 15,
                                         top: 0,
                                         position: "absolute",
                                     }}
                                 >
                                     <CloseIcon fontSize="inherit" />
                                 </IconButton>
-                            </List>
+                            </Box>
                         )}
                     </Stack>
                 </form>
@@ -228,4 +228,4 @@ function TextDetailHeading(props: HeaderProps) {
     );
 }
 
-export default TextDetailHeading;
+export default React.memo(TextDetailHeading);

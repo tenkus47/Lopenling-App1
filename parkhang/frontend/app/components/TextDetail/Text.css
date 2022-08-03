@@ -56,7 +56,7 @@
 
 
 .textline>span {
-    transition: all 0.4s linear;
+    max-height: 4ch;
 }
 
 .limitWidth.textFirstRow {
@@ -131,6 +131,7 @@
 .pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
+    max-height: 4ch;
 }
 
 .selectedRange {

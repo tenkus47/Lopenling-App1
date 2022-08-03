@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import SettingsIcon from "@mui/icons-material/Settings";
+import WrenchIcon from "images/wrench.svg";
 import Slider from "../../UI/Slider";
 import CheckIcon from "@mui/icons-material/Check";
-import { Box } from "@mui/material";
-import { Button, MenuList, MenuItem, ClickAwayListener ,Grow} from "@mui/material";
+// import Slider from "react-smooth-range-input";
+import {
+    Button,
+    MenuList,
+    MenuItem,
+    ClickAwayListener,
+    Grow,
+    Divider,
+    Typography,
+} from "@mui/material";
 function Settings(props) {
     let [showOption, setShowOption] = useState(false);
 
@@ -18,7 +26,8 @@ function Settings(props) {
                 variant="text"
                 style={{ padding: 0, color: "black" }}
             >
-                <SettingsIcon />
+                <WrenchIcon height={20} width={20} />
+
                 <Grow in={showOption}>
                     <MenuList
                         dense
@@ -32,21 +41,27 @@ function Settings(props) {
                     >
                         <Slider
                             max={20}
-                            min={14}
+                            min={7}
                             initialvalue={props.textFontSize}
                             changeSize={props.onChangedFontSize}
                         />
+                        <Divider />
                         <MenuItem onClick={() => props.onExport()}>
-                            Export Document
-                            {props.exportingWitness && <CheckIcon />}
+                            <Typography variant="subtitle2">
+                                Export Document
+                            </Typography>
                         </MenuItem>
+                        <Divider />
+
                         <MenuItem
                             onClick={() =>
                                 props.onChangePanelLink(!props.isPanelLinked)
                             }
                         >
                             {props.isPanelLinked && <CheckIcon />}
-                            link panels
+                            <Typography variant="subtitle2">
+                                link panels
+                            </Typography>
                         </MenuItem>
                     </MenuList>
                 </Grow>

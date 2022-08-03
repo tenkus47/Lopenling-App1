@@ -58,8 +58,7 @@
 }
 
 .Text---textline>span {
-    -webkit-transition: all 0.4s linear;
-    transition: all 0.4s linear;
+    max-height: 4ch;
 }
 
 .Text---limitWidth.Text---textFirstRow {
@@ -146,6 +145,7 @@
 .Text---pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
+    max-height: 4ch;
 }
 
 .Text---selectedRange {
@@ -472,10 +472,11 @@
 
 .AnnotationControls---anonymousMessage {
     margin-top: -8px;
-    font-size: 16px;
-    line-height: 1.3;
-    color: black;
-    letter-spacing: 1px;
+    font-size: 18px;
+    line-height: 0.8;
+    background: rgba(175, 175, 175, .9);
+    color: #fff;
+    letter-spacing: 3px;
     font-weight: bold;
     height: 24px;
     text-align: center;
@@ -779,7 +780,7 @@ blockquote {
     width: -webkit-fit-content;
     width: -moz-fit-content;
     width: fit-content;
-    background-color: #eee;
+    background-color: rgba(175, 175, 175, .9);
     border: 1px solid darkgray;
 }
 .AnnotationControlsHeader---header>div {
@@ -792,9 +793,6 @@ blockquote {
     max-width: -webkit-fit-content;
     max-width: -moz-fit-content;
     max-width: fit-content;
-}
-.AnnotationControlsHeader---header>div:hover {
-    background-color: white;
 }
 .AnnotationControlsHeader---Anotation_closeBtn {
     width: 10px;
@@ -812,9 +810,12 @@ blockquote {
 
 }
 .AnnotationControlsHeader---edit svg {
-    width: 20px;
-    height: 20px;
-
+    width: 16px;
+    width: 1rem;
+    height: 16px;
+    height: 1rem;
+    fill: #fff;
+    cursor: pointer;
 }
 @font-face {
     font-family: "Tibetan";
@@ -964,10 +965,11 @@ blockquote {
 
 .SplitText---anonymousMessage {
     margin-top: -8px;
-    font-size: 16px;
-    line-height: 1.3;
-    color: black;
-    letter-spacing: 1px;
+    font-size: 18px;
+    line-height: 0.8;
+    background: rgba(175, 175, 175, .9);
+    color: #fff;
+    letter-spacing: 3px;
     font-weight: bold;
     height: 24px;
     text-align: center;
@@ -1183,10 +1185,13 @@ span {
     font-size: 14px;
     text-align: center;
 }
-.SelectVersion---selected {
+.SelectVersion---selectEmpty {
     width: 100%;
     padding: 10px;
     border-radius: 10px;
+}
+.SelectVersion---selectOptions {
+    text-align: center;
 }
 .SelectVersion---styled-select select {
     -moz-appearance: none;
@@ -1197,7 +1202,8 @@ span {
 }
 .TextList---textlist {
     z-index: 1;
-    min-width: 300px;
+    min-width: 240px;
+    min-width: 15rem;
     height: 300px;
     cursor: pointer;
     overflow: hidden;
@@ -1213,49 +1219,32 @@ span {
 
 .TextList---listToggelBtn {
     outline: none;
-    border: none;
     background-color: transparent;
     font-size: 16px;
     font-size: 1rem;
+    cursor: pointer;
+    border: 1px solid lightgray;
+    padding-inline: 4px;
 }
 
 .TextList---listToggelBtn:hover {
     background-color: #eee;
-    outline: 2px solid goldenrod;
-}
-.Slider---inputRanges {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
-}
 
-.Slider---inputRanges>span {
-    position: relative;
 }
-
-.Slider---inputRange {
-    background: #eee;
-    border: solid 1px #82CFD0;
-    border-radius: 8px;
-    height: 2px;
-    outline: none;
-    -webkit-appearance: none;
-    -webkit-transition: 0.4s all ease-out;
-    transition: 0.4s all ease-out;
-}
-
-input[type='range']::-webkit-slider-thumb {
-    width: 6px;
-    -webkit-appearance: none;
-    height: 12px;
-    background: black;
-    border-radius: 2px;
-    -webkit-transition: 0.4s all ease-out;
-    transition: 0.4s all ease-out;
+.SearchStyle---highlight {
+    background-color: yellow;
 
 }
 
-/*# sourceMappingURL=3.styles-7431b780b7d8436fb019.css.map*/
+.SearchStyle---searchListItem {
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    padding-top: 5px;
+}
+
+.SearchStyle---searchListItem:hover {
+    font-weight: 600;
+}
+
+/*# sourceMappingURL=5.styles-dev.css.map*/

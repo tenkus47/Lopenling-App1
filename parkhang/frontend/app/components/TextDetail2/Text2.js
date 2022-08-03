@@ -150,6 +150,7 @@ export default class Text2 extends React.Component<Props, State> {
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
         let segments = renderState.segmentedText.segments;
+
         let textLineClass = styles.textLine;
         let segmentHTML = '<p class="' + textLineClass + '">';
         if (segments.length === 0) return { __html: segmentHTML };
@@ -254,24 +255,24 @@ export default class Text2 extends React.Component<Props, State> {
                     }
                 }
             }
-            if (
-                this.props.textAlignmentById !== null
-                // && selectedTextId === TargetId
-            ) {
-                let r = this.props.textAlignmentById.find(
-                    (d) => d.TStart === segment.start
-                );
-                if (r) {
-                    segmentHTML +=
-                        "<span id='alignment2_" +
-                        segment.start +
-                        "'>" +
-                        `<sup class=` +
-                        styles.syncIdClass +
-                        `>${r.id}</sup>` +
-                        "</span>";
-                }
-            }
+            // if (
+            //     this.props.textAlignmentById !== null
+            //     // && selectedTextId === TargetId
+            // ) {
+            //     let r = this.props.textAlignmentById.find(
+            //         (d) => d.TStart === segment.start
+            //     );
+            //     if (r) {
+            //         segmentHTML +=
+            //             "<span id='alignment2_" +
+            //             segment.start +
+            //             "'>" +
+            //             `<sup class=` +
+            //             styles.syncIdClass +
+            //             `>${r.id}</sup>` +
+            //             "</span>";
+            //     }
+            // }
 
             segmentHTML +=
                 "<span id=" +

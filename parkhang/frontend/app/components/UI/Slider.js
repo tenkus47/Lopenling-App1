@@ -1,26 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Slider.css";
+import _ from "lodash";
 function Slider({
     max,
     min,
     initialvalue,
     changeSize = (r) => console.log(r),
 }) {
+    let initialPercent = (initialvalue / max) * 100;
+    const [tempValue, setTempValue] = useState(initialPercent);
+    const submitValue = _.debounce((e) => {
+        let currentPercent = (tempValue / 100) * max;
+        changeSize(parseInt(currentPercent));
+    }, 500);
+
     return (
         <div className={styles.inputRanges}>
-            <span style={{ fontSize: 13, top: "-5px" }}>ཀ</span>
+            <span
+                style={{ fontSize: 13, top: "-5px" }}
+                onClick={() => changeSize(initialvalue - 2)}
+            >
+                ཀ
+            </span>
             <input
                 type="range"
                 style={{ width: "70%" }}
                 className={styles.inputRange}
-                min={min}
-                max={max}
-                step={1}
+                min={40}
+                max={100}
                 smooth="yes"
-                value={initialvalue}
-                onChange={(e) => changeSize(parseInt(e.target.value))}
+                step={1}
+                value={tempValue}
+                onChange={(e) => setTempValue(e.target.value)}
+                onMouseUp={submitValue}
             />
-            <span style={{ fontSize: 18, top: "-10px" }}>ཀ</span>
+            <span
+                style={{ fontSize: 18, top: "-10px" }}
+                onClick={() => changeSize(initialvalue + 2)}
+            >
+                ཀ
+            </span>
         </div>
     );
 }

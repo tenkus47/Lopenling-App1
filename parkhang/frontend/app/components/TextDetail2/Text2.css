@@ -46,6 +46,10 @@
     white-space: pre;
 }
 
+.textline>span {
+    max-height: 4ch;
+}
+
 .limitWidth.textFirstRow {
     margin-top: 20px;
 }
@@ -110,11 +114,13 @@
     margin-left: 5px;
     font-size: 0.8em;
     display: flex;
+
 }
 
 .pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
+    max-height: 4ch;
 }
 
 .syncIdClass {

@@ -7,10 +7,14 @@
     text-align: center;
 }
 
-.selected {
+.selectEmpty {
     width: 100%;
     padding: 10px;
     border-radius: 10px;
+}
+
+.selectOptions {
+    text-align: center;
 }
 
 .styled-select select {

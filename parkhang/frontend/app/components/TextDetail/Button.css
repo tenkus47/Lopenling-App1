@@ -19,9 +19,13 @@
     @apply --button;
 }
 
+.save:hover {
+    background-color: var(--main-tint-hover);
+}
+
 .cancel {
     color: white;
-    background-color: #aaa;
+    background-color: var(--cancel);
     @apply --button;
 }
 
@@ -29,4 +33,3 @@
     display: flex;
     justify-content: space-between;
 }
-

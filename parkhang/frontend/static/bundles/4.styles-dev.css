@@ -4,64 +4,31 @@
 .SelectVersion---selectVersion {
     height: 30px;
     overflow: hidden;
-    border:none;
-    outline:none;
-    padding:0 10px;
-    background-color: #eee;
-    -webkit-box-flex:1;
-        -ms-flex:1;
-            flex:1
+    border: none;
+    outline: none;
+    padding: 0 10px;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1
 }
-.SelectVersion---selected {
+.SelectVersion---selectEmpty {
     width: 100%;
-    padding:10px;
+    padding: 10px;
     border-radius: 10px;
 }
-.SelectVersion---selectVersion:hover{
-    color:green;
+.SelectVersion---selectOptions {
+    text-align: center;
 }
 .SelectVersion---styled-select select {
-    -moz-appearance:none; /* Firefox */
-    -webkit-appearance:none; /* Safari and Chrome */
-    appearance:none;
-}
-.Slider---inputRanges {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
-}
-
-.Slider---inputRanges>span {
-    position: relative;
-}
-
-.Slider---inputRange {
-    background: #eee;
-    border: solid 1px #82CFD0;
-    border-radius: 8px;
-    height: 2px;
-    outline: none;
+    -moz-appearance: none;
+    /* Firefox */
     -webkit-appearance: none;
-    -webkit-transition: 0.4s all ease-out;
-    transition: 0.4s all ease-out;
-}
-
-input[type='range']::-webkit-slider-thumb {
-    width: 6px;
-    -webkit-appearance: none;
-    height: 12px;
-    background: black;
-    border-radius: 2px;
-    -webkit-transition: 0.4s all ease-out;
-    transition: 0.4s all ease-out;
-
+    /* Safari and Chrome */
+    appearance: none;
 }
 .TextList---textlist {
-    min-width: 300px;
-    /* max-width: max-content; */
+    max-width: 240px;
+    max-width: 15rem;
     height: 300px;
     cursor: pointer;
     overflow: hidden;
@@ -75,16 +42,32 @@ input[type='range']::-webkit-slider-thumb {
 
 .TextList---listToggelBtn {
     outline: none;
-    border: none;
     background-color: transparent;
     font-weight: bold;
     font-size: 16px;
     font-size: 1rem;
+    border: 1px solid lightgray;
+    padding-inline: 4px;
 }
 
 .TextList---listToggelBtn:hover {
     background-color: #eee;
-    outline: 2px solid goldenrod;
+}
+.SearchStyle---highlight {
+    background-color: yellow;
+
+}
+
+.SearchStyle---searchListItem {
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    padding-top: 5px;
+}
+
+.SearchStyle---searchListItem:hover {
+    font-weight: 600;
+
 }
 @font-face {
     font-family: "Tibetan";
@@ -135,6 +118,10 @@ input[type='range']::-webkit-slider-thumb {
     margin: 0;
     padding: 0;
     white-space: pre;
+}
+
+.Text2---textline>span {
+    max-height: 4ch;
 }
 
 .Text2---limitWidth.Text2---textFirstRow {
@@ -214,11 +201,13 @@ input[type='range']::-webkit-slider-thumb {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+
 }
 
 .Text2---pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
+    max-height: 4ch;
 }
 
 .Text2---syncIdClass {
@@ -444,7 +433,6 @@ blockquote {
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
-    min-width: 100%;
 
 }
 
@@ -572,7 +560,7 @@ span {
     color: black;
     background-color: #ccc;
 }
-.TextDetail---textContainer {
+.TextDetail---textContainer2 {
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
@@ -587,4 +575,5 @@ span {
     border-radius: 5px;
 }
 
-/*# sourceMappingURL=5.styles-7431b780b7d8436fb019.css.map*/
+
+/*# sourceMappingURL=4.styles-dev.css.map*/

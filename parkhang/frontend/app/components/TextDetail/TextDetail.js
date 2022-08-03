@@ -2,7 +2,9 @@
 import React from "react";
 import classnames from "classnames";
 import imageStyle from "../Editors/MediaComponent/Image.css";
+
 import SplitTextComponent from "components/TextDetail/SplitText";
+
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import SplitText from "lib/SplitText";
