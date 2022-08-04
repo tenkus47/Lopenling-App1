@@ -81,8 +81,7 @@ const SelectVersion = (props: Props) => {
                     <option
                         key={`versionSelect2-${key}`}
                         value={key}
-                        className={classes}
-                        styles={{ textAlign: "center" }}
+                        className={styles.selectOptions}
                     >
                         {tabName}
                     </option>

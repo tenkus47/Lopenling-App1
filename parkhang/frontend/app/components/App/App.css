@@ -25,7 +25,7 @@ body {
     font-display: swap;
     font-kerning: normal;
     background-color: white;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 

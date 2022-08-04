@@ -84,13 +84,22 @@ function TextDetailHeading(props: HeaderProps) {
             direction="column"
             ref={headingRef}
             spacing={1}
-            px={2}
-            py={1}
-            style={{ background: "#f7f7f7" }}
+            sx={{
+                background: "#f7f7f7",
+                paddingInline: { md: 2, xs: 0 },
+                paddingBlock: { md: 1, xs: 0 },
+                borderTop: { md: 0, xs: "1px solid gray" },
+            }}
         >
             {" "}
             <Stack direction="row" spacing={1} justifyContent="space-between">
-                <Box sx={{ display: "flex", gap: 2 }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: { md: 2, sx: 0 },
+                        flexDirection: { md: "row", xs: "column" },
+                    }}
+                >
                     <TextListContainer />
                     <SelectVersion
                         witnesses={props.witnesses}
@@ -108,6 +117,7 @@ function TextDetailHeading(props: HeaderProps) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                        height: "fit-content",
                         width: "fit-content",
                         border: (theme) => `1px solid ${theme.palette.divider}`,
                         borderRadius: 1,

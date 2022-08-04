@@ -543,9 +543,11 @@ export default class Text extends React.Component<Props, State> {
             <div className={styles.textContainer}>
                 <div
                     className={classnames(...classes)}
+                    id="text1"
                     dangerouslySetInnerHTML={html}
                     style={{
                         fontSize: this.props.fontSize,
+                        fontFamily: "var(--tibetan-fonts)",
                     }}
                     onClick={(e) => {
                         this.selectedElement(e.target);

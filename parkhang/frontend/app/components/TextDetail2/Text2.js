@@ -333,7 +333,7 @@ export default class Text2 extends React.Component<Props, State> {
                     onClick={(e) => this.selectedElement(e.target)}
                     style={{
                         fontSize: this.props.fontSize,
-                        cursor: "pointer",
+                        fontFamily: "var(--tibetan-fonts2)",
                     }}
                 />
             </div>

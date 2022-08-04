@@ -13,7 +13,6 @@
 }
 .SelectVersion---selectEmpty {
     width: 100%;
-    padding: 10px;
     border-radius: 10px;
 }
 .SelectVersion---selectOptions {
@@ -25,6 +24,40 @@
     -webkit-appearance: none;
     /* Safari and Chrome */
     appearance: none;
+}
+.Slider---inputRanges {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+
+.Slider---inputRanges>span {
+    position: relative;
+}
+
+.Slider---inputRange {
+    background: #eee;
+    border: solid 1px #82CFD0;
+    border-radius: 8px;
+    height: 2px;
+    outline: none;
+    -webkit-appearance: none;
+    -webkit-transition: 0.4s all ease-out;
+    transition: 0.4s all ease-out;
+}
+
+input[type='range']::-webkit-slider-thumb {
+    width: 6px;
+    -webkit-appearance: none;
+    height: 12px;
+    background: black;
+    border-radius: 2px;
+    -webkit-transition: 0.4s all ease-out;
+    transition: 0.4s all ease-out;
+
 }
 .TextList---textlist {
     max-width: 240px;
@@ -80,8 +113,20 @@
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -89,7 +134,6 @@
     font-size: 24px;
     line-height: 1.8;
     padding: 0px 20px;
-    font-family: "Tibetan", "Himalaya", "Kokonor";
     letter-spacing: 0.04em;
     background-color: white;
     margin: 0px;
@@ -230,8 +274,20 @@
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -414,7 +470,6 @@ blockquote {
     min-width: 0;
     width: 100%;
     font-size: 24px;
-    height: 100%;
 }
 
 .SplitText---splitText2 * {
@@ -501,45 +556,6 @@ blockquote {
 span {
     position: relative
 }
-
-.SplitText---hightlighter {
-    -webkit-animation: SplitText---pulse .3s infinite;
-            animation: SplitText---pulse .3s infinite;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    position: absolute;
-    background-color: transparent;
-}
-
-@-webkit-keyframes SplitText---pulse {
-    0% {
-        -webkit-transform: scale(1);
-                transform: scale(1);
-    }
-
-    100% {
-
-        -webkit-transform: scale(1.7);
-
-                transform: scale(1.7);
-    }
-}
-
-@keyframes SplitText---pulse {
-    0% {
-        -webkit-transform: scale(1);
-                transform: scale(1);
-    }
-
-    100% {
-
-        -webkit-transform: scale(1.7);
-
-                transform: scale(1.7);
-    }
-}
 .TextDetail---textDetail2 {
     background-color: white;
     position: relative;
@@ -576,4 +592,4 @@ span {
 }
 
 
-/*# sourceMappingURL=4.styles-dev.css.map*/
+/*# sourceMappingURL=4.styles-ae315b00cf9685c02ff3.css.map*/

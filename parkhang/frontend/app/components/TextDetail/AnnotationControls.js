@@ -23,7 +23,7 @@ import Question from "lib/Question";
 
 import type { AnnotationUniqueId } from "lib/Annotation";
 export const CONTROLS_MARGIN_LEFT = 10;
-const FAKE_LOGIN = true;
+const FAKE_LOGIN = false;
 export type QuestionData = {
     loading: boolean,
     questions: Question[],
@@ -122,6 +122,7 @@ class AnnotationControls extends React.Component<Props> {
         let selectedLeft = measurements.left;
         let selectedRight = selectedLeft + measurements.width;
 
+        arrow.style.display = "none";
         if (this.props.selectedElementIds) {
             let lines = 1;
             let prevSegmentLeft = 0;
@@ -223,7 +224,6 @@ class AnnotationControls extends React.Component<Props> {
 
                 // controls.style.right = 0 + "px";
             }
-            arrow.style.display = "none";
             arrow.style.top =
                 measurements.top -
                 controlsTop +

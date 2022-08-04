@@ -6,7 +6,6 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
 import { NativeSelect } from "@mui/material";
-import { withStyles } from "@mui/styles";
 export type Props = {
     witnesses: Witness[],
     activeWitness: Witness | null,
@@ -77,8 +76,7 @@ const SelectVersion = (props: Props) => {
                     <option
                         key={`versionSelect-${key}`}
                         value={key}
-                        className={classnames(classes)}
-                        styles={{ textAlign: "center" }}
+                        className={styles.selectOptions}
                     >
                         {tabName}
                     </option>

@@ -9,12 +9,13 @@
 
 .selectEmpty {
     width: 100%;
-    padding: 10px;
     border-radius: 10px;
 }
 
 .selectOptions {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .styled-select select {

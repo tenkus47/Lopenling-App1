@@ -11,7 +11,7 @@ function Slider({
     const [tempValue, setTempValue] = useState(initialPercent);
     const submitValue = _.debounce((e) => {
         let currentPercent = (tempValue / 100) * max;
-        changeSize(parseInt(currentPercent));
+        changeSize(Math.floor(parseInt(currentPercent)));
     }, 500);
 
     return (
@@ -33,6 +33,7 @@ function Slider({
                 value={tempValue}
                 onChange={(e) => setTempValue(e.target.value)}
                 onMouseUp={submitValue}
+                onTouchEnd={submitValue}
             />
             <span
                 style={{ fontSize: 18, top: "-10px" }}
