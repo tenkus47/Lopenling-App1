@@ -7,7 +7,10 @@ import {
 } from "react-virtualized";
 import classname from "classnames";
 import styles from "./TextList.css";
+import addShay from "lib/addTibetanShay";
+
 import { TextField, ClickAwayListener, Box, Typography } from "@mui/material";
+import { useMemo } from "react";
 function TextList(props) {
     const temptext = useRef(props.texts);
     const [textslist, setTextList] = useState(temptext.current);
@@ -15,7 +18,9 @@ function TextList(props) {
     const onSelectedText = props.onSelectedText;
     const selectedText = props.selectedText;
     const [isOpen, setIsOpen] = useState(false);
-    let selected = selectedText ? selectedText.name : textslist[0].name;
+    let selected = useMemo(() => {
+        return selectedText ? selectedText.name : textslist[0].name;
+    }, [selectedText, textslist]);
 
     const cache = useRef(
         new CellMeasurerCache({
@@ -42,7 +47,7 @@ function TextList(props) {
     };
     return (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", border: "1px solid #eee" }}>
                 <Box
                     onClick={handleClick}
                     className={styles.listToggelBtn}
@@ -51,6 +56,7 @@ function TextList(props) {
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         width: "10rem",
+                        height: "100%",
                     }}
                 >
                     <Typography noWrap={true}>{selected}</Typography>
@@ -97,13 +103,28 @@ function TextList(props) {
                                                         onSelectedText(data);
                                                     }}
                                                 >
-                                                    <span
-                                                        style={{
-                                                            paddingLeft: "10px",
+                                                    <Box
+                                                        sx={{
+                                                            overflow: "hidden",
+                                                            textOverflow:
+                                                                "ellipsis",
+                                                            width: "13rem",
+                                                            paddingLeft: 2,
+                                                            fontSize: {
+                                                                lg: 12,
+                                                                md: 11,
+                                                                sm: 10,
+                                                                xs: 10,
+                                                            },
                                                         }}
+                                                        component="div"
                                                     >
-                                                        {data.name}
-                                                    </span>
+                                                        <Typography
+                                                            noWrap={true}
+                                                        >
+                                                            {addShay(data.name)}
+                                                        </Typography>
+                                                    </Box>
                                                 </div>
                                             </CellMeasurer>
                                         );

@@ -115,7 +115,7 @@ function TextDetail(props) {
                         utilStyles.flex
                     )}
                 >
-                    {!props.loading ? textComponents : <div />}
+                    {!props.loading ? textComponents : <div></div>}
                 </Box>
 
                 <Slide

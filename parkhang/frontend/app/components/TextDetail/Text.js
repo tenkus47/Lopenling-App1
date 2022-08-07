@@ -36,6 +36,14 @@ export function idForLineBreak(segment: TextSegment): string {
     return "l_" + (segment.end + 1);
 }
 
+function isOverflown(element) {
+    console.log(element.style.overflow);
+    return (
+        element.scrollHeight > element.clientHeight ||
+        element.scrollWidth > element.clientWidth
+    );
+}
+
 export type Props = {
     segmentedText: SegmentedText,
     annotationPositions: { [string]: Annotation[] },
@@ -80,7 +88,6 @@ export default class Text extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
-        this.textRef = React.createRef();
         this.state = {
             segmentedText: props.segmentedText,
         };
@@ -431,21 +438,21 @@ export default class Text extends React.Component<Props, State> {
                     }
                 }
             }
-            if (this.props.textAlignmentById !== null) {
-                let r = this.props.textAlignmentById.find(
-                    (d) => d.start === segment.start
-                );
-                if (r) {
-                    segmentHTML +=
-                        "<span id='alignment_" +
-                        segment.start +
-                        "'>" +
-                        `<sup class=` +
-                        styles.syncIdClass +
-                        `>${r.id}</sup>` +
-                        "</span>";
-                }
-            }
+            // if (this.props.textAlignmentById !== null) {
+            //     let r = this.props.textAlignmentById.find(
+            //         (d) => d.start === segment.start
+            //     );
+            //     if (r) {
+            //         segmentHTML +=
+            //             "<span id='alignment_" +
+            //             segment.start +
+            //             "'>" +
+            //             `<sup class=` +
+            //             styles.syncIdClass +
+            //             `>${r.id}</sup>` +
+            //             "</span>";
+            //     }
+            // }
             segmentHTML +=
                 "<span id=" +
                 id +
@@ -535,12 +542,12 @@ export default class Text extends React.Component<Props, State> {
         return (
             <div className={styles.textContainer}>
                 <div
-                    ref={this.textRef}
                     className={classnames(...classes)}
+                    id="text1"
                     dangerouslySetInnerHTML={html}
                     style={{
                         fontSize: this.props.fontSize,
-                        cursor: !this.props.isAnnotating ? "pointer" : "text",
+                        fontFamily: "var(--tibetan-fonts)",
                     }}
                     onClick={(e) => {
                         this.selectedElement(e.target);

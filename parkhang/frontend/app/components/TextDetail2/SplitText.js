@@ -89,7 +89,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.splitText = null;
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
-            defaultHeight: 300,
         });
         this.rowRenderer = this.rowRenderer.bind(this);
         this.isPanelLinked = this.props.isPanelLinked;
@@ -146,12 +145,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     handleSelection(e: Event) {
         if (!this._modifyingSelection) {
             this.activeSelection = document.getSelection();
-
-            let selectedId =
-                this.activeSelection?.anchorNode?.parentElement?.id;
-
-            this.updateId(selectedId);
-
             if (!this._mouseDown) {
                 // sometimes, this gets called after the mouseDown event handler
                 this.mouseUp();
@@ -261,27 +254,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
 
         return span;
-    }
-
-    updateId(id) {
-        // if (id && id.includes("s2")) {
-        //     let newId = id.replace("s2", "s");
-        //     document
-        //         ?.getElementById(newId)
-        //         ?.scrollIntoView({ block: "center" });
-        //     let positionHighlight = document
-        //         .getElementById(newId)
-        //         .getBoundingClientRect();
-        //     let hightlighter = document.createElement("div");
-        //     hightlighter.classList.add(styles.hightlighter);
-        //     hightlighter.style.border = "2px solid blue";
-        //     document.getElementById(newId).append(hightlighter);
-        //     document.getElementById(newId).style.color = "blue";
-        //     setTimeout(() => {
-        //         document.getElementById(newId).style.color = "black";
-        //         hightlighter.remove();
-        //     }, 500);
-        // }
     }
 
     updateList(
@@ -505,13 +477,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         this.processProps(this.props);
         this.componentDidUpdate();
+
+        this.timer = setTimeout(() => {
+            this.resizeHandler();
+        }, 2000);
     }
 
     componentDidUpdate(prevProps, prevState) {
         let scrollToId = this.props.scrollToId;
         let targetId2 = this.props.syncIdOnClick;
         this.isPanelLinked = this.props.isPanelLinked;
-
         this.selectedWindow = this.props.selectedWindow;
         let SearchSyncId = this.props.syncIdOnSearch || null;
         let list = this.list;
@@ -626,7 +601,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         document.removeEventListener("mousedown", this);
         document.removeEventListener("mouseup", this);
         window.removeEventListener("resize", this.resizeHandler);
+
         document.removeEventListener("selectionchange", this.selectionHandler);
+        clearTimeout(this.timer);
     }
 
     getSelectedTextIndex(): number {

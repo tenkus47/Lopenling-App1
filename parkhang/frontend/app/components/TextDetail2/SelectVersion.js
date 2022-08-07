@@ -1,5 +1,5 @@
 // @flow
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, memo, useLayoutEffect } from "react";
 import _ from "lodash";
 import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
@@ -14,39 +14,18 @@ export type Props = {
     user: {},
 };
 
-const style = (theme) => ({
-    root: {
-        minWidth: 60,
-        padding: 0,
-        textAlign: "center",
-        fontWeight: "bold",
-    },
-    selectEmpty: {
-        paddingLeft: "6px",
-        backgroundColor: "transparent",
-    },
-    select: {
-        color: "black",
-        "&:not([multiple]) option": {
-            backgroundColor: "#eee",
-        },
-    },
-});
-
 const SelectVersion = (props: Props) => {
     let witnesses = [];
     let tabName = "";
-    let { classes: classtype } = props;
     let r = "";
     const [temp, setTemp] = useState(1);
-    let classes = [styles.selectOptions];
+    let classes = [];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);
         if (props.activeWitness)
             r = props.witnesses.findIndex(
                 (l) => l.id === props.activeWitness.id
             );
-        classes = [styles.tab];
         witnesses.sort((a, b) => {
             if (a.isWorking) {
                 return -1;
@@ -65,7 +44,7 @@ const SelectVersion = (props: Props) => {
         witnesses = witnesses.sort((a, b) => a.id - b.id);
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!_.isEmpty(witnesses) && temp >= 0) {
             props.onSelectedWitness(witnesses[temp]);
         }
@@ -80,8 +59,8 @@ const SelectVersion = (props: Props) => {
             value={r}
             label="Version2"
             classes={{
-                root: classtype.selectEmpty,
-                select: classtype.select,
+                root: styles.selectEmpty,
+                select: styles.selectOptions,
             }}
         >
             {witnesses.map((witness, key) => {
@@ -102,8 +81,7 @@ const SelectVersion = (props: Props) => {
                     <option
                         key={`versionSelect2-${key}`}
                         value={key}
-                        className={classes}
-                        styles={{ textAlign: "center" }}
+                        className={styles.selectOptions}
                     >
                         {tabName}
                     </option>
@@ -113,4 +91,4 @@ const SelectVersion = (props: Props) => {
     );
 };
 
-export default memo(injectIntl(withStyles(style)(SelectVersion)));
+export default memo(injectIntl(SelectVersion));

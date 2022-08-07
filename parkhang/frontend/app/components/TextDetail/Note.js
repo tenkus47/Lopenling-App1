@@ -2,11 +2,12 @@ import React from "react";
 import styles from "./Note.css";
 import Annotation from "lib/Annotation";
 import FormattedDate from "react-intl";
-
+import { Box, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 type Props = {
     note: Annotation,
     delete?: (note: Annotation) => void,
-    edit?: (note: Annotation) => void
+    edit?: (note: Annotation) => void,
 };
 
 export default class Note extends React.Component<Props> {
@@ -24,7 +25,8 @@ export default class Note extends React.Component<Props> {
 
     render() {
         return (
-            <div className={styles.note}>
+            <Box className={styles.note} sx={{ boxShadow: 2 }}>
+                <p>Note:</p>
                 <div className={styles.header}>
                     <h4 className={styles.info}>
                         {this.props.note.creatorUser.name}
@@ -34,14 +36,16 @@ export default class Note extends React.Component<Props> {
                             className={styles.delete}
                             onClick={this.delete.bind(this)}
                         >
-                            &times;
+                            <IconButton aria-label="delete" size="small">
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
                         </div>
                     )}
                 </div>
                 <div className={styles.content} onClick={this.edit.bind(this)}>
                     {this.props.note.content}
                 </div>
-            </div>
+            </Box>
         );
     }
 }

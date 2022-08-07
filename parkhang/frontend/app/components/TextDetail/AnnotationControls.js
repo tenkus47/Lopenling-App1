@@ -22,9 +22,8 @@ import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
 
 import type { AnnotationUniqueId } from "lib/Annotation";
-
 export const CONTROLS_MARGIN_LEFT = 10;
-
+const FAKE_LOGIN = false;
 export type QuestionData = {
     loading: boolean,
     questions: Question[],
@@ -81,7 +80,6 @@ class AnnotationControls extends React.Component<Props> {
     controls: HTMLDivElement | null;
     arrow: HTMLDivElement | null;
     arrowDs: HTMLDivElement | null;
-    fakeLogin: Boolean;
     annotation: null;
     constructor(props: Props) {
         super(props);
@@ -99,7 +97,6 @@ class AnnotationControls extends React.Component<Props> {
         // Need to delay calling this because the browser
         // may not have finished rendering when first called.
         setTimeout(this.updatePosition.bind(this), 0);
-        this.fakeLogin = this.props.fake_login_togle;
     }
 
     updatePosition() {
@@ -125,6 +122,7 @@ class AnnotationControls extends React.Component<Props> {
         let selectedLeft = measurements.left;
         let selectedRight = selectedLeft + measurements.width;
 
+        arrow.style.display = "none";
         if (this.props.selectedElementIds) {
             let lines = 1;
             let prevSegmentLeft = 0;
@@ -226,7 +224,6 @@ class AnnotationControls extends React.Component<Props> {
 
                 // controls.style.right = 0 + "px";
             }
-
             arrow.style.top =
                 measurements.top -
                 controlsTop +
@@ -334,7 +331,8 @@ class AnnotationControls extends React.Component<Props> {
         let temporaryAnnotations = [];
         let anonymousUserMessage = null;
         let nothingSelected = null;
-        const isLoggedIn = props.user.isLoggedIn;
+        const isLoggedIn = props.user.isLoggedIn || FAKE_LOGIN;
+
         let breakSelected = false;
         if (
             props.activeAnnotation &&
@@ -413,16 +411,15 @@ class AnnotationControls extends React.Component<Props> {
                     annotations.push(annotationDetail);
                 }
             }, this);
-            if (!props.user.isLoggedIn) {
+            if (!props.user.isLoggedIn === !FAKE_LOGIN) {
                 // NOTE: FormattedMessage cannot take a child when using
                 // the values option, so need to wrap it in a div
-
+                console.log(!props.user.isLoggedIn === !FAKE_LOGIN);
                 anonymousUserMessage = (
                     <div
                         className={styles.anonymousMessage}
                         style={{
                             position: "relative",
-                            background: "#eee",
                             width: "fit-content",
                             border: "1px solid gray",
                             paddingInline: 10,
@@ -432,9 +429,9 @@ class AnnotationControls extends React.Component<Props> {
                             id="annotations.loginMessage"
                             values={{
                                 loginLink: (
-                                    <a href="/accounts/login/">
+                                    <>
                                         <FormattedMessage id="annotations.loginLink" />
-                                    </a>
+                                    </>
                                 ),
                             }}
                         />

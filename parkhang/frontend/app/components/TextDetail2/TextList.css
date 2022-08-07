@@ -1,6 +1,5 @@
 .textlist {
-    min-width: 300px;
-    /* max-width: max-content; */
+    max-width: 15rem;
     height: 300px;
     cursor: pointer;
     overflow: hidden;
@@ -14,13 +13,13 @@
 
 .listToggelBtn {
     outline: none;
-    border: none;
     background-color: transparent;
     font-weight: bold;
     font-size: 1rem;
+    border: 1px solid lightgray;
+    padding-inline: 4px;
 }
 
 .listToggelBtn:hover {
     background-color: #eee;
-    outline: 2px solid goldenrod;
 }

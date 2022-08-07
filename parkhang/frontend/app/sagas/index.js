@@ -247,7 +247,6 @@ function* watchSelectedText(): Saga<void> {
 
 function* selectedText2(action: actions.SelectedTextAction): Saga<void> {
     if (action.text === null) return;
-
     yield put(actions.loadingWitnesses2(action.text));
     yield all([call(loadInitialTextData2, action)]);
 }
@@ -283,6 +282,7 @@ function* loadInitialTextData(action: actions.TextDataAction) {
             yield put(
                 actions.selectedTextWitness(action.text.id, workingWitness.id)
             );
+
             yield put(actions.loadingWitnessAnnotations(workingWitness.id));
             yield all([
                 call(loadAnnotations, workingWitness.id),
@@ -634,9 +634,11 @@ function* watchExportWitness() {
 // SEARCH
 
 function* searchTexts(action: actions.ChangedSearchValueAction) {
+    const selectedText = yield select(reducers.getSelectedText);
     yield delay(500);
     const results = yield call(
-        api.searchTexts,
+        api.searchText,
+        selectedText.id,
         action.searchValue,
         constants.MAX_SEARCH_RESULTS
     );
@@ -647,9 +649,12 @@ function* watchChangedSearchValue() {
     yield takeLatest(actions.CHANGED_SEARCH_VALUE, searchTexts);
 }
 function* searchTexts2(action: actions.ChangedSearchValueAction) {
+    const selectedText = yield select(reducers.getSelectedText2);
+
     yield delay(500);
     const results = yield call(
-        api.searchTexts,
+        api.searchText,
+        selectedText.id,
         action.searchValue,
         constants.MAX_SEARCH_RESULTS
     );
@@ -761,6 +766,7 @@ function* loadedTextUrl(
     }
     _loadedTextUrl = true;
     if (action) {
+        console.log("first render");
         let textId = action.payload.textId;
         let witnessId = action.payload.witnessId || w;
         let textId2 = textId;
@@ -779,9 +785,6 @@ function* loadedTextUrl(
         } while (textData === null);
 
         yield put(actions.selectedText(textData));
-        let witnesses = yield call(api.fetchTextWitnesses, textData);
-
-        yield put(actions.loadedWitnesses(textData, witnesses));
 
         // Wait until the initial text witness has been selected.
         // Otherwise a race condition can happen when the initial witness
@@ -805,7 +808,6 @@ function* loadedTextUrl(
             textId,
             witnessId
         );
-        yield delay(1000);
         yield put(selectedWitnessAction);
 
         let secondWindowOpen = yield select(reducers.isSecondWindowOpen);
@@ -848,7 +850,6 @@ function* loadedTextUrl(
                 const selectedWitness = yield select(
                     reducers.getSelectedTextWitness
                 );
-                console.log(selectedWitness);
                 let workingWitness = yield select(
                     reducers.getWorkingWitness,
                     textId
@@ -916,12 +917,12 @@ function* watchTextUrlActions2() {
 function* loadedTextIdonlyUrl(action) {
     _loadedTextUrl = false;
     let textId = parseInt(action.payload.textId);
-
+    yield call(loadAlignmentData, action, textId);
+    let alignmentText = yield select(reducers.getTextAlignment);
+    console.log(alignmentText);
     let witnessId;
-    let textId2 = textId;
-    if (textId === 139) {
-        textId2 = 140;
-    }
+    let textId2;
+    textId2 = alignmentText?.target?.text || textId;
     let witnessId2;
 
     let text = { id: textId };

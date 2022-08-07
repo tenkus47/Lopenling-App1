@@ -99,7 +99,11 @@ const App = (props: Props) => {
     };
     const actions = [
         {
-            icon: <EditIcon htmlColor={props.isAnnotating && "#ff7961"} />,
+            icon: (
+                <EditIcon
+                    htmlColor={props.isAnnotating ? "#ff7961" : undefined}
+                />
+            ),
             name: "Annotate",
             condition: props.isAnnotating,
             function: () => props.changeIsAnnotating(!props.isAnnotating),

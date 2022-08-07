@@ -4,26 +4,26 @@
 .SelectVersion---selectVersion {
     height: 30px;
     overflow: hidden;
-    border:none;
-    outline:none;
-    padding:0 10px;
-    background-color: #eee;
-    -webkit-box-flex:1;
-        -ms-flex:1;
-            flex:1
+    border: none;
+    outline: none;
+    padding: 0 10px;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1
 }
-.SelectVersion---selected {
+.SelectVersion---selectEmpty {
     width: 100%;
-    padding:10px;
     border-radius: 10px;
 }
-.SelectVersion---selectVersion:hover{
-    color:green;
+.SelectVersion---selectOptions {
+    text-align: center;
 }
 .SelectVersion---styled-select select {
-    -moz-appearance:none; /* Firefox */
-    -webkit-appearance:none; /* Safari and Chrome */
-    appearance:none;
+    -moz-appearance: none;
+    /* Firefox */
+    -webkit-appearance: none;
+    /* Safari and Chrome */
+    appearance: none;
 }
 .Slider---inputRanges {
     display: -webkit-box;
@@ -60,8 +60,8 @@ input[type='range']::-webkit-slider-thumb {
 
 }
 .TextList---textlist {
-    min-width: 300px;
-    /* max-width: max-content; */
+    max-width: 240px;
+    max-width: 15rem;
     height: 300px;
     cursor: pointer;
     overflow: hidden;
@@ -75,16 +75,32 @@ input[type='range']::-webkit-slider-thumb {
 
 .TextList---listToggelBtn {
     outline: none;
-    border: none;
     background-color: transparent;
     font-weight: bold;
     font-size: 16px;
     font-size: 1rem;
+    border: 1px solid lightgray;
+    padding-inline: 4px;
 }
 
 .TextList---listToggelBtn:hover {
     background-color: #eee;
-    outline: 2px solid goldenrod;
+}
+.SearchStyle---highlight {
+    background-color: yellow;
+
+}
+
+.SearchStyle---searchListItem {
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    padding-top: 5px;
+}
+
+.SearchStyle---searchListItem:hover {
+    font-weight: 600;
+
 }
 @font-face {
     font-family: "Tibetan";
@@ -97,8 +113,20 @@ input[type='range']::-webkit-slider-thumb {
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -106,7 +134,6 @@ input[type='range']::-webkit-slider-thumb {
     font-size: 24px;
     line-height: 1.8;
     padding: 0px 20px;
-    font-family: "Tibetan", "Himalaya", "Kokonor";
     letter-spacing: 0.04em;
     background-color: white;
     margin: 0px;
@@ -135,6 +162,10 @@ input[type='range']::-webkit-slider-thumb {
     margin: 0;
     padding: 0;
     white-space: pre;
+}
+
+.Text2---textline>span {
+    max-height: 4ch;
 }
 
 .Text2---limitWidth.Text2---textFirstRow {
@@ -214,11 +245,13 @@ input[type='range']::-webkit-slider-thumb {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+
 }
 
 .Text2---pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
+    max-height: 4ch;
 }
 
 .Text2---syncIdClass {
@@ -241,8 +274,20 @@ input[type='range']::-webkit-slider-thumb {
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -425,7 +470,6 @@ blockquote {
     min-width: 0;
     width: 100%;
     font-size: 24px;
-    height: 100%;
 }
 
 .SplitText---splitText2 * {
@@ -444,7 +488,6 @@ blockquote {
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
-    min-width: 100%;
 
 }
 
@@ -513,45 +556,6 @@ blockquote {
 span {
     position: relative
 }
-
-.SplitText---hightlighter {
-    -webkit-animation: SplitText---pulse .3s infinite;
-            animation: SplitText---pulse .3s infinite;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    position: absolute;
-    background-color: transparent;
-}
-
-@-webkit-keyframes SplitText---pulse {
-    0% {
-        -webkit-transform: scale(1);
-                transform: scale(1);
-    }
-
-    100% {
-
-        -webkit-transform: scale(1.7);
-
-                transform: scale(1.7);
-    }
-}
-
-@keyframes SplitText---pulse {
-    0% {
-        -webkit-transform: scale(1);
-                transform: scale(1);
-    }
-
-    100% {
-
-        -webkit-transform: scale(1.7);
-
-                transform: scale(1.7);
-    }
-}
 .TextDetail---textDetail2 {
     background-color: white;
     position: relative;
@@ -572,7 +576,7 @@ span {
     color: black;
     background-color: #ccc;
 }
-.TextDetail---textContainer {
+.TextDetail---textContainer2 {
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
@@ -587,4 +591,5 @@ span {
     border-radius: 5px;
 }
 
-/*# sourceMappingURL=5.styles-7431b780b7d8436fb019.css.map*/
+
+/*# sourceMappingURL=4.styles-ae315b00cf9685c02ff3.css.map*/

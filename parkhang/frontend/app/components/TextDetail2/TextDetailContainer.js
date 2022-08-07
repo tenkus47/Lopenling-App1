@@ -136,7 +136,8 @@ const mapStateToProps = (state: AppState): {} => {
     let annotationPositions = {};
     let annotations = [];
     if (selectedText) {
-        workingWitness = reducers.getWorkingWitness2(state, selectedText.id);
+        workingWitness =
+            reducers.getWorkingWitness2(state, selectedText.id) || {};
         let selectedWitnessId = reducers.getSelectedTextWitnessId2(
             state,
             selectedText.id
@@ -144,11 +145,14 @@ const mapStateToProps = (state: AppState): {} => {
         if (selectedWitnessId) {
             selectedWitness = reducers.getWitness2(state, selectedWitnessId);
         }
-        if (!selectedWitness) {
+        if (_.isEmpty(selectedWitness) && !_.isEmpty(workingWitness));
+        {
             selectedWitness = workingWitness;
         }
     }
-    annotatedText = TextStore2.getWitnessText(state, selectedWitness.id);
+
+    annotatedText = TextStore2.getWitnessText(state, selectedWitness?.id);
+
     const loading = state.data2.loadingWitnesses;
 
     if (annotatedText) {
@@ -168,7 +172,7 @@ const mapStateToProps = (state: AppState): {} => {
         textFontSize,
         annotatedText,
         selectedWitness,
-        loading: loading,
+        loading,
         annotationPositions,
         isSecondWindowOpen: isSecondWindowOpen(state),
         imageData: getImageData(state),

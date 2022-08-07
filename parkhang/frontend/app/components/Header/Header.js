@@ -37,6 +37,7 @@ import {
     Drawer,
 } from "@mui/material";
 import { Person as PersonIcon, Menu as MenuIcon } from "@mui/icons-material";
+import { useEffect } from "react";
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
@@ -197,13 +198,20 @@ export const Header = (props: HeaderProps) => {
     };
 
     return (
-        <Container maxWidth="xl" className={styles.header}>
+        <Box
+            sx={{
+                width: "100vw",
+            }}
+            className={styles.header}
+        >
             <Stack
                 direction="row"
                 alignItems="center"
                 justifyContent={"space-between"}
                 sx={{
                     height: "100%",
+                    width: "100%",
+                    paddingInline: 2,
                 }}
             >
                 <Box
@@ -334,7 +342,7 @@ export const Header = (props: HeaderProps) => {
                     <Resources />
                 </Drawer>
             </React.Fragment>
-        </Container>
+        </Box>
     );
 };
 

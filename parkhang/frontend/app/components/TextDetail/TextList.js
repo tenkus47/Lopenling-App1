@@ -8,6 +8,7 @@ import {
 import classname from "classnames";
 import styles from "./TextList.css";
 import { TextField, ClickAwayListener, Box, Typography } from "@mui/material";
+import addShay from "lib/addTibetanShay";
 
 function TextList(props) {
     const temptext = useRef(props.texts);
@@ -26,13 +27,6 @@ function TextList(props) {
 
     let classes = [styles.textlist];
 
-    const truncate = (string = "", limit) => {
-        if (string.length <= limit) {
-            return string;
-        }
-        return string.slice(0, limit) + "...";
-    };
-
     const handleClick = () => {
         setIsOpen((prev) => !prev);
         if (isOpen === false) classes.push(styles.open);
@@ -50,7 +44,7 @@ function TextList(props) {
 
     return (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", border: "1px solid #eee" }}>
                 <Box
                     onClick={handleClick}
                     className={styles.listToggelBtn}
@@ -59,6 +53,7 @@ function TextList(props) {
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         width: "10rem",
+                        height: "100%",
                     }}
                 >
                     <Typography noWrap={true}>{selected}</Typography>
@@ -105,13 +100,28 @@ function TextList(props) {
                                                         onSelectedText(data);
                                                     }}
                                                 >
-                                                    <span
-                                                        style={{
-                                                            paddingLeft: "10px",
+                                                    <Box
+                                                        sx={{
+                                                            overflow: "hidden",
+                                                            textOverflow:
+                                                                "ellipsis",
+                                                            width: "13rem",
+                                                            paddingLeft: 2,
+                                                            fontSize: {
+                                                                lg: 12,
+                                                                md: 11,
+                                                                sm: 10,
+                                                                xs: 10,
+                                                            },
                                                         }}
+                                                        component="div"
                                                     >
-                                                        {data.name}
-                                                    </span>
+                                                        <Typography
+                                                            noWrap={true}
+                                                        >
+                                                            {addShay(data.name)}
+                                                        </Typography>
+                                                    </Box>
                                                 </div>
                                             </CellMeasurer>
                                         );

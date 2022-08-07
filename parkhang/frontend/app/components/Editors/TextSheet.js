@@ -1,15 +1,19 @@
 import React, { memo, Suspense } from "react";
-const TextDetailContainer = React.lazy(() =>
-    import("components/TextDetail/TextDetailContainer")
-);
-const TextDetailContainer2 = React.lazy(() =>
-    import("components/TextDetail2/TextDetailContainer")
-);
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
 import MediaComponent from "./MediaComponent/MediaOptions";
 import { batchActions } from "redux-batched-actions";
+import { Box } from "@mui/material";
+import Loader from "react-loader";
+
+const TextDetailContainer = React.lazy(() =>
+    import("components/TextDetail/TextDetailContainer")
+);
+
+const TextDetailContainer2 = React.lazy(() =>
+    import("components/TextDetail2/TextDetailContainer")
+);
 function TextSheet(props) {
     return (
         <div
@@ -21,21 +25,33 @@ function TextSheet(props) {
                 position: "relative",
             }}
         >
-            <div
-                style={{
+            <Box
+                sx={{
                     display: "flex",
                     flex: 1,
                     height: props.bodyHeight,
+                    flexDirection: { md: "row", xs: "column" },
                 }}
             >
-                <Suspense fallback={<div> Loading</div>}>
+                <Suspense
+                    fallback={
+                        <div>
+                            <Loader />
+                        </div>
+                    }
+                >
                     <TextDetailContainer />
                 </Suspense>
-
-                <Suspense fallback={<div> Loading</div>}>
+                <Suspense
+                    fallback={
+                        <div>
+                            <Loader />
+                        </div>
+                    }
+                >
                     {props.isSecondWindowOpen && <TextDetailContainer2 />}
                 </Suspense>
-            </div>
+            </Box>
             {props.Media.isPanelVisible && (
                 //  && props.isSecondWindowOpen
                 <MediaComponent

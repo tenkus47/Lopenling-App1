@@ -30,7 +30,6 @@ import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 import { ClickAwayListener } from "@mui/material";
-import flagsmith from "flagsmith";
 
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
@@ -102,7 +101,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }) => React.Element<CellMeasurer>;
     resizeHandler: () => void;
     selectionHandler: (e: Event) => void;
-    fake_login_toggle: null;
     textListVisible: boolean;
     editMenuVisible: Boolean;
     activeSelection: Selection | null;
@@ -143,7 +141,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.splitText = null;
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
-            defaultHeight: 300,
         });
         this.splitTextRef = React.createRef(null);
         this.rowRenderer = this.rowRenderer.bind(this);
@@ -167,7 +164,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.textAlignmentById = [];
         this.scrollEvent = this.scrollEvent.bind(this);
         this.selectedWindow = props.selectedWindow;
-        this.fake_login_toggle = flagsmith.hasFeature("fake_login_toggle");
         this.condition = false;
     }
 
@@ -196,18 +192,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
     }
 
-    updateId(id) {
-        let rangeUnique = this.textAlignmentById.find(
-            (l) => segment.start >= l.start && segment.start < l.end
-        );
-    }
-
     updateList(
         resetCache: boolean = true,
         resetRows: number | number[] | null = null
     ) {
         if (
-            !this.props.showImages &&
+            // !this.props.showImages &&
             !this.calculatedImageHeight &&
             this.imageHeight &&
             this.imageWidth
@@ -679,7 +669,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.resizeHandler = _.throttle(() => {
             this.calculatedImageHeight = null;
             this.updateList();
-        }, 500).bind(this);
+        }, 600).bind(this);
         this.debouncedScroll = _.debounce((list) => {
             this.changeScrollToId({ id: list[0].start, from: 1 });
         }, 1000);
@@ -695,6 +685,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         document.addEventListener("mouseup", this.mouseUp.bind(this), true);
         this.processProps(this.props);
         this.componentDidUpdate();
+        this.timer = setTimeout(() => {
+            this.resizeHandler();
+        }, 2000);
     }
 
     componentDidUpdate(prevProps) {
@@ -703,13 +696,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             Alignment?.source?.witness === this.props.selectedWitness.id;
         let scrollToId = this.props.scrollToId;
         let list = this.list;
-
-        if (prevProps?.isSecondWindowOpen !== this.props?.isSecondWindowOpen) {
-            setTimeout(() => {
-                for (let i = 0; i < 2; i++) this.resizeHandler();
-            }, 1000);
-        }
-
+        // if (prevProps?.isSecondWindowOpen !== this.props?.isSecondWindowOpen) {
+        //     setTimeout(() => {
+        //         for (let i = 0; i < 2; i++) {
+        //             this.updateList(true);
+        //         }
+        //     }, 1000);
+        // }
         let con =
             prevProps?.searchResults !== this.props?.searchResults ||
             prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
@@ -731,8 +724,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.isPanelLinked = this.props.isPanelLinked;
         this.selectedWindow = this.props.selectedWindow;
         this.targetId = this.props.scrollToId;
-
-        this.fake_login_toggle = true;
 
         if (this.selectedNodes && this.selectedNodes.length > 0) {
             const selectedNodes = this.selectedNodes;
@@ -823,9 +814,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         document.removeEventListener("mousedown", this);
         document.removeEventListener("mouseup", this);
         window.removeEventListener("resize", this.resizeHandler);
-        this.splitText.removeEventListener("resize", this.resizeHandler);
 
         document.removeEventListener("selectionchange", this.selectionHandler);
+        clearTimeout(this.timer);
     }
 
     calculateImageHeight() {
@@ -892,11 +883,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 className={styles.splitText}
                 ref={(div) => (this.splitText = div)}
                 key={key}
+                style={{
+                    cursor: !this.props.isAnnotating ? "pointer" : "text",
+                }}
             >
                 <button
                     id="updateList"
                     style={{ display: "none" }}
-                    onClick={() => this.updateList(true)}
+                    onClick={this.resizeHandler}
                 ></button>
                 <AutoSizer>
                     {({ height, width }) => (
@@ -1145,7 +1139,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 splitText={props.splitText}
                                 selectedElementIds={this.selectedElementIds}
                                 list={this.list}
-                                fake_login_toggle={this.fake_login_toggle}
                             />
                         )}
                 </div>
