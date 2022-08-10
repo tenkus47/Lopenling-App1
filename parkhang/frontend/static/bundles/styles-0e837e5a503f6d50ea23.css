@@ -431,6 +431,17 @@ body {
         -ms-flex-direction: column;
             flex-direction: column;
 }
+.HomePage---list {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.HomePage---list::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
 .TextsSearch---textsSearchContainer {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1145,23 +1156,22 @@ th {
 tr:nth-child(even) {
     background-color: #dddddd;
 }
-.MediaOptions---MediaOption{
+.MediaOptions---MediaOption {
     resize: both;
-    overflow: auto; 
-    position:absolute;
+    overflow: auto;
+    position: absolute;
     height: 100%;
     width: 50%;
-    z-index: 99999;
+    z-index: 1;
     right: 0;
     background-color: white;
-    border: thick double #5B8960; 
 }
-.MediaOptions---header{
-    position: inherit;
-    top:0;
-    height: 70px;
-    right:0;
-    left:0;
+.MediaOptions---header {
+    position: relative;
+    top: 0;
+    height: 60px;
+    right: 0;
+    left: 0;
     background-color: #f7f7f7;
     border-bottom: 1px solid #a6a6a6;
     display: -webkit-box;
@@ -1173,22 +1183,10 @@ tr:nth-child(even) {
     padding-inline: 30px;
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
-.MediaOptions---closeBtn{
-    position: inherit;
-    right:10px;
-    top:10px;
-    cursor: pointer;
-    font-weight: bold;
-    background-color: black;
-    color: white;
-    border-radius: 50%;
-    padding:2px;
-    height: 25px;
-    width: 25px;
-    text-align: center;
-}
-.MediaOptions---closeBtn:hover{
-    background-color: gray;
+.MediaOptions---closeBtn {
+    position: absolute !important;
+    right: 10px;
+    top: 10px;
 }
 @font-face {
     font-family: "Tibetan";
@@ -1375,4 +1373,4 @@ we require as we don't want to change the html.
 
 
 
-/*# sourceMappingURL=styles-ae315b00cf9685c02ff3.css.map*/
+/*# sourceMappingURL=styles-0e837e5a503f6d50ea23.css.map*/

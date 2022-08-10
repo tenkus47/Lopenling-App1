@@ -5,7 +5,6 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "./SelectVersion.css";
 import Witness from "lib/Witness";
 import { NativeSelect } from "@mui/material";
-import { withStyles } from "@mui/styles";
 
 export type Props = {
     witnesses: Witness[],
@@ -18,7 +17,6 @@ const SelectVersion = (props: Props) => {
     let witnesses = [];
     let tabName = "";
     let r = "";
-    const [temp, setTemp] = useState(1);
     let classes = [];
     if (props.witnesses) {
         witnesses = props.witnesses.map((witness) => witness);
@@ -44,17 +42,17 @@ const SelectVersion = (props: Props) => {
         witnesses = witnesses.sort((a, b) => a.id - b.id);
     }
 
-    useLayoutEffect(() => {
-        if (!_.isEmpty(witnesses) && temp >= 0) {
-            props.onSelectedWitness(witnesses[temp]);
+    const handleChangeWitness = (e) => {
+        if (!_.isEmpty(witnesses)) {
+            props.onSelectedWitness(witnesses[e.target.value]);
         }
-    }, [temp]);
+    };
 
     if (_.isEmpty(witnesses) && !props.activeWitness) return null;
 
     return (
         <NativeSelect
-            onChange={(e) => setTemp(e.target.value)}
+            onChange={handleChangeWitness}
             className={styles.selectVersion}
             value={r}
             label="Version2"

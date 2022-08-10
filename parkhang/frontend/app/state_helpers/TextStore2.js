@@ -17,15 +17,12 @@ export const getWitnessText = (
     witnessId: number
 ): AnnotatedText | null => {
     let text: AnnotatedText | null = null;
-  
-        if (
-            witnessId
-        ) {
-            text = generateAnnotatedText(state, witnessId);
-            if (text) {
-                store[witnessId] = text;
-                
-            }
+
+    if (witnessId) {
+        text = generateAnnotatedText(state, witnessId);
+        if (text) {
+            store[witnessId] = text;
+        }
     }
 
     return text;
@@ -48,18 +45,16 @@ export const addTextAnnotation = (
                 annotation.uniqueId
             )
         ) {
-            annotationStore[witnessId].appliedAnnotations[
-                annotation.uniqueId
-            ] = annotation;
+            annotationStore[witnessId].appliedAnnotations[annotation.uniqueId] =
+                annotation;
         }
         if (
             !annotationStore[witnessId].allAnnotations.hasOwnProperty(
                 annotation.uniqueId
             )
         ) {
-            annotationStore[witnessId].allAnnotations[
-                annotation.uniqueId
-            ] = annotation;
+            annotationStore[witnessId].allAnnotations[annotation.uniqueId] =
+                annotation;
         }
     }
 };
@@ -79,9 +74,7 @@ export const removeTextAnnotation = (
                 annotationId
             )
         ) {
-            delete annotationStore[witnessId].appliedAnnotations[
-                annotationId
-            ];
+            delete annotationStore[witnessId].appliedAnnotations[annotationId];
         }
     }
 };
@@ -101,27 +94,23 @@ export const deleteTextAnnotation = (
                 annotationId
             )
         ) {
-            delete annotationStore[witnessId].allAnnotations[
-                annotationId
-            ];
+            delete annotationStore[witnessId].allAnnotations[annotationId];
         }
         if (
             annotationStore[witnessId].appliedAnnotations.hasOwnProperty(
                 annotationId
             )
         ) {
-            delete annotationStore[witnessId].appliedAnnotations[
-                annotationId
-            ];
+            delete annotationStore[witnessId].appliedAnnotations[annotationId];
         }
     }
-}
+};
 
 let annotationStore: {
     [witnessId: number]: {
         appliedAnnotations: { [AnnotationUniqueId]: Annotation },
-        allAnnotations: { [AnnotationUniqueId]: Annotation }
-    }
+        allAnnotations: { [AnnotationUniqueId]: Annotation },
+    },
 } = {};
 
 export const getWitnessAnnotations = (
@@ -135,7 +124,7 @@ export const getWitnessAnnotations = (
     if (annotationStore.hasOwnProperty(witness.id)) {
         return [
             annotationStore[witness.id].appliedAnnotations,
-            annotationStore[witness.id].allAnnotations
+            annotationStore[witness.id].allAnnotations,
         ];
     }
 
@@ -164,10 +153,11 @@ export const getWitnessAnnotations = (
         // BUT NOT BY A USER to apply to the base text.
         // User-created annotations need to be in appliedAnnotations.
 
-        removedDefaultAnnotations = reducers.getRemovedDefaultAnnotationsForWitnessId(
-            state,
-            witness.id
-        );
+        removedDefaultAnnotations =
+            reducers.getRemovedDefaultAnnotationsForWitnessId(
+                state,
+                witness.id
+            );
 
         let selectedWitnessAnnotations = {};
 
@@ -180,13 +170,11 @@ export const getWitnessAnnotations = (
                         annotationData.unique_id
                     )
                 ) {
-                    selectedWitnessAnnotations[
-                        annotationData.unique_id
-                    ] = annotationData;
+                    selectedWitnessAnnotations[annotationData.unique_id] =
+                        annotationData;
                 } else if (annotationData.creator_witness === witness.id) {
-                    nonActiveAnnotations[
-                        annotationData.unique_id
-                    ] = annotationData;
+                    nonActiveAnnotations[annotationData.unique_id] =
+                        annotationData;
                 }
             }
         }
@@ -198,7 +186,7 @@ export const getWitnessAnnotations = (
 
         appliedAnnotations = {
             ...selectedWitnessAnnotationsList,
-            ...appliedAnnotations
+            ...appliedAnnotations,
         };
 
         workingAnnotationList = selectedWitnessAnnotations;
@@ -209,13 +197,13 @@ export const getWitnessAnnotations = (
     if (Object.keys(nonActiveAnnotations).length > 0) {
         annotations = {
             ...annotations,
-            ...nonActiveAnnotations
+            ...nonActiveAnnotations,
         };
     }
 
     annotations = {
         ...appliedAnnotations,
-        ...annotations
+        ...annotations,
     };
 
     annotations = _.pickBy(
@@ -231,12 +219,12 @@ export const getWitnessAnnotations = (
 
     // Only cache if annotations have been loaded
     if (
-        reducers.hasLoadedWitnessAnnotations(state, witness.id) &&
+        reducers.hasLoadedWitnessAnnotations2(state, witness.id) &&
         reducers.hasLoadedWitnessAppliedAnnotations(state, witness.id)
     ) {
         annotationStore[witness.id] = {
             appliedAnnotations: appliedAnnotations,
-            allAnnotations: annotations
+            allAnnotations: annotations,
         };
     }
 
@@ -255,9 +243,8 @@ const generateAnnotatedText = (
     const text = witness.text;
     const workingWitness = reducers.getWorkingWitness2(state, text.id);
     const baseWitness = reducers.getBaseWitness2(state, text.id);
-   
+
     if (!workingWitness || !baseWitness) {
-    
         return null;
     }
 
@@ -270,7 +257,7 @@ const generateAnnotatedText = (
     let annotatedText = new AnnotatedText(
         segmentedWorkingWitness,
         (Object.values(appliedAnnotations): any),
-        text => segmentTibetanText(text).segments,
+        (text) => segmentTibetanText(text).segments,
         workingWitness,
         witness
     );
@@ -283,10 +270,8 @@ const getActiveAnnotations = (
     witnessId,
     baseWitnessId
 ): { [AnnotationUniqueId]: Annotation } => {
-    const loadedAppliedAnnotations = reducers.hasLoadedWitnessAppliedAnnotations(
-        state,
-        witnessId
-    );
+    const loadedAppliedAnnotations =
+        reducers.hasLoadedWitnessAppliedAnnotations(state, witnessId);
     if (!loadedAppliedAnnotations) {
         return {};
     }
@@ -307,9 +292,8 @@ const getActiveAnnotations = (
                 activeAnnotationId
             );
             if (activeAnnotationData) {
-                activeAnnotationDataList[
-                    activeAnnotationData.unique_id
-                ] = activeAnnotationData;
+                activeAnnotationDataList[activeAnnotationData.unique_id] =
+                    activeAnnotationData;
             }
         }
     }

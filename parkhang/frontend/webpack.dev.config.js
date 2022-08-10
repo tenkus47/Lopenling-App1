@@ -40,6 +40,11 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: "javascript/auto",
+            },
+            {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
                 use: [
@@ -150,7 +155,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: [".js", ".jsx"],
+        extensions: [".js", ".jsx", "*", ".mjs"],
         modules: [path.resolve("./node_modules"), path.resolve("./app")],
     },
 

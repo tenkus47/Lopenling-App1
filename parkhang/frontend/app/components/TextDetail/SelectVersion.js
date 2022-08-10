@@ -17,7 +17,6 @@ const SelectVersion = (props: Props) => {
     let witnesses = [];
     let tabName = "";
     let r = "";
-    const [temp, setTemp] = useState(1);
     let classes = [];
     if (props.witnesses && props.activeWitness) {
         r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
@@ -39,17 +38,17 @@ const SelectVersion = (props: Props) => {
         });
         witnesses = witnesses.sort((a, b) => a.id - b.id);
     }
-
-    useEffect(() => {
-        if (!_.isEmpty(witnesses) && temp >= 0) {
-            props.onSelectedWitness(witnesses[temp]);
+    const handleChangeWitness = (e) => {
+        if (!_.isEmpty(witnesses)) {
+            props.onSelectedWitness(witnesses[e.target.value]);
         }
-    }, [temp]);
+    };
+
     if (witnesses.length === 0) return null;
 
     return (
         <NativeSelect
-            onChange={(e) => setTemp(e.target.value)}
+            onChange={handleChangeWitness}
             className={styles.selectVersion}
             value={r}
             label="Version"

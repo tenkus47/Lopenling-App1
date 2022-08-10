@@ -5,7 +5,7 @@ import SplitText from "lib/SplitText";
 import Loader from "react-loader";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import styles from "./TextDetail.css";
-import { Box, Slide } from "@mui/material";
+import { Box, ClickAwayListener, Slide } from "@mui/material";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
 import classnames from "classnames";
@@ -117,7 +117,6 @@ function TextDetail(props) {
                 >
                     {!props.loading ? textComponents : <div></div>}
                 </Box>
-
                 <Slide
                     direction="left"
                     in={props.showTableContent}

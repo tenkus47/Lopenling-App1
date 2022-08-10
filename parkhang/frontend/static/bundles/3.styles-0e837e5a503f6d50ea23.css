@@ -529,14 +529,13 @@
 
 .AnnotationControls---anonymousMessage {
     margin-top: -8px;
-    font-size: 18px;
+    font-size: 12px;
     line-height: 0.8;
     background: rgba(175, 175, 175, .9);
     color: #fff;
     letter-spacing: 3px;
     font-weight: bold;
     height: 24px;
-    text-align: center;
 }
 
 .AnnotationControls---anonymousMessage a:link,
@@ -1093,14 +1092,13 @@ blockquote {
 
 .SplitText---anonymousMessage {
     margin-top: -8px;
-    font-size: 18px;
+    font-size: 12px;
     line-height: 0.8;
     background: rgba(175, 175, 175, .9);
     color: #fff;
     letter-spacing: 3px;
     font-weight: bold;
     height: 24px;
-    text-align: center;
 }
 
 .SplitText---anonymousMessage a:link,
@@ -1144,7 +1142,7 @@ blockquote {
     font-size: 24px;
 }
 
-.SplitText---splitText2 * {
+.SplitText---splitText * {
     scroll-behavior: smooth;
 }
 
@@ -1256,16 +1254,16 @@ span {
             flex-grow: 1;
     border-radius: 10px;
 }
+.TextDetail---tableContent {
+    padding-inline: 20px;
+}
 .loader {
     position: absolute;
     left: 50%;
     top: 20%;
     padding: 50px;
-    background-color: rgba(1, 1, 1, .1);
     border-radius: 5px;
-}
-.TextDetail---tableContent {
-    padding-inline: 20px;
+    background-color: transparent;
 }
 .textDetailHeading---button_group_menu svg {
         margin: 0 !important;
@@ -1380,5 +1378,10 @@ input[type='range']::-webkit-slider-thumb {
 .SearchStyle---searchListItem:hover {
     font-weight: 600;
 }
+.TableOfContent---TableContent .loader {
+    left: 0;
+    right: 0;
 
-/*# sourceMappingURL=3.styles-ae315b00cf9685c02ff3.css.map*/
+}
+
+/*# sourceMappingURL=3.styles-0e837e5a503f6d50ea23.css.map*/

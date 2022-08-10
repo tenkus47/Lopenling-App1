@@ -142,14 +142,13 @@
 
 .anonymousMessage {
     margin-top: -8px;
-    font-size: 18px;
+    font-size: 12px;
     line-height: 0.8;
     background: rgba(175, 175, 175, 0.9);
     color: #fff;
     letter-spacing: 3px;
     font-weight: bold;
     height: 24px;
-    text-align: center;
 }
 
 .anonymousMessage a:link,

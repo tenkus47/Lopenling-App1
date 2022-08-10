@@ -6,7 +6,7 @@ import MediaComponent from "./MediaComponent/MediaOptions";
 import { batchActions } from "redux-batched-actions";
 import { Box } from "@mui/material";
 import Loader from "react-loader";
-
+import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 const TextDetailContainer = React.lazy(() =>
     import("components/TextDetail/TextDetailContainer")
 );
@@ -40,7 +40,9 @@ function TextSheet(props) {
                         </div>
                     }
                 >
-                    <TextDetailContainer />
+                    <ErrorBoundary>
+                        <TextDetailContainer />
+                    </ErrorBoundary>
                 </Suspense>
                 <Suspense
                     fallback={
@@ -49,7 +51,9 @@ function TextSheet(props) {
                         </div>
                     }
                 >
-                    {props.isSecondWindowOpen && <TextDetailContainer2 />}
+                    <ErrorBoundary>
+                        {props.isSecondWindowOpen && <TextDetailContainer2 />}
+                    </ErrorBoundary>
                 </Suspense>
             </Box>
             {props.Media.isPanelVisible && (
