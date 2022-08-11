@@ -152,7 +152,9 @@ export const getSelectedTextWitness = (state: AppState): Witness | null => {
 
     return witness;
 };
-
+export const getTheme = (state: AppState): String => {
+    return ui.getTheme(state.ui);
+};
 export const showPageImages = (state: AppState): boolean => {
     return ui.showPageImages(state.ui);
 };
@@ -388,6 +390,7 @@ export const hasLoadedWitnessAnnotations = (
     state: AppState,
     witnessId: number
 ): boolean => {
+    // console.log(state.data["witnessAnnotationsById"]);
     return state.data["witnessAnnotationsById"].hasOwnProperty(witnessId);
 };
 

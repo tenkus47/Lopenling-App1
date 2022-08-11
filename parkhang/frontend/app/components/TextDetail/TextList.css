@@ -4,26 +4,10 @@
     height: 300px;
     cursor: pointer;
     overflow: hidden;
-    background-color: #eee;
-    color: black;
     font-weight: 100;
 }
 
 .textlist.open {
     width: 500px;
     height: 500px;
-}
-
-.listToggelBtn {
-    outline: none;
-    background-color: transparent;
-    font-size: 1rem;
-    cursor: pointer;
-    border: 1px solid lightgray;
-    padding-inline: 4px;
-}
-
-.listToggelBtn:hover {
-    background-color: #eee;
-
 }

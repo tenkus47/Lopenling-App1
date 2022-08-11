@@ -511,6 +511,8 @@ export default class Text extends React.Component<Props, State> {
         return html;
     }
     shouldComponentUpdate(nextProps: Props, nextState: State) {
+        this.textAlignmentById = this.props.textAlignmentById;
+
         const renderedHtml = this.generateHtml(nextProps, nextState);
 
         if (this.props.fontSize !== nextProps.fontSize) {

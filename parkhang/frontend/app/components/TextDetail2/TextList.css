@@ -10,16 +10,3 @@
     width: 500px;
     height: 500px;
 }
-
-.listToggelBtn {
-    outline: none;
-    background-color: transparent;
-    font-weight: bold;
-    font-size: 1rem;
-    border: 1px solid lightgray;
-    padding-inline: 4px;
-}
-
-.listToggelBtn:hover {
-    background-color: #eee;
-}

@@ -85,10 +85,11 @@ function TextDetailHeading(props: HeaderProps) {
             ref={headingRef}
             spacing={1}
             sx={{
-                background: "#f7f7f7",
                 paddingInline: { md: 2, xs: 0 },
                 paddingBlock: { md: 1, xs: 0 },
                 borderTop: { md: 0, xs: "1px solid gray" },
+                bgcolor: "heading.main",
+                color: "text.primary",
             }}
         >
             {" "}

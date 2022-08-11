@@ -46,6 +46,7 @@ export type Props = {
     selectedTargetRange: [],
     selectedSourceRange: [],
     syncIdOnSearch: String,
+    changeSyncIdOnClick: () => void,
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -485,18 +486,22 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
     componentDidUpdate(prevProps, prevState) {
         let scrollToId = this.props.scrollToId;
-        let targetId2 = this.props.syncIdOnClick;
+        this.targetId2 = this.props.syncIdOnClick;
         this.isPanelLinked = this.props.isPanelLinked;
         this.selectedWindow = this.props.selectedWindow;
         let SearchSyncId = this.props.syncIdOnSearch || null;
         let list = this.list;
         let result = this.props.searchResults;
         let Alignment = this.props.textAlignment;
-        let condition =
+        this.condition =
             Alignment?.target?.witness === this.props.selectedWitness.id;
+
         let con =
             prevProps?.searchResults !== this.props?.searchResults ||
             prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
+
+        // for scrolling for search results;
+
         if (con && result) {
             if (SearchSyncId) {
                 let selectedTextIndex =
@@ -509,11 +514,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }, 100);
             }
         }
+
+        //for scrolling to id aligned with first window
+        //scroll control linked
+
         if (
             this.selectedWindow === 1 &&
             scrollToId.from === 1 &&
             this.isPanelLinked &&
-            condition &&
+            this.condition &&
             scrollToId.id !== null
         ) {
             let list = this.list;
@@ -538,15 +547,19 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
             }
         }
+
+        //for scrolling to the highlighted alignment if its outside visible DOM
         if (
-            targetId2 &&
+            this.targetId2 &&
             scrollToId.from === null &&
-            this.selectedWindow === 1
+            this.selectedWindow === 1 &&
+            scrollToId.id === null &&
+            this.condition
         ) {
             let clickIdObj = Alignment.alignment.find(
                 (l) =>
-                    targetId2 >= l.source_segment.start &&
-                    targetId2 < l.source_segment.end
+                    this.targetId2 >= l.source_segment.start &&
+                    this.targetId2 < l.source_segment.end
             );
             let syncClickTargetId = clickIdObj?.target_segment?.start;
             let selectedTextIndex =
@@ -779,6 +792,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 className={styles.splitText2}
                 ref={(div) => (this.splitText = div)}
                 key={key}
+                style={{
+                    cursor: "pointer",
+                }}
             >
                 <button
                     id="updateList2"
@@ -930,10 +946,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             searchStringPositions={searchStringPositions}
                             textAlignmentById={props.textAlignmentById}
                             fontSize={props.fontSize}
+                            isPanelLinked={this.props.isPanelLinked}
                             selectedSourceRange={props.selectedSourceRange}
                             selectedTargetRange={props.selectedTargetRange}
                             changeSelectedRange={props.changeSelectedRange}
-                        ></Text2>
+                            changeSyncIdOnClick={this.props.changeSyncIdOnClick}
+                            changeScrollToId={this.props.changeScrollToId}
+                            condition={this.condition}
+                        />
                     </div>
                 </div>
             </CellMeasurer>

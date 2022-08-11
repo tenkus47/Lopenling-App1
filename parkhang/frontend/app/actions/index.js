@@ -76,6 +76,7 @@ export const UPDATED_TEMPORARY_ANNOTATION = "text/UPDATED_TEMPORARY_ANNOTATION";
 export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 // UI
+export const CHANGE_THEME = "CHANGE_THEME";
 export const CHANGE_ANNOTATING = "CHANGE_ANNOTATING";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
@@ -577,7 +578,6 @@ export function loadedUserSettings(
 
 /* UI */
 
-
 export type SelectedTextAction = Action & TextDataAction;
 export function selectedText(text: api.TextData): SelectedTextAction {
     return {
@@ -599,7 +599,12 @@ export function selectedText2(text: api.TextData): SelectedTextAction2 {
         text,
     };
 }
-
+export function changeTheme(payload) {
+    return {
+        type: CHANGE_THEME,
+        payload,
+    };
+}
 export type ChangedSearchValueAction = Action & {
     searchValue: string,
 };

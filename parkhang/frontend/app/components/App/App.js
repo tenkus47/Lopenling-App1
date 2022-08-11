@@ -27,34 +27,6 @@ import { prayer } from "./prayerMarquee";
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 import Marquee from "react-fast-marquee";
 
-const theme = createTheme({
-    palette: {
-        primary: {
-            light: "#6cf",
-            main: "#08c",
-            dark: "#069",
-            contrastText: "#fff",
-        },
-        secondary: {
-            light: "#ff7961",
-            main: "#f44336",
-            dark: "#ba000d",
-            contrastText: "#000",
-        },
-    },
-    typography: {
-        button: {
-            fontWeight: "normal",
-            lineHeight: "normal",
-            textTransform: "capitalize",
-            textDecoration: "none",
-            letterSpacing: 0,
-            borderRadius: "4px",
-            fontFamily: "'Qomolangma-UchenSarchen', 'Overpass', sans-serif",
-        },
-    },
-});
-
 type Props = {
     title: string,
     textListIsVisible: boolean,
@@ -70,6 +42,38 @@ function setTitle(title: string) {
 }
 
 const App = (props: Props) => {
+    let mode = props.theme;
+    const theme = React.useMemo(
+        () =>
+            createTheme({
+                palette: {
+                    mode,
+                    navbar: {
+                        main: "#FBFBFA",
+                    },
+                    links: {
+                        main: mode !== "dark" ? "#666666" : "#eee",
+                    },
+                    heading: {
+                        main: mode !== "dark" ? "#eee" : "#383838",
+                    },
+                },
+                typography: {
+                    button: {
+                        fontWeight: "normal",
+                        lineHeight: "normal",
+                        textTransform: "capitalize",
+                        textDecoration: "none",
+                        letterSpacing: 0,
+                        borderRadius: "4px",
+                        fontFamily:
+                            "'Qomolangma-UchenSarchen', 'Overpass', sans-serif",
+                    },
+                },
+            }),
+        [mode]
+    );
+
     const [open, setOpen] = useState();
     const handleShare = () => {
         let textid = props.selectedText;
@@ -124,7 +128,7 @@ const App = (props: Props) => {
         {
             icon: (
                 <VerticalSplitIcon
-                    htmlColor={props.isSecondWindowOpen && "#ff7961"}
+                    htmlColor={props.isSecondWindowOpen ? "#ff7961" : undefined}
                 />
             ),
             name: "Split Window",
@@ -141,8 +145,11 @@ const App = (props: Props) => {
     }
     return (
         <ThemeProvider theme={theme}>
-            <div
-                style={{ position: "relative" }}
+            <Box
+                sx={{
+                    bgcolor: "background.default",
+                    color: "text.primary",
+                }}
                 className={classnames(
                     styles.container,
                     utilStyles.flex,
@@ -253,7 +260,7 @@ const App = (props: Props) => {
                         Refresh the page here <a href="/"> click </a>
                     </div>
                 )}
-            </div>
+            </Box>
         </ThemeProvider>
     );
 };

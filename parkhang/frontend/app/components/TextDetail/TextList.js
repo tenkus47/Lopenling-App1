@@ -7,7 +7,13 @@ import {
 } from "react-virtualized";
 import classname from "classnames";
 import styles from "./TextList.css";
-import { TextField, ClickAwayListener, Box, Typography } from "@mui/material";
+import {
+    TextField,
+    ClickAwayListener,
+    Box,
+    Typography,
+    Button,
+} from "@mui/material";
 import addShay from "lib/addTibetanShay";
 
 function TextList(props) {
@@ -44,24 +50,25 @@ function TextList(props) {
 
     return (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-            <div style={{ position: "relative", border: "1px solid #eee" }}>
-                <Box
+            <div style={{ position: "relative", marginLeft: 10 }}>
+                <Button
                     onClick={handleClick}
-                    className={styles.listToggelBtn}
                     component="div"
+                    variant="outlined"
                     sx={{
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         width: "10rem",
                         height: "100%",
+                        color: "text.primary",
                     }}
                 >
                     <Typography noWrap={true}>{selected}</Typography>
-                </Box>
+                </Button>
                 {isOpen && (
-                    <div
+                    <Box
                         className={classname(classes)}
-                        style={{ position: "absolute" }}
+                        sx={{ position: "absolute", bgcolor: "heading.main" }}
                     >
                         <TextField
                             onChange={handleChange}
@@ -113,6 +120,7 @@ function TextList(props) {
                                                                 sm: 10,
                                                                 xs: 10,
                                                             },
+                                                            color: "text.primary",
                                                         }}
                                                         component="div"
                                                     >
@@ -129,7 +137,7 @@ function TextList(props) {
                                 />
                             )}
                         </AutoSizer>
-                    </div>
+                    </Box>
                 )}
             </div>
         </ClickAwayListener>

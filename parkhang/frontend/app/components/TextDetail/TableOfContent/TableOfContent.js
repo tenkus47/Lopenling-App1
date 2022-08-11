@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, ClickAwayListener, Typography } from "@mui/material";
 import Loader from "react-loader";
 import styles from "./TableOfContent.css";
 import { styled, alpha } from "@mui/material/styles";
@@ -57,47 +57,49 @@ function TableOfContent() {
     let loaded = data.length > 0 ? true : false;
 
     return (
-        <Box className={styles.TableContent}>
-            <Toolbar
-                sx={{
-                    justifyContent: "space-between",
-                    paddingLeft: "0 !important",
-                    margin: 0,
-                }}
-            >
-                <Typography textTransform={"uppercase"} component="h6">
-                    Table Of Content
-                </Typography>
-                <Search>
-                    <SearchIconWrapper>
-                        <SearchIcon />
-                    </SearchIconWrapper>
-                    <StyledInputBase
-                        placeholder="Search…"
-                        inputProps={{ "aria-label": "search" }}
-                    />
-                </Search>
-            </Toolbar>
-            {/* <Loader loaded={loaded} /> */}
-            <Box>
-                {data.map((list, index) => {
-                    return (
-                        <Box
-                            key={"TableContent-" + index}
-                            sx={{
-                                cursor: "pointer",
-                                width: "fit-content",
-                                "&:hover": {
-                                    fontWeight: "bold",
-                                },
-                            }}
-                        >
-                            {list.Title}
-                        </Box>
-                    );
-                })}
+        <>
+            <Box className={styles.TableContent}>
+                <Toolbar
+                    sx={{
+                        justifyContent: "space-between",
+                        paddingLeft: "0 !important",
+                        margin: 0,
+                    }}
+                >
+                    <Typography textTransform={"uppercase"} component="h6">
+                        Table Of Content
+                    </Typography>
+                    <Search>
+                        <SearchIconWrapper>
+                            <SearchIcon />
+                        </SearchIconWrapper>
+                        <StyledInputBase
+                            placeholder="Search…"
+                            inputProps={{ "aria-label": "search" }}
+                        />
+                    </Search>
+                </Toolbar>
+                {/* <Loader loaded={loaded} /> */}
+                <Box>
+                    {data.map((list, index) => {
+                        return (
+                            <Box
+                                key={"TableContent-" + index}
+                                sx={{
+                                    cursor: "pointer",
+                                    width: "fit-content",
+                                    "&:hover": {
+                                        fontWeight: "bold",
+                                    },
+                                }}
+                            >
+                                {list.Title}
+                            </Box>
+                        );
+                    })}
+                </Box>
             </Box>
-        </Box>
+        </>
     );
 }
 

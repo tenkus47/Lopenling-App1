@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { Button } from "@mui/material";
+import { IconButton } from "@mui/material";
 function Refresh({ isSecondWindowOpen }) {
     const handleRefresh = useCallback(() => {
         let updatelistBtn = document.getElementById("updateList");
@@ -18,14 +18,9 @@ function Refresh({ isSecondWindowOpen }) {
     }, [isSecondWindowOpen]);
 
     return (
-        <Button
-            variant="text"
-            size="small"
-            style={{ padding: 0, color: "black" }}
-            onClick={handleRefresh}
-        >
+        <IconButton variant="text" size="small" onClick={handleRefresh}>
             <RefreshIcon />
-        </Button>
+        </IconButton>
     );
 }
 

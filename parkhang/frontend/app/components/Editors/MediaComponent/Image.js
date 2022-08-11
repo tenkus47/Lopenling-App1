@@ -26,12 +26,12 @@ function Image(props) {
     const selectRef = useRef(null);
     let imageList = props.imageData?.alignment;
     let message = props.imageData?.message;
-
+    let imageRef = React.useRef("");
     let textIdfromAlignment = props.alignmentData.text;
 
     let isPortraitImage = props.isImagePortrait;
     let [imageSelected, SetSelected] = useState(0);
-    let [imageHeight, setImageHeight] = useState(240);
+    let [imageHeight, setImageHeight] = useState("50vh");
     let imageIdList = [];
     let scrollingID = props.scrollToId;
     let syncIdOnClick = props.syncIdOnClick;
@@ -81,10 +81,10 @@ function Image(props) {
 
     useEffect(() => {
         selectRef.current.value = props.witness;
-
         setLoading(true);
         fetchImage();
     }, [props.witness]);
+
     useEffect(() => {
         if (textIdfromAlignment === props.selectedText.id) {
             let ClickId = syncIdOnClick.toString().replace("s_", "");
@@ -136,10 +136,6 @@ function Image(props) {
                     ? styles.ThirdWindowPortrait
                     : styles.ThirdWindow
             }
-            defaultSize={{
-                width: "100%",
-                height: imageHeight + 45,
-            }}
             onResize={handleResize}
             maxWidth="100%"
         >
@@ -147,7 +143,7 @@ function Image(props) {
                 <Box position="relative" zIndex={2}>
                     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                         <NativeSelect
-                            labelId="demo-select-small"
+                            labelid="demo-select-small"
                             inputRef={selectRef}
                             onChange={(e) =>
                                 props.changeImageVersion(e.target.value)
@@ -194,19 +190,20 @@ function Image(props) {
                         {message ? (
                             <h1>{message}</h1>
                         ) : (
-                            <CircularProgress color="secondary" />
+                            <div style={{ height: "35vh" }}>
+                                <CircularProgress color="secondary" />
+                            </div>
                         )}
                     </>
                 ) : (
                     <>
                         <center height="100%">
-                            {}
                             {!loading ? (
                                 <TransformWrapper>
                                     <TransformComponent>
                                         <LazyLoadImage
+                                            itemRef={imageRef}
                                             className={styles.ImageStyle}
-                                            height={imageHeight}
                                             src={img}
                                             alt="imagepecha"
                                             onLoad={isPortrait}
@@ -223,18 +220,18 @@ function Image(props) {
                                 position: "absolute",
                                 left: 20,
                                 top: 100,
-                                color: "secondary",
                             }}
+                            color="primary"
                         >
                             <ChevronLeftIcon />
                         </IconButton>
                         <IconButton
+                            color="primary"
                             onClick={() => handleChangeImage("next")}
                             sx={{
                                 position: "absolute",
                                 right: 20,
                                 top: 100,
-                                color: "secondary",
                             }}
                         >
                             <ChevronRightIcon />

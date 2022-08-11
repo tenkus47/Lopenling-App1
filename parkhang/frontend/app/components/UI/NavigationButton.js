@@ -23,7 +23,7 @@ const NavigationButton = (props: Props) => {
             onClick={props.onClick}
             title={props.title}
         >
-            <HamburgerIcon />
+            <HamburgerIcon fill="currentColor" />
         </IconButton>
     );
 };

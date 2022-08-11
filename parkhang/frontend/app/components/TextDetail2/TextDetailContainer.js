@@ -362,6 +362,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         changeScrollToId: (payload) =>
             dispatch(actions.changeScrollToId(payload)),
+        changeSyncIdOnClick: (payload) => {
+            dispatch(actions.changeSyncIdOnClick(payload));
+        },
         changeSelectedWindow: (payload) => {
             dispatch(actions.changeSelectedWindow(payload));
         },

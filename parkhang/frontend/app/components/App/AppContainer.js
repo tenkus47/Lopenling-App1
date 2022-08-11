@@ -58,6 +58,7 @@ const mapStateToProps = (state) => {
         page: state.page,
         isAnnotating: reducers.isAnnotating(state),
         isSecondWindowOpen: reducers.isSecondWindowOpen(state),
+        theme: reducers.getTheme(state),
     };
 };
 

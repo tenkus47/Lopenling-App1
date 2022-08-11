@@ -262,7 +262,6 @@ function* loadInitialTextData(action: actions.TextDataAction) {
 
         let witnesses = yield call(api.fetchTextWitnesses, action.text);
         yield put(actions.loadedWitnesses(action.text, witnesses));
-        yield call(loadAlignmentData, action, textId);
         let workingWitnessData: api.WitnessData | null = null;
         let baseWitnessData: api.WitnessData | null = null;
         for (const witness of witnesses) {
@@ -273,6 +272,8 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 baseWitnessData = witness;
             }
         }
+        yield call(loadAlignmentData, action, textId);
+
         if (workingWitnessData) {
             const workingWitness: Witness = yield (select(
                 reducers.getWitness,
@@ -306,6 +307,9 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
         yield call(loadWitnessAnnotations, action);
     }
     let selectedWitness = yield select(reducers.getSelectedTextWitness);
+    let AlignmentData = yield select(reducers.getAlignment);
+    yield call(loadTextAlignment, action, AlignmentData);
+
     let urlAction = {
         type: actions.TEXT_URL,
         payload: {
@@ -374,7 +378,6 @@ function* selectedWitness2(action: actions.SelectedTextWitnessAction) {
     const textId = action.textId;
     let witness = yield select(reducers.getWitness, witnessId);
 
-    console.log("run witness2");
     // const hasLoadedAnnotations2 = yield select(
     //     reducers.hasLoadedWitnessAnnotations2,
     //     witnessId
@@ -741,14 +744,7 @@ function* dispatchedBatch(action): Saga<void> {
 function* watchBatchedActions() {
     yield takeEvery(BATCH, dispatchedBatch);
 }
-//
-function* loadAlignmentData(action, textId) {
-    if (textId) {
-        const AlignmentData = yield call(api.fetchAlignment, textId);
-        yield put(actions.loadAlignment(AlignmentData));
-        yield call(loadTextAlignment, action, AlignmentData);
-    }
-}
+
 // URLS
 // loadedTextUrl should only be called when first loading
 let _loadedTextUrl = false;
@@ -768,9 +764,6 @@ function* loadedTextUrl(
         let textId = action.payload.textId;
         let witnessId = action.payload.witnessId || w;
         let textId2 = textId;
-        if (textId === "139") {
-            textId2 = "140";
-        }
         let witnessId2 = witnessId;
         if (t !== null) textId = t;
         if (w !== null) witnessId = w;
@@ -916,10 +909,16 @@ function* loadedTextIdonlyUrl(action) {
     _loadedTextUrl = false;
     let textId = parseInt(action.payload.textId);
     yield call(loadAlignmentData, action, textId);
-    let alignmentText = yield select(reducers.getTextAlignment);
+    yield delay(500);
+    let AlignmentData = yield select(reducers.getAlignment);
+    let data;
+    if (AlignmentData?.alignments?.text.length > 0) {
+        let AlignmentId = AlignmentData.alignments.text[0].alignment;
+        data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
+    }
     let witnessId;
     let textId2;
-    textId2 = alignmentText?.target?.text || textId;
+    textId2 = data?.target?.text || textId;
     let witnessId2;
 
     let text = { id: textId };
@@ -984,9 +983,6 @@ function* watchSelectTextUrlActions() {
 function* loadSecondWindowOpen(action, textId = null, witnessId) {
     let witnessId2 = witnessId;
     let textId2 = textId;
-    if (textId === 139) {
-        textId2 = 140;
-    }
     let textData2;
     if (textId2 !== null) {
         do {
@@ -1000,28 +996,51 @@ function* loadSecondWindowOpen(action, textId = null, witnessId) {
             witnesses2 = yield call(api.fetchTextWitnesses, textData2);
 
         yield put(actions.loadedWitnesses2(textData2, witnesses2));
-        const selectedWitnessAction = actions.selectedTextWitness2(
-            textId2,
-            witnessId2
-        );
+        // const selectedWitnessAction = actions.selectedTextWitness2(
+        //     textId2,
+        //     witnessId2
+        // );
 
-        yield put(selectedWitnessAction);
+        // yield put(selectedWitnessAction);
     }
 }
 
 function* watchSecondWindowOpen() {
     yield takeEvery(actions.SECOND_WINDOW, loadSecondWindowOpen);
 }
+
+// load full Alignments
+function* loadAlignmentData(action, textId) {
+    if (textId) {
+        const AlignmentData = yield call(api.fetchAlignment, textId);
+        yield put(actions.loadAlignment(AlignmentData));
+    }
+}
+
 //Text Alignment Load
 function* loadTextAlignment(action, AlignmentData) {
-    let alignment = AlignmentData.alignments;
+    let textWitnessId = action.witnessId;
+    let data;
+    let alignment = AlignmentData?.alignments;
+    let payload = { source: [], target: [] };
+    yield put(actions.changeSelectedRange(payload));
+
     if (alignment.text.length > 0) {
-        let AlignmentId = alignment.text[0].alignment;
-        let data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
-        yield put(actions.setTextAlignment(data));
+        let witnessAlignment = alignment.text?.find(
+            (s) => s.source == textWitnessId
+        );
+        if (
+            witnessAlignment?.source == textWitnessId &&
+            witnessAlignment?.alignment
+        ) {
+            let AlignmentId = witnessAlignment.alignment;
+
+            data = yield call(api.fetchTextPairWithAlignmentId, AlignmentId);
+        } else data = { alignment: [], source: {}, target: {} };
     } else {
-        yield put(actions.setTextAlignment({ alignment: [] }));
+        data = { alignment: [], source: {}, target: {} };
     }
+    yield put(actions.setTextAlignment(data));
 }
 //Media Load
 

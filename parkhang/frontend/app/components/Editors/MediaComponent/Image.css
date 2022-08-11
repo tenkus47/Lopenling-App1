@@ -62,7 +62,7 @@
 
 .ImageStyle {
     object-fit: contain;
-    height: 100%;
+    max-height: 35vh;
     max-width: 100%;
 
 }
@@ -70,6 +70,7 @@
 
 .imageSection {
     width: 100%;
-    height: calc(100%-45px);
     position: relative;
+    height: 35vh;
+    background-color: #505050;
 }

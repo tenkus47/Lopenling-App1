@@ -55,6 +55,8 @@ export type UIState = {
 
     SyncIdOnSearch2: String,
     SyncIdOnScroll2: String,
+
+    theme: String,
 };
 
 export const initialUIState = {
@@ -91,7 +93,15 @@ export const initialUIState = {
     SyncIdOnClick: 0,
     SyncIdOnSearch: null,
     SyncIdOnSearch2: null,
+
+    theme: "light",
 };
+function changeTheme(state, action) {
+    return {
+        ...state,
+        theme: action.payload,
+    };
+}
 
 function changeSyncIdOnSearch(state, action) {
     return {
@@ -207,7 +217,6 @@ function changeLinkPanel(
 
     return state;
 }
-
 
 function selectedTextWitness(
     state: UIState,
@@ -574,6 +583,7 @@ uiReducers[actions.SHOW_TABLE_CONTENT] = showTableContent;
 uiReducers[actions.SHOW_TABLE_CONTENT2] = showTableContent2;
 uiReducers[actions.SYNC_ID_ON_SEARCH] = changeSyncIdOnSearch;
 uiReducers[actions.SYNC_ID_ON_SEARCH2] = changeSyncIdOnSearch2;
+uiReducers[actions.CHANGE_THEME] = changeTheme;
 
 export default uiReducers;
 
@@ -625,6 +635,9 @@ export const getSelectedTextWitnessId2 = (
 };
 export const showPageImages = (state: UIState): boolean => {
     return state.showPageImages;
+};
+export const getTheme = (state: UIState): String => {
+    return state.theme;
 };
 
 export const getActiveAnnotation = (

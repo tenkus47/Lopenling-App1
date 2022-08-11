@@ -19,7 +19,7 @@ import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
-import { Box, Slide } from "@mui/material";
+import { Box, ClickAwayListener, Divider, Slide } from "@mui/material";
 import _ from "lodash";
 import TableOfContent from "./TableOfContent/TableOfContent";
 
@@ -134,6 +134,7 @@ class TextDetail extends React.Component<Props> {
                     selectedAnnotatedSegments={
                         this.props.selectedAnnotatedSegments
                     }
+                    syncIdOnClick={this.props.syncIdOnClick}
                     textListVisible={this.props.textListVisible}
                     showImages={this.props.pageImagesVisible}
                     imagesBaseUrl={this.props.imagesBaseUrl}
@@ -169,7 +170,7 @@ class TextDetail extends React.Component<Props> {
         let textComponents = [textComponent];
         return (
             <Box
-                style={{
+                sx={{
                     height: "100%",
                     flex: 1,
                 }}
@@ -182,6 +183,7 @@ class TextDetail extends React.Component<Props> {
                 ref={this.ref}
             >
                 <TextDetailHeadingContainer />
+                <Divider />
                 <Loader loaded={!this.props.loading} zIndex={5} />
                 <Box
                     style={{
@@ -200,6 +202,7 @@ class TextDetail extends React.Component<Props> {
                     >
                         {!this.props.loading ? textComponents : <div />}
                     </Box>
+
                     <Slide
                         direction="left"
                         in={this.props.showTableContent}

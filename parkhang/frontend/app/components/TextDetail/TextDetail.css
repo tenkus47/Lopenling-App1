@@ -6,7 +6,6 @@
     position: relative;
     flex-grow: 1;
     color: var(--text-color);
-    border-left: 1px solid #eee;
     transition: height 0.4s linear;
 }
 

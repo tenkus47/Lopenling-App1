@@ -5,7 +5,7 @@ import SplitText from "lib/SplitText";
 import Loader from "react-loader";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import styles from "./TextDetail.css";
-import { Box, ClickAwayListener, Slide } from "@mui/material";
+import { Box, ClickAwayListener, Divider, Slide } from "@mui/material";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
 import classnames from "classnames";
@@ -73,6 +73,7 @@ function TextDetail(props) {
                 textAlignmentById={props.textAlignmentById}
                 isPanelLinked={props.isPanelLinked}
                 changeScrollToId={props.changeScrollToId}
+                changeSyncIdOnClick={props.changeSyncIdOnClick}
                 selectedWindow={props.selectedWindow}
                 selectedSourceRange={props.selectedSourceRange}
                 selectedTargetRange={props.selectedTargetRange}
@@ -99,6 +100,7 @@ function TextDetail(props) {
             }}
         >
             <TextDetailHeading />
+            <Divider />
             <Loader loaded={!props.loading} />
             <Box
                 style={{

@@ -4,7 +4,7 @@ import Slider from "../../UI/Slider";
 import CheckIcon from "@mui/icons-material/Check";
 import useLocalStorage from "components/utility/useLocalStorage";
 import {
-    Button,
+    IconButton,
     MenuList,
     MenuItem,
     Grow,
@@ -43,24 +43,19 @@ function Settings(props) {
 
     return (
         <ClickAwayListener onClickAway={() => setShowOption(false)}>
-            <Box>
-                <Button
-                    onClick={handleClick}
-                    size="small"
-                    variant="text"
-                    style={{ padding: 0, color: "black" }}
-                >
-                    <WrenchIcon height={20} width={20} />
-                </Button>
+            <Box position="relative">
+                <IconButton onClick={handleClick} size="small" variant="text">
+                    <WrenchIcon height={20} width={20} fill="currentColor" />
+                </IconButton>
                 <Grow in={showOption}>
                     <MenuList
                         dense
-                        style={{
+                        sx={{
                             position: "absolute",
                             right: 0,
                             zIndex: 2,
-                            top: 30,
-                            backgroundColor: "#eee",
+                            top: 40,
+                            bgcolor: "heading.main",
                         }}
                     >
                         <Slider

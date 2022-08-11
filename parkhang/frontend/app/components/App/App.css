@@ -24,7 +24,7 @@ body {
     font-family: var(--fonts);
     font-display: swap;
     font-kerning: normal;
-    background-color: white;
+    /* background-color: white; */
     overflow: hidden;
 }
 
