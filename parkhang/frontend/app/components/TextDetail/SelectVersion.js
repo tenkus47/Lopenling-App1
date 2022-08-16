@@ -38,6 +38,7 @@ const SelectVersion = (props: Props) => {
         });
         witnesses = witnesses.sort((a, b) => a.id - b.id);
     }
+
     const handleChangeWitness = (e) => {
         if (!_.isEmpty(witnesses)) {
             props.onSelectedWitness(witnesses[e.target.value]);

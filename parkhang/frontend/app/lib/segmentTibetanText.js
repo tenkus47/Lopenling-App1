@@ -5,6 +5,7 @@ import TextSegment from "./TextSegment";
 export default function segmentTibetanText(text: string): SegmentedText {
     const breaks = "།།";
     const spaces = "༌་ \n";
+    const sharSpace = "། །";
 
     let segments = [];
     let currentSegment = "";
@@ -12,6 +13,7 @@ export default function segmentTibetanText(text: string): SegmentedText {
     let inBreak = false;
     let inSpace = false;
     let count = 0;
+    let sharSpaceCount = 0;
     for (let char of text) {
         if (breaks.includes(char)) {
             if (count > 0) {
@@ -51,7 +53,6 @@ export default function segmentTibetanText(text: string): SegmentedText {
                     );
                     segments.push(newSegment);
                 }
-
                 inBreak = false;
                 inSpace = false;
                 currentSegment = char;

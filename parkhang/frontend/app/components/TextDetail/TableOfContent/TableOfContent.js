@@ -57,50 +57,57 @@ function TableOfContent() {
     let loaded = data.length > 0 ? true : false;
 
     return (
-        <>
-            <Box className={styles.TableContent}>
-                <Toolbar
-                    sx={{
-                        justifyContent: "space-between",
-                        paddingLeft: "0 !important",
-                        margin: 0,
-                    }}
-                >
-                    <Typography textTransform={"uppercase"} component="h6">
-                        Table Of Content
-                    </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ "aria-label": "search" }}
-                        />
-                    </Search>
-                </Toolbar>
-                {/* <Loader loaded={loaded} /> */}
-                <Box>
-                    {data.map((list, index) => {
-                        return (
-                            <Box
-                                key={"TableContent-" + index}
-                                sx={{
-                                    cursor: "pointer",
-                                    width: "fit-content",
-                                    "&:hover": {
-                                        fontWeight: "bold",
-                                    },
-                                }}
-                            >
-                                {list.Title}
-                            </Box>
-                        );
-                    })}
-                </Box>
+        <Box
+            className={styles.TableContent}
+            sx={{
+                bgcolor: "heading.main",
+                color: "text.primary",
+                width: "100%",
+                height: "100%",
+                paddingInline: 2,
+            }}
+        >
+            <Toolbar
+                sx={{
+                    justifyContent: "space-between",
+                    paddingLeft: "0 !important",
+                    margin: 0,
+                }}
+            >
+                <Typography textTransform={"uppercase"} component="h6">
+                    Table Of Content
+                </Typography>
+                <Search>
+                    <SearchIconWrapper>
+                        <SearchIcon />
+                    </SearchIconWrapper>
+                    <StyledInputBase
+                        placeholder="Search…"
+                        inputProps={{ "aria-label": "search" }}
+                    />
+                </Search>
+            </Toolbar>
+            {/* <Loader loaded={loaded} /> */}
+            <Box>
+                {data.map((list, index) => {
+                    return (
+                        <Box
+                            key={"TableContent-" + index}
+                            sx={{
+                                cursor: "pointer",
+                                width: "fit-content",
+                                "&:hover": {
+                                    fontWeight: "bold",
+                                },
+                            }}
+                        >
+                            {list.Title}
+                        </Box>
+                    );
+                })}
             </Box>
-        </>
+        </Box>
     );
 }
 
-export default TableOfContent;
+export default React.memo(TableOfContent);

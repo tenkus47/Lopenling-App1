@@ -87,9 +87,9 @@ function HomePage(props) {
                 <Collapse in={showFilter}>
                     <Filter
                         setFiltered={setFilteredTitle}
-                        setCategoryList={setCategorySelected}
-                        setLengthRange={setLengthRange}
-                        setAuthor={setAuthor}
+                        // setCategoryList={setCategorySelected}
+                        // setLengthRange={setLengthRange}
+                        // setAuthor={setAuthor}
                     />
                 </Collapse>
                 <Divider />

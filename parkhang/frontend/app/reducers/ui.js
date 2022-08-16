@@ -48,6 +48,7 @@ export type UIState = {
     isPanelLinked: boolean,
     isAnnotating: Boolean,
     scrollToId: {},
+    imageScrollId: {},
 
     SyncIdOnClick: String,
     SyncIdOnScroll: String,
@@ -69,7 +70,7 @@ export const initialUIState = {
     searchValue: "",
     searchValue2: "",
 
-    showPageImages: false,
+    showPageImages: true,
     activeAnnotations: {},
     activeTextAnnotations: {},
     textListVisible: false,
@@ -89,7 +90,7 @@ export const initialUIState = {
     selectedWindow: 1,
     openTableContent: false,
     scrollToId: { from: 1, id: 0 },
-
+    imageScrollId: { from: 1, id: 0 },
     SyncIdOnClick: 0,
     SyncIdOnSearch: null,
     SyncIdOnSearch2: null,
@@ -183,6 +184,12 @@ function changeScrollToId(state, action) {
     return {
         ...state,
         scrollToId: { from: action.payload.from, id: action.payload.id },
+    };
+}
+function changeImageScrollId(state, action) {
+    return {
+        ...state,
+        imageScrollId: { from: action.data.from, id: action.data.id },
     };
 }
 
@@ -549,6 +556,7 @@ uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.SCROLL_TO_ID] = changeScrollToId;
+uiReducers[actions.IMAGE_SCROLL_ID] = changeImageScrollId;
 
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
 uiReducers[actions.CHANGE_RANGE_SELECTION] = changeRangeSelection;
@@ -750,4 +758,7 @@ export const getTextFontSize2 = (state: UIState): number => {
 };
 export const isSecondWindowOpen = (state: UIState): number => {
     return state.showSecondWindow;
+};
+export const getImageScrollId = (state) => {
+    return state.imageScrollId;
 };

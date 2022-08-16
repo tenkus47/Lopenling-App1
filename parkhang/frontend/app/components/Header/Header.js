@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
 import styles from "./Header.css";
@@ -40,12 +40,12 @@ import {
     AppBar,
 } from "@mui/material";
 import { Person as PersonIcon, Menu as MenuIcon } from "@mui/icons-material";
-import { useEffect } from "react";
 import { useLayoutEffect } from "react";
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
 };
+const image_location = lopenlingLogo;
 
 export const LoginControls = (props: LoginProps) => (
     <Stack direction="row" spacing={2}>
@@ -166,6 +166,7 @@ type HeaderProps = {
 
 export const Header = (props: HeaderProps) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
+
     let locations = history();
     let controls = null;
     if (props.user.isLoggedIn) {
@@ -188,7 +189,6 @@ export const Header = (props: HeaderProps) => {
     let toggleTitle = props.intl.formatMessage({
         id: "header.toggleTextList",
     });
-    const image_location = lopenlingLogo;
 
     const LinkRef = React.forwardRef((props, ref) => (
         <div ref={ref}>
@@ -202,7 +202,19 @@ export const Header = (props: HeaderProps) => {
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-
+    const drawer = React.useMemo(
+        () => (
+            <Drawer
+                anchor={"left"}
+                open={props.textListIsVisible}
+                onClose={props.navigationButtonClicked}
+            >
+                <Resources />
+            </Drawer>
+        ),
+        [props.textListIsVisible]
+    );
+    const themeChange = useCallback((e) => props.themeButtonClicked(e), []);
     return (
         <AppBar
             position="static"
@@ -356,20 +368,12 @@ export const Header = (props: HeaderProps) => {
                     {controls}
                     <ToggleTheme
                         theme={props.theme}
-                        changeTheme={props.themeButtonClicked}
+                        changeTheme={themeChange}
                     />
                 </Stack>
             </Stack>
 
-            <React.Fragment>
-                <Drawer
-                    anchor={"left"}
-                    open={props.textListIsVisible}
-                    onClose={props.navigationButtonClicked}
-                >
-                    <Resources />
-                </Drawer>
-            </React.Fragment>
+            <React.Fragment>{drawer}</React.Fragment>
         </AppBar>
     );
 };

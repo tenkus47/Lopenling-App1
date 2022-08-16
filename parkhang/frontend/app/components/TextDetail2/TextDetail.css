@@ -2,10 +2,10 @@
 
 
 .textDetail2 {
-    background-color: white;
+    /* background-color: white; */
     position: relative;
-    flex: 1;
-    color: var(--text-color);
+    width: 100%;
+    /* color: var(--text-color); */
     transition: height 0.3s linear;
     overflow: hidden;
 }

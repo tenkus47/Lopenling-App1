@@ -54,6 +54,8 @@ import {
     getSelectedTargetRange,
     getSearchResults,
     getShowTableContent,
+    getImageAlignmentById,
+    getImageScrollId,
 } from "reducers";
 import * as reducers from "reducers";
 import _ from "lodash";
@@ -66,7 +68,6 @@ import * as constants from "app_constants";
 import * as TextStore from "state_helpers/TextStore";
 
 const DISMISS_CONTROLS_ON_CLICK = false;
-
 function getInsertionKey(annotation) {
     return [annotation.start, annotation.length].join("-");
 }
@@ -171,7 +172,7 @@ const mapStateToProps = (state) => {
             annotations: null,
             loading: loading,
             paginated: null,
-            pageImagesVisible: false,
+            pageImagesVisible: true,
             annotatedText: null,
             selectedAnnotatedSegments: null,
             annotationPositions: null,
@@ -183,6 +184,7 @@ const mapStateToProps = (state) => {
             isSecondWindowOpen: isSecondWindowOpen(state),
             isPanelLinked,
             textAlignmentById,
+            imageAlignmentById: getImageAlignmentById(state),
         };
     }
 
@@ -350,6 +352,8 @@ const mapStateToProps = (state) => {
         searchResults: getSearchResults(state, searchValue),
         showTableContent: getShowTableContent(state),
         syncIdOnSearch: reducers.getSyncIdOnSearch(state),
+        imageAlignmentById: getImageAlignmentById(state),
+        imageScrollId: getImageScrollId(state),
     };
 };
 
@@ -588,6 +592,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 actions.changedActiveTextAnnotation(null);
             dispatch(dismissTextAnnotation);
         },
+        changeImageScrollId: (data) => {
+            dispatch(actions.changeImageScrollId(data));
+        },
     };
 };
 
@@ -724,4 +731,4 @@ const TextDetailContainer = connect(
     mergeProps
 )(TextDetail);
 
-export default TextDetailContainer;
+export default React.memo(TextDetailContainer);

@@ -51,7 +51,7 @@ function Settings(props) {
                 <Grow in={showOption}>
                     <MenuList
                         dense
-                        style={{
+                        sx={{
                             position: "absolute",
                             right: 0,
                             zIndex: 2,
@@ -73,14 +73,6 @@ function Settings(props) {
                         <MenuItem onClick={() => props.onExport()}>
                             Export Document
                             {props.exportingWitness && <CheckIcon />}
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() =>
-                                props.onChangePanelLink(!props.isPanelLinked)
-                            }
-                        >
-                            {props.isPanelLinked && <CheckIcon />}
-                            link panels
                         </MenuItem>
                     </MenuList>
                 </Grow>

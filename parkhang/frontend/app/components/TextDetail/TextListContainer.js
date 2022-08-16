@@ -8,32 +8,16 @@ import type { AppState } from "reducers";
 import * as api from "api";
 import * as reducers from "reducers";
 import { batchActions } from "redux-batched-actions";
+import { reduce } from "lodash";
 
 const mapStateToProps = (state: AppState) => {
-    const searchValue = reducers.getSearchValue(state);
-    const searchResults = reducers.getSearchResults(state, searchValue);
-    const selectedSearchResult = reducers.getSelectedSearchResult(state);
     // TODO: display search results or spinner depending on when anything
     // returned
-    let searching = false;
     let texts = reducers.getTexts(state);
-    if (searchValue.length > 0) {
-        if (searchResults === null) {
-            searching = true;
-            texts = [];
-        } else {
-            texts = texts.filter((text) =>
-                searchResults.hasOwnProperty(text.id)
-            );
-        }
-    }
+    let selectedText = reducers.getSelectedText(state);
     return {
-        texts: texts,
-        selectedText: getSelectedText(state),
-        searchTerm: searchValue,
-        searchResults,
-        selectedSearchResult,
-        searching,
+        texts,
+        selectedText,
     };
 };
 
@@ -50,4 +34,4 @@ const TextListContainer = connect(
     mapDispatchToProps
 )(TextList);
 
-export default TextListContainer;
+export default React.memo(TextListContainer);

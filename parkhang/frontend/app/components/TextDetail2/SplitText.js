@@ -15,6 +15,7 @@ import _, { split } from "lodash";
 import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
+import { Box } from "@mui/material";
 
 let _searchResultsCache: {
     [splitTextUniqueId: string]: {
@@ -801,19 +802,26 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     style={{ display: "none" }}
                     onClick={() => this.updateList(true)}
                 ></button>
-                <AutoSizer>
-                    {({ height, width }) => (
+                <AutoSizer disableWidth>
+                    {({ height }) => (
                         <List
                             ref={(list) => (this.list = list)}
                             height={height}
                             rowCount={props.splitText.texts.length}
                             rowHeight={cache.rowHeight}
                             rowRenderer={rowRenderer}
-                            width={width}
+                            width={1}
                             overscanRowCount={1}
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
                             scrollToAlignment="start"
+                            containerStyle={{
+                                width: "100%",
+                                maxWidth: "100%",
+                            }}
+                            style={{
+                                width: "100%",
+                            }}
                         ></List>
                     )}
                 </AutoSizer>

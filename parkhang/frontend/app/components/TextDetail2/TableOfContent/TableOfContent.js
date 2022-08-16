@@ -58,7 +58,15 @@ function TableOfContent() {
     let loaded = data.length > 0 ? true : false;
 
     return (
-        <Box>
+        <Box
+            sx={{
+                bgcolor: "heading.main",
+                color: "text.primary",
+                width: "100%",
+                height: "100%",
+                paddingInline: 2,
+            }}
+        >
             <Toolbar
                 sx={{
                     justifyContent: "space-between",

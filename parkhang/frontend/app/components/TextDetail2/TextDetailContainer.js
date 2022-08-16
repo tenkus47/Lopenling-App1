@@ -429,4 +429,4 @@ const TextDetailContainer = connect(
     mergeProps
 )(TextDetail);
 
-export default TextDetailContainer;
+export default React.memo(TextDetailContainer);

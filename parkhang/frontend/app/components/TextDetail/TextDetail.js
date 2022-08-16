@@ -1,9 +1,7 @@
 // @flow
-import React from "react";
+import React, { Suspense } from "react";
 import classnames from "classnames";
-import imageStyle from "../Editors/MediaComponent/Image.css";
-
-import SplitTextComponent from "components/TextDetail/SplitText";
+import imageStyle from "components/MediaComponent/Image.css";
 
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
@@ -22,6 +20,8 @@ import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
 import { Box, ClickAwayListener, Divider, Slide } from "@mui/material";
 import _ from "lodash";
 import TableOfContent from "./TableOfContent/TableOfContent";
+
+import SplitTextComponent from "components/TextDetail/SplitText";
 
 export type Props = {
     paginated: boolean,
@@ -66,6 +66,9 @@ export type Props = {
     changeShowTableContent: () => void,
     showTableContent: Boolean,
     syncIdOnSearch: String,
+    imageAlignmentById: [],
+    changeImageScrollId: () => void,
+    imageScrollId: {},
 };
 
 let textDetailId = 0;
@@ -164,7 +167,10 @@ class TextDetail extends React.Component<Props> {
                     showTableContent={this.props.showTableContent}
                     selectedText={this.props.text}
                     syncIdOnSearch={this.props.syncIdOnSearch}
-                ></SplitTextComponent>
+                    imageAlignmentById={this.props.imageAlignmentById}
+                    changeImageScrollId={this.props.changeImageScrollId}
+                    imageScrollId={this.props.imageScrollId}
+                />
             );
         }
         let textComponents = [textComponent];
@@ -173,6 +179,8 @@ class TextDetail extends React.Component<Props> {
                 sx={{
                     height: "100%",
                     flex: 1,
+                    bgcolor: "navbar.main",
+                    color: "text.primary",
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -214,9 +222,6 @@ class TextDetail extends React.Component<Props> {
                                 height: "100%",
                                 minWidth: "50%",
                                 right: 0,
-                                background: "#eee",
-                                borderLeft: "1px solid gray",
-                                padding: 2,
                             }}
                         >
                             <TableOfContent />

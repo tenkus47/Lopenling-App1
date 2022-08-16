@@ -1,4 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, {
+    useState,
+    useRef,
+    useCallback,
+    useMemo,
+    useEffect,
+} from "react";
 import {
     List,
     AutoSizer,
@@ -13,39 +19,45 @@ import {
     Box,
     Typography,
     Button,
+    Grow,
 } from "@mui/material";
 import addShay from "lib/addTibetanShay";
-
+import { filter } from "lodash";
 function TextList(props) {
     const temptext = useRef(props.texts);
     const [textslist, setTextList] = useState(temptext.current);
+    const [filterValue, setFilterValue] = useState(null);
     const onSelectedText = props.onSelectedText;
     const selectedText = props.selectedText;
     const [isOpen, setIsOpen] = useState(false);
-    let selected = selectedText ? selectedText.name : textslist[0].name;
+    let selected = selectedText?.name;
     const cache = useRef(
         new CellMeasurerCache({
             fixedHeight: true,
-            defaultHeight: 30,
-            defaultWidth: 400,
+            defaultHeight: 40,
         })
     );
 
     let classes = [styles.textlist];
-
+    useEffect(() => {
+        let temp = [];
+        if (filterValue === "") {
+            setTextList([...temptext.current]);
+        }
+        if (filterValue !== null && filterValue !== "") {
+            temp = temptext.current.filter((val) => {
+                return val.name.includes(filterValue);
+            });
+            setTextList([...temp]);
+        }
+    }, [filterValue]);
     const handleClick = () => {
         setIsOpen((prev) => !prev);
         if (isOpen === false) classes.push(styles.open);
     };
     const handleChange = (e) => {
         let value = e.target.value;
-        setTextList(temptext.current);
-        if (value === "" || value === null) {
-            return;
-        }
-
-        let newtextslist = textslist.filter((l) => l.name.includes(value));
-        setTextList(newtextslist);
+        setFilterValue(value);
     };
 
     return (
@@ -65,10 +77,15 @@ function TextList(props) {
                 >
                     <Typography noWrap={true}>{selected}</Typography>
                 </Button>
-                {isOpen && (
+
+                <Grow in={isOpen}>
                     <Box
                         className={classname(classes)}
-                        sx={{ position: "absolute", bgcolor: "heading.main" }}
+                        sx={{
+                            position: "absolute",
+                            bgcolor: "heading.main",
+                            zIndex: 1,
+                        }}
                     >
                         <TextField
                             onChange={handleChange}
@@ -82,7 +99,7 @@ function TextList(props) {
                                 <List
                                     width={width}
                                     height={height}
-                                    rowHeight={cache.current.rowHeight}
+                                    rowHeight={40}
                                     deferredMeasurementCache={cache.current}
                                     rowCount={textslist.length}
                                     rowRenderer={({
@@ -138,10 +155,10 @@ function TextList(props) {
                             )}
                         </AutoSizer>
                     </Box>
-                )}
+                </Grow>
             </div>
         </ClickAwayListener>
     );
 }
 
-export default TextList;
+export default React.memo(TextList);

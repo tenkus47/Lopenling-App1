@@ -74,18 +74,6 @@ function Settings(props) {
                                 Export Document
                             </Typography>
                         </MenuItem>
-                        <Divider />
-
-                        <MenuItem
-                            onClick={() =>
-                                props.onChangePanelLink(!props.isPanelLinked)
-                            }
-                        >
-                            {props.isPanelLinked && <CheckIcon />}
-                            <Typography variant="subtitle2">
-                                link panels
-                            </Typography>
-                        </MenuItem>
                     </MenuList>
                 </Grow>
             </Box>

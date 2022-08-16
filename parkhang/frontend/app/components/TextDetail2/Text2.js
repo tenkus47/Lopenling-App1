@@ -331,8 +331,6 @@ export default class Text2 extends React.Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        this.textAlignmentById = this.props.textAlignmentById;
-
         const renderedHtml = this.generateHtml(nextProps, nextState);
         if (this.props.fontSize !== nextProps.fontSize) {
             return true;
@@ -341,12 +339,15 @@ export default class Text2 extends React.Component<Props, State> {
             renderedHtml.__html === this._renderedHtml.__html
         ) {
             return false;
-        } else {
+        } else if (this._renderedHtml !== renderedHtml) {
             this._renderedHtml = renderedHtml;
             return true;
         }
+        return false;
     }
-
+    componentDidUpdate() {
+        this.textAlignmentById = this.props.textAlignmentById;
+    }
     render() {
         let classes = [styles.text];
         if (this.props.row === 0) {

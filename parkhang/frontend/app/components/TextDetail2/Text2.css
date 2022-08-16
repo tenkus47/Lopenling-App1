@@ -22,7 +22,7 @@
     line-height: 1.8;
     padding: 0px var(--paddingSide);
     letter-spacing: 0.04em;
-    background-color: var(--text-bg);
+    /* background-color: var(--text-bg); */
     margin: 0px;
     min-width: 0;
     width: 100%;
