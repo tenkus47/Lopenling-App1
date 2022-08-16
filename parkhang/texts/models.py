@@ -32,6 +32,10 @@ class Text(models.Model):
         return self.name
 
 
+AUTHOR_CHOICES=[('dawa','dawa'),('kalden','kalden')]  
+
+CATEGORY_CHOICES=[('root','root'),('commentary','commentary')]
+
 class FeaturedText(models.Model):
     """Text to be featured in home page"""
 
@@ -39,7 +43,9 @@ class FeaturedText(models.Model):
     # order in which the text should be displayed
     order = models.IntegerField()
     description = models.CharField(max_length=500, blank=True, null=True)
-
+    category=models.CharField(max_length=100,blank=True,null=True,choices=CATEGORY_CHOICES)
+    length=models.IntegerField(default=0)
+    author=models.CharField(max_length=100,blank=True,null=True,choices=AUTHOR_CHOICES)
 
 class Topic(models.Model):
     name = models.CharField(max_length=DEFAULT_MAX_LENGTH)

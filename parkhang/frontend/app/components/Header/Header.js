@@ -271,6 +271,14 @@ export const Header = (props: HeaderProps) => {
                                 <FormattedMessage id={"lopenlingForum"} />
                             </Button>
                         </Tooltip>
+                        <Button
+                            href={"https://www.nalanda.works"}
+                            style={{ color: "#676767" }}
+                            variant="text"
+                            component={"a"}
+                        >
+                            <FormattedMessage id={"Nalanda"} />
+                        </Button>
                     </Box>
                 </Box>
                 <Box sx={{ display: { xs: "block", md: "none" } }}>
@@ -318,6 +326,16 @@ export const Header = (props: HeaderProps) => {
                                 component={"a"}
                             >
                                 <FormattedMessage id={"lopenlingForum"} />
+                            </Button>
+                        </MenuItem>
+                        <MenuItem onClick={handleCloseNavMenu}>
+                            <Button
+                                href={"https://www.nalanda.works"}
+                                style={{ color: "#676767" }}
+                                variant="text"
+                                component={"a"}
+                            >
+                                <FormattedMessage id={"Nalanda"} />
                             </Button>
                         </MenuItem>
                     </Menu>

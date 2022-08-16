@@ -6,7 +6,6 @@
 
 <h3 align="center">Lopenling App</h3>
 
-
 <!-- Replace the title of the repository -->
 
 <p align="center">
@@ -20,6 +19,7 @@
 ## Description
 
 An application that allow users to participate in creating critical editions of texts, initially targeting the Tibetan language.
+
 <!-- This section provides a high-level overview for the repo -->
 
 ## Owner
@@ -27,7 +27,6 @@ An application that allow users to participate in creating critical editions of 
 - [@sherab](https://github.com/sherab), Fullstack
 - [@10zinten](https://github.com/10zinten), Backend
 - [@tenkus47](https://github.com/tenkus47), Frontend
-
 
 <!-- This section lists the owners of the repo -->
 
@@ -49,7 +48,7 @@ There are two parts, the server-side API and the frontend.
 
 The server-side is implemented with [Django](https://www.djangoproject.com/), targeting python >= 3.6. The database is expected to be PostgreSQL although SQLite is currently used for development.
 
-* [django-rest-framework](http://www.django-rest-framework.org/) is used for the API.
+- [django-rest-framework](http://www.django-rest-framework.org/) is used for the API.
 
 User accounts are connected to a running Discourse instance. Setup is explained below.
 
@@ -70,11 +69,13 @@ On the server, it is recommended to use nginx and uwsgi to serve the app. The `a
 ## Development with Docker
 
 Build the stack
+
 ```bash
 $ docker-compose -f local.yml build
 ```
 
 Run the stack
+
 ```bash
 $ docker-compose -f local.yml up
 ```
@@ -82,12 +83,13 @@ $ docker-compose -f local.yml up
 Execute Management Commands
 
 ```bash
-$ docker-compose -f local.yml run --rm django python manage.py makemigration
+$ docker-compose -f local.yml run --rm django python manage.py makemigrations
 $ docker-compose -f local.yml run --rm django python manage.py migrate
 $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 ```
 
 Import Texts
+
 ```
 docker-compose -f local.yml run --rm django python manage.py import_texts /var/parkhang/data/texts སྡེ་དགེ
 ```
@@ -96,41 +98,41 @@ docker-compose -f local.yml run --rm django python manage.py import_texts /var/p
 
 The UI is implemented using a React/Redux stack:
 
-* [React](https://facebook.github.io/react/)
+- [React](https://facebook.github.io/react/)
 
-    For the view layer.
+  For the view layer.
 
-* [Redux](http://redux.js.org/)
+- [Redux](http://redux.js.org/)
 
-    For managing data and state.
+  For managing data and state.
 
-* [Redux-Saga](https://github.com/redux-saga/redux-saga)
+- [Redux-Saga](https://github.com/redux-saga/redux-saga)
 
-    For managing side-effects e.g. API calls over the Network.
+  For managing side-effects e.g. API calls over the Network.
 
 Also, CSS is managed using:
 
-* [cssnext](http://cssnext.io/)
+- [cssnext](http://cssnext.io/)
 
-    Enables the use of modern css features that are not yet available in all browsers.
+  Enables the use of modern css features that are not yet available in all browsers.
 
-* [CSS Modules](https://github.com/css-modules/css-modules)
+- [CSS Modules](https://github.com/css-modules/css-modules)
 
-    Enables css to be scoped locally to a module e.g. a react component.
+  Enables css to be scoped locally to a module e.g. a react component.
 
 The following tooling is required for development:
 
-* [node and npm](https://nodejs.org/en/)
+- [node and npm](https://nodejs.org/en/)
 
-    For installing and managing third-party packages.
+  For installing and managing third-party packages.
 
-* [webpack](https://webpack.js.org/)
+- [webpack](https://webpack.js.org/)
 
-    For building/packaging the code for release.
+  For building/packaging the code for release.
 
-* [Jest](https://facebook.github.io/jest/)
+- [Jest](https://facebook.github.io/jest/)
 
-    Used for testing
+  Used for testing
 
 ##### Installing
 
@@ -153,30 +155,29 @@ Testing is provided using jest, and the test suite can be initiated using npm:
 
 The following components make up the data:
 
-* Texts
+- Texts
 
-    The texts we are creating critical editions of. Basically consists of metadata, such as the name of the text.
+  The texts we are creating critical editions of. Basically consists of metadata, such as the name of the text.
 
-* Base Witness
+- Base Witness
 
-    This is a version of the text referred to by other versions. It is the only version that actually contains content. These can only be created when at least 90% of the content is available. Once created, this content cannot be changed - any changes, such as spelling corrections, will be applied via Annotations (see below).
+  This is a version of the text referred to by other versions. It is the only version that actually contains content. These can only be created when at least 90% of the content is available. Once created, this content cannot be changed - any changes, such as spelling corrections, will be applied via Annotations (see below).
 
-* Witnesses
+- Witnesses
 
-    Versions of a text, such as those part of a regional collection like Derge or Narthang. They are used only to store metadata, such as the collection it belongs to, and as a reference when creating annotations.
+  Versions of a text, such as those part of a regional collection like Derge or Narthang. They are used only to store metadata, such as the collection it belongs to, and as a reference when creating annotations.
 
-* Annotations
+- Annotations
 
-    Required changes are packaged in Annotations. These point to a specific location in the base witness, and the length of affected text. They also contain the content that should replace the current content at that location. This is very similar to a [web annotation](https://www.w3.org/TR/annotation-model/#annotations), and could be either converted seamlessly to RDF by an API, or exported.
+  Required changes are packaged in Annotations. These point to a specific location in the base witness, and the length of affected text. They also contain the content that should replace the current content at that location. This is very similar to a [web annotation](https://www.w3.org/TR/annotation-model/#annotations), and could be either converted seamlessly to RDF by an API, or exported.
 
-    These annotations **always** point to a position in the base witness, no matter how many annotations have been applied. This means annotations can keep the same positioning data so long as the base text is not changed. The structure of the content is generated automatically in code to display to the user and/or export to a file.
+  These annotations **always** point to a position in the base witness, no matter how many annotations have been applied. This means annotations can keep the same positioning data so long as the base text is not changed. The structure of the content is generated automatically in code to display to the user and/or export to a file.
 
-    Annotations that change the text are called *Variants*.
+  Annotations that change the text are called _Variants_.
 
-    There is also the possibility for non-mutating annotations, such as locations of page breaks, or notes, but they have not yet been implemented in the UI.
+  There is also the possibility for non-mutating annotations, such as locations of page breaks, or notes, but they have not yet been implemented in the UI.
 
 Differences between the versions are highlighted and a user can select which one they think is correct. A user's selections are associated only with that user, enabling multiple users to work on the same text concurrently.
-
 
 #### Differences between witnesses
 
@@ -203,21 +204,21 @@ The API is setup in the `api` app.
 
 #### Javascript
 
-* The `app` directory contains most of the development code.
+- The `app` directory contains most of the development code.
 
-* `app/lib` contains non-UI related code.
+- `app/lib` contains non-UI related code.
 
-* `static` contains generated webpack bundles.
+- `static` contains generated webpack bundles.
 
-* `website` contains files that are used by the Django-generated pages, such as login and signup.
+- `website` contains files that are used by the Django-generated pages, such as login and signup.
 
 ###### Redux
 
 The redux files are stored in:
 
-* `actions`
+- `actions`
 
-* `reducers`
+- `reducers`
 
 [Selectors](http://redux.js.org/docs/recipes/ComputingDerivedData.html#connecting-a-selector-to-the-redux-store) are used for accessing state, and are stored in the related reducer file.
 
@@ -227,7 +228,7 @@ The redux files are stored in:
 
 React components are stored in
 
-* `components`
+- `components`
 
 ## Code notes
 
@@ -263,7 +264,7 @@ To install on an existing dokku server:
 
 #### Import data
 
-1. `rsync` texts into the apps data dir
+1.  `rsync` texts into the apps data dir
 
         rsync --partial --progress -a ./data/texts/ root@test.nalanda.works:/var/lib/dokku/data/storage/nalanda-works/data/texts/
 
@@ -284,6 +285,7 @@ docker-compose -f production.yml up
 ```
 
 To run the stack and detach the containers, run:
+
 ```bash
 docker-compose -f production.yml up -d
 ```
@@ -341,3 +343,4 @@ The following environment variables need to be set for users to login using thei
     The ID of the Topic used to post questions from a parkhang instance.
     e.g. 4
 
+```

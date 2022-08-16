@@ -84,6 +84,12 @@ const routesMap = {
     USER: "/user/:id",
     [actions.TEXTID_ONLY_URL]: "/texts/:textId",
     [actions.TEXTS]: "/textSelection",
+    Text: {
+        path: "/test",
+        thunk: (data) => {
+            console.log(data);
+        },
+    },
 };
 const routes = connectRoutes(routesMap, {
     initialDispatch: false,

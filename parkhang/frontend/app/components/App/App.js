@@ -12,7 +12,7 @@ import HomePage from "components/HomePage";
 import Favicon from "react-favicon";
 import Editor from "components/Editors/EditorContainer";
 import Indrajala from "images/indrajala_logo.png";
-import { Typography } from "@mui/material";
+import { Stack, Typography, Box } from "@mui/material";
 import { history } from "redux-first-router";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SpeedDial from "@mui/material/SpeedDial";
@@ -21,9 +21,12 @@ import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import MessageIcon from "@mui/icons-material/Message";
 import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
-import { styled } from "@mui/material/styles";
 import VerticalSplitIcon from "@mui/icons-material/VerticalSplit";
 import { Snackbar, Alert } from "@mui/material";
+import { prayer } from "./prayerMarquee";
+import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
+import Marquee from "react-fast-marquee";
+
 const theme = createTheme({
     palette: {
         primary: {
@@ -155,45 +158,68 @@ const App = (props: Props) => {
                 {url.location.pathname === "/textSelection" ||
                 url.location.pathname === "" ? (
                     <>
-                        <HomePage />
-                        <div
+                        <ErrorBoundary>
+                            {/* check for any unknown error on Homepage without causing render error  */}
+                            <HomePage />
+                        </ErrorBoundary>
+                        <Stack
                             style={{
-                                height: 45,
                                 width: "100%",
                                 position: "fixed",
-                                background: "#292826",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 bottom: 0,
                             }}
                         >
-                            <Typography
-                                textAlign={"center"}
-                                variant="h6"
-                                fontSize={{ md: "20px", xs: "10px" }}
-                                textTransform={"capitalize"}
-                                color="white"
-                            >
-                                Our Trusted partner
-                            </Typography>
-
-                            <img
-                                src={Indrajala}
-                                alt="indrajala logo"
-                                style={{
-                                    objectFit: "contain",
-                                    maxHeight: "100%",
-                                    marginLeft: "40px",
+                            <Box
+                                sx={{
+                                    height: "100%",
+                                    display: "flex",
+                                    background: "#292826",
+                                    width: "100%",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: 55,
                                 }}
-                            />
-                        </div>
+                            >
+                                <Typography
+                                    textAlign={"center"}
+                                    variant="h6"
+                                    fontSize={{ md: "20px", xs: "10px" }}
+                                    textTransform={"capitalize"}
+                                    color="white"
+                                >
+                                    Our Trusted partner
+                                </Typography>
+
+                                <img
+                                    src={Indrajala}
+                                    alt="indrajala logo"
+                                    style={{
+                                        objectFit: "contain",
+                                        maxHeight: "100%",
+                                        marginLeft: "40px",
+                                    }}
+                                />
+                            </Box>
+                            <Marquee
+                                pauseOnHover={true}
+                                gradient={false}
+                                style={{
+                                    background: "#292826",
+                                    color: "white",
+                                }}
+                            >
+                                {prayer}
+                            </Marquee>
+                        </Stack>
                     </>
                 ) : SelectedText ? (
                     <>
                         <Editor props={props} />
                         <SpeedDial
-                            ariaLabel="SpeedDial basic example"
+                            ariaLabel="SpeedDial basic"
                             sx={{ position: "absolute", bottom: 16, right: 16 }}
                             icon={<SpeedDialIcon />}
                         >

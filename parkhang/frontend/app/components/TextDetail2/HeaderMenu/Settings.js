@@ -4,7 +4,15 @@ import Slider from "../../UI/Slider";
 import useLocalStorage from "components/utility/useLocalStorage";
 
 import CheckIcon from "@mui/icons-material/Check";
-import { Button, MenuList, MenuItem, Divider, Grow, Box } from "@mui/material";
+import {
+    Button,
+    MenuList,
+    MenuItem,
+    Divider,
+    Grow,
+    Box,
+    ClickAwayListener,
+} from "@mui/material";
 import { FONT_LIST } from "app_constants";
 
 function Settings(props) {
@@ -35,53 +43,54 @@ function Settings(props) {
         setShowOption(false);
     };
     return (
-        <>
-            {" "}
-            <Button
-                onClick={handleClick}
-                size="small"
-                variant="text"
-                style={{ padding: 0, color: "black" }}
-            >
-                <WrenchIcon height={20} width={20} />
-            </Button>
-            <Grow in={showOption}>
-                <MenuList
-                    dense
-                    style={{
-                        position: "absolute",
-                        right: 0,
-                        zIndex: 2,
-                        top: 30,
-                        backgroundColor: "#eee",
-                    }}
+        <ClickAwayListener onClickAway={() => setShowOption(false)}>
+            <Box>
+                <Button
+                    onClick={handleClick}
+                    size="small"
+                    variant="text"
+                    style={{ padding: 0, color: "black" }}
                 >
-                    <Slider
-                        max={20}
-                        min={7}
-                        initialvalue={props.textFontSize}
-                        changeSize={props.onChangedFontSize}
-                    />
-                    <Divider />
-                    <FontSelection
-                        selectFont={handlefont}
-                        selectedfont={fontSelect}
-                    />
-                    <MenuItem onClick={() => props.onExport()}>
-                        Export Document
-                        {props.exportingWitness && <CheckIcon />}
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() =>
-                            props.onChangePanelLink(!props.isPanelLinked)
-                        }
+                    <WrenchIcon height={20} width={20} />
+                </Button>
+                <Grow in={showOption}>
+                    <MenuList
+                        dense
+                        style={{
+                            position: "absolute",
+                            right: 0,
+                            zIndex: 2,
+                            top: 30,
+                            backgroundColor: "#eee",
+                        }}
                     >
-                        {props.isPanelLinked && <CheckIcon />}
-                        link panels
-                    </MenuItem>
-                </MenuList>
-            </Grow>
-        </>
+                        <Slider
+                            max={20}
+                            min={7}
+                            initialvalue={props.textFontSize}
+                            changeSize={props.onChangedFontSize}
+                        />
+                        <Divider />
+                        <FontSelection
+                            selectFont={handlefont}
+                            selectedfont={fontSelect}
+                        />
+                        <MenuItem onClick={() => props.onExport()}>
+                            Export Document
+                            {props.exportingWitness && <CheckIcon />}
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() =>
+                                props.onChangePanelLink(!props.isPanelLinked)
+                            }
+                        >
+                            {props.isPanelLinked && <CheckIcon />}
+                            link panels
+                        </MenuItem>
+                    </MenuList>
+                </Grow>
+            </Box>
+        </ClickAwayListener>
     );
 }
 

@@ -26,6 +26,6 @@
     left: 50%;
     top: 20%;
     padding: 50px;
-    background-color: rgba(1, 1, 1, 0.1);
     border-radius: 5px;
+    background-color: transparent;
 }

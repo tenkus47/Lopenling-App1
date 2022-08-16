@@ -144,7 +144,7 @@ class FeaturedTextSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FeaturedText
-        fields = ("text", "title", "order", "description")
+        fields = ("text", "title", "order", "description","category","length","author")
 
     def get_title(self, instance):
         return instance.text.name

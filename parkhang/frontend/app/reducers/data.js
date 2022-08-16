@@ -1,4 +1,3 @@
-// @flow
 import _ from "lodash";
 import arrayToObject from "lib/arrayToObject";
 import * as actions from "actions";
@@ -203,6 +202,7 @@ function loadedWitnesses(
     state: DataState,
     action: actions.LoadedWitnessesAction
 ): DataState {
+    if (!Array.isArray(action.witnesses)) return { ...state };
     const witnessesById = arrayToObject(action.witnesses, "id");
     const textWitnessesById = {
         ...state.textWitnessesById,
