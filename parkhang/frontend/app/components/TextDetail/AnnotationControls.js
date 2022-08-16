@@ -96,6 +96,7 @@ class AnnotationControls extends React.Component<Props> {
     componentDidUpdate() {
         // Need to delay calling this because the browser
         // may not have finished rendering when first called.
+
         setTimeout(this.updatePosition.bind(this), 0);
     }
 
@@ -414,7 +415,6 @@ class AnnotationControls extends React.Component<Props> {
             if (!props.user.isLoggedIn === !FAKE_LOGIN) {
                 // NOTE: FormattedMessage cannot take a child when using
                 // the values option, so need to wrap it in a div
-                console.log(!props.user.isLoggedIn === !FAKE_LOGIN);
                 anonymousUserMessage = (
                     <div
                         className={styles.anonymousMessage}
@@ -681,4 +681,4 @@ class AnnotationControls extends React.Component<Props> {
     }
 }
 
-export default AnnotationControls;
+export default React.memo(AnnotationControls);

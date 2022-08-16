@@ -1,16 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import TextDetailHeading from "./TextDetailHeadingContainer";
-import SplitTextComponent from "./SplitText";
 import SplitText from "lib/SplitText";
 import Loader from "react-loader";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import styles from "./TextDetail.css";
-import { Box, ClickAwayListener, Slide } from "@mui/material";
+import { Box, Divider, Slide } from "@mui/material";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
 import classnames from "classnames";
 
-import imageStyle from "../Editors/MediaComponent/Image.css";
+import imageStyle from "components/MediaComponent/Image.css";
+import SplitTextComponent from "./SplitText";
+
 function TextDetail(props) {
     const ref = useRef();
     let text = {
@@ -73,6 +74,7 @@ function TextDetail(props) {
                 textAlignmentById={props.textAlignmentById}
                 isPanelLinked={props.isPanelLinked}
                 changeScrollToId={props.changeScrollToId}
+                changeSyncIdOnClick={props.changeSyncIdOnClick}
                 selectedWindow={props.selectedWindow}
                 selectedSourceRange={props.selectedSourceRange}
                 selectedTargetRange={props.selectedTargetRange}
@@ -93,12 +95,15 @@ function TextDetail(props) {
         <Box
             ref={ref}
             className={styles.textDetail2}
-            style={{
+            sx={{
                 height: "100%",
                 flex: 1,
+                bgcolor: "navbar.main",
+                color: "text.primary",
             }}
         >
             <TextDetailHeading />
+            <Divider />
             <Loader loaded={!props.loading} />
             <Box
                 style={{
@@ -115,8 +120,11 @@ function TextDetail(props) {
                         utilStyles.flex
                     )}
                 >
-                    {!props.loading ? textComponents : <div></div>}
+                    <Suspense fallback={<div />}>
+                        {!props.loading ? textComponents : <div></div>}
+                    </Suspense>
                 </Box>
+
                 <Slide
                     direction="left"
                     in={props.showTableContent}
@@ -128,9 +136,6 @@ function TextDetail(props) {
                             height: "100%",
                             minWidth: "50%",
                             right: 0,
-                            background: "#eee",
-                            borderLeft: "1px solid gray",
-                            padding: 2,
                         }}
                     >
                         <TableOfContent />

@@ -42,7 +42,7 @@ function Filter({
             <Box flex={1}>
                 <SearchBar handleChange={handleChange} />
             </Box>
-            <Box flex={1}>
+            {/* <Box flex={1}>
                 <Author setAuthor={setAuthor} AuthorList={AuthorList} />
             </Box>
             <Box flex={0}>
@@ -53,7 +53,7 @@ function Filter({
             <Box flex={2}>
                 <Typography mt={2}>Text Length</Typography>
                 <TextLength setLengthRange={setLengthRange} />
-            </Box>
+            </Box> */}
         </Stack>
     );
 }

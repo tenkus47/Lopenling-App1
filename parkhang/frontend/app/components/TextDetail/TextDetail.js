@@ -1,9 +1,7 @@
 // @flow
-import React from "react";
+import React, { Suspense } from "react";
 import classnames from "classnames";
-import imageStyle from "../Editors/MediaComponent/Image.css";
-
-import SplitTextComponent from "components/TextDetail/SplitText";
+import imageStyle from "components/MediaComponent/Image.css";
 
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
@@ -19,9 +17,11 @@ import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
-import { Box, Slide } from "@mui/material";
+import { Box, ClickAwayListener, Divider, Slide } from "@mui/material";
 import _ from "lodash";
 import TableOfContent from "./TableOfContent/TableOfContent";
+
+import SplitTextComponent from "components/TextDetail/SplitText";
 
 export type Props = {
     paginated: boolean,
@@ -66,6 +66,9 @@ export type Props = {
     changeShowTableContent: () => void,
     showTableContent: Boolean,
     syncIdOnSearch: String,
+    imageAlignmentById: [],
+    changeImageScrollId: () => void,
+    imageScrollId: {},
 };
 
 let textDetailId = 0;
@@ -134,6 +137,7 @@ class TextDetail extends React.Component<Props> {
                     selectedAnnotatedSegments={
                         this.props.selectedAnnotatedSegments
                     }
+                    syncIdOnClick={this.props.syncIdOnClick}
                     textListVisible={this.props.textListVisible}
                     showImages={this.props.pageImagesVisible}
                     imagesBaseUrl={this.props.imagesBaseUrl}
@@ -163,15 +167,20 @@ class TextDetail extends React.Component<Props> {
                     showTableContent={this.props.showTableContent}
                     selectedText={this.props.text}
                     syncIdOnSearch={this.props.syncIdOnSearch}
-                ></SplitTextComponent>
+                    imageAlignmentById={this.props.imageAlignmentById}
+                    changeImageScrollId={this.props.changeImageScrollId}
+                    imageScrollId={this.props.imageScrollId}
+                />
             );
         }
         let textComponents = [textComponent];
         return (
             <Box
-                style={{
+                sx={{
                     height: "100%",
                     flex: 1,
+                    bgcolor: "navbar.main",
+                    color: "text.primary",
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -182,6 +191,7 @@ class TextDetail extends React.Component<Props> {
                 ref={this.ref}
             >
                 <TextDetailHeadingContainer />
+                <Divider />
                 <Loader loaded={!this.props.loading} zIndex={5} />
                 <Box
                     style={{
@@ -200,6 +210,7 @@ class TextDetail extends React.Component<Props> {
                     >
                         {!this.props.loading ? textComponents : <div />}
                     </Box>
+
                     <Slide
                         direction="left"
                         in={this.props.showTableContent}
@@ -211,9 +222,6 @@ class TextDetail extends React.Component<Props> {
                                 height: "100%",
                                 minWidth: "50%",
                                 right: 0,
-                                background: "#eee",
-                                borderLeft: "1px solid gray",
-                                padding: 2,
                             }}
                         >
                             <TableOfContent />

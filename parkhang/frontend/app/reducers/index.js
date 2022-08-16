@@ -152,7 +152,9 @@ export const getSelectedTextWitness = (state: AppState): Witness | null => {
 
     return witness;
 };
-
+export const getTheme = (state: AppState): String => {
+    return ui.getTheme(state.ui);
+};
 export const showPageImages = (state: AppState): boolean => {
     return ui.showPageImages(state.ui);
 };
@@ -240,6 +242,9 @@ export const isSecondWindowOpen = (state: AppState): number => {
 export const getScrollToId = (state) => {
     return ui.getScrollToId(state.ui);
 };
+export const getImageScrollId = (state) => {
+    return ui.getImageScrollId(state.ui);
+};
 
 export const getSyncIdOnClick = (state: AppState): number => {
     return ui.getSyncIdOnCLick(state.ui);
@@ -282,6 +287,10 @@ export const isImagePortrait = (state: AppState) => {
 };
 export const getSelectedImage = (state: AppState) => {
     return media.getSelectedImage(state.media);
+};
+
+export const getImageAlignmentById = (state) => {
+    return media.getImageAlignmentById(state.media);
 };
 // data
 export const getAlignment = (state: AppState) => {
@@ -388,6 +397,7 @@ export const hasLoadedWitnessAnnotations = (
     state: AppState,
     witnessId: number
 ): boolean => {
+    // console.log(state.data["witnessAnnotationsById"]);
     return state.data["witnessAnnotationsById"].hasOwnProperty(witnessId);
 };
 

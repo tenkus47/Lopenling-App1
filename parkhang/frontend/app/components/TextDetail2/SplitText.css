@@ -1,7 +1,7 @@
 @import 'AnnotationControls.css';
 
 .splitText2 {
-    background-color: white;
+    /* background-color: white; */
     flex-grow: 1;
     min-width: 0;
     width: 100%;
@@ -10,6 +10,7 @@
 
 .splitText2 * {
     scroll-behavior: smooth;
+    overflow: hidden;
 }
 
 .splitText2 *:focus {
@@ -63,7 +64,7 @@
 }
 
 :global(.ReactVirtualized__Grid__innerScrollContainer) {
-    overflow: visible !important;
+
     margin-bottom: 300px;
 }
 

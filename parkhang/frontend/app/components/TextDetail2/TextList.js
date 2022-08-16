@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     List,
     AutoSizer,
@@ -9,11 +9,19 @@ import classname from "classnames";
 import styles from "./TextList.css";
 import addShay from "lib/addTibetanShay";
 
-import { TextField, ClickAwayListener, Box, Typography } from "@mui/material";
+import {
+    TextField,
+    ClickAwayListener,
+    Box,
+    Typography,
+    Button,
+    Grow,
+} from "@mui/material";
 import { useMemo } from "react";
 function TextList(props) {
     const temptext = useRef(props.texts);
     const [textslist, setTextList] = useState(temptext.current);
+    const [filterValue, setFilterValue] = useState(null);
 
     const onSelectedText = props.onSelectedText;
     const selectedText = props.selectedText;
@@ -21,11 +29,23 @@ function TextList(props) {
     let selected = useMemo(() => {
         return selectedText ? selectedText.name : textslist[0].name;
     }, [selectedText, textslist]);
+    useEffect(() => {
+        let temp = [];
+        if (filterValue === "") {
+            setTextList([...temptext.current]);
+        }
+        if (filterValue !== null && filterValue !== "") {
+            temp = temptext.current.filter((val) => {
+                return val.name.includes(filterValue);
+            });
+            setTextList([...temp]);
+        }
+    }, [filterValue]);
 
     const cache = useRef(
         new CellMeasurerCache({
             fixedHeight: true,
-            defaultHeight: 30,
+            defaultHeight: 40,
         })
     );
 
@@ -37,34 +57,33 @@ function TextList(props) {
     };
     const handleChange = (e) => {
         let value = e.target.value;
-        setTextList(temptext.current);
-        if (value === "" || value === null) {
-            return;
-        }
-
-        let newtextslist = textslist.filter((l) => l.name.includes(value));
-        setTextList(newtextslist);
+        setFilterValue(value);
     };
     return (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-            <div style={{ position: "relative", border: "1px solid #eee" }}>
-                <Box
+            <div style={{ position: "relative", marginLeft: 10 }}>
+                <Button
                     onClick={handleClick}
-                    className={styles.listToggelBtn}
                     component="div"
+                    variant="outlined"
                     sx={{
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         width: "10rem",
                         height: "100%",
+                        color: "text.primary",
                     }}
                 >
                     <Typography noWrap={true}>{selected}</Typography>
-                </Box>
-                {isOpen && (
-                    <div
+                </Button>
+                <Grow in={isOpen}>
+                    <Box
                         className={classname(classes)}
-                        style={{ position: "absolute" }}
+                        sx={{
+                            position: "absolute",
+                            bgcolor: "heading.main",
+                            zIndex: 1,
+                        }}
                     >
                         <TextField
                             onChange={handleChange}
@@ -78,7 +97,7 @@ function TextList(props) {
                                 <List
                                     width={width}
                                     height={height}
-                                    rowHeight={cache.current.rowHeight}
+                                    rowHeight={40}
                                     deferredMeasurementCache={cache.current}
                                     rowCount={textslist.length}
                                     rowRenderer={({
@@ -116,6 +135,7 @@ function TextList(props) {
                                                                 sm: 10,
                                                                 xs: 10,
                                                             },
+                                                            color: "text.primary",
                                                         }}
                                                         component="div"
                                                     >
@@ -132,11 +152,11 @@ function TextList(props) {
                                 />
                             )}
                         </AutoSizer>
-                    </div>
-                )}
+                    </Box>
+                </Grow>
             </div>
         </ClickAwayListener>
     );
 }
 
-export default TextList;
+export default React.memo(TextList);

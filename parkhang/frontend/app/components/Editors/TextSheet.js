@@ -1,22 +1,43 @@
-import React, { memo, Suspense } from "react";
+import React, { memo, Suspense, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
-import MediaComponent from "./MediaComponent/MediaOptions";
+import MediaComponent from "components/MediaComponent";
 import { batchActions } from "redux-batched-actions";
-import { Box } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import Loader from "react-loader";
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
+import SplitPane from "react-split-pane";
+import styles from "./resizerStyle.css";
+import classnames from "classnames";
+const TextDetailContainer2 = React.lazy(() =>
+    import("components/TextDetail2/TextDetailContainer")
+);
 const TextDetailContainer = React.lazy(() =>
     import("components/TextDetail/TextDetailContainer")
 );
 
-const TextDetailContainer2 = React.lazy(() =>
-    import("components/TextDetail2/TextDetailContainer")
-);
 function TextSheet(props) {
+    let [landScape, setLandScape] = useState(true);
+    let editorRef = useRef(null);
+    const handleResize = (e) => {
+        let width = editorRef.current.clientWidth;
+        let height = editorRef.current.clientHeight;
+        if (width > height) {
+            setLandScape(true);
+        } else {
+            setLandScape(false);
+        }
+    };
+    useEffect(() => {
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
         <div
+            ref={editorRef}
             style={{
                 display: "flex",
                 flexDirection: "column",
@@ -25,134 +46,57 @@ function TextSheet(props) {
                 position: "relative",
             }}
         >
-            <Box
-                sx={{
-                    display: "flex",
-                    flex: 1,
-                    height: props.bodyHeight,
-                    flexDirection: { md: "row", xs: "column" },
+            <SplitPane
+                defaultSize={props.Media.isPanelVisible ? "35vh" : 0}
+                size={props.Media.isPanelVisible ? "35vh" : 0}
+                split="horizontal"
+                resizerClassName={classnames(styles.Resizer, styles.horizontal)}
+                resizerStyle={{
+                    display: !props.Media.isPanelVisible ? "none" : "block",
                 }}
             >
-                <Suspense
-                    fallback={
-                        <div>
-                            <Loader />
-                        </div>
-                    }
+                {props.Media.isPanelVisible ? <MediaComponent /> : <div />}
+
+                <SplitPane
+                    split={landScape ? "vertical" : "horizontal"}
+                    size={props.isSecondWindowOpen ? "50vw" : "100vw"}
+                    resizerClassName={classnames(
+                        styles.Resizer,
+                        { [styles.vertical]: landScape },
+                        { [styles.horizontal]: !landScape }
+                    )}
+                    onDragFinished={(width: number) => {
+                        if (width > 0)
+                            window.dispatchEvent(new Event("resize"));
+                    }}
                 >
                     <ErrorBoundary>
                         <TextDetailContainer />
                     </ErrorBoundary>
-                </Suspense>
-                <Suspense
-                    fallback={
-                        <div>
-                            <Loader />
-                        </div>
-                    }
-                >
                     <ErrorBoundary>
                         {props.isSecondWindowOpen && <TextDetailContainer2 />}
                     </ErrorBoundary>
-                </Suspense>
-            </Box>
-            {props.Media.isPanelVisible && (
-                //  && props.isSecondWindowOpen
-                <MediaComponent
-                    toggleImage={props.toggleImage}
-                    scrollToId={props.scrollToId}
-                    syncIdOnClick={props.syncIdOnClick}
-                    imageData={props.imageData}
-                    videoData={props.videoData}
-                    selectedMedia={props.Media}
-                    changeMediaSelection={props.changeMediaSelection}
-                    selectedText={props.selectedText}
-                    isImagePortrait={props.isImagePortrait}
-                    changeIsImagePortrait={props.changeIsImagePortrait}
-                    selectedSegmentId={props.selectedSegmentId}
-                    alignmentData={props.alignmentData}
-                    onSelectedSearchResult={props.onSelectedSearchResult}
-                    witness={props.witness}
-                    witnesses={props.witnesses}
-                    ImageVersion={props.ImageVersion}
-                    changeImageVersion={props.changeImageVersion}
-                    changeSelectedImage={props.changeSelectedImage}
-                    selectedImage={props.selectedImage}
-                />
-            )}
+                </SplitPane>
+            </SplitPane>
         </div>
     );
 }
 
 const mapStateToProps = (state: AppState): { user: User } => {
-    const scrollToId = reducers.getScrollToId(state);
-    const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
-    let Media = reducers.getMediaData(state);
-    const imageData = reducers.getImageData(state);
-    const videoData = reducers.getVideoData(state);
-    const selectedText = reducers.getSelectedText(state);
-    const isImagePortrait = reducers.isImagePortrait(state);
-    //  const selectedSegmentId=reducers.getSelectedSegmentId(state);
-    const witness = reducers.getSelectedTextWitnessId(state, selectedText.id);
-    const ImageVersion = reducers.getSelectedImageVersion(state);
-    const alignmentData = reducers.getAlignment(state);
-    const selectedImage = reducers.getSelectedImage(state);
+    const Media = reducers.getMediaData(state);
     return {
         isSecondWindowOpen,
         Media,
-        scrollToId,
-        syncIdOnClick,
-        imageData,
-        videoData,
-        selectedText,
-        isImagePortrait,
-        // selectedSegmentId
-        alignmentData,
-        witness,
-        witnesses: reducers.getTextWitnesses(state, selectedText.id),
-        ImageVersion,
-        selectedImage,
     };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
-    const toggleImage = (data) => dispatch(actions.changedShowPageImages(data));
-    const changeMediaSelection = (data) =>
-        dispatch(actions.mediaSelection(data));
-    const changeIsImagePortrait = (payload) =>
-        dispatch(actions.setIsImagePortrait(payload));
-    const changeSelectedImage = (payload) => {
-        dispatch(actions.selectImage(payload));
-    };
+
     return {
         ...ownProps,
         ...stateProps,
-        toggleImage,
-        changeSelectedImage,
-        changeMediaSelection,
-        changeIsImagePortrait,
-        changeImageVersion: (imageVersionId) => {
-            dispatch(actions.selectImageVersion(imageVersionId));
-        },
-        onSelectedSearchResult: (
-            text: api.TextData,
-            start: number,
-            length: number,
-            selectedText: api.TextData | null
-        ) => {
-            if (!selectedText || selectedText.id !== text.id) {
-                dispatch(
-                    batchActions([
-                        actions.selectedSearchResult(text.id, start, length),
-                        actions.selectedText(text),
-                    ])
-                );
-            } else {
-                dispatch(actions.selectedSearchResult(text.id, start, length));
-            }
-        },
     };
 };
 const TextSheetContainer = connect(
@@ -161,4 +105,4 @@ const TextSheetContainer = connect(
     mergeProps
 )(TextSheet);
 
-export default memo(TextSheetContainer);
+export default TextSheetContainer;

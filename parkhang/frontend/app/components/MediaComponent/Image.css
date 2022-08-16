@@ -1,6 +1,6 @@
 @import 'css/colour.css';
 @value ThirdWindow-Height: 300px;
-@value header-Height: 45px;
+@value header-Height: 35px;
 
 :export {
     ThirdWindowHeight: 250px;
@@ -13,14 +13,13 @@
 
 
 .ThirdWindow {
-    transition: 0.5s all linear;
-    position: absolute;
-    height: var(--ThirdWindowHeight);
-    width: 100%;
-    z-index: 999;
-    bottom: 0px;
-    background-color: var(--text-bg);
+    /* position: absolute; */
+    height: 100% !important;
+    width: 100% !important;
+    z-index: 2;
+    /* bottom: 0px; */
     overflow: hidden;
+    border-top: 1px solid gray;
 }
 
 .ThirdWindowPortrait {
@@ -31,16 +30,17 @@
     width: 50%;
     z-index: 999;
     right: 0;
-    background-color: var(--text-bg);
+    /* background-color: var(--text-bg); */
 }
 
 .header {
-    position: inherit;
+    position: relative;
     top: 0;
     height: var(--headerHeight);
     right: 0;
     left: 0;
-    background-color: var(--textDetail-heading);
+    /* background-color: var(--textDetail-heading); */
+    z-index: 3;
     display: flex;
     align-items: center;
     padding-inline: 30px;
@@ -62,7 +62,7 @@
 
 .ImageStyle {
     object-fit: contain;
-    height: 100%;
+    max-height: 35vh;
     max-width: 100%;
 
 }
@@ -70,6 +70,7 @@
 
 .imageSection {
     width: 100%;
-    height: calc(100%-45px);
     position: relative;
+    bottom: 0;
+
 }

@@ -30,6 +30,7 @@ import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 import { ClickAwayListener } from "@mui/material";
+import { Box } from "@mui/system";
 
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
@@ -75,6 +76,7 @@ export type Props = {
     changeSyncIdOnClick: () => void,
     closeAnnotation: () => void,
     imageData: {},
+    syncIdOnClick: Number,
     isPanelLinked: Boolean,
     isPanelVisible: Boolean,
     textAlignment: {},
@@ -86,6 +88,8 @@ export type Props = {
     searchResults: [],
     showTableContent: Boolean,
     syncIdOnSearch: String,
+    imageAlignmentById: [],
+    changeImageScrollId: () => void,
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -120,6 +124,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     imageHeight: number | null;
     calculatedImageHeight: number | null;
     changeScrollToId: () => void;
+    changeImageScrollId: () => void;
     changeSyncIdOnClick: () => void;
     wheelScrolling: () => void;
     closeAnnotation: () => void;
@@ -133,6 +138,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     debouncedScroll;
     targetId;
     condition;
+    imageAlignmentById;
+    changeImageScrollId;
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
@@ -142,6 +149,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
         });
+        this.imageAlignmentById = this.props.imageAlignmentById;
+        this.changeImageScrollId = this.props.changeImageScrollId;
         this.splitTextRef = React.createRef(null);
         this.rowRenderer = this.rowRenderer.bind(this);
         this.textListVisible = props.textListVisible;
@@ -165,12 +174,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.scrollEvent = this.scrollEvent.bind(this);
         this.selectedWindow = props.selectedWindow;
         this.condition = false;
+        this.changeImageScrollId = props.changeImageScrollId;
     }
 
     scrollEvent(e) {
         if (this.selectedWindow === 2) return null;
-        if (this.selectedWindow === 1 && this.isPanelLinked && this.condition) {
+        if (this.selectedWindow === 1 && this.isPanelLinked) {
             let list = [];
+            let imageIdList = [];
             this.textAlignmentById.map((l) => {
                 let number = document.getElementById("s_" + l.start);
                 if (number) {
@@ -184,9 +195,22 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }
                 }
             });
-            if (!_.isEmpty(list)) {
+            this.imageAlignmentById.map((l) => {
+                let number = document.getElementById("s_" + l?.start);
+                if (number) {
+                    let position = number.getBoundingClientRect();
+                    if (position.top > 102) {
+                        imageIdList.push({
+                            id: l.id,
+                            start: l.start,
+                            end: l.end,
+                        });
+                    }
+                }
+            });
+            if (!_.isEmpty(list) || !_.isEmpty(imageIdList)) {
                 if (this.selectedWindow === 1) {
-                    this.debouncedScroll(list);
+                    this.debouncedScroll(list, imageIdList);
                 }
             }
         }
@@ -665,13 +689,23 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidMount() {
-        let list = this.list;
         this.resizeHandler = _.throttle(() => {
             this.calculatedImageHeight = null;
             this.updateList();
         }, 600).bind(this);
-        this.debouncedScroll = _.debounce((list) => {
-            this.changeScrollToId({ id: list[0].start, from: 1 });
+        this.debouncedScroll = _.debounce((list, imagelist) => {
+            if (list.length) {
+                this.changeScrollToId({ id: list[0]?.start, from: 1 });
+            }
+            if (imagelist.length) {
+                this.changeImageScrollId({
+                    id: {
+                        start: imagelist[0]?.start,
+                        end: imagelist[0]?.end,
+                    },
+                    from: 1,
+                });
+            }
         }, 1000);
 
         window.addEventListener("resize", this.resizeHandler);
@@ -684,34 +718,32 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         document.addEventListener("mousedown", this.mouseDown.bind(this), true);
         document.addEventListener("mouseup", this.mouseUp.bind(this), true);
         this.processProps(this.props);
-        this.componentDidUpdate();
         this.timer = setTimeout(() => {
             this.resizeHandler();
         }, 2000);
+        this.componentDidUpdate();
     }
 
     componentDidUpdate(prevProps) {
         let Alignment = this.props.textAlignment;
+        this.imageAlignmentById = this.props.imageAlignmentById;
+        this.SearchSyncId = this.props.syncIdOnSearch || null;
         this.condition =
             Alignment?.source?.witness === this.props.selectedWitness.id;
         let scrollToId = this.props.scrollToId;
         let list = this.list;
-        // if (prevProps?.isSecondWindowOpen !== this.props?.isSecondWindowOpen) {
-        //     setTimeout(() => {
-        //         for (let i = 0; i < 2; i++) {
-        //             this.updateList(true);
-        //         }
-        //     }, 1000);
-        // }
+
         let con =
             prevProps?.searchResults !== this.props?.searchResults ||
             prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
 
+        // scroll to word searched using search input
         if (con && this.props.searchResults) {
-            let SearchSyncId = this.props.syncIdOnSearch || null;
-            if (SearchSyncId) {
+            if (this.SearchSyncId) {
                 let selectedTextIndex =
-                    this.props.splitText.getTextIndexOfPosition(SearchSyncId);
+                    this.props.splitText.getTextIndexOfPosition(
+                        this.SearchSyncId
+                    );
                 setTimeout(() => {
                     list.scrollToRow(selectedTextIndex);
                     setTimeout(() => {
@@ -720,10 +752,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }, 100);
             }
         }
+
         this.textAlignmentById = this.props.textAlignmentById;
         this.isPanelLinked = this.props.isPanelLinked;
         this.selectedWindow = this.props.selectedWindow;
-        this.targetId = this.props.scrollToId;
+        this.targetId = this.props.syncIdOnClick;
 
         if (this.selectedNodes && this.selectedNodes.length > 0) {
             const selectedNodes = this.selectedNodes;
@@ -780,8 +813,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this._didSetInitialScrollPosition = true;
         }
 
+        // scroll control linked with alignment on click
         if (
-            // this.selectedWindow === 2 &&
+            this.selectedWindow === 2 &&
             scrollToId.from == 2 &&
             this.isPanelLinked &&
             this.condition &&
@@ -808,6 +842,32 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }, 100);
                 }
             }
+        }
+
+        //for scrolling to the highlighted alignment if its outside visible DOM
+
+        if (
+            this.targetId &&
+            scrollToId.from === "ua" &&
+            this.selectedWindow === 2 &&
+            scrollToId.id === "ua"
+        ) {
+            let clickIdObj = Alignment.alignment.find(
+                (l) =>
+                    this.targetId >= l.target_segment.start &&
+                    this.targetId < l.target_segment.end
+            );
+            let syncClickTargetId = clickIdObj?.source_segment?.start;
+            let selectedTextIndex =
+                this.props.splitText.getTextIndexOfPosition(syncClickTargetId);
+
+            setTimeout(() => {
+                list.scrollToRow(selectedTextIndex);
+
+                setTimeout(() => {
+                    list.scrollToPosition(list.props.scrollTop - 300);
+                }, 0);
+            }, 100);
         }
     }
     componentWillUnmount() {
@@ -892,19 +952,26 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     style={{ display: "none" }}
                     onClick={this.resizeHandler}
                 ></button>
-                <AutoSizer>
-                    {({ height, width }) => (
+                <AutoSizer disableWidth>
+                    {({ height }) => (
                         <List
+                            width={1}
                             ref={(list) => (this.list = list)}
                             height={height}
                             rowCount={props.splitText.texts.length}
                             rowHeight={cache.rowHeight}
                             rowRenderer={rowRenderer}
-                            width={width}
                             overscanRowCount={1}
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
                             scrollToAlignment="start"
+                            containerStyle={{
+                                width: "100%",
+                                maxWidth: "100%",
+                            }}
+                            style={{
+                                width: "100%",
+                            }}
                         ></List>
                     )}
                 </AutoSizer>
@@ -1122,6 +1189,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             selectedTargetRange={this.props.selectedTargetRange}
                             changeSelectedRange={this.props.changeSelectedRange}
                             condition={this.condition}
+                            imageScrollId={this.props.imageScrollId}
                         />
                     </div>
                     {this.props.isAnnotating &&

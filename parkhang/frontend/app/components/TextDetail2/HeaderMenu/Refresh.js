@@ -3,9 +3,9 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { IconButton } from "@mui/material";
 function Refresh({ isSecondWindowOpen }) {
     const handleRefresh = useCallback(() => {
-        let updatelistBtn = document.getElementById("updateList");
+        let updatelistBtn2 = document.getElementById("updateList2");
 
-        if (updatelistBtn) updatelistBtn.click();
+        if (updatelistBtn2) updatelistBtn2.click();
     }, [isSecondWindowOpen]);
 
     useEffect(() => {

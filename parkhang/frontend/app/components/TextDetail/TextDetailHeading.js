@@ -22,8 +22,6 @@ import {
     List,
     IconButton,
 } from "@mui/material";
-import Share from "./HeaderMenu/Share";
-import Annotate from "./HeaderMenu/Annotate";
 import Refresh from "./HeaderMenu/Refresh";
 import Search from "./HeaderMenu/Search";
 import WindowSplitter from "./HeaderMenu/WindowSplitter";
@@ -110,10 +108,10 @@ function TextDetailHeading(props: HeaderProps) {
             direction="column"
             spacing={1}
             sx={{
-                background: "#f7f7f7",
-                paddingInline: { md: 2, xs: 0 },
+                paddingInline: { md: 1, xs: 0 },
                 paddingBlock: { md: 1, xs: 0 },
-                marginTop: { md: 0, xs: 1 },
+                bgcolor: "heading.main",
+                color: "text.primary",
             }}
         >
             <Stack direction="row" spacing={1} justifyContent="space-between">
@@ -158,8 +156,16 @@ function TextDetailHeading(props: HeaderProps) {
                     <Refresh isSecondWindowOpen={props.isSecondWindowOpen} />
                     <Divider orientation="vertical" variant="middle" flexItem />
                     <Search handleWindowSearch={handleWindowSearch} />
-                    <Settings {...props} />
-                    <TableOfContent {...props} />
+                    <Settings
+                        textFontSize={props.textFontSize}
+                        onChangedFontSize={props.onChangedFontSize}
+                        onExport={props.onExport}
+                        isPanelLinked={props.isPanelLinked}
+                    />
+                    <TableOfContent
+                        changeShowTableContent={props.changeShowTableContent}
+                        showTableContent={props.showTableContent}
+                    />
                 </ButtonGroup>
             </Stack>
 
@@ -198,7 +204,7 @@ function TextDetailHeading(props: HeaderProps) {
                                     top: 35,
                                     right: 0,
                                     zIndex: 1,
-                                    background: "#eee",
+                                    bgcolor: "heading.main",
                                     height: 350,
                                     width: 350,
                                     boxShadow: 3,

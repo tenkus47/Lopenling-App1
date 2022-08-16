@@ -157,14 +157,14 @@ const root = ReactDOM.createRoot(document.getElementById("app"));
 root.render(
     <Provider store={store}>
         <IntlProvider textComponent={Fragment} intlSelector={intlSelector}>
-            <FlagsmithProvider
+            {/* <FlagsmithProvider
                 options={{
                     environmentID,
                 }}
                 flagsmith={flagsmith}
-            >
-                <AppContainer />
-            </FlagsmithProvider>
+            > */}
+            <AppContainer />
+            {/* </FlagsmithProvider> */}
         </IntlProvider>
     </Provider>
 );

@@ -76,6 +76,7 @@ export const UPDATED_TEMPORARY_ANNOTATION = "text/UPDATED_TEMPORARY_ANNOTATION";
 export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 // UI
+export const CHANGE_THEME = "CHANGE_THEME";
 export const CHANGE_ANNOTATING = "CHANGE_ANNOTATING";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
@@ -120,6 +121,7 @@ export const CHANGED_ACCOUNT_OVERLAY = "account/SET_ACCOUNT_OVERLAY";
 
 export const LINK_PANEL = "panel/LINKED";
 export const SCROLL_TO_ID = "SCROLL_TO_ID/ID";
+export const IMAGE_SCROLL_ID = "IMAGE_SCROLL_ID";
 
 export const SYNC_ID_ON_CLICK = "ClickSync/ID";
 export const CHANGE_SELECTED_WINDOW = "CHANGE_SELECTED_WINDOW";
@@ -577,7 +579,6 @@ export function loadedUserSettings(
 
 /* UI */
 
-
 export type SelectedTextAction = Action & TextDataAction;
 export function selectedText(text: api.TextData): SelectedTextAction {
     return {
@@ -599,7 +600,12 @@ export function selectedText2(text: api.TextData): SelectedTextAction2 {
         text,
     };
 }
-
+export function changeTheme(payload) {
+    return {
+        type: CHANGE_THEME,
+        payload,
+    };
+}
 export type ChangedSearchValueAction = Action & {
     searchValue: string,
 };
@@ -972,6 +978,13 @@ export function changeScrollToId(payload) {
     };
 }
 
+export function changeImageScrollId(data) {
+    return {
+        type: IMAGE_SCROLL_ID,
+        data,
+    };
+}
+
 export function changeSyncIdOnClick(payload) {
     return {
         type: SYNC_ID_ON_CLICK,
@@ -985,6 +998,7 @@ export function changeSyncIdOnSearch(payload) {
         payload,
     };
 }
+
 export function changeSyncIdOnSearch2(payload) {
     return {
         type: SYNC_ID_ON_SEARCH2,

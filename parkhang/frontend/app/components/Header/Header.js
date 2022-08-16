@@ -1,5 +1,5 @@
 // @flow
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
 import styles from "./Header.css";
@@ -15,6 +15,7 @@ import {
     getAccountOverlayVisible,
     getUser,
     getActiveLocale,
+    getTheme,
 } from "reducers";
 import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo_173x.png";
@@ -23,7 +24,7 @@ import { NavLink } from "redux-first-router-link";
 import TranslateButton from "components/utility/TranslateButton";
 import { history } from "redux-first-router";
 import Resources from "components/Resources";
-
+import ToggleTheme from "./ToggleTheme";
 import {
     Container,
     Button,
@@ -35,13 +36,16 @@ import {
     MenuItem,
     Typography,
     Drawer,
+    getInitColorSchemeScript,
+    AppBar,
 } from "@mui/material";
 import { Person as PersonIcon, Menu as MenuIcon } from "@mui/icons-material";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
 };
+const image_location = lopenlingLogo;
 
 export const LoginControls = (props: LoginProps) => (
     <Stack direction="row" spacing={2}>
@@ -96,54 +100,58 @@ type LoggedInControlsProps = {
     accountButtonClicked: () => void,
 };
 
-export const LoggedInControls = (props: LoggedInControlsProps) => (
-    <div className={styles.controls}>
-        <AccountButton
-            name={props.user.name}
-            onClick={props.accountButtonClicked}
-        />
-        <Menu
-            id="account-menu"
-            open={props.overlayVisible}
-            // onClick={props.accountButtonClicked}
-            onClose={props.accountButtonClicked}
-            MenuListProps={{
-                "aria-labelledby": "account-menu-button",
-            }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "top" }}
-            style={{ top: 20 }}
-            PaperProps={{
-                elevation: 0,
-                sx: {
-                    overflow: "visible",
-                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                    mt: 1.5,
-                    "& .MuiAvatar-root": {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1,
+export const LoggedInControls = (props: LoggedInControlsProps) => {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        props.accountButtonClicked();
+        setAnchorEl(event.currentTarget);
+    };
+    return (
+        <div className={styles.controls}>
+            <AccountButton name={props.user.name} onClick={handleClick} />
+            <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={props.overlayVisible}
+                onClose={props.accountButtonClicked}
+                MenuListProps={{
+                    "aria-labelledby": "account-menu-button",
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                style={{ top: 20 }}
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        overflow: "visible",
+                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                        mt: 1.5,
+                        "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                        },
+                        "&:before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                        },
                     },
-                    "&:before": {
-                        content: '""',
-                        display: "block",
-                        position: "absolute",
-                        top: 0,
-                        right: 14,
-                        width: 10,
-                        height: 10,
-                        bgcolor: "background.paper",
-                        transform: "translateY(-50%) rotate(45deg)",
-                        zIndex: 0,
-                    },
-                },
-            }}
-        >
-            <AccountOverlay top={60} right={0} user={props.user} />
-        </Menu>
-    </div>
-);
+                }}
+            >
+                <AccountOverlay top={60} right={0} user={props.user} />
+            </Menu>
+        </div>
+    );
+};
 
 type HeaderProps = {
     user: User,
@@ -157,9 +165,8 @@ type HeaderProps = {
 };
 
 export const Header = (props: HeaderProps) => {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-        null
-    );
+    const [anchorElNav, setAnchorElNav] = React.useState(null);
+
     let locations = history();
     let controls = null;
     if (props.user.isLoggedIn) {
@@ -182,7 +189,6 @@ export const Header = (props: HeaderProps) => {
     let toggleTitle = props.intl.formatMessage({
         id: "header.toggleTextList",
     });
-    const image_location = lopenlingLogo;
 
     const LinkRef = React.forwardRef((props, ref) => (
         <div ref={ref}>
@@ -190,19 +196,31 @@ export const Header = (props: HeaderProps) => {
         </div>
     ));
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-
+    const drawer = React.useMemo(
+        () => (
+            <Drawer
+                anchor={"left"}
+                open={props.textListIsVisible}
+                onClose={props.navigationButtonClicked}
+            >
+                <Resources />
+            </Drawer>
+        ),
+        [props.textListIsVisible]
+    );
+    const themeChange = useCallback((e) => props.themeButtonClicked(e), []);
     return (
-        <Box
-            sx={{
-                width: "100vw",
-            }}
-            className={styles.header}
+        <AppBar
+            position="static"
+            color="navbar"
+            sx={{ boxShadow: 1, paddingBlock: 1, zIndex: 3 }}
+            // className={styles.header}
         >
             <Stack
                 direction="row"
@@ -246,36 +264,36 @@ export const Header = (props: HeaderProps) => {
                     <Box display={{ xs: "none", md: "flex" }}>
                         <Button
                             to={"/textSelection"}
-                            style={{ color: "#676767" }}
                             component={LinkRef}
                             variant="text"
+                            color="links"
                         >
                             <FormattedMessage id={"header.texts"} />
                         </Button>
                         <Button
                             to={"/texts/2"}
-                            style={{ color: "#676767" }}
                             component={LinkRef}
                             variant="text"
                             disabled
+                            color="links"
                         >
                             <FormattedMessage id={"header.editor"} />
                         </Button>
                         <Tooltip title="Forum">
                             <Button
                                 href={"https://www.lopenling.org"}
-                                style={{ color: "#676767" }}
                                 variant="text"
                                 component={"a"}
+                                color="links"
                             >
                                 <FormattedMessage id={"lopenlingForum"} />
                             </Button>
                         </Tooltip>
                         <Button
                             href={"https://www.nalanda.works"}
-                            style={{ color: "#676767" }}
                             variant="text"
                             component={"a"}
+                            color="links"
                         >
                             <FormattedMessage id={"Nalanda"} />
                         </Button>
@@ -283,9 +301,9 @@ export const Header = (props: HeaderProps) => {
                 </Box>
                 <Box sx={{ display: { xs: "block", md: "none" } }}>
                     <IconButton
-                        size="large"
+                        size="small"
                         aria-label="account of current user"
-                        aria-controls="menu-appbar"
+                        aria-controls="account-appbar"
                         aria-haspopup="true"
                         onClick={handleOpenNavMenu}
                         color="inherit"
@@ -348,19 +366,15 @@ export const Header = (props: HeaderProps) => {
                     {/* <LocaleSwitcher /> */}
                     <TranslateButton />
                     {controls}
+                    <ToggleTheme
+                        theme={props.theme}
+                        changeTheme={themeChange}
+                    />
                 </Stack>
             </Stack>
 
-            <React.Fragment>
-                <Drawer
-                    anchor={"left"}
-                    open={props.textListIsVisible}
-                    onClose={props.navigationButtonClicked}
-                >
-                    <Resources />
-                </Drawer>
-            </React.Fragment>
-        </Box>
+            <React.Fragment>{drawer}</React.Fragment>
+        </AppBar>
     );
 };
 
@@ -379,6 +393,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
         textListVisible: getTextListVisible(state),
         successRedirect: successRedirect,
         csrfToken: csrfToken,
+        theme: getTheme(state),
     };
 };
 
@@ -395,6 +410,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             dispatchProps.dispatch(
                 actions.changedAccountOverlay(!stateProps.accountOverlayVisible)
             );
+        },
+        themeButtonClicked: (payload) => {
+            dispatchProps.dispatch(actions.changeTheme(payload));
         },
     };
 };

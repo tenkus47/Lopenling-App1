@@ -28,7 +28,7 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    background-color: var(--text-bg);
+    /* background-color: var(--text-bg); */
 
 }
 
@@ -51,7 +51,7 @@
     margin: 0;
     padding: 0;
     white-space: pre;
-
+    scrollbar-color: red;
 }
 
 
@@ -64,7 +64,7 @@
 }
 
 .textContainer {
-    background-color: white;
+    /* background-color: white; */
     overflow: auto;
     flex-grow: 1;
     padding-left: 0;
@@ -73,6 +73,8 @@
     flex-direction: column;
     position: relative;
 }
+
+
 
 .limitWidth {
     max-width: var(--maxWidth);
@@ -134,6 +136,14 @@
     max-height: 4ch;
 }
 
-.selectedRange {
+.selectedRangelight {
     background-color: #eee;
+}
+
+.selectedRangeDark {
+    background-color: black;
+}
+
+.selectedImage {
+    font-weight: bolder;
 }

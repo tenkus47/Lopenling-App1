@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, ClickAwayListener, Typography } from "@mui/material";
 import Loader from "react-loader";
 import styles from "./TableOfContent.css";
 import { styled, alpha } from "@mui/material/styles";
@@ -57,7 +57,16 @@ function TableOfContent() {
     let loaded = data.length > 0 ? true : false;
 
     return (
-        <Box className={styles.TableContent}>
+        <Box
+            className={styles.TableContent}
+            sx={{
+                bgcolor: "heading.main",
+                color: "text.primary",
+                width: "100%",
+                height: "100%",
+                paddingInline: 2,
+            }}
+        >
             <Toolbar
                 sx={{
                     justifyContent: "space-between",
@@ -101,4 +110,4 @@ function TableOfContent() {
     );
 }
 
-export default TableOfContent;
+export default React.memo(TableOfContent);

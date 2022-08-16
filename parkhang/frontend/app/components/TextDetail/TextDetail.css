@@ -2,11 +2,10 @@
 
 
 .textDetail {
-    background-color: var(--text-bg);
+    /* background-color: var(--text-bg); */
     position: relative;
-    flex-grow: 1;
-    color: var(--text-color);
-    border-left: 1px solid #eee;
+    width: 100%;
+    /* color: var(--text-color); */
     transition: height 0.4s linear;
 }
 

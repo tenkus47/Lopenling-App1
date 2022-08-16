@@ -22,6 +22,7 @@ import {
     List,
     IconButton,
 } from "@mui/material";
+import Refresh from "./HeaderMenu/Refresh";
 
 import SearchList from "./HeaderMenu/SearchList";
 type HeaderProps = {
@@ -85,10 +86,11 @@ function TextDetailHeading(props: HeaderProps) {
             ref={headingRef}
             spacing={1}
             sx={{
-                background: "#f7f7f7",
                 paddingInline: { md: 2, xs: 0 },
                 paddingBlock: { md: 1, xs: 0 },
                 borderTop: { md: 0, xs: "1px solid gray" },
+                bgcolor: "heading.main",
+                color: "text.primary",
             }}
         >
             {" "}
@@ -132,9 +134,19 @@ function TextDetailHeading(props: HeaderProps) {
                     }}
                     className={styles.button_group_menu}
                 >
+                    <Refresh isSecondWindowOpen={props.isSecondWindowOpen} />
+
                     <Search handleWindowSearch={handleWindowSearch} />
-                    <Settings {...props} />
-                    <TableOfContent {...props} />
+                    <Settings
+                        textFontSize={props.textFontSize}
+                        onChangedFontSize={props.onChangedFontSize}
+                        onExport={props.onExport}
+                        isPanelLinked={props.isPanelLinked}
+                    />
+                    <TableOfContent
+                        changeShowTableContent={props.changeShowTableContent}
+                        showTableContent={props.showTableContent}
+                    />
                 </ButtonGroup>
             </Stack>
             <Collapse in={showFind}>
@@ -170,7 +182,7 @@ function TextDetailHeading(props: HeaderProps) {
                                     top: 35,
                                     right: 0,
                                     zIndex: 1,
-                                    background: "#eee",
+                                    bgcolor: "heading.main",
                                     width: 350,
                                     height: 350,
                                     boxShadow: 3,
