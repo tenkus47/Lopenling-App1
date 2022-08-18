@@ -10,6 +10,7 @@ import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 import SplitPane from "react-split-pane";
 import styles from "./resizerStyle.css";
 import classnames from "classnames";
+import DraggableMedia from "../MediaComponent/DraggableMedia";
 const TextDetailContainer2 = React.lazy(() =>
     import("components/TextDetail2/TextDetailContainer")
 );
@@ -46,7 +47,7 @@ function TextSheet(props) {
                 position: "relative",
             }}
         >
-            <SplitPane
+            {/* <SplitPane
                 defaultSize={props.Media.isPanelVisible ? "35vh" : 0}
                 size={props.Media.isPanelVisible ? "35vh" : 0}
                 split="horizontal"
@@ -55,29 +56,28 @@ function TextSheet(props) {
                     display: !props.Media.isPanelVisible ? "none" : "block",
                 }}
             >
-                {props.Media.isPanelVisible ? <MediaComponent /> : <div />}
-
-                <SplitPane
-                    split={landScape ? "vertical" : "horizontal"}
-                    size={props.isSecondWindowOpen ? "50vw" : "100vw"}
-                    resizerClassName={classnames(
-                        styles.Resizer,
-                        { [styles.vertical]: landScape },
-                        { [styles.horizontal]: !landScape }
-                    )}
-                    onDragFinished={(width: number) => {
-                        if (width > 0)
-                            window.dispatchEvent(new Event("resize"));
-                    }}
-                >
-                    <ErrorBoundary>
-                        <TextDetailContainer />
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                        {props.isSecondWindowOpen && <TextDetailContainer2 />}
-                    </ErrorBoundary>
-                </SplitPane>
+                {props.Media.isPanelVisible ? <MediaComponent /> : <div />} */}
+            <SplitPane
+                split={landScape ? "vertical" : "horizontal"}
+                size={props.isSecondWindowOpen ? "50vw" : "100vw"}
+                resizerClassName={classnames(
+                    styles.Resizer,
+                    { [styles.vertical]: landScape },
+                    { [styles.horizontal]: !landScape }
+                )}
+                onDragFinished={(width: number) => {
+                    if (width > 0) window.dispatchEvent(new Event("resize"));
+                }}
+            >
+                <ErrorBoundary>
+                    <TextDetailContainer />
+                </ErrorBoundary>
+                <ErrorBoundary>
+                    {props.isSecondWindowOpen && <TextDetailContainer2 />}
+                </ErrorBoundary>
             </SplitPane>
+            {props.Media.isPanelVisible && <MediaComponent />}
+            {/* </SplitPane> */}
         </div>
     );
 }

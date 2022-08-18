@@ -13,7 +13,6 @@
 }
 
 
-
 .splitText *:focus {
     outline: none;
 }
@@ -21,12 +20,27 @@
 .splitTextRowContent {
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 
 .splitTextRow {
     display: flex;
     flex-direction: row;
 }
+
+
+.splitTextRow * {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.splitTextRow *::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
 
 .splitTextRow .text {
     max-width: 100%;

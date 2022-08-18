@@ -77,9 +77,6 @@
     cursor: pointer;
 }
 
-.selectedAnnotation {
-    background-color: #ccc;
-}
 
 .removedByAnnotation {
     @apply --removedText;
@@ -128,6 +125,10 @@
     cursor: pointer;
 }
 
-.selectedRange {
+.selectedRangelight {
     background-color: #eee;
+}
+
+.selectedRangeDark {
+    background-color: black;
 }

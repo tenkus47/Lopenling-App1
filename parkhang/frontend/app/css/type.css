@@ -22,10 +22,7 @@
     font-weight: 400;
     src:
         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
-        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
-        url("/static/fonts/dutsa.ttf") format("ttf"), */
-    ;
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 

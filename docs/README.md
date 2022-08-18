@@ -3,5 +3,6 @@
 Documentation for Lopenling-App
 
 ### Table of Content
-- Frontend
+
+- [Frontend](/Lopenling-App/frontend)
 - [Backend](/Lopenling-App/backend)

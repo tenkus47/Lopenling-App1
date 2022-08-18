@@ -39,14 +39,6 @@ export function idForLineBreak(segment: TextSegment): string {
     return "l_" + (segment.end + 1);
 }
 
-function isOverflown(element) {
-    console.log(element.style.overflow);
-    return (
-        element.scrollHeight > element.clientHeight ||
-        element.scrollWidth > element.clientWidth
-    );
-}
-
 export type Props = {
     segmentedText: SegmentedText,
     annotationPositions: { [string]: Annotation[] },
@@ -382,25 +374,32 @@ class Text extends React.Component<Props, State> {
                 classes.push(styles.selectedAnnotation);
             }
 
-            if (renderProps.selectedSourceRange.includes(segment.start)) {
+            if (
+                renderProps.selectedSourceRange.includes(segment.start) &&
+                renderProps.condition
+            ) {
                 let newClass =
                     renderProps.theme.palette.mode === "light"
                         ? styles.selectedRangelight
                         : styles.selectedRangeDark;
                 classes.push(newClass);
             }
-            if (
-                renderProps.imageScrollId.id.start < segment.start &&
-                renderProps.imageScrollId.id.end > segment.start
-            ) {
-                classes.push(styles.selectedImage);
-            }
+            // if (
+            //     renderProps.imageScrollId.id.start < segment.start &&
+            //     renderProps.imageScrollId.id.end > segment.start
+            // ) {
+            //     classes.push(styles.selectedImage);
+            // }
             if (classes.length > 0) {
                 let className = classnames(...classes);
                 classAttribute = 'class="' + className + '"';
             }
 
             let segmentContent = segment.text;
+
+            if (segmentContent === " ") {
+                segmentHTML += "<br/>";
+            }
 
             // Add search result highlight if required.
             if (renderProps.searchStringPositions) {
@@ -452,21 +451,7 @@ class Text extends React.Component<Props, State> {
                     }
                 }
             }
-            // if (this.props.textAlignmentById !== null) {
-            //     let r = this.props.textAlignmentById.find(
-            //         (d) => d.start === segment.start
-            //     );
-            //     if (r) {
-            //         segmentHTML +=
-            //             "<span id='alignment_" +
-            //             segment.start +
-            //             "'>" +
-            //             `<sup class=` +
-            //             styles.syncIdClass +
-            //             `>${r.id}</sup>` +
-            //             "</span>";
-            //     }
-            // }
+
             segmentHTML +=
                 "<span id=" +
                 id +

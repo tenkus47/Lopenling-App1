@@ -12,6 +12,8 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Box,
+    Grid,
     Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -33,12 +35,11 @@ function calTimeToSeek(maxValue, currentTime) {
 
 function Video(props) {
     let textIdfromAlignment = props.alignmentData.text;
-    const VideoData = props.videoData.alignment || [];
-    const url = props.videoData.url || "";
+    const VideoData = props?.videoData?.alignment || [];
+    const url = "https://www.youtube.com/watch?v=2MMM_ggekfE";
     const sourceId = parseInt(props.videoData.source);
     const [interval, setInterval] = useState({});
     let VideoIdList = [];
-    let newList = ["0"];
     const syncIdOnScroll = props.syncIdOnScroll;
     const syncIdOnClick = props.syncIdOnClick;
     const [state, setState] = useState({
@@ -47,10 +48,10 @@ function Video(props) {
         duration: 0,
         playing: true,
     });
-    let inter = useMemo(() => interval, [interval]);
     if (!_.isEmpty(VideoData)) {
         VideoIdList = VideoData.map((l) => parseInt(l.source_segment.start));
     }
+
     useEffect(() => {
         if (textIdfromAlignment === props.selectedText.id) {
             //     let intersection = syncIdOnScroll.filter(element => VideoIdList.includes(element));
@@ -74,32 +75,25 @@ function Video(props) {
     }, [syncIdOnClick]);
 
     const changeTextBackground = useCallback(() => {
-        let current = inter;
-        if (textIdfromAlignment === props.selectedText.id) {
-            for (let i = current.start; i < current.end; i++) {
-                let currentIds = document.getElementById(`s_${i}`);
-                if (currentIds) {
-                    currentIds.style.background = "rgb(224, 224, 81)";
-                    currentIds.style.fontWeight = "bold";
-                }
-            }
-        }
-    }, [inter]);
+        let current = interval;
+        let sourceRangeSelection = [];
+        // if (textIdfromAlignment === props.selectedText.id) {
+        //     for (let i = current.start; i < current.end; i++) {
+        //         sourceRangeSelection.push(i);
+        //     }
+        //     props.changeSelectedRange({
+        //         source: sourceRangeSelection,
+        //         target: [],
+        //     });
+        // }
+    }, [interval]);
 
     useEffect(() => {
         let timer = setTimeout(() => changeTextBackground(), 300);
         return () => {
             clearTimeout(timer);
-            let current = interval;
-            for (let i = current.start; i < current.end; i++) {
-                let currentIds = document.getElementById(`s_${i}`);
-                if (currentIds) {
-                    currentIds.style.background = "white";
-                    currentIds.style.fontWeight = "normal";
-                }
-            }
         };
-    }, [inter.start]);
+    }, [interval.start]);
 
     const videoRef = useRef();
 
@@ -110,7 +104,6 @@ function Video(props) {
         },
         [state]
     );
-
     const handleProgress = (e) => {
         changeTextBackground();
         const played = e.playedSeconds;
@@ -122,87 +115,90 @@ function Video(props) {
         if (!_.isEmpty(Interval)) {
             let source_segment = Interval[0].source_segment;
             setInterval({ ...source_segment });
-            let length = source_segment.end - source_segment.start;
-            props.onSelectedSearchResult(
-                textIdfromAlignment,
-                source_segment.start,
-                length,
-                textIdfromAlignment
-            );
         }
     };
-
+    if (VideoData.length === 0) return <div />;
     return (
-        <div style={{ width: "100%" }}>
-            <ReactPlayer
-                url={url}
-                ref={videoRef}
-                width="100%"
-                controls={true}
-                onDuration={(duration) =>
-                    setState({ ...state, duration: duration })
-                }
-                playing={true}
-                onPlay={() => setState({ ...state, playing: true })}
-                onPause={() => setState({ ...state, playing: false })}
-                onProgress={handleProgress}
-            />
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
-                    <Typography>Info</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Typography>Text: ###</Typography>
-                    <Typography>Explained By :###</Typography>
-                </AccordionDetails>
-            </Accordion>
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
-                    <Typography>Timeline </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th>Sr</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Jump</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {VideoData.map((list, i) => (
-                                <tr key={i + "key"} className={styles.Timeline}>
-                                    <td>{i + 1}</td>
-                                    <td>{list.target_segment.start}</td>
-                                    <td>{list.target_segment.end}</td>
-                                    <td>
-                                        <button
-                                            onClick={() =>
-                                                jumpToTime(
-                                                    list.target_segment.start
-                                                )
-                                            }
-                                        >
-                                            Jump
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </AccordionDetails>
-            </Accordion>
-        </div>
+        <ReactPlayer
+            url={url}
+            style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+            }}
+            ref={videoRef}
+            controls={true}
+            onDuration={(duration) =>
+                setState({ ...state, duration: duration })
+            }
+            playing={true}
+            onPlay={() => setState({ ...state, playing: true })}
+            onPause={() => setState({ ...state, playing: false })}
+            onProgress={handleProgress}
+        />
     );
 }
 
 export default Video;
+
+{
+    /* <Grid item xs={4}>
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography>Info</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Typography>Text: ###</Typography>
+                        <Typography>Explained By :###</Typography>
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography>Timeline </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <table className={styles.table}>
+                            <thead>
+                                <tr>
+                                    <th>Sr</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Jump</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {VideoData.map((list, i) => (
+                                    <tr
+                                        key={i + "key"}
+                                        className={styles.Timeline}
+                                    >
+                                        <td>{i + 1}</td>
+                                        <td>{list.target_segment.start}</td>
+                                        <td>{list.target_segment.end}</td>
+                                        <td>
+                                            <button
+                                                onClick={() =>
+                                                    jumpToTime(
+                                                        list.target_segment
+                                                            .start
+                                                    )
+                                                }
+                                            >
+                                                Jump
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </AccordionDetails>
+                </Accordion>
+            </Grid> */
+}

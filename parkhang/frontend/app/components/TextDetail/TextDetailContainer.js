@@ -269,13 +269,11 @@ const mapStateToProps = (state) => {
                     annotatedText.segmentsForAnnotation(activeAnnotation);
             }
         }
-
         if (selectedWitness && baseWitness && annotatedText) {
             let witnessPageBreaks =
                 annotatedText.getAnnotationsOfType(
                     ANNOTATION_TYPES.pageBreak
                 ) || {};
-            // console.log(witnessPageBreaks);
             let basePageBreaks = null;
             if (selectedWitness.id !== baseWitness.id) {
                 basePageBreaks = getAnnotationsForWitnessId(
@@ -310,9 +308,10 @@ const mapStateToProps = (state) => {
     _selectedWitness = selectedWitness;
     const scrollToId = reducers.getScrollToId(state);
     const textAlignment = reducers.getTextAlignment(state);
-
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const selectedWindow = reducers.getSelectedWindow(state);
+    let Media = reducers.getMediaData(state);
+    const imageData = getImageData(state);
     return {
         text: selectedText,
         witnesses: witnesses,
@@ -336,7 +335,7 @@ const mapStateToProps = (state) => {
         searchValue,
         fontSize,
         isSecondWindowOpen: isSecondWindowOpen(state),
-        imageData: getImageData(state),
+        imageData,
         isPanelLinked,
         selectedImage: getSelectedImage(state),
         isImagePortrait: isImagePortrait(state),
@@ -354,6 +353,7 @@ const mapStateToProps = (state) => {
         syncIdOnSearch: reducers.getSyncIdOnSearch(state),
         imageAlignmentById: getImageAlignmentById(state),
         imageScrollId: getImageScrollId(state),
+        selectedMedia: Media,
     };
 };
 
@@ -629,7 +629,7 @@ const getPageBreaks = (
             if (start > lastWitnessPageStart) witnessStarts.push(start);
         }
     }
-
+    console.log(witnessStarts);
     return witnessStarts;
 };
 

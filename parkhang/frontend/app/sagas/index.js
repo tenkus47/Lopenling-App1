@@ -1047,8 +1047,6 @@ function* loadTextAlignment(action, AlignmentData) {
 //Media Load
 
 function* loadImageData(action, witnessid = null) {
-    let isImageSelected = yield select(reducers.getMediaData);
-    if (!isImageSelected.isImageVisible) return;
     let AlignmentData = yield select(reducers.getAlignment);
     let TextId = yield select(reducers.getSelectedText);
     let witness = yield select(reducers.getSelectedTextWitness);
@@ -1084,7 +1082,9 @@ function* loadImageData(action, witnessid = null) {
     }
 }
 function* loadVideoData(action, witnessid = null) {
-    let data = yield call(api.fetchVideoWithAlignmentId);
+    let alignmentid = 1;
+    let data = yield call(api.fetchVideoWithAlignmentId, alignmentid);
+
     yield put(actions.changeVideoData(data));
 }
 

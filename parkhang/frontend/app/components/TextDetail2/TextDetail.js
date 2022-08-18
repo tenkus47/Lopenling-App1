@@ -99,7 +99,7 @@ function TextDetail(props) {
                 height: "100%",
                 flex: 1,
                 bgcolor: "navbar.main",
-                color: "text.primary",
+                color: "texts.main",
             }}
         >
             <TextDetailHeading />

@@ -139,7 +139,8 @@ class TextDetail extends React.Component<Props> {
                     }
                     syncIdOnClick={this.props.syncIdOnClick}
                     textListVisible={this.props.textListVisible}
-                    showImages={this.props.pageImagesVisible}
+                    // showImages={this.props.pageImagesVisible}
+                    showImages={this.props.selectedMedia.isImageVisible}
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
                     key={this.key}
@@ -180,7 +181,7 @@ class TextDetail extends React.Component<Props> {
                     height: "100%",
                     flex: 1,
                     bgcolor: "navbar.main",
-                    color: "text.primary",
+                    color: "texts.main",
                 }}
                 className={classnames(
                     styles.textDetail,

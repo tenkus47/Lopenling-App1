@@ -49,6 +49,9 @@ const App = (props: Props) => {
                     Imagenavbar: {
                         main: mode !== "dark" ? "#aaa" : "#383838",
                     },
+                    texts: {
+                        main: mode !== "dark" ? "#333" : "#d3d3d3",
+                    },
                 },
                 typography: {
                     button: {

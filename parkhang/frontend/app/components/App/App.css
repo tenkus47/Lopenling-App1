@@ -90,9 +90,9 @@ body {
 
 @supports(scrollbar-color: gray var(--text-bg)) {
 
-
+    /* firefox support */
     * {
         scrollbar-color: gray var(--text-bg);
-        scrollbar-width: none;
+        scrollbar-width: thin;
     }
 }

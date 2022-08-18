@@ -25,6 +25,7 @@ function Resources() {
                 flexDirection: "column",
                 height: "100%",
                 maxWidth: "250px",
+                zIndex: 10,
             }}
         >
             <Box

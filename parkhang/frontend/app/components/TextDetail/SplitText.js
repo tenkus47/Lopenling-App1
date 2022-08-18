@@ -48,7 +48,10 @@ let _searchResultsCache: {
         },
     },
 } = {};
-
+function HttpUrl(data = "") {
+    if (data.includes("https")) return data;
+    return "https://" + data;
+}
 export type Props = {
     textListVisible: boolean,
     editMenuVisible: Boolean,
@@ -140,6 +143,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     condition;
     imageAlignmentById;
     changeImageScrollId;
+    imageData;
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
@@ -175,6 +179,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.selectedWindow = props.selectedWindow;
         this.condition = false;
         this.changeImageScrollId = props.changeImageScrollId;
+        this.imageData = props.imageData;
     }
 
     scrollEvent(e) {
@@ -725,11 +730,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     }
 
     componentDidUpdate(prevProps) {
+        this.imageData = this.props.imageData;
+        if (this.imageData !== prevProps?.imageData) {
+            this.updateList(true);
+        }
         let Alignment = this.props.textAlignment;
         this.imageAlignmentById = this.props.imageAlignmentById;
         this.SearchSyncId = this.props.syncIdOnSearch || null;
         this.condition =
-            Alignment?.source?.witness === this.props.selectedWitness.id;
+            Alignment?.source?.witness === this.props.selectedWitness.id &&
+            this.props.isSecondWindowOpen;
         let scrollToId = this.props.scrollToId;
         let list = this.list;
 
@@ -1084,6 +1094,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
 
         let imageUrl = "";
+        if (this.imageData?.alignment) {
+            imageUrl = HttpUrl(
+                this.imageData?.alignment[index]?.target_segment
+            );
+        }
         if (
             props.selectedWitness &&
             props.selectedWitness.properties &&
@@ -1126,7 +1141,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     id={`index_${index}`}
                 >
                     <div className={styles.splitTextRowContent}>
-                        {/* {props.showImages && (
+                        {props.showImages && (
                             <div
                                 className={pechaImageClass}
                                 style={pechaStyles}
@@ -1157,7 +1172,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                     }}
                                 />
                             </div>
-                        )} */}
+                        )}
                         <Text
                             ref={this.childRef}
                             segmentedText={props.splitText.texts[index]}

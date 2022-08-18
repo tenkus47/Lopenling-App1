@@ -112,14 +112,14 @@ export function fetchChapterDetail() {
     const url = "/api/texts/featured/";
     return request(GET, url);
 }
-export function fetchTextPairWithAlignmentId(AlignmentId = 1) {
+export function fetchTextPairWithAlignmentId(AlignmentId = 0) {
     if (AlignmentId === 0) {
         return;
     }
     const url = `/api/alignments/text/${AlignmentId}`;
     return request(GET, url);
 }
-export function fetchImageWithAlignmentId(AlignmentId = 1) {
+export function fetchImageWithAlignmentId(AlignmentId = 0) {
     if (AlignmentId === 0) {
         return;
     }
@@ -128,7 +128,10 @@ export function fetchImageWithAlignmentId(AlignmentId = 1) {
 }
 
 export function fetchVideoWithAlignmentId(AlignmentId = 0) {
-    const url = "https://api.npoint.io/a52c16e1ceeb6c44add3";
+    if (AlignmentId === 0) {
+        return;
+    }
+    const url = `/api/alignments/video/${AlignmentId}`;
     return request(GET, url);
 }
 

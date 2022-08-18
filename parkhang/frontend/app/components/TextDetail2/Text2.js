@@ -16,6 +16,7 @@ import Witness from "lib/Witness";
 import { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
+import { withTheme } from "@mui/styles";
 
 export function idForSegment(segment: TextSegment): string {
     return "s2_" + segment.start;
@@ -72,7 +73,7 @@ export type State = {
 //     <PageBreakIcon />
 // );
 
-export default class Text2 extends React.Component<Props, State> {
+class Text2 extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
     _renderedHtml: { __html: string } | null;
     textAlignmentById;
@@ -231,7 +232,11 @@ export default class Text2 extends React.Component<Props, State> {
                 renderProps.selectedTargetRange?.includes(segment.start) &&
                 renderProps.condition
             ) {
-                classes.push(styles.selectedRange);
+                let newClass =
+                    renderProps.theme.palette.mode === "light"
+                        ? styles.selectedRangelight
+                        : styles.selectedRangeDark;
+                classes.push(newClass);
             }
 
             if (classes.length > 0) {
@@ -378,3 +383,4 @@ export default class Text2 extends React.Component<Props, State> {
         );
     }
 }
+export default withTheme(Text2);
