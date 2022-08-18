@@ -4,34 +4,45 @@ import * as actions from "actions";
 import * as reducers from "reducers";
 import { Typography, Box } from "@mui/material";
 function Commentary({ alignmentData, text, selectSecondWindowText }) {
-    let targetId = alignmentData.target;
+    let targetWitness = alignmentData.target;
+    let textAlignments = alignmentData?.alignments.text || [];
     const handleSelectText = (text) => {
         selectSecondWindowText(text);
     };
+
     return (
         <Box>
             <Typography variant="h6" gutterBottom component="div">
                 Commentary
             </Typography>
-            {text && (
-                <ul style={{ paddingLeft: 18 }}>
-                    <li
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleSelectText(text)}
-                    >
-                        {" "}
-                        {text?.name}
-                    </li>
-                </ul>
-            )}
+            {textAlignments.length > 0 &&
+                textAlignments.map((alignment, index) => {
+                    return (
+                        <ul
+                            style={{ paddingLeft: 18 }}
+                            key={`commentary-${index}`}
+                        >
+                            <li
+                                style={{ cursor: "pointer" }}
+                                onClick={() =>
+                                    handleSelectText({
+                                        id: 140,
+                                        name: "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་པའི་འགྲེལ་པ།",
+                                    })
+                                }
+                            >
+                                {alignment.target}
+                            </li>
+                        </ul>
+                    );
+                })}
         </Box>
     );
 }
 
 const mapStateToProps = (state: AppState): {} => {
     let selectedMedia = reducers.getMediaData(state);
-    const alignmentData = reducers.getTextAlignment(state);
-
+    const alignmentData = reducers.getAlignment(state);
     let text = reducers.getText(state, alignmentData.target);
     return {
         alignmentData,

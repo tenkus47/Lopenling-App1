@@ -15,6 +15,7 @@ import _, { split } from "lodash";
 import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
+import { Box } from "@mui/material";
 
 let _searchResultsCache: {
     [splitTextUniqueId: string]: {
@@ -46,6 +47,7 @@ export type Props = {
     selectedTargetRange: [],
     selectedSourceRange: [],
     syncIdOnSearch: String,
+    changeSyncIdOnClick: () => void,
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -89,7 +91,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.splitText = null;
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
-            defaultHeight: 300,
         });
         this.rowRenderer = this.rowRenderer.bind(this);
         this.isPanelLinked = this.props.isPanelLinked;
@@ -146,12 +147,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     handleSelection(e: Event) {
         if (!this._modifyingSelection) {
             this.activeSelection = document.getSelection();
-
-            let selectedId =
-                this.activeSelection?.anchorNode?.parentElement?.id;
-
-            this.updateId(selectedId);
-
             if (!this._mouseDown) {
                 // sometimes, this gets called after the mouseDown event handler
                 this.mouseUp();
@@ -261,27 +256,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
 
         return span;
-    }
-
-    updateId(id) {
-        // if (id && id.includes("s2")) {
-        //     let newId = id.replace("s2", "s");
-        //     document
-        //         ?.getElementById(newId)
-        //         ?.scrollIntoView({ block: "center" });
-        //     let positionHighlight = document
-        //         .getElementById(newId)
-        //         .getBoundingClientRect();
-        //     let hightlighter = document.createElement("div");
-        //     hightlighter.classList.add(styles.hightlighter);
-        //     hightlighter.style.border = "2px solid blue";
-        //     document.getElementById(newId).append(hightlighter);
-        //     document.getElementById(newId).style.color = "blue";
-        //     setTimeout(() => {
-        //         document.getElementById(newId).style.color = "black";
-        //         hightlighter.remove();
-        //     }, 500);
-        // }
     }
 
     updateList(
@@ -505,23 +479,30 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         this.processProps(this.props);
         this.componentDidUpdate();
+
+        this.timer = setTimeout(() => {
+            this.resizeHandler();
+        }, 2000);
     }
 
     componentDidUpdate(prevProps, prevState) {
         let scrollToId = this.props.scrollToId;
-        let targetId2 = this.props.syncIdOnClick;
+        this.targetId2 = this.props.syncIdOnClick;
         this.isPanelLinked = this.props.isPanelLinked;
-
         this.selectedWindow = this.props.selectedWindow;
         let SearchSyncId = this.props.syncIdOnSearch || null;
         let list = this.list;
         let result = this.props.searchResults;
         let Alignment = this.props.textAlignment;
-        let condition =
+        this.condition =
             Alignment?.target?.witness === this.props.selectedWitness.id;
+
         let con =
             prevProps?.searchResults !== this.props?.searchResults ||
             prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
+
+        // for scrolling for search results;
+
         if (con && result) {
             if (SearchSyncId) {
                 let selectedTextIndex =
@@ -534,11 +515,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }, 100);
             }
         }
+
+        //for scrolling to id aligned with first window
+        //scroll control linked
+
         if (
             this.selectedWindow === 1 &&
             scrollToId.from === 1 &&
             this.isPanelLinked &&
-            condition &&
+            this.condition &&
             scrollToId.id !== null
         ) {
             let list = this.list;
@@ -563,15 +548,19 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 }
             }
         }
+
+        //for scrolling to the highlighted alignment if its outside visible DOM
         if (
-            targetId2 &&
+            this.targetId2 &&
             scrollToId.from === null &&
-            this.selectedWindow === 1
+            this.selectedWindow === 1 &&
+            scrollToId.id === null &&
+            this.condition
         ) {
             let clickIdObj = Alignment.alignment.find(
                 (l) =>
-                    targetId2 >= l.source_segment.start &&
-                    targetId2 < l.source_segment.end
+                    this.targetId2 >= l.source_segment.start &&
+                    this.targetId2 < l.source_segment.end
             );
             let syncClickTargetId = clickIdObj?.target_segment?.start;
             let selectedTextIndex =
@@ -626,7 +615,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         document.removeEventListener("mousedown", this);
         document.removeEventListener("mouseup", this);
         window.removeEventListener("resize", this.resizeHandler);
+
         document.removeEventListener("selectionchange", this.selectionHandler);
+        clearTimeout(this.timer);
     }
 
     getSelectedTextIndex(): number {
@@ -802,25 +793,35 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 className={styles.splitText2}
                 ref={(div) => (this.splitText = div)}
                 key={key}
+                style={{
+                    cursor: "pointer",
+                }}
             >
                 <button
                     id="updateList2"
                     style={{ display: "none" }}
                     onClick={() => this.updateList(true)}
                 ></button>
-                <AutoSizer>
-                    {({ height, width }) => (
+                <AutoSizer disableWidth>
+                    {({ height }) => (
                         <List
                             ref={(list) => (this.list = list)}
                             height={height}
                             rowCount={props.splitText.texts.length}
                             rowHeight={cache.rowHeight}
                             rowRenderer={rowRenderer}
-                            width={width}
+                            width={1}
                             overscanRowCount={1}
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
                             scrollToAlignment="start"
+                            containerStyle={{
+                                width: "100%",
+                                maxWidth: "100%",
+                            }}
+                            style={{
+                                width: "100%",
+                            }}
                         ></List>
                     )}
                 </AutoSizer>
@@ -953,10 +954,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             searchStringPositions={searchStringPositions}
                             textAlignmentById={props.textAlignmentById}
                             fontSize={props.fontSize}
+                            isPanelLinked={this.props.isPanelLinked}
                             selectedSourceRange={props.selectedSourceRange}
                             selectedTargetRange={props.selectedTargetRange}
                             changeSelectedRange={props.changeSelectedRange}
-                        ></Text2>
+                            changeSyncIdOnClick={this.props.changeSyncIdOnClick}
+                            changeScrollToId={this.props.changeScrollToId}
+                            condition={this.condition}
+                        />
                     </div>
                 </div>
             </CellMeasurer>

@@ -31,7 +31,7 @@ module.exports = {
 
         new webpack.DefinePlugin({
             "process.env": {
-                NODE_ENV: JSON.stringify("production"),
+                NODE_ENV: JSON.stringify("development"),
             },
         }),
         new LodashModuleReplacementPlugin(),
@@ -39,6 +39,11 @@ module.exports = {
 
     module: {
         rules: [
+            {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: "javascript/auto",
+            },
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
@@ -150,7 +155,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: [".js", ".jsx"],
+        extensions: [".js", ".jsx", "*", ".mjs"],
         modules: [path.resolve("./node_modules"), path.resolve("./app")],
     },
 

@@ -2,11 +2,10 @@
 
 
 .textDetail {
-    background-color: var(--text-bg);
+    /* background-color: var(--text-bg); */
     position: relative;
-    flex-grow: 1;
-    color: var(--text-color);
-    border-left: 1px solid #eee;
+    width: 100%;
+    /* color: var(--text-color); */
     transition: height 0.4s linear;
 }
 
@@ -20,15 +19,15 @@
     border-radius: 10px;
 }
 
+.tableContent {
+    padding-inline: 20px;
+}
+
 :global(.loader) {
     position: absolute;
     left: 50%;
     top: 20%;
     padding: 50px;
-    background-color: rgba(1, 1, 1, 0.1);
     border-radius: 5px;
-}
-
-.tableContent {
-    padding-inline: 20px;
+    background-color: transparent;
 }

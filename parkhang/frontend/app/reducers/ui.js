@@ -48,6 +48,7 @@ export type UIState = {
     isPanelLinked: boolean,
     isAnnotating: Boolean,
     scrollToId: {},
+    imageScrollId: {},
 
     SyncIdOnClick: String,
     SyncIdOnScroll: String,
@@ -55,6 +56,8 @@ export type UIState = {
 
     SyncIdOnSearch2: String,
     SyncIdOnScroll2: String,
+
+    theme: String,
 };
 
 export const initialUIState = {
@@ -67,7 +70,7 @@ export const initialUIState = {
     searchValue: "",
     searchValue2: "",
 
-    showPageImages: false,
+    showPageImages: true,
     activeAnnotations: {},
     activeTextAnnotations: {},
     textListVisible: false,
@@ -87,11 +90,19 @@ export const initialUIState = {
     selectedWindow: 1,
     openTableContent: false,
     scrollToId: { from: 1, id: 0 },
-
+    imageScrollId: { from: 1, id: 0 },
     SyncIdOnClick: 0,
     SyncIdOnSearch: null,
     SyncIdOnSearch2: null,
+
+    theme: "light",
 };
+function changeTheme(state, action) {
+    return {
+        ...state,
+        theme: action.payload,
+    };
+}
 
 function changeSyncIdOnSearch(state, action) {
     return {
@@ -175,6 +186,12 @@ function changeScrollToId(state, action) {
         scrollToId: { from: action.payload.from, id: action.payload.id },
     };
 }
+function changeImageScrollId(state, action) {
+    return {
+        ...state,
+        imageScrollId: { from: action.data.from, id: action.data.id },
+    };
+}
 
 function changeSyncIdOnClick(
     state: UIState,
@@ -207,7 +224,6 @@ function changeLinkPanel(
 
     return state;
 }
-
 
 function selectedTextWitness(
     state: UIState,
@@ -540,6 +556,7 @@ uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.SCROLL_TO_ID] = changeScrollToId;
+uiReducers[actions.IMAGE_SCROLL_ID] = changeImageScrollId;
 
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
 uiReducers[actions.CHANGE_RANGE_SELECTION] = changeRangeSelection;
@@ -574,6 +591,7 @@ uiReducers[actions.SHOW_TABLE_CONTENT] = showTableContent;
 uiReducers[actions.SHOW_TABLE_CONTENT2] = showTableContent2;
 uiReducers[actions.SYNC_ID_ON_SEARCH] = changeSyncIdOnSearch;
 uiReducers[actions.SYNC_ID_ON_SEARCH2] = changeSyncIdOnSearch2;
+uiReducers[actions.CHANGE_THEME] = changeTheme;
 
 export default uiReducers;
 
@@ -625,6 +643,9 @@ export const getSelectedTextWitnessId2 = (
 };
 export const showPageImages = (state: UIState): boolean => {
     return state.showPageImages;
+};
+export const getTheme = (state: UIState): String => {
+    return state.theme;
 };
 
 export const getActiveAnnotation = (
@@ -737,4 +758,7 @@ export const getTextFontSize2 = (state: UIState): number => {
 };
 export const isSecondWindowOpen = (state: UIState): number => {
     return state.showSecondWindow;
+};
+export const getImageScrollId = (state) => {
+    return state.imageScrollId;
 };

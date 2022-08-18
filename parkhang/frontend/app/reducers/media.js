@@ -12,6 +12,7 @@ export type MediaState = {
     audioData: {},
     selectedImage: Number,
     selectedImageVersion: Number,
+    imageAlignmentById: [],
 };
 
 export const initialMediaState: MediaState = {
@@ -25,6 +26,7 @@ export const initialMediaState: MediaState = {
     audioData: {},
     selectedImage: 0,
     selectedImageVersion: null,
+    imageAlignmentById: [],
 };
 
 function selectMedia(state, action) {
@@ -108,9 +110,21 @@ function changeIsImagePortrait(state: MediaState, action): MediaState {
 }
 
 function loadImageData(state: MediaState, action): MediaState {
+    let datas = action.data;
+    let imageAlignmentById = [];
+    if (datas?.alignment) {
+        datas.alignment.map((data, index) => {
+            imageAlignmentById.push({
+                id: index,
+                start: data.source_segment.start,
+                end: data.source_segment.end,
+            });
+        });
+    }
     return {
         ...state,
         imageData: action.data,
+        imageAlignmentById,
     };
 }
 function loadVideoData(state: MediaState, action): MediaState {
@@ -151,6 +165,9 @@ export const getImageData = (state: DataState) => {
 };
 export const getVideoData = (state: DataState) => {
     return state.videoData;
+};
+export const getImageAlignmentById = (state) => {
+    return state.imageAlignmentById;
 };
 
 export default mediaReducers;

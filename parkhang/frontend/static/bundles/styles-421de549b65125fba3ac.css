@@ -9,8 +9,20 @@
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -19,7 +31,7 @@
     font-family: "Overpass", "arial", "sans-serif";
     font-size: 24px;
     font-size: 1.5rem;
-    color: rgb(102, 102, 102);
+    color: #666666;
     height: 40px;
     -webkit-box-pack: justify;
         -ms-flex-pack: justify;
@@ -221,8 +233,20 @@
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -256,6 +280,163 @@
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center;
+}
+@font-face {
+    font-family: "Tibetan";
+    font-style: normal;
+    font-weight: 400;
+    src: local("arial");
+}
+
+@font-face {
+    font-family: "Tibetan";
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
+    unicode-range: U+0F00-0FFF;
+}
+
+html {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: inherit;
+            box-sizing: inherit;
+    font-display: swap;
+
+}
+
+a {
+    text-decoration: none;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Overpass", "arial", "sans-serif";
+    font-display: swap;
+    -webkit-font-feature-settings: "kern";
+            font-feature-settings: "kern";
+    -webkit-font-kerning: normal;
+            font-kerning: normal;
+    /* background-color: white; */
+    overflow: hidden;
+}
+
+.App---container {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.App---interface {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+}
+
+.App---listContainer {
+    padding-top: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    -ms-flex-negative: 1;
+        flex-shrink: 1;
+    -webkit-transition: width 0.25s ease-in-out;
+    transition: width 0.25s ease-in-out;
+    position: relative;
+}
+
+.App---showListContainer {
+    width: 100%;
+}
+
+.App---hideListContainer {
+    width: 0%;
+}
+
+.Resizer.vertical {
+    width: 10px;
+    cursor: col-resize;
+    z-index: 1;
+    background-color: #ffffff;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: rgba(1, 1, 1, .7);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    width: 8px;
+
+}
+
+@supports(scrollbar-color: gray var(--text-bg)) {
+
+
+    * {
+        scrollbar-color: gray white;
+        scrollbar-width: none;
+    }
+}
+.util---flex {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.util---flexColumn {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+}
+.HomePage---list {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.HomePage---list::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
 }
 .TextsSearch---textsSearchContainer {
     display: -webkit-box;
@@ -344,8 +525,20 @@
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -455,7 +648,6 @@
 .Accessory---accessory:hover {
     background-color: rgba(0, 0, 0, .2);
 }
-
 /* Collection default theme */
 
 .styles---ReactVirtualized__Collection {
@@ -571,8 +763,20 @@
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -615,7 +819,9 @@
     padding: 0;
     cursor: pointer;
     white-space: nowrap;
-    font-family: "Tibetan", "Himalaya", "Kokonor";
+    font-family: "Tibetan",
+        "Tsumachu",
+        "Dutsa";
     font-size: 12px;
 }
 
@@ -762,8 +968,20 @@
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -771,144 +989,6 @@
     font-family: "Overpass", "arial", "sans-serif";
     font-size: 12px;
     font-weight: bold;
-}
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src: local("arial");
-}
-
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
-    unicode-range: U+0F00-0FFF;
-}
-
-html {
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-    -webkit-box-sizing: inherit;
-            box-sizing: inherit;
-    font-display: swap;
-
-}
-
-a {
-    text-decoration: none;
-}
-
-body {
-    padding: 0;
-    margin: 0;
-    font-family: "Overpass", "arial", "sans-serif";
-    font-display: swap;
-    -webkit-font-feature-settings: "kern";
-            font-feature-settings: "kern";
-    -webkit-font-kerning: normal;
-            font-kerning: normal;
-    background-color: white;
-    /* overflow: hidden; */
-}
-
-.App---container {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.App---interface {
-    -webkit-box-flex: 1;
-        -ms-flex: 1;
-            flex: 1;
-}
-
-.App---listContainer {
-    padding-top: 10px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-    -ms-flex-negative: 1;
-        flex-shrink: 1;
-    -webkit-transition: width 0.25s ease-in-out;
-    transition: width 0.25s ease-in-out;
-    position: relative;
-}
-
-.App---showListContainer {
-    width: 100%;
-}
-
-.App---hideListContainer {
-    width: 0%;
-}
-
-.Resizer.vertical {
-    width: 10px;
-    cursor: col-resize;
-    z-index: 1;
-    background-color: #ffffff;
-}
-
-.App---ReactVirtualized__List {
-    background-color: red;
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-    background-color: #F5F5F5;
-}
-
-::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-    background-color: #555;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    width: 8px;
-}
-
-@supports(scrollbar-color: gray var(--text-bg)) {
-
-
-    * {
-        scrollbar-color: gray white;
-        scrollbar-width: thin;
-    }
-}
-.util---flex {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-
-.util---flexColumn {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
 }
 
 .TextListTab---tab {
@@ -984,15 +1064,13 @@ body {
     background-color: #ffffff;
 }
 .Image---ThirdWindow {
-    -webkit-transition: 0.5s all linear;
-    transition: 0.5s all linear;
-    position: absolute;
-    height: 300px;
-    width: 100%;
-    z-index: 999;
-    bottom: 0px;
-    background-color: white;
+    /* position: absolute; */
+    height: 100% !important;
+    width: 100% !important;
+    z-index: 2;
+    /* bottom: 0px; */
     overflow: hidden;
+    border-top: 1px solid gray;
 }
 .Image---ThirdWindowPortrait {
     overflow: auto;
@@ -1003,15 +1081,16 @@ body {
     width: 50%;
     z-index: 999;
     right: 0;
-    background-color: white;
+    /* background-color: var(--text-bg); */
 }
 .Image---header {
-    position: inherit;
+    position: relative;
     top: 0;
-    height: 45px;
+    height: 35px;
     right: 0;
     left: 0;
-    background-color: #f7f7f7;
+    /* background-color: var(--textDetail-heading); */
+    z-index: 3;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1039,14 +1118,15 @@ body {
 .Image---ImageStyle {
     -o-object-fit: contain;
        object-fit: contain;
-    height: 100%;
+    max-height: 35vh;
     max-width: 100%;
 
 }
 .Image---imageSection {
     width: 100%;
-    height: calc(100% - 45px);
     position: relative;
+    bottom: 0;
+
 }
 .Video---timelineHeading {
     text-align: center;
@@ -1072,25 +1152,24 @@ th {
 tr:nth-child(even) {
     background-color: #dddddd;
 }
-.MediaOptions---MediaOption{
+.MediaOptions---MediaOption {
     resize: both;
-    overflow: auto; 
-    position:absolute;
+    overflow: auto;
+    position: absolute;
     height: 100%;
     width: 50%;
-    z-index: 99999;
+    z-index: 1;
     right: 0;
     background-color: white;
-    border: thick double #5B8960; 
 }
-.MediaOptions---header{
-    position: inherit;
-    top:0;
-    height: 70px;
-    right:0;
-    left:0;
+.MediaOptions---header {
+    position: relative;
+    top: 0;
+    height: 60px;
+    right: 0;
+    left: 0;
     background-color: #f7f7f7;
-    border-bottom: 1px solid #666;
+    border-bottom: 1px solid #a6a6a6;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1100,22 +1179,58 @@ tr:nth-child(even) {
     padding-inline: 30px;
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
-.MediaOptions---closeBtn{
-    position: inherit;
-    right:10px;
-    top:10px;
-    cursor: pointer;
-    font-weight: bold;
-    background-color: black;
-    color: white;
-    border-radius: 50%;
-    padding:2px;
-    height: 25px;
-    width: 25px;
-    text-align: center;
+.MediaOptions---closeBtn {
+    position: absolute !important;
+    right: 10px;
+    top: 10px;
 }
-.MediaOptions---closeBtn:hover{
-    background-color: gray;
+.resizerStyle---Resizer {
+    background: #000;
+    opacity: 0.2;
+    z-index: 1;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    background-clip: padding-box;
+}
+
+.resizerStyle---Resizer:hover {
+    -webkit-transition: all 2s ease;
+    transition: all 2s ease;
+}
+
+.resizerStyle---Resizer.resizerStyle---horizontal {
+    height: 11px;
+    margin: -5px 0;
+    border-top: 5px solid rgba(255, 255, 255, 0);
+    border-bottom: 5px solid rgba(255, 255, 255, 0);
+    cursor: row-resize;
+    width: 100%;
+}
+
+.resizerStyle---Resizer.resizerStyle---horizontal:hover {
+    border-top: 5px solid rgba(0, 0, 0, .5);
+    border-bottom: 5px solid rgba(0, 0, 0, .5);
+}
+
+.resizerStyle---Resizer.resizerStyle---vertical {
+    width: 11px;
+    margin: 0;
+    border-left: 5px solid rgba(255, 255, 255, 0);
+    border-right: 5px solid rgba(255, 255, 255, 0);
+    cursor: col-resize;
+}
+
+.resizerStyle---Resizer.resizerStyle---vertical:hover {
+    border-left: 5px solid rgba(0, 0, 0, .5);
+    border-right: 5px solid rgba(0, 0, 0, .5);
+}
+
+.resizerStyle---Resizer.resizerStyle---disabled {
+    cursor: not-allowed;
+}
+
+.resizerStyle---Resizer.resizerStyle---disabled:hover {
+    border-color: transparent;
 }
 @font-face {
     font-family: "Tibetan";
@@ -1128,8 +1243,20 @@ tr:nth-child(even) {
     font-family: "Tibetan";
     font-style: normal;
     font-weight: 400;
-    src: url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2"),
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff");
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
+        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
+        url("/static/fonts/dutsa.ttf") format("ttf"), */
+    ;
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -1148,7 +1275,7 @@ we require as we don't want to change the html.
 */
 
 .header {
-    background-color: blue-tint;
+    background-color: #0088cc;
     font-family: "Overpass", "arial", "sans-serif";
     font-size: 42px;
     color: white;
@@ -1167,7 +1294,7 @@ we require as we don't want to change the html.
 }
 
 .account-menu {
-    border-bottom: 1px solid blue-tint;
+    border-bottom: 1px solid #0088cc;
 }
 
 .account-menu ul {
@@ -1179,11 +1306,11 @@ we require as we don't want to change the html.
     display: inline-block;
     padding: 10px 20px;
     margin-right: 25px;
-    background-color: blue-tint;
+    background-color: #0088cc;
     color: white;
-    border-top: 1px solid blue-tint;
-    border-left: 1px solid blue-tint;
-    border-right: 1px solid blue-tint;
+    border-top: 1px solid #0088cc;
+    border-left: 1px solid #0088cc;
+    border-right: 1px solid #0088cc;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     height: 40px;
@@ -1204,7 +1331,7 @@ we require as we don't want to change the html.
 .login .account-menu-signinLink a:visited,
 .signup .account-menu-signupLink a:link,
 .signup .account-menu-signupLink a:visited {
-    color: blue-tint;
+    color: #0088cc;
 }
 
 .account-content {
@@ -1260,7 +1387,7 @@ we require as we don't want to change the html.
 .account-content .primaryAction,
 .account-content button,
 .account-content input[type="submit"] {
-    background-color: blue-tint;
+    background-color: #0088cc;
     padding: 10px 20px;
     margin: 10px 0 0px 0;
     display: block;
@@ -1290,4 +1417,4 @@ we require as we don't want to change the html.
 
 
 
-/*# sourceMappingURL=styles-7431b780b7d8436fb019.css.map*/
+/*# sourceMappingURL=styles-421de549b65125fba3ac.css.map*/

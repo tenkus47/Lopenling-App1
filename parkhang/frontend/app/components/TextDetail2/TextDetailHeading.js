@@ -22,7 +22,9 @@ import {
     List,
     IconButton,
 } from "@mui/material";
+import Refresh from "./HeaderMenu/Refresh";
 
+import SearchList from "./HeaderMenu/SearchList";
 type HeaderProps = {
     user: {},
     textFontSize: Number,
@@ -72,18 +74,34 @@ function TextDetailHeading(props: HeaderProps) {
         setfindvalue("");
     };
 
+    let condition =
+        _.isObject(props.searchResults) &&
+        props.searchResults.hasOwnProperty(props.selectedText.id);
+    let results = condition
+        ? props.searchResults[props.selectedText.id].results
+        : [];
     return (
         <Stack
             direction="column"
             ref={headingRef}
             spacing={1}
-            px={2}
-            py={1}
-            style={{ background: "#f7f7f7" }}
+            sx={{
+                paddingInline: { md: 2, xs: 0 },
+                paddingBlock: { md: 1, xs: 0 },
+                borderTop: { md: 0, xs: "1px solid gray" },
+                bgcolor: "heading.main",
+                color: "text.primary",
+            }}
         >
             {" "}
             <Stack direction="row" spacing={1} justifyContent="space-between">
-                <Box sx={{ display: "flex", gap: 2 }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: { md: 2, sx: 0 },
+                        flexDirection: { md: "row", xs: "column" },
+                    }}
+                >
                     <TextListContainer />
                     <SelectVersion
                         witnesses={props.witnesses}
@@ -101,6 +119,7 @@ function TextDetailHeading(props: HeaderProps) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                        height: "fit-content",
                         width: "fit-content",
                         border: (theme) => `1px solid ${theme.palette.divider}`,
                         borderRadius: 1,
@@ -115,9 +134,19 @@ function TextDetailHeading(props: HeaderProps) {
                     }}
                     className={styles.button_group_menu}
                 >
+                    <Refresh isSecondWindowOpen={props.isSecondWindowOpen} />
+
                     <Search handleWindowSearch={handleWindowSearch} />
-                    <Settings {...props} />
-                    <TableOfContent {...props} />
+                    <Settings
+                        textFontSize={props.textFontSize}
+                        onChangedFontSize={props.onChangedFontSize}
+                        onExport={props.onExport}
+                        isPanelLinked={props.isPanelLinked}
+                    />
+                    <TableOfContent
+                        changeShowTableContent={props.changeShowTableContent}
+                        showTableContent={props.showTableContent}
+                    />
                 </ButtonGroup>
             </Stack>
             <Collapse in={showFind}>
@@ -147,55 +176,46 @@ function TextDetailHeading(props: HeaderProps) {
                             Search
                         </Button>
                         {props.searchResults && visible && (
-                            <List
+                            <Box
                                 sx={{
                                     position: "absolute",
                                     top: 35,
                                     right: 0,
-                                    zIndex: 10,
-                                    background: "#eee",
+                                    zIndex: 1,
+                                    bgcolor: "heading.main",
+                                    width: 350,
+                                    height: 350,
+                                    boxShadow: 3,
+                                    overflowX: "hidden",
                                     boxShadow: 3,
                                 }}
                             >
-                                {_.isObject(props.searchResults) &&
-                                    props.searchResults.hasOwnProperty(
-                                        props.selectedText.id
-                                    ) &&
-                                    props.searchResults[props.selectedText.id]
-                                        .results &&
-                                    props.searchResults[
-                                        props.selectedText.id
-                                    ]?.results.map((l, i) => {
-                                        return (
-                                            <ListItem
-                                                onClick={() =>
-                                                    handleListItemClick(l[0])
-                                                }
-                                                sx={{
-                                                    cursor: "pointer",
-                                                    "&:hover": {
-                                                        background: "#fff",
-                                                    },
-                                                }}
-                                                key={l[0] + "listsearch"}
-                                            >
-                                                {l[1]}
-                                            </ListItem>
-                                        );
-                                    })}
+                                {results.length === 0 && (
+                                    <p>no such word present</p>
+                                )}
+                                {condition && results.length > 0 && (
+                                    <SearchList
+                                        handleListItemClick={
+                                            handleListItemClick
+                                        }
+                                        searchValue={props.searchValue}
+                                        results={results}
+                                        selectedText={props.selectedText}
+                                    />
+                                )}
                                 <IconButton
                                     aria-label="closeButton"
                                     onClick={closeSearchItemBox}
                                     size="small"
                                     sx={{
-                                        right: 0,
+                                        right: 15,
                                         top: 0,
                                         position: "absolute",
                                     }}
                                 >
                                     <CloseIcon fontSize="inherit" />
                                 </IconButton>
-                            </List>
+                            </Box>
                         )}
                     </Stack>
                 </form>

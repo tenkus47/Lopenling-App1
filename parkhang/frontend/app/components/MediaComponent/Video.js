@@ -8,7 +8,13 @@ import React, {
 import ReactPlayer from "react-player";
 import _ from "lodash";
 import styles from "./Video.css";
-
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 function toHMS(seconds) {
     var date = new Date(null);
     date.setSeconds(seconds);
@@ -141,35 +147,60 @@ function Video(props) {
                 onPause={() => setState({ ...state, playing: false })}
                 onProgress={handleProgress}
             />
-            <h2 className={styles.timelineHeading}>Timeline</h2>
-            <table className={styles.table}>
-                <thead>
-                    <tr>
-                        <th>Sr</th>
-                        <th>Start</th>
-                        <th>End</th>
-                        <th>Jump</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {VideoData.map((list, i) => (
-                        <tr key={i + "key"} className={styles.Timeline}>
-                            <td>{i + 1}</td>
-                            <td>{list.target_segment.start}</td>
-                            <td>{list.target_segment.end}</td>
-                            <td>
-                                <button
-                                    onClick={() =>
-                                        jumpToTime(list.target_segment.start)
-                                    }
-                                >
-                                    Jump
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography>Info</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Typography>Text: ###</Typography>
+                    <Typography>Explained By :###</Typography>
+                </AccordionDetails>
+            </Accordion>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography>Timeline </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th>Sr</th>
+                                <th>Start</th>
+                                <th>End</th>
+                                <th>Jump</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {VideoData.map((list, i) => (
+                                <tr key={i + "key"} className={styles.Timeline}>
+                                    <td>{i + 1}</td>
+                                    <td>{list.target_segment.start}</td>
+                                    <td>{list.target_segment.end}</td>
+                                    <td>
+                                        <button
+                                            onClick={() =>
+                                                jumpToTime(
+                                                    list.target_segment.start
+                                                )
+                                            }
+                                        >
+                                            Jump
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </AccordionDetails>
+            </Accordion>
         </div>
     );
 }

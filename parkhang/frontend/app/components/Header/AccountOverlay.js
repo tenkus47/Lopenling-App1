@@ -22,7 +22,7 @@ const AccountOverlay = (props: Props) => {
     });
     return (
         <>
-            <MenuItem>{props.user.name}</MenuItem>
+            <MenuItem>{props.user.name || "Guest"}</MenuItem>
             <Divider />
             <MenuItem>
                 <Link

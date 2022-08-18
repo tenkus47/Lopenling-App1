@@ -64,7 +64,6 @@ const mapStateToProps = (state: AppState): {} => {
         textFontSize,
         isSecondWindowOpen: reducers.isSecondWindowOpen(state),
         exportingWitness,
-        isPanelLinked: reducers.isPanelLinked(state),
         user: reducers.getUser(state),
         isAnnotating: reducers.isAnnotating(state),
         searchValue,
@@ -108,9 +107,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 actions.changedTextListVisible(!stateProps.textListIsVisible)
             );
         },
-        onChangePanelLink: (data: boolean) => {
-            dispatch(actions.changePanelLink(data));
-        },
+
         changeIsAnnotating: (payload) => {
             dispatch(actions.changeIsAnnotating(payload));
             if (payload === false) {

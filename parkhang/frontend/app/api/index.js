@@ -165,6 +165,7 @@ export function searchTexts(
     searchTerm: string,
     maxResults: number = 0
 ): Promise<TextSearchResultData[]> {
+    if (searchTerm === null) return null;
     const url =
         "/api/texts/search/" + searchTerm + "?max_results=" + maxResults;
     return request(GET, url);
@@ -172,15 +173,18 @@ export function searchTexts(
 
 export function searchText(
     textId: number,
-    searchTerm: string
+    searchTerm: string,
+    maxResults: number = 0
 ): Promise<TextSearchResultData> {
+    if (searchTerm === null) return null;
+
     const url =
         "/api/texts/search/text/" +
         textId +
         "/" +
         searchTerm +
         "?max_results=" +
-        0;
+        maxResults;
     return request(GET, url);
 }
 

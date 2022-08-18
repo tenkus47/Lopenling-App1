@@ -3,6 +3,7 @@ import styles from "./TranslateButton.css";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
+import { Button, Typography } from "@mui/material";
 const mapStateToProps = (state) => {
     const locales = reducers.getLocales(state);
     const activeLocale = reducers.getActiveLocale(state);
@@ -32,13 +33,15 @@ function TranslateButton(props) {
         }
     };
     return (
-        <div className={styles.langSelection} onClick={() => handleLanguage()}>
+        <Button onClick={() => handleLanguage()} size="small">
             {language !== "bo" ? (
-                <div>A</div>
+                <Typography>A</Typography>
             ) : (
-                <div style={{ paddingTop: "-10px", marginTop: "-10px" }}>ཀ</div>
+                <Typography style={{ paddingTop: "-10px", marginTop: "-10px" }}>
+                    ཀ
+                </Typography>
             )}
-        </div>
+        </Button>
     );
 }
 

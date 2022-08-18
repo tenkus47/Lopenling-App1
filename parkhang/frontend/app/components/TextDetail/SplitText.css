@@ -1,12 +1,18 @@
 @import 'AnnotationControls.css';
 
 .splitText {
-    width: 100%;
-    background-color: white;
+    /* background-color: white; */
     flex-grow: 1;
-    min-width: 0;
     font-size: 24px;
+    width: 100%;
 }
+
+.splitText * {
+    scroll-behavior: smooth;
+
+}
+
+
 
 .splitText *:focus {
     outline: none;
@@ -20,7 +26,6 @@
 .splitTextRow {
     display: flex;
     flex-direction: row;
-    background-color: white;
 }
 
 .splitTextRow .text {
@@ -69,27 +74,4 @@
 
 span {
     position: relative
-}
-
-
-
-.hightlighter {
-    animation: pulse .3s infinite;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    position: absolute;
-    background-color: transparent;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    100% {
-
-        transform: scale(1.7);
-    }
 }

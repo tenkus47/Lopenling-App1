@@ -3,7 +3,6 @@ import styles from "./Image.css";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import _ from "lodash";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import lopenlingLogo from "images/lopenling_logo.png";
 import {
     IconButton,
     NativeSelect,
@@ -11,8 +10,9 @@ import {
     FormControl,
     Box,
     InputLabel,
+    AppBar,
 } from "@mui/material";
-import { Resizable } from "re-resizable";
+import classnames from "classnames";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -21,36 +21,45 @@ function HttpUrl(data = "") {
     if (data.includes("https")) return data;
     return "https://" + data;
 }
+async function fetchImage(url) {
+    const res = await fetch(url);
+    const imageBlob = await res.blob();
+    const imageObjectURL = URL.createObjectURL(imageBlob);
+    return imageObjectURL;
+}
 
 function Image(props) {
     const selectRef = useRef(null);
     let imageList = props.imageData?.alignment;
     let message = props.imageData?.message;
-
+    let imageRef = React.useRef("");
     let textIdfromAlignment = props.alignmentData.text;
-
+    let imageAlignmentById = props.imageAlignmentById;
+    let imageScrollId = props.imageScrollId;
     let isPortraitImage = props.isImagePortrait;
     let [imageSelected, SetSelected] = useState(0);
-    let [imageHeight, setImageHeight] = useState(240);
+    let [imageHeight, setImageHeight] = useState("50vh");
     let imageIdList = [];
-    let scrollingID = props.scrollToId;
     let syncIdOnClick = props.syncIdOnClick;
-
     let [loading, setLoading] = useState(false);
     const [img, setImg] = useState();
-    const fetchImage = async () => {
-        if (_.isEmpty(imageList)) return;
-        let url = HttpUrl(imageList[imageSelected].target_segment);
 
-        const res = await fetch(url);
-        const imageBlob = await res.blob();
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-        setLoading(false);
-        setImg(imageObjectURL);
-    };
     useEffect(() => {
         setLoading(true);
-        fetchImage();
+        if (!_.isEmpty(imageList)) {
+            let url = HttpUrl(imageList[imageSelected].target_segment);
+            let imageObjectURL = fetchImage(url, imageList);
+            imageObjectURL
+                .then((data) => {
+                    setImg(data);
+                    setLoading(false);
+                })
+                .catch((e) => console.log(e));
+
+            let image = imageList[imageSelected];
+            props.changeSelectedImage(image);
+            let imageDocId = image.source_segment.start;
+        }
     }, [imageList, imageSelected]);
 
     if (!_.isEmpty(imageList)) {
@@ -58,10 +67,10 @@ function Image(props) {
     }
 
     useEffect(() => {
-        let IDtoSync = parseInt(scrollingID.id);
+        let IDtoSync = parseInt(imageScrollId.id.start);
         if (
             textIdfromAlignment === props.selectedText.id &&
-            scrollingID.from === 1
+            imageScrollId.from === 1
         ) {
             if (!_.isEmpty(imageList)) {
                 let findSegment = imageList.find(
@@ -77,14 +86,14 @@ function Image(props) {
                 }
             }
         }
-    }, [scrollingID]);
+    }, [imageScrollId]);
 
     useEffect(() => {
         selectRef.current.value = props.witness;
-
         setLoading(true);
         fetchImage();
     }, [props.witness]);
+
     useEffect(() => {
         if (textIdfromAlignment === props.selectedText.id) {
             let ClickId = syncIdOnClick.toString().replace("s_", "");
@@ -104,10 +113,6 @@ function Image(props) {
         }
     }, [syncIdOnClick]);
 
-    let change = useCallback(() => {
-        props.changeSelectedImage(imageList[imageSelected + 1]);
-    }, [imageList, imageSelected]);
-
     const isPortrait = ({ target: img }) => {
         //this Check if the provided Image is a portrait or a landScape
         let tempHeight = img.naturalHeight;
@@ -118,7 +123,10 @@ function Image(props) {
         setLoading(false);
     };
     const handleChangeImage = (data) => {
-        change();
+        let currentid = imageAlignmentById.find((l) => {
+            return l.id === imageSelected;
+        });
+        console.log(currentid);
         if (data === "prev" && imageSelected > 0) {
             SetSelected((prev) => prev - 1);
         }
@@ -126,28 +134,27 @@ function Image(props) {
             SetSelected((prev) => prev + 1);
         }
     };
-    const handleResize = (e, direction, ref) => {
-        setImageHeight(ref.style.height);
-    };
+
     return (
-        <Resizable
+        <div
             className={
                 isPortraitImage
                     ? styles.ThirdWindowPortrait
                     : styles.ThirdWindow
             }
-            defaultSize={{
-                width: "100%",
-                height: imageHeight + 45,
-            }}
-            onResize={handleResize}
-            maxWidth="100%"
+            // onResize={handleResize}
         >
-            <div className={styles.header}>
+            <Box
+                className={styles.header}
+                sx={{
+                    boxShadow: 1,
+                    bgcolor: "primary",
+                }}
+            >
                 <Box position="relative" zIndex={2}>
                     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                         <NativeSelect
-                            labelId="demo-select-small"
+                            labelid="demo-select-small"
                             inputRef={selectRef}
                             onChange={(e) =>
                                 props.changeImageVersion(e.target.value)
@@ -178,35 +185,27 @@ function Image(props) {
                 >
                     <CancelIcon />
                 </IconButton>
-
-                {/* {!isPortraitImage && (
-                    <div
-                        className={styles.hideButton}
-                        onClick={() => SetHide((prev) => !prev)}
-                    >
-                        {hide ? "Show" : "Hide"}
-                    </div>
-                )} */}
-            </div>
+            </Box>
             <Box className={styles.imageSection}>
                 {_.isEmpty(imageList) ? (
                     <>
                         {message ? (
                             <h1>{message}</h1>
                         ) : (
-                            <CircularProgress color="secondary" />
+                            <Box sx={{ height: "30vh" }}>
+                                <CircularProgress color="secondary" />
+                            </Box>
                         )}
                     </>
                 ) : (
                     <>
                         <center height="100%">
-                            {}
                             {!loading ? (
                                 <TransformWrapper>
                                     <TransformComponent>
                                         <LazyLoadImage
+                                            itemRef={imageRef}
                                             className={styles.ImageStyle}
-                                            height={imageHeight}
                                             src={img}
                                             alt="imagepecha"
                                             onLoad={isPortrait}
@@ -214,7 +213,9 @@ function Image(props) {
                                     </TransformComponent>
                                 </TransformWrapper>
                             ) : (
-                                <CircularProgress color="secondary" />
+                                <Box sx={{ height: "30vh" }}>
+                                    <CircularProgress color="secondary" />
+                                </Box>
                             )}
                         </center>
                         <IconButton
@@ -223,26 +224,26 @@ function Image(props) {
                                 position: "absolute",
                                 left: 20,
                                 top: 100,
-                                color: "secondary",
                             }}
+                            color="primary"
                         >
-                            <ChevronLeftIcon />
+                            <ChevronLeftIcon fill="currentColor" />
                         </IconButton>
                         <IconButton
+                            color="primary"
                             onClick={() => handleChangeImage("next")}
                             sx={{
                                 position: "absolute",
                                 right: 20,
                                 top: 100,
-                                color: "secondary",
                             }}
                         >
-                            <ChevronRightIcon />
+                            <ChevronRightIcon fill="currentColor" />
                         </IconButton>
                     </>
                 )}
             </Box>
-        </Resizable>
+        </div>
     );
 }
 

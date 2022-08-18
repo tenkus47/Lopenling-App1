@@ -32,6 +32,8 @@ class Text(models.Model):
         return self.name
 
 
+
+
 class FeaturedText(models.Model):
     """Text to be featured in home page"""
 
@@ -39,7 +41,6 @@ class FeaturedText(models.Model):
     # order in which the text should be displayed
     order = models.IntegerField()
     description = models.CharField(max_length=500, blank=True, null=True)
-
 
 class Topic(models.Model):
     name = models.CharField(max_length=DEFAULT_MAX_LENGTH)

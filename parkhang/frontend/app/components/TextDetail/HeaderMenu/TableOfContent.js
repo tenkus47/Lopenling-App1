@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import React from "react";
+import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-function TableOfContent(props) {
+import ClearIcon from "@mui/icons-material/Clear";
+function TableOfContent({ changeShowTableContent, showTableContent }) {
     function handleClick() {
-        props.changeShowTableContent(!props.showTableContent);
+        changeShowTableContent(!showTableContent);
     }
     return (
-        <React.Fragment key="right">
-            <Button onClick={handleClick}>
-                <MenuIcon />
-            </Button>
+        <React.Fragment>
+            <IconButton onClick={handleClick}>
+                {showTableContent ? <ClearIcon /> : <MenuIcon />}
+            </IconButton>
         </React.Fragment>
     );
 }

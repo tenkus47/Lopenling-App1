@@ -5,18 +5,15 @@
     display: flex;
     margin: 0 auto;
     width: fit-content;
-    background-color: #eee;
+    background-color: rgba(175, 175, 175, 0.9);
     border: 1px solid darkgray;
 }
+
 
 .header>div {
     display: flex;
     justify-content: center;
     max-width: fit-content;
-}
-
-.header>div:hover {
-    background-color: var(--white);
 }
 
 .Anotation_closeBtn {
@@ -32,7 +29,8 @@
 }
 
 .edit svg {
-    width: 20px;
-    height: 20px;
-
+    width: 1rem;
+    height: 1rem;
+    fill: #fff;
+    cursor: pointer;
 }

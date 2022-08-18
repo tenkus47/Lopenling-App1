@@ -1,27 +1,45 @@
-import React from 'react'
-import ReactTooltip from 'react-tooltip'
+import React from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
-
-
-function ApplyTooltip({children,tooltipName,format=null,effect='solid',className='',setTimer=0}) {
-
-
-
-
-
-  return (
-    <>
-     <div  data-tip data-for={tooltipName}  className={className} style={{width:"100%"}}>
-     {children}
-     </div>
-         <ReactTooltip
-               id={tooltipName}  type="dark" effect={effect}>
-                 {format?<FormattedMessage id={format} />:<span>{tooltipName}</span>}
-                </ReactTooltip>
-    </>
-  )
+import { Tooltip, Tootip } from "@mui/material";
+function ApplyTooltip({
+    children,
+    tooltipName,
+    format = null,
+    className = "",
+    shortcut = "",
+    on = false,
+}) {
+    return (
+        <>
+            <div
+                data-tip
+                data-for={tooltipName}
+                className={className}
+                style={{ width: "100%" }}
+            >
+                {!on ? (
+                    <Tooltip
+                        placement="top"
+                        followCursor
+                        title={
+                            format ? (
+                                <FormattedMessage id={format} />
+                            ) : (
+                                <span>
+                                    {tooltipName}
+                                    {` [${shortcut}]`}
+                                </span>
+                            )
+                        }
+                    >
+                        {children}
+                    </Tooltip>
+                ) : (
+                    children
+                )}
+            </div>
+        </>
+    );
 }
 
-
-
-export default ApplyTooltip
+export default ApplyTooltip;

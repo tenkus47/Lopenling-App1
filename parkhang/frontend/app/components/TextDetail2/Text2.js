@@ -58,6 +58,7 @@ export type Props = {
     textAlignmentById: {},
     selectedSourceRange: [],
     selectedTargetRange: [],
+    changeSyncIdOnClick: () => void,
 };
 
 export type State = {
@@ -82,8 +83,7 @@ export default class Text2 extends React.Component<Props, State> {
         this.state = {
             segmentedText: props.segmentedText,
         };
-        this.textAlignmentById = [];
-
+        this.textAlignmentById = this.props.textAlignmentById;
         this._renderedSegments = null;
         this._renderedHtml = null;
     }
@@ -140,16 +140,49 @@ export default class Text2 extends React.Component<Props, State> {
     // }
 
     selectedElement(element: Element) {
+        let sourceRangeSelection = [];
+        let targetRangeSelection = [];
         const selection = document.getSelection();
-        // console.log(selection)
+        if (
+            element?.id.includes("s2_") &&
+            this.props.isPanelLinked &&
+            this.props.condition
+        ) {
+            var clickId = parseInt(element.id.replace("s2_", ""));
+
+            this.props.changeSyncIdOnClick(clickId);
+            this.props.changeScrollToId({ id: "ua", from: "ua" });
+
+            let id = parseInt(element.id.replace("s2_", ""));
+            let rangeUnique = this.textAlignmentById.find(
+                (l) => id >= l.TStart && id < l.TEnd
+            );
+            if (rangeUnique) {
+                for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
+                    sourceRangeSelection.push(i);
+                }
+                for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
+                    targetRangeSelection.push(i);
+                }
+                this.props.changeSelectedRange({
+                    source: sourceRangeSelection,
+                    target: targetRangeSelection,
+                });
+            }
+        }
+
         if (selection && selection.type === "Range") {
             return;
         }
         this.props.selectedSegmentId(element.id);
+        if (!element.id) {
+            this.props.changeSelectedRange({ source: [], target: [] });
+        }
     }
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
         let segments = renderState.segmentedText.segments;
+
         let textLineClass = styles.textLine;
         let segmentHTML = '<p class="' + textLineClass + '">';
         if (segments.length === 0) return { __html: segmentHTML };
@@ -194,7 +227,10 @@ export default class Text2 extends React.Component<Props, State> {
             // ) {
             //     classes.push(styles.selectedAnnotation);
             // }
-            if (renderProps.selectedTargetRange?.includes(segment.start)) {
+            if (
+                renderProps.selectedTargetRange?.includes(segment.start) &&
+                renderProps.condition
+            ) {
                 classes.push(styles.selectedRange);
             }
 
@@ -254,24 +290,24 @@ export default class Text2 extends React.Component<Props, State> {
                     }
                 }
             }
-            if (
-                this.props.textAlignmentById !== null
-                // && selectedTextId === TargetId
-            ) {
-                let r = this.props.textAlignmentById.find(
-                    (d) => d.TStart === segment.start
-                );
-                if (r) {
-                    segmentHTML +=
-                        "<span id='alignment2_" +
-                        segment.start +
-                        "'>" +
-                        `<sup class=` +
-                        styles.syncIdClass +
-                        `>${r.id}</sup>` +
-                        "</span>";
-                }
-            }
+            // if (
+            //     this.props.textAlignmentById !== null
+            //     // && selectedTextId === TargetId
+            // ) {
+            //     let r = this.props.textAlignmentById.find(
+            //         (d) => d.TStart === segment.start
+            //     );
+            //     if (r) {
+            //         segmentHTML +=
+            //             "<span id='alignment2_" +
+            //             segment.start +
+            //             "'>" +
+            //             `<sup class=` +
+            //             styles.syncIdClass +
+            //             `>${r.id}</sup>` +
+            //             "</span>";
+            //     }
+            // }
 
             segmentHTML +=
                 "<span id=" +
@@ -303,12 +339,15 @@ export default class Text2 extends React.Component<Props, State> {
             renderedHtml.__html === this._renderedHtml.__html
         ) {
             return false;
-        } else {
+        } else if (this._renderedHtml !== renderedHtml) {
             this._renderedHtml = renderedHtml;
             return true;
         }
+        return false;
     }
-
+    componentDidUpdate() {
+        this.textAlignmentById = this.props.textAlignmentById;
+    }
     render() {
         let classes = [styles.text];
         if (this.props.row === 0) {
@@ -332,7 +371,7 @@ export default class Text2 extends React.Component<Props, State> {
                     onClick={(e) => this.selectedElement(e.target)}
                     style={{
                         fontSize: this.props.fontSize,
-                        cursor: "pointer",
+                        fontFamily: "var(--tibetan-fonts2)",
                     }}
                 />
             </div>

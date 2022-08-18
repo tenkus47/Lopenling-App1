@@ -1,27 +1,13 @@
 .textlist {
     z-index: 1;
-    min-width: 300px;
+    min-width: 15rem;
     height: 300px;
     cursor: pointer;
     overflow: hidden;
-    background-color: #eee;
-    color: black;
     font-weight: 100;
 }
 
 .textlist.open {
     width: 500px;
     height: 500px;
-}
-
-.listToggelBtn {
-    outline: none;
-    border: none;
-    background-color: transparent;
-    font-size: 1rem;
-}
-
-.listToggelBtn:hover {
-    background-color: #eee;
-    outline: 2px solid goldenrod;
 }

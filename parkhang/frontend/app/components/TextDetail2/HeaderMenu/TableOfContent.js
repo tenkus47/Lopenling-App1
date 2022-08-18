@@ -1,24 +1,17 @@
-import React, { useState } from "react";
-import {
-    Button,
-    Drawer,
-    Box,
-    Typography,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemButton,
-} from "@mui/material";
+import React from "react";
+import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import ClearIcon from "@mui/icons-material/Clear";
+
 function TableOfContent(props) {
     const handleClick = () => {
         props.changeShowTableContent(!props.showTableContent);
     };
     return (
         <React.Fragment key="right">
-            <Button onClick={handleClick}>
-                <MenuIcon />
-            </Button>
+            <IconButton onClick={handleClick}>
+                {props.showTableContent ? <ClearIcon /> : <MenuIcon />}
+            </IconButton>
         </React.Fragment>
     );
 }

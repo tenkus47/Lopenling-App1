@@ -84,6 +84,12 @@ const routesMap = {
     USER: "/user/:id",
     [actions.TEXTID_ONLY_URL]: "/texts/:textId",
     [actions.TEXTS]: "/textSelection",
+    Text: {
+        path: "/test",
+        thunk: (data) => {
+            console.log(data);
+        },
+    },
 };
 const routes = connectRoutes(routesMap, {
     initialDispatch: false,
@@ -151,14 +157,14 @@ const root = ReactDOM.createRoot(document.getElementById("app"));
 root.render(
     <Provider store={store}>
         <IntlProvider textComponent={Fragment} intlSelector={intlSelector}>
-            <FlagsmithProvider
+            {/* <FlagsmithProvider
                 options={{
                     environmentID,
                 }}
                 flagsmith={flagsmith}
-            >
-                <AppContainer />
-            </FlagsmithProvider>
+            > */}
+            <AppContainer />
+            {/* </FlagsmithProvider> */}
         </IntlProvider>
     </Provider>
 );

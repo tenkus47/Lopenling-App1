@@ -8,9 +8,10 @@ import AnswerView from "./AnswerView";
 import { FormattedMessage, FormattedDate } from "react-intl";
 import classnames from "classnames";
 import { QUESTION_URL } from "app_constants";
+import { Box } from "@mui/material";
 
 type Props = {
-    question: Question
+    question: Question,
 };
 
 export default class QuestionView extends React.Component<Props> {
@@ -31,7 +32,10 @@ export default class QuestionView extends React.Component<Props> {
                 : this.props.question.username;
 
         return (
-            <div className={classnames(styles.question, controlStyles.padding)}>
+            <Box
+                className={classnames(styles.question, controlStyles.padding)}
+                sx={{ boxShadow: 2 }}
+            >
                 <span
                     className={classnames(
                         styles.threadLink,
@@ -45,7 +49,7 @@ export default class QuestionView extends React.Component<Props> {
                 <p
                     className={controlStyles.text}
                     dangerouslySetInnerHTML={{
-                        __html: this.props.question.content
+                        __html: this.props.question.content,
                     }}
                 />
                 <p className={controlStyles.subTitle}>
@@ -53,7 +57,7 @@ export default class QuestionView extends React.Component<Props> {
                     <FormattedDate value={this.props.question.created} />
                 </p>
                 {answerViews}
-            </div>
+            </Box>
         );
     }
 }

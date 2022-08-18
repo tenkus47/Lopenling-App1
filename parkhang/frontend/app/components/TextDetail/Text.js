@@ -16,6 +16,9 @@ import Witness from "lib/Witness";
 import { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
+import { find } from "lodash";
+import { withTheme } from "@mui/styles";
+
 export function idForSegment(segment: TextSegment): string {
     return "s_" + segment.start;
 }
@@ -34,6 +37,14 @@ export function idForPageBreak(segment: TextSegment): string {
 
 export function idForLineBreak(segment: TextSegment): string {
     return "l_" + (segment.end + 1);
+}
+
+function isOverflown(element) {
+    console.log(element.style.overflow);
+    return (
+        element.scrollHeight > element.clientHeight ||
+        element.scrollWidth > element.clientWidth
+    );
 }
 
 export type Props = {
@@ -72,15 +83,15 @@ const PARA_SYMBOL = String.fromCharCode(182);
 const pageBreakIconString = ReactDOMServer.renderToStaticMarkup(
     <PageBreakIcon />
 );
-export default class Text extends React.Component<Props, State> {
+class Text extends React.Component<Props, State> {
     _renderedSegments: TextSegment[] | null;
     _renderedHtml: { __html: string } | null;
     textAlignmentById;
     rangeSelect;
+    theme;
     constructor(props: Props) {
         super(props);
         this.textAlignmentById = [];
-        this.textRef = React.createRef();
         this.state = {
             segmentedText: props.segmentedText,
         };
@@ -88,6 +99,7 @@ export default class Text extends React.Component<Props, State> {
         this._renderedSegments = null;
         this._renderedHtml = null;
         this.rangeSelect = [];
+        this.theme = props.theme;
     }
     UNSAFE_componentWillReceiveProps(nextProps: Props) {
         this.setState((prevState: State, props: Props) => {
@@ -143,18 +155,18 @@ export default class Text extends React.Component<Props, State> {
         let sourceRangeSelection = [];
         let targetRangeSelection = [];
         const selection = document.getSelection();
-
+        var clickId = parseInt(element.id.replace("s_", ""));
+        this.props.changeSyncIdOnClick(clickId);
         if (
             element?.id.includes("s_") &&
             this.props.isPanelLinked &&
             this.props.condition
         ) {
-            var clickId = parseInt(element.id.replace("s_", ""));
-            this.props.changeSyncIdOnClick(clickId);
             this.props.changeScrollToId({ id: null, from: null });
 
             let id = parseInt(element.id.replace("s_", ""));
-            let rangeUnique = this.textAlignmentById.find(
+            let rangeUnique = find(
+                this.textAlignmentById,
                 (l) => id >= l.start && id < l.end
             );
             if (rangeUnique) {
@@ -371,9 +383,18 @@ export default class Text extends React.Component<Props, State> {
             }
 
             if (renderProps.selectedSourceRange.includes(segment.start)) {
-                classes.push(styles.selectedRange);
+                let newClass =
+                    renderProps.theme.palette.mode === "light"
+                        ? styles.selectedRangelight
+                        : styles.selectedRangeDark;
+                classes.push(newClass);
             }
-
+            if (
+                renderProps.imageScrollId.id.start < segment.start &&
+                renderProps.imageScrollId.id.end > segment.start
+            ) {
+                classes.push(styles.selectedImage);
+            }
             if (classes.length > 0) {
                 let className = classnames(...classes);
                 classAttribute = 'class="' + className + '"';
@@ -431,21 +452,21 @@ export default class Text extends React.Component<Props, State> {
                     }
                 }
             }
-            if (this.props.textAlignmentById !== null) {
-                let r = this.props.textAlignmentById.find(
-                    (d) => d.start === segment.start
-                );
-                if (r) {
-                    segmentHTML +=
-                        "<span id='alignment_" +
-                        segment.start +
-                        "'>" +
-                        `<sup class=` +
-                        styles.syncIdClass +
-                        `>${r.id}</sup>` +
-                        "</span>";
-                }
-            }
+            // if (this.props.textAlignmentById !== null) {
+            //     let r = this.props.textAlignmentById.find(
+            //         (d) => d.start === segment.start
+            //     );
+            //     if (r) {
+            //         segmentHTML +=
+            //             "<span id='alignment_" +
+            //             segment.start +
+            //             "'>" +
+            //             `<sup class=` +
+            //             styles.syncIdClass +
+            //             `>${r.id}</sup>` +
+            //             "</span>";
+            //     }
+            // }
             segmentHTML +=
                 "<span id=" +
                 id +
@@ -506,6 +527,9 @@ export default class Text extends React.Component<Props, State> {
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
 
+        if (this.props.imageScrollId !== nextProps.imageScrollId) {
+            return true;
+        }
         if (this.props.fontSize !== nextProps.fontSize) {
             return true;
         } else if (
@@ -517,6 +541,10 @@ export default class Text extends React.Component<Props, State> {
             this._renderedHtml = renderedHtml;
             return true;
         }
+        // return false;
+    }
+    componentDidUpdate() {
+        this.textAlignmentById = this.props.textAlignmentById;
     }
 
     render() {
@@ -535,12 +563,12 @@ export default class Text extends React.Component<Props, State> {
         return (
             <div className={styles.textContainer}>
                 <div
-                    ref={this.textRef}
                     className={classnames(...classes)}
+                    id="text1"
                     dangerouslySetInnerHTML={html}
                     style={{
                         fontSize: this.props.fontSize,
-                        cursor: !this.props.isAnnotating ? "pointer" : "text",
+                        fontFamily: "var(--tibetan-fonts)",
                     }}
                     onClick={(e) => {
                         this.selectedElement(e.target);
@@ -550,3 +578,5 @@ export default class Text extends React.Component<Props, State> {
         );
     }
 }
+
+export default withTheme(Text);
