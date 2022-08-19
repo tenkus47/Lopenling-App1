@@ -11,10 +11,7 @@
     font-weight: 400;
     src:
         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
-        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
-        url("/static/fonts/dutsa.ttf") format("ttf"), */
-    ;
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -242,10 +239,7 @@
     font-weight: 400;
     src:
         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
-        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
-        url("/static/fonts/dutsa.ttf") format("ttf"), */
-    ;
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -535,10 +529,7 @@ body {
     font-weight: 400;
     src:
         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
-        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
-        url("/static/fonts/dutsa.ttf") format("ttf"), */
-    ;
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -769,10 +760,7 @@ body {
     font-weight: 400;
     src:
         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
-        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
-        url("/static/fonts/dutsa.ttf") format("ttf"), */
-    ;
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -975,10 +963,7 @@ body {
     font-weight: 400;
     src:
         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
-        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
-        url("/static/fonts/dutsa.ttf") format("ttf"), */
-    ;
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -1263,10 +1248,7 @@ tr:nth-child(even) {
     font-weight: 400;
     src:
         url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2")
-        /* url("/static/fonts/tsumachu.ttf") format("ttf"),
-        url("/static/fonts/dutsa.ttf") format("ttf"), */
-    ;
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
     unicode-range: U+0F00-0FFF;
 }
 
@@ -1433,4 +1415,4 @@ we require as we don't want to change the html.
 
 
 
-/*# sourceMappingURL=styles-421de549b65125fba3ac.css.map*/
+/*# sourceMappingURL=styles-3547ff155a161768e29b.css.map*/
