@@ -59,6 +59,50 @@ function TextList(props) {
         let value = e.target.value;
         setFilterValue(value);
     };
+    const rowRenderer = React.useCallback(
+        ({ key, index, style, parent }) => {
+            let data = textslist[index];
+            return (
+                <CellMeasurer
+                    key={`optionvalues-${key}`}
+                    cache={cache.current}
+                    parent={parent}
+                    columnIndex={0}
+                    rowIndex={index}
+                >
+                    <div
+                        style={style}
+                        onClick={() => {
+                            setIsOpen(false);
+                            onSelectedText(data);
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                width: "13rem",
+                                paddingLeft: 2,
+                                fontSize: {
+                                    lg: 12,
+                                    md: 11,
+                                    sm: 10,
+                                    xs: 10,
+                                },
+                                color: "text.primary",
+                            }}
+                            component="div"
+                        >
+                            <Typography noWrap={true}>
+                                {addShay(data.name)}
+                            </Typography>
+                        </Box>
+                    </div>
+                </CellMeasurer>
+            );
+        },
+        [textslist]
+    );
     return (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
             <div style={{ position: "relative", marginLeft: 10 }}>
@@ -100,55 +144,7 @@ function TextList(props) {
                                     rowHeight={40}
                                     deferredMeasurementCache={cache.current}
                                     rowCount={textslist.length}
-                                    rowRenderer={({
-                                        key,
-                                        index,
-                                        style,
-                                        parent,
-                                    }) => {
-                                        let data = textslist[index];
-                                        return (
-                                            <CellMeasurer
-                                                key={`optionvalues-${key}`}
-                                                cache={cache.current}
-                                                parent={parent}
-                                                columnIndex={0}
-                                                rowIndex={index}
-                                            >
-                                                <div
-                                                    style={style}
-                                                    onClick={() => {
-                                                        setIsOpen(false);
-                                                        onSelectedText(data);
-                                                    }}
-                                                >
-                                                    <Box
-                                                        sx={{
-                                                            overflow: "hidden",
-                                                            textOverflow:
-                                                                "ellipsis",
-                                                            width: "13rem",
-                                                            paddingLeft: 2,
-                                                            fontSize: {
-                                                                lg: 12,
-                                                                md: 11,
-                                                                sm: 10,
-                                                                xs: 10,
-                                                            },
-                                                            color: "text.primary",
-                                                        }}
-                                                        component="div"
-                                                    >
-                                                        <Typography
-                                                            noWrap={true}
-                                                        >
-                                                            {addShay(data.name)}
-                                                        </Typography>
-                                                    </Box>
-                                                </div>
-                                            </CellMeasurer>
-                                        );
-                                    }}
+                                    rowRenderer={rowRenderer}
                                 />
                             )}
                         </AutoSizer>

@@ -76,7 +76,11 @@ function TextSheet(props) {
                     {props.isSecondWindowOpen && <TextDetailContainer2 />}
                 </ErrorBoundary>
             </SplitPane>
-            {props.Media.isPanelVisible && <MediaComponent />}
+            {props.Media.isPanelVisible && (
+                <ErrorBoundary>
+                    <MediaComponent />
+                </ErrorBoundary>
+            )}
             {/* </SplitPane> */}
         </div>
     );

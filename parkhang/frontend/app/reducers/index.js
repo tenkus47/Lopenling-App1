@@ -6,6 +6,7 @@ import uiReducers, * as ui from "./ui";
 import userReducers, * as user from "./user";
 import categoryReducers, * as category from "./category";
 import mediaReducers, * as media from "./media";
+import pageReducers, * as page from "./pages";
 import * as actions from "actions";
 import * as api from "api";
 import Annotation, {
@@ -46,6 +47,7 @@ export const dataReducer2 = createReducer(
 export const dataReducer = createReducer(data.initialDataState, dataReducers);
 export const uiReducer = createReducer(ui.initialUIState, uiReducers);
 export const userReducer = createReducer(user.initialUserState, userReducers);
+
 export const localesReducer = createReducer(
     locales.initialLocalesState,
     localesReducers
@@ -58,6 +60,7 @@ export const mediaReducer = createReducer(
     media.initialMediaState,
     mediaReducers
 );
+export const pageReducer = createReducer(page.initialPageState, pageReducers);
 
 export type AppState = {
     data: data.DataState,
@@ -67,6 +70,7 @@ export type AppState = {
     intl: { locale: string, messages: { [string]: string } },
     locales: locales.LocaleState,
     category: any,
+    page: any,
 };
 
 /* Selectors */
@@ -586,6 +590,7 @@ export const allReducers = {
     locales: localesReducer,
     category: categoryReducer,
     media: mediaReducer,
+    page: pageReducer,
 };
 
 const rootReducer = combineReducers(allReducers);

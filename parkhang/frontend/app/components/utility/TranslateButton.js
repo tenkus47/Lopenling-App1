@@ -15,25 +15,24 @@ const mapStateToProps = (state) => {
 
 const matchDispatchToProps = (dispatch) => {
     return {
-        onChangeLanguage: (locale: string) => {
+        selectLanguage: (locale: string) => {
             dispatch(actions.selectedLocale(locale));
         },
-        dispatch,
     };
 };
 
 function TranslateButton(props) {
-    let { onChangeLanguage } = props;
+    let { selectLanguage } = props;
     let language = props.activeLocale;
     const handleLanguage = () => {
         if (language === "bo") {
-            onChangeLanguage("en");
+            selectLanguage("en");
         } else {
-            onChangeLanguage("bo");
+            selectLanguage("bo");
         }
     };
     return (
-        <Button onClick={() => handleLanguage()} size="small">
+        <Button onClick={handleLanguage} size="small">
             {language !== "bo" ? (
                 <Typography>A</Typography>
             ) : (
@@ -49,4 +48,4 @@ const TranslateButtonContainer = connect(
     mapStateToProps,
     matchDispatchToProps
 )(TranslateButton);
-export default TranslateButtonContainer;
+export default React.memo(TranslateButtonContainer);

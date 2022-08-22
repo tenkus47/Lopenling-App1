@@ -5,45 +5,31 @@ import CloseIcon from "@mui/icons-material/Close";
 import Paper, { PaperProps } from "@mui/material/Paper";
 import { ResizableBox } from "react-resizable";
 import Video from "./Video";
+import Audio from "./Audio";
 import Box from "@mui/material/Box";
-import { withStyles } from "@mui/styles";
 import { IconButton } from "@mui/material";
 function PaperComponent(props: PaperProps) {
     return (
-        <Draggable
-            handle="#draggable-dialog-title"
-            // bounds={{ top: 30, left: 30, right: 30, bottom: 30 }}
-        >
+        <Draggable handle="#draggable-dialog-title" bounds="parent">
             <Paper {...props} />
         </Draggable>
     );
 }
 
-const styles = (theme) => ({
-    resizable: {
-        position: "relative",
-        "& .react-resizable-handle": {
-            position: "absolute",
-            width: 20,
-            height: 20,
-            bottom: 0,
-            right: 0,
-            background:
-                "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2IDYiIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmYwMCIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI2cHgiIGhlaWdodD0iNnB4Ij48ZyBvcGFjaXR5PSIwLjMwMiI+PHBhdGggZD0iTSA2IDYgTCAwIDYgTCAwIDQuMiBMIDQgNC4yIEwgNC4yIDQuMiBMIDQuMiAwIEwgNiAwIEwgNiA2IEwgNiA2IFoiIGZpbGw9IiMwMDAwMDAiLz48L2c+PC9zdmc+')",
-            "background-position": "bottom right",
-            padding: "0 3px 3px 0",
-            "background-repeat": "no-repeat",
-            "background-origin": "content-box",
-            "box-sizing": "border-box",
-            cursor: "se-resize",
-        },
-    },
-});
-
 function DraggableMedia(props) {
+    const [hide, setHide] = React.useState(false);
+
     const handleClose = () => {
         props.changeMediaSelection(null);
     };
+    const toggleHide = () => {
+        setHide((prev) => !prev);
+        const widget2 = document.getElementById("widget2");
+        if (widget2) {
+            widget2.style.display = "hide";
+        }
+    };
+    if (props.selectedMedia.isImageVisible) return null;
 
     return (
         <PaperComponent
@@ -51,12 +37,8 @@ function DraggableMedia(props) {
 
             // onClose={handleClose}
         >
-            <ResizableBox
-                height={400}
-                width={600}
-                className={props.classes.resizable}
-            >
-                <>
+            <ResizableBox height={350} width={400}>
+                <div className="Resizable-media-div">
                     <div
                         style={{
                             cursor: "move",
@@ -68,18 +50,26 @@ function DraggableMedia(props) {
                         }}
                         id="draggable-dialog-title"
                     >
-                        <div>Media</div>
-                        <IconButton onClick={handleClose}>
-                            <CloseIcon />
-                        </IconButton>
+                        <div>
+                            {props.selectedMedia.isVideoVisible && "VIDEO"}
+                        </div>
+                        <div className="buttons-hide-close">
+                            <IconButton onClick={toggleHide}>-</IconButton>
+                            <IconButton onClick={handleClose}>
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
                     </div>
-                    <Box sx={{ overflow: "hidden" }}>
-                        <Video {...props} />
-                    </Box>
-                </>
+                    <>
+                        {props.selectedMedia.isVideoVisible && (
+                            <Video {...props} />
+                        )}
+                        {props.selectedMedia.isAudioVisible && <Audio />}
+                    </>
+                </div>
             </ResizableBox>
         </PaperComponent>
     );
 }
 
-export default withStyles(styles)(DraggableMedia);
+export default DraggableMedia;

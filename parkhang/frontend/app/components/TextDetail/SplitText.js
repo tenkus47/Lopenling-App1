@@ -822,6 +822,19 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }
             this._didSetInitialScrollPosition = true;
         }
+        //Video and audio alignment scrolling
+        if (scrollToId.from == "video" && scrollToId.id) {
+            let start = scrollToId.id;
+            let selectedTextIndex =
+                this.props.splitText.getTextIndexOfPosition(start);
+            setTimeout(() => {
+                list.scrollToRow(selectedTextIndex);
+
+                setTimeout(() => {
+                    list.scrollToPosition(list.props.scrollTop - 300);
+                }, 0);
+            }, 100);
+        }
 
         // scroll control linked with alignment on click
         if (

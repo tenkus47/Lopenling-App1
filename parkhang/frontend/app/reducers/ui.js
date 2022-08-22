@@ -86,7 +86,7 @@ export const initialUIState = {
     selectedSourceRange: [],
     selectedTargetRange: [],
     isPanelLinked: true,
-    isAnnotating: false,
+    isAnnotating: true,
     selectedWindow: 1,
     openTableContent: false,
     scrollToId: { from: 1, id: 0 },

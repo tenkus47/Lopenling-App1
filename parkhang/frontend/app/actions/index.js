@@ -6,6 +6,10 @@ import Witness from "lib/Witness";
 import type { LocalesData } from "i18n";
 
 /** Actions types **/
+//page
+
+export const CHANGE_URL = "CHANGE_URL";
+
 //Media
 
 export const ACTIVATE_MEDIA = "MEDIA_SELECTION";
@@ -143,7 +147,6 @@ export const SELECTED_LOCALE = "i18n/SELECT_LOCALE";
 // HOMEPAGE
 export const SELECT_TEXTTITLE = "title/SELECT_TEXTTITLE";
 export const SET_TEXTDATA = "title/SET_TEXTDATA";
-export const IS_LOADED = "title/IS_LOADED";
 
 // URLS
 export const TEXTS = "urls/textSelection";
@@ -938,13 +941,6 @@ export function setTextData(featuredText) {
     };
 }
 
-export function changeIsLoaded(loaded) {
-    return {
-        type: IS_LOADED,
-        payload: loaded,
-    };
-}
-
 export function searchTerm(data) {
     return {
         type: SEARCH_TERM,
@@ -1057,6 +1053,12 @@ export function mediaSelection(data) {
     return {
         type: ACTIVATE_MEDIA,
         payload,
+    };
+}
+export function changeUrl(data) {
+    return {
+        type: CHANGE_URL,
+        data,
     };
 }
 

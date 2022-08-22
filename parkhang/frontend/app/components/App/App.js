@@ -1,5 +1,5 @@
 // @flow
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import classnames from "classnames";
 import HeaderContainer from "components/Header";
 import type { AppState } from "reducers";
@@ -10,14 +10,12 @@ import { handleKeyDown } from "../../shortcuts";
 import favimage from "images/favicon.png";
 import HomePage from "components/HomePage";
 import Favicon from "react-favicon";
-import Editor from "components/Editors/EditorContainer";
-import Indrajala from "images/indrajala_logo.png";
-import { Stack, Typography, Box } from "@mui/material";
 import { history } from "redux-first-router";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { prayer } from "./prayerMarquee";
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
-import Marquee from "react-fast-marquee";
+import Switcher from "./Switcher";
+import { Box } from "@mui/material";
+
 type Props = {
     title: string,
     selectedText: {},
@@ -74,13 +72,19 @@ const App = (props: Props) => {
             }),
         [mode]
     );
-
+    const [openEditor, setOpenEditor] = React.useState(false);
     setTitle(props.title);
     let SelectedText = props.selectedText;
+
     let url = history();
     if (!SelectedText) {
         setTitle("Parkhang");
     }
+    React.useEffect(() => {
+        if (SelectedText) {
+            setOpenEditor(true);
+        } else setOpenEditor(true);
+    }, [SelectedText]);
     return (
         <ThemeProvider theme={theme}>
             <Box
@@ -100,76 +104,80 @@ const App = (props: Props) => {
                 <Favicon url={favimage} />
 
                 <HeaderContainer />
-                {url.location.pathname === "/textSelection" ||
-                url.location.pathname === "" ? (
-                    <>
-                        <ErrorBoundary>
-                            {/* check for any unknown error on Homepage without causing render error  */}
-                            <HomePage />
-                        </ErrorBoundary>
-                        <Stack
-                            style={{
-                                width: "100%",
-                                position: "fixed",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                bottom: 0,
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    height: "100%",
-                                    display: "flex",
-                                    background: "#292826",
-                                    width: "100%",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: 55,
-                                }}
-                            >
-                                <Typography
-                                    textAlign={"center"}
-                                    variant="h6"
-                                    fontSize={{ md: "20px", xs: "10px" }}
-                                    textTransform={"capitalize"}
-                                    color="white"
-                                >
-                                    Our Trusted partner
-                                </Typography>
-
-                                <img
-                                    src={Indrajala}
-                                    alt="indrajala logo"
-                                    style={{
-                                        objectFit: "contain",
-                                        maxHeight: "100%",
-                                        marginLeft: "40px",
-                                    }}
-                                />
-                            </Box>
-                            <Marquee
-                                pauseOnHover={true}
-                                gradient={false}
-                                style={{
-                                    background: "#292826",
-                                    color: "white",
-                                }}
-                            >
-                                {prayer}
-                            </Marquee>
-                        </Stack>
-                    </>
-                ) : SelectedText ? (
-                    <Editor />
-                ) : (
-                    <div>
-                        Refresh the page here <a href="/"> click </a>
-                    </div>
-                )}
+                <ErrorBoundary>
+                    <Switcher />
+                </ErrorBoundary>
             </Box>
         </ThemeProvider>
     );
 };
 
 export default App;
+
+//   {
+//       url.location.pathname === "/textSelection" ||
+//       (url.location.pathname === "" && !SelectedText) ? (
+//           <>
+//               <ErrorBoundary>
+//                   {/* check for any unknown error on Homepage without stopping renders */}
+//                   <HomePage />
+//               </ErrorBoundary>
+//               <Stack
+//                   style={{
+//                       width: "100%",
+//                       position: "fixed",
+//                       display: "flex",
+//                       alignItems: "center",
+//                       justifyContent: "center",
+//                       bottom: 0,
+//                   }}
+//               >
+//                   <Box
+//                       sx={{
+//                           height: "100%",
+//                           display: "flex",
+//                           background: "#292826",
+//                           width: "100%",
+//                           alignItems: "center",
+//                           justifyContent: "center",
+//                           height: 55,
+//                       }}
+//                   >
+//                       <Typography
+//                           textAlign={"center"}
+//                           variant="h6"
+//                           fontSize={{ md: "20px", xs: "10px" }}
+//                           textTransform={"capitalize"}
+//                           color="white"
+//                       >
+//                           Our Trusted partner
+//                       </Typography>
+
+//                       <img
+//                           src={Indrajala}
+//                           alt="indrajala logo"
+//                           style={{
+//                               objectFit: "contain",
+//                               maxHeight: "100%",
+//                               marginLeft: "40px",
+//                           }}
+//                       />
+//                   </Box>
+//                   <Marquee
+//                       pauseOnHover={true}
+//                       gradient={false}
+//                       style={{
+//                           background: "#292826",
+//                           color: "white",
+//                       }}
+//                   >
+//                       {prayer}
+//                   </Marquee>
+//               </Stack>
+//           </>
+//       ) : openEditor ? (
+//           <Editor />
+//       ) : (
+//           <div>refresh</div>
+//       );
+//   }

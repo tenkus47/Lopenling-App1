@@ -16,6 +16,7 @@ import {
     getUser,
     getActiveLocale,
     getTheme,
+    getSelectedText,
 } from "reducers";
 import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo_173x.png";
@@ -40,7 +41,7 @@ import {
     AppBar,
 } from "@mui/material";
 import { Person as PersonIcon, Menu as MenuIcon } from "@mui/icons-material";
-import { useLayoutEffect } from "react";
+import _ from "lodash";
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
@@ -240,7 +241,7 @@ export const Header = (props: HeaderProps) => {
                         alignItems: { md: "center" },
                     }}
                 >
-                    {!locations.location.pathname.includes("/texts") && (
+                    {props.page !== "Editors" && (
                         <NavLink to="/">
                             <div className={styles.logo}>
                                 <img
@@ -253,7 +254,7 @@ export const Header = (props: HeaderProps) => {
                         </NavLink>
                     )}
 
-                    {locations.location.pathname.includes("/texts") && (
+                    {props.page === "Editors" && (
                         <NavigationButton
                             onClick={props.navigationButtonClicked}
                             className={styles.navigationButton}
@@ -263,7 +264,7 @@ export const Header = (props: HeaderProps) => {
                     )}
                     <Box display={{ xs: "none", md: "flex" }}>
                         <Button
-                            to={"/textSelection"}
+                            to={"/"}
                             component={LinkRef}
                             variant="text"
                             color="links"
@@ -271,11 +272,11 @@ export const Header = (props: HeaderProps) => {
                             <FormattedMessage id={"header.texts"} />
                         </Button>
                         <Button
-                            to={"/texts/2"}
+                            to={"/editor"}
                             component={LinkRef}
                             variant="text"
-                            disabled
                             color="links"
+                            disabled={_.isEmpty(props.text)}
                         >
                             <FormattedMessage id={"header.editor"} />
                         </Button>
@@ -328,12 +329,23 @@ export const Header = (props: HeaderProps) => {
                     >
                         <MenuItem onClick={handleCloseNavMenu}>
                             <Button
-                                to={"/textSelection"}
+                                to={"/"}
                                 style={{ color: "#676767" }}
                                 component={LinkRef}
                                 variant="text"
                             >
                                 <FormattedMessage id={"header.texts"} />
+                            </Button>
+                        </MenuItem>
+                        <MenuItem onClick={handleCloseNavMenu}>
+                            <Button
+                                to={"/editor"}
+                                component={LinkRef}
+                                variant="text"
+                                color="links"
+                                disabled={_.isEmpty(props.text)}
+                            >
+                                <FormattedMessage id={"header.editor"} />
                             </Button>
                         </MenuItem>
                         <MenuItem onClick={handleCloseNavMenu}>
@@ -354,6 +366,21 @@ export const Header = (props: HeaderProps) => {
                                 component={"a"}
                             >
                                 <FormattedMessage id={"Nalanda"} />
+                            </Button>
+                        </MenuItem>
+                        <MenuItem onClick={handleCloseNavMenu}>
+                            <Button
+                                sx={{
+                                    color: "#676767",
+                                    display:
+                                        props.page !== "Editors"
+                                            ? "none"
+                                            : "block",
+                                }}
+                                variant="text"
+                                onClick={props.navigationButtonClicked}
+                            >
+                                Options
                             </Button>
                         </MenuItem>
                     </Menu>
@@ -384,6 +411,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
     const successRedirect = document.location.pathname;
     // TODO: move global CSRF_TOKEN into redux
     const csrfToken = CSRF_TOKEN;
+    const page = state.page;
 
     return {
         user: user,
@@ -394,6 +422,8 @@ const mapStateToProps = (state: AppState): { user: User } => {
         successRedirect: successRedirect,
         csrfToken: csrfToken,
         theme: getTheme(state),
+        text: getSelectedText(state),
+        page,
     };
 };
 

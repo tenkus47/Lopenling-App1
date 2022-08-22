@@ -397,10 +397,6 @@ class Text extends React.Component<Props, State> {
 
             let segmentContent = segment.text;
 
-            if (segmentContent === " ") {
-                segmentHTML += "<br/>";
-            }
-
             // Add search result highlight if required.
             if (renderProps.searchStringPositions) {
                 let segmentStart = segment.start;

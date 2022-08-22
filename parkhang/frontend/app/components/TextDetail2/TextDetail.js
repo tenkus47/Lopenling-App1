@@ -120,9 +120,7 @@ function TextDetail(props) {
                         utilStyles.flex
                     )}
                 >
-                    <Suspense fallback={<div />}>
-                        {!props.loading ? textComponents : <div></div>}
-                    </Suspense>
+                    {!props.loading ? textComponents : <div></div>}
                 </Box>
 
                 <Slide

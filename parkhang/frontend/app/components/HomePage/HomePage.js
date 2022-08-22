@@ -22,19 +22,20 @@ import {
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Filter from "./Filter";
 import { motion } from "framer-motion";
+import Footer from "./Footer";
 function HomePage(props) {
     let { Textdata } = props;
-    let { activeText, isloaded, detail } = Textdata;
+    let { activeText, detail } = Textdata;
     const [filteredData, setFilteredData] = useState([]);
     const [showFilter, setShowFilter] = useState(false);
     const [filteredTitle, setFilteredTitle] = useState(null);
-    const [categorySelected, setCategorySelected] = useState([]);
-    const [author, setAuthor] = useState([]);
-    const [lengthRange, setLengthRange] = useState([]);
+    // const [categorySelected, setCategorySelected] = useState([]);
+    // const [author, setAuthor] = useState([]);
+    // const [lengthRange, setLengthRange] = useState([]);
 
-    const handleToggleFilter = () => {
+    const handleToggleFilter = React.useCallback(() => {
         setShowFilter((prev) => !prev);
-    };
+    }, []);
 
     useEffect(() => {
         let tempData = [];
@@ -44,27 +45,28 @@ function HomePage(props) {
                 else return val.title.includes(filteredTitle);
             });
         }
-        if (categorySelected.length) {
-            tempData = tempData.filter((val) => {
-                return categorySelected.includes(val.category);
-            });
-        }
-        if (lengthRange.length) {
-            tempData = tempData.filter((val) => {
-                return (
-                    val.length >= lengthRange[0] && val.length < lengthRange[1]
-                );
-            });
-        }
-        if (author.length) {
-            tempData = tempData.filter((val) => {
-                return author.includes(val.author);
-            });
-        }
+        // if (categorySelected.length) {
+        //     tempData = tempData.filter((val) => {
+        //         return categorySelected.includes(val.category);
+        //     });
+        // }
+        // if (lengthRange.length) {
+        //     tempData = tempData.filter((val) => {
+        //         return (
+        //             val.length >= lengthRange[0] && val.length < lengthRange[1]
+        //         );
+        //     });
+        // }
+        // if (author.length) {
+        //     tempData = tempData.filter((val) => {
+        //         return author.includes(val.author);
+        //     });
+        // }
         setFilteredData(tempData.sort((a, b) => a?.order - b?.order));
-    }, [filteredTitle, categorySelected, lengthRange, author]);
+        console.log(filteredData);
+    }, [filteredTitle]);
 
-    if (activeText === null && isloaded) {
+    if (activeText === null) {
         return (
             <Stack>
                 <Box
@@ -101,80 +103,75 @@ function HomePage(props) {
                         py={1}
                         height={{ xs: "60vh", md: "auto" }}
                     >
-                        {!isloaded ? (
-                            <CircularProgress />
-                        ) : (
-                            <motion.div layout>
-                                <Grid
-                                    container
-                                    rowSpacing={2}
-                                    columnSpacing={2}
-                                >
-                                    {filteredData.map((pecha, i) => {
-                                        return (
-                                            <Grid
-                                                key={`child-${i}`}
-                                                item
-                                                xs={12}
-                                                sm={6}
-                                                md={4}
-                                                px={1}
+                        <motion.div layout>
+                            <Grid container rowSpacing={2} columnSpacing={2}>
+                                {filteredData.map((pecha, i) => {
+                                    return (
+                                        <Grid
+                                            key={
+                                                pecha.id || `filteredData-${i}`
+                                            }
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            px={1}
+                                        >
+                                            <motion.div
+                                                animate={{ opacity: 1 }}
+                                                initial={{ opacity: 0 }}
+                                                exit={{ opacity: 0 }}
+                                                layout
                                             >
-                                                <motion.div
-                                                    animate={{ opacity: 1 }}
-                                                    initial={{ opacity: 0 }}
-                                                    exit={{ opacity: 0 }}
-                                                    layout
+                                                <Link
+                                                    to={`/texts/${pecha.text}`}
                                                 >
-                                                    <Link
-                                                        to={`/texts/${pecha.text}`}
+                                                    <Card
+                                                        sx={{
+                                                            borderLeft:
+                                                                "2px solid black",
+                                                            cursor: "pointer",
+                                                        }}
+                                                        elevation={3}
+                                                        key={pecha.id}
                                                     >
-                                                        <Card
-                                                            sx={{
-                                                                borderLeft:
-                                                                    "2px solid black",
-                                                                cursor: "pointer",
-                                                            }}
-                                                            elevation={3}
-                                                            key={pecha.id}
-                                                        >
-                                                            <CardContent>
-                                                                <Typography
-                                                                    gutterBottom
-                                                                    variant="h6"
-                                                                    textAlign="center"
-                                                                    textTransform="capitalize"
-                                                                    fontWeight="bold"
-                                                                >
-                                                                    {addTibetanShay(
-                                                                        pecha.title
-                                                                    )}
-                                                                </Typography>
-                                                                <Typography
-                                                                    variant="body2"
-                                                                    color="text.secondary"
-                                                                >
-                                                                    {
-                                                                        pecha.description
-                                                                    }
-                                                                </Typography>
-                                                            </CardContent>
-                                                        </Card>
-                                                    </Link>
-                                                </motion.div>
-                                            </Grid>
-                                        );
-                                    })}
-                                </Grid>
-                            </motion.div>
-                        )}
+                                                        <CardContent>
+                                                            <Typography
+                                                                gutterBottom
+                                                                variant="h6"
+                                                                textAlign="center"
+                                                                textTransform="capitalize"
+                                                                fontWeight="bold"
+                                                            >
+                                                                {addTibetanShay(
+                                                                    pecha.title
+                                                                )}
+                                                            </Typography>
+                                                            <Typography
+                                                                variant="body2"
+                                                                color="text.secondary"
+                                                            >
+                                                                {
+                                                                    pecha.description
+                                                                }
+                                                            </Typography>
+                                                        </CardContent>
+                                                    </Card>
+                                                </Link>
+                                            </motion.div>
+                                        </Grid>
+                                    );
+                                })}
+                            </Grid>
+                        </motion.div>
                     </Box>
                 </Container>
+                <Footer />
             </Stack>
         );
     } else {
-        return <div>Loading ...</div>;
+        return <div />;
     }
 }
 
-export default HomePage;
+export default React.memo(HomePage);

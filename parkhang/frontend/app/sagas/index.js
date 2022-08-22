@@ -308,6 +308,7 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     let selectedWitness = yield select(reducers.getSelectedTextWitness);
     let AlignmentData = yield select(reducers.getAlignment);
     yield call(loadTextAlignment, action, AlignmentData);
+    yield call(loadVideoData, action, AlignmentData);
 
     let urlAction = {
         type: actions.TEXT_URL,
@@ -944,34 +945,22 @@ function* selectTextUrl(action) {
 
     try {
         texts = yield call(api.fetchChapterDetail);
+        setTextData = actions.setTextData(texts);
+        yield put(setTextData);
     } catch (e) {
         texts = { data: null };
-    }
-    if (texts) {
-        setTextData = actions.setTextData(texts);
-    } else {
-        setTextData = actions.setTextData([]);
+        yield put(setTextData);
     }
 
-    yield put(setTextData);
-
-    const falseLoaded = actions.changeIsLoaded(false);
-    yield put(falseLoaded);
-
-    const nullSelect = actions.selectedText({ text: null });
-    yield put(nullSelect);
-    const nullSelect2 = actions.selectedText2({ text: null });
-    yield put(nullSelect2);
+    // const nullSelect = actions.selectedText({ text: null });
+    // yield put(nullSelect);
+    // const nullSelect2 = actions.selectedText2({ text: null });
+    // yield put(nullSelect2);
     const scrollnull = actions.changeScrollToId({
         id: null,
         from: null,
     });
     yield put(scrollnull);
-
-    const textdata = yield select(reducers.getTextTitle);
-
-    const trueLoaded = actions.changeIsLoaded(true);
-    yield put(trueLoaded);
 
     // }
 }
@@ -1081,20 +1070,24 @@ function* loadImageData(action, witnessid = null) {
         yield put(actions.changeImageData({ ...ImageData, message }));
     }
 }
-function* loadVideoData(action, witnessid = null) {
-    let alignmentid = 1;
-    let data = yield call(api.fetchVideoWithAlignmentId, alignmentid);
+function* loadVideoData(action, AlignmentData) {
+    if (AlignmentData.alignments.video.length) {
+        let alignmentid = AlignmentData.alignments.video[0].alignment;
+        let data = yield call(api.fetchVideoWithAlignmentId, alignmentid);
 
-    yield put(actions.changeVideoData(data));
+        yield put(actions.changeVideoData(data));
+    }
 }
 
 function* loadMediaAlignment(action) {
     yield delay(2000);
+    let Align = yield select(reducers.getAlignment);
+
     if (action.payload === "IMAGE") {
         yield call(loadImageData, action);
     }
     if (action.payload === "VIDEO") {
-        yield call(loadVideoData, action);
+        yield call(loadVideoData, action, Align);
     }
 }
 
