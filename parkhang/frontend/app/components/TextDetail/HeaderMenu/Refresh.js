@@ -16,7 +16,12 @@ function Refresh({ isSecondWindowOpen }) {
     }, [isSecondWindowOpen]);
 
     return (
-        <IconButton variant="text" size="small" onClick={handleRefresh}>
+        <IconButton
+            variant="text"
+            size="small"
+            disableRipple
+            onClick={handleRefresh}
+        >
             <RefreshIcon />
         </IconButton>
     );

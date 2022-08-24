@@ -67,6 +67,7 @@ export type Props = {
     activeAnnotations: { [AnnotationUniqueId]: Annotation } | null,
     selectedSegmentId: (segmentId: string) => void,
     selectedWitness: Witness | null,
+    selectedWitness2: Witness | null,
     selectedSearchResult: {
         textId: number,
         start: number,
@@ -93,6 +94,7 @@ export type Props = {
     syncIdOnSearch: String,
     imageAlignmentById: [],
     changeImageScrollId: () => void,
+    condition: Boolean,
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -177,7 +179,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.textAlignmentById = [];
         this.scrollEvent = this.scrollEvent.bind(this);
         this.selectedWindow = props.selectedWindow;
-        this.condition = false;
         this.changeImageScrollId = props.changeImageScrollId;
         this.imageData = props.imageData;
     }
@@ -732,14 +733,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     componentDidUpdate(prevProps) {
         this.imageData = this.props.imageData;
         if (this.imageData !== prevProps?.imageData) {
+            this.calculatedImageHeight = null;
+
             this.updateList(true);
         }
         let Alignment = this.props.textAlignment;
         this.imageAlignmentById = this.props.imageAlignmentById;
         this.SearchSyncId = this.props.syncIdOnSearch || null;
-        this.condition =
-            Alignment?.source?.witness === this.props.selectedWitness.id &&
-            this.props.isSecondWindowOpen;
+        this.condition = this.props.condition;
+
         let scrollToId = this.props.scrollToId;
         let list = this.list;
 
@@ -966,9 +968,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 className={styles.splitText}
                 ref={(div) => (this.splitText = div)}
                 key={key}
-                style={{
-                    cursor: !this.props.isAnnotating ? "pointer" : "text",
-                }}
             >
                 <button
                     id="updateList"
@@ -984,7 +983,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             rowCount={props.splitText.texts.length}
                             rowHeight={cache.rowHeight}
                             rowRenderer={rowRenderer}
-                            overscanRowCount={1}
+                            overscanRowCount={0}
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
                             scrollToAlignment="start"
@@ -1107,7 +1106,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
 
         let imageUrl = "";
-        if (this.imageData?.alignment) {
+        if (this.imageData?.alignment && props.selectedWitness) {
             imageUrl = HttpUrl(
                 this.imageData?.alignment[index]?.target_segment
             );
@@ -1131,12 +1130,14 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
 
         let pechaStyles = {};
+
         if (props.showImages && pechaImageClass && this.calculatedImageHeight) {
             pechaStyles["height"] = this.calculatedImageHeight + "px";
         }
         let newStyle = {
             ...style,
             height: style.height + 10,
+            cursor: !this.props.isAnnotating ? "pointer" : "text",
         };
         return (
             <CellMeasurer
@@ -1166,9 +1167,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                     height="100%"
                                     onLoad={(e) => {
                                         if (
-                                            component.imageWidth === null &&
-                                            e.target
+                                            e.target &&
+                                            component.imageWidth === null
                                         ) {
+                                            console.log(e.target);
                                             component.imageWidth =
                                                 e.target.naturalWidth;
                                             component.imageHeight =
@@ -1210,14 +1212,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             fontSize={props.fontSize}
                             changeSyncIdOnClick={this.props.changeSyncIdOnClick}
                             changeScrollToId={this.props.changeScrollToId}
-                            isPanelLinked={this.props.isPanelLinked}
-                            isAnnotating={this.props.isAnnotating}
                             textAlignmentById={this.props.textAlignmentById}
                             selectedSourceRange={this.props.selectedSourceRange}
                             selectedTargetRange={this.props.selectedTargetRange}
                             changeSelectedRange={this.props.changeSelectedRange}
                             condition={this.condition}
-                            imageScrollId={this.props.imageScrollId}
                         />
                     </div>
                     {this.props.isAnnotating &&

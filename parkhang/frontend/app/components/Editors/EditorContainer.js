@@ -57,6 +57,7 @@ const mapStateToProps = (state) => {
         isSecondWindowOpen: reducers.isSecondWindowOpen(state),
         theme: reducers.getTheme(state),
         isPanelLinked: reducers.isPanelLinked(state),
+        textListIsVisible: reducers.getTextListVisible(state),
     };
 };
 

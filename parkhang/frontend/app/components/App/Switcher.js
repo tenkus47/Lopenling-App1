@@ -3,7 +3,7 @@ import universal from "react-universal-component";
 import Loader from "react-loader";
 import { connect } from "react-redux";
 function Switcher(props) {
-    const { page, direction, isLoading } = props;
+    const { page, isLoading } = props;
 
     return (
         <UniversalComponent
@@ -24,9 +24,7 @@ const UniversalComponent = universal(
 );
 const mapState = ({ page, direction, ...state }) => ({
     page,
-    direction,
-    isLoading: !state.data2.loadedWitnesses,
-    state,
+    isLoading: !state.data.loadedInitialData,
 });
 
 export default connect(mapState)(Switcher);

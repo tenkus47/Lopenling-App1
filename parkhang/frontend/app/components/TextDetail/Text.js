@@ -59,7 +59,6 @@ export type Props = {
     activeWitness: Witness,
     changeSyncIdOnClick: () => void,
     changeScrollToId: () => void,
-    isPanelLinked: Boolean,
     textAlignmentById: {},
     selectedSourceRange: [],
     selectedTargetRange: [],
@@ -149,11 +148,7 @@ class Text extends React.Component<Props, State> {
         const selection = document.getSelection();
         var clickId = parseInt(element.id.replace("s_", ""));
         this.props.changeSyncIdOnClick(clickId);
-        if (
-            element?.id.includes("s_") &&
-            this.props.isPanelLinked &&
-            this.props.condition
-        ) {
+        if (element?.id.includes("s_") && this.props.condition) {
             this.props.changeScrollToId({ id: null, from: null });
 
             let id = parseInt(element.id.replace("s_", ""));
@@ -384,12 +379,7 @@ class Text extends React.Component<Props, State> {
                         : styles.selectedRangeDark;
                 classes.push(newClass);
             }
-            // if (
-            //     renderProps.imageScrollId.id.start < segment.start &&
-            //     renderProps.imageScrollId.id.end > segment.start
-            // ) {
-            //     classes.push(styles.selectedImage);
-            // }
+
             if (classes.length > 0) {
                 let className = classnames(...classes);
                 classAttribute = 'class="' + className + '"';
@@ -508,9 +498,6 @@ class Text extends React.Component<Props, State> {
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
 
-        if (this.props.imageScrollId !== nextProps.imageScrollId) {
-            return true;
-        }
         if (this.props.fontSize !== nextProps.fontSize) {
             return true;
         } else if (

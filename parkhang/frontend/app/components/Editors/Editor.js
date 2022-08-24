@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextsSearchContainer from "components/TextsSearch/TextsSearchContainer";
 import TextListContainer from "containers/TextListContainer";
 import TextListTabContainer from "components/TextList/TextListTabContainer";
@@ -17,9 +17,11 @@ import {
     SpeedDialIcon,
     Snackbar,
     Alert,
+    Collapse,
 } from "@mui/material";
 
 import { Edit, Share, VerticalSplit, SyncAlt } from "@mui/icons-material";
+import { Box } from "@mui/system";
 const Editor = (props) => {
     let textListClassnames = [styles.listContainer];
     let bodyHeight;
@@ -44,7 +46,6 @@ const Editor = (props) => {
         if (reason === "clickaway") {
             return;
         }
-
         setOpen(false);
     };
     const handleShare = () => {
@@ -104,10 +105,32 @@ const Editor = (props) => {
                 props.onChangeWindowOpen(!props.isSecondWindowOpen, 140),
         },
     ];
-
+    useEffect(() => {
+        let timer = setTimeout(() => {
+            window.dispatchEvent(new Event("resize"));
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [props.textListIsVisible]);
     return (
         <div className={classnames(styles.interface, utilStyles.flex)}>
-            <TextSheet bodyHeight={bodyHeight} />
+            <SplitPane
+                size="fit-content"
+                onDragFinished={(width: number) => {
+                    if (width > 0) window.dispatchEvent(new Event("resize"));
+                }}
+                resizerStyle={{ display: "none" }}
+            >
+                <Collapse
+                    sx={{ height: "100%" }}
+                    orientation="horizontal"
+                    in={props.textListIsVisible}
+                >
+                    <Resources />
+                </Collapse>
+                <Box sx={{ height: "100vh", width: "100%" }}>
+                    <TextSheet bodyHeight={bodyHeight} />
+                </Box>
+            </SplitPane>
             <SpeedDial
                 ariaLabel="SpeedDial basic"
                 sx={{ position: "absolute", bottom: 16, right: 16 }}

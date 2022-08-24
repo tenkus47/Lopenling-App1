@@ -12,7 +12,6 @@ import HomePage from "components/HomePage";
 import Favicon from "react-favicon";
 import { history } from "redux-first-router";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 import Switcher from "./Switcher";
 import { Box } from "@mui/material";
 
@@ -102,11 +101,8 @@ const App = (props: Props) => {
                 }}
             >
                 <Favicon url={favimage} />
-
                 <HeaderContainer />
-                <ErrorBoundary>
-                    <Switcher />
-                </ErrorBoundary>
+                <Switcher />
             </Box>
         </ThemeProvider>
     );

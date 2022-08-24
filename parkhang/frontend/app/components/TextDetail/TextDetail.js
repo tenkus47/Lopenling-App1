@@ -24,6 +24,7 @@ import TableOfContent from "./TableOfContent/TableOfContent";
 import SplitTextComponent from "components/TextDetail/SplitText";
 
 export type Props = {
+    condition: Boolean,
     paginated: boolean,
     pageImagesVisible: boolean,
     text: TextData | null,
@@ -139,10 +140,11 @@ class TextDetail extends React.Component<Props> {
                     }
                     syncIdOnClick={this.props.syncIdOnClick}
                     textListVisible={this.props.textListVisible}
-                    // showImages={this.props.pageImagesVisible}
-                    showImages={this.props.selectedMedia.isImageVisible}
+                    showImages={this.props.pageImagesVisible}
+                    // showImages={this.props.selectedMedia.isImageVisible}
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
+                    selectedWitness2={this.props.selectedWitness2}
                     key={this.key}
                     selectedSearchResult={this.props.selectedSearchResult}
                     searchValue={this.props.searchValue}
@@ -171,6 +173,7 @@ class TextDetail extends React.Component<Props> {
                     imageAlignmentById={this.props.imageAlignmentById}
                     changeImageScrollId={this.props.changeImageScrollId}
                     imageScrollId={this.props.imageScrollId}
+                    condition={this.props.condition}
                 />
             );
         }

@@ -70,7 +70,7 @@ export const initialUIState = {
     searchValue: "",
     searchValue2: "",
 
-    showPageImages: true,
+    showPageImages: false,
     activeAnnotations: {},
     activeTextAnnotations: {},
     textListVisible: false,
@@ -675,6 +675,22 @@ export const getActiveTextAnnotation = (
         }
         if (textId) {
             return state.activeTextAnnotations[textId];
+        }
+        return null;
+    } else {
+        return null;
+    }
+};
+export const getActiveTextAnnotation2 = (
+    state: UIState,
+    textId?: number
+): Annotation | null => {
+    if (state.selectedText) {
+        if (!textId) {
+            textId = state.selectedText.id;
+        }
+        if (textId) {
+            return state.activeTextAnnotations2[textId];
         }
         return null;
     } else {

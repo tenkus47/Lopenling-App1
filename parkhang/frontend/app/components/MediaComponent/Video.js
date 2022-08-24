@@ -1,22 +1,8 @@
-import React, {
-    useRef,
-    useEffect,
-    useState,
-    useCallback,
-    useMemo,
-} from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import ReactPlayer from "react-player";
 import _ from "lodash";
-import styles from "./Video.css";
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Box,
-    Grid,
-    Typography,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Collapse } from "@mui/material";
+
 function toHMS(seconds) {
     var date = new Date(null);
     date.setSeconds(seconds);
@@ -46,7 +32,6 @@ function Video(props) {
     // const syncIdOnScroll = props.syncIdOnScroll;
     const syncIdOnClick = props.syncIdOnClick;
     const [state, setState] = useState({
-        seeking: false,
         played: 0,
         duration: 0,
         playing: true,
@@ -81,19 +66,17 @@ function Video(props) {
                 }
             }
         }
-    }, [interval]);
+    }, [interval.start]);
 
     useEffect(() => {
-        let timer = setTimeout(() => changeTextBackground(), 300);
+        let timer = setTimeout(() => changeTextBackground(), 800);
         let current = interval;
-
         if (interval.start) {
             props.changeScrollToId({
                 id: current.start || null,
                 from: "video",
             });
         }
-
         return () => {
             clearTimeout(timer);
             for (let i = current.start; i < current.end; i++) {
@@ -107,42 +90,44 @@ function Video(props) {
 
     const videoRef = useRef();
 
-    const jumpToTime = useCallback(
-        (time) => {
-            let newData = calTimeToSeek(state.duration, time);
-            videoRef.current.seekTo(parseFloat(newData));
-        },
-        [state]
-    );
+    const jumpToTime = (time) => {
+        let newData = calTimeToSeek(state.duration, time);
+        videoRef.current.seekTo(parseFloat(newData));
+    };
+
     const handleProgress = (e) => {
-        changeTextBackground();
         const played = e.playedSeconds;
-        const Interval = VideoData.filter(
+        const Interval = VideoData.find(
             (time) =>
                 toSec(time.target_segment.start) < played &&
                 toSec(time.target_segment.end) > played
         );
         if (!_.isEmpty(Interval)) {
-            let source_segment = Interval[0].source_segment;
+            let source_segment = Interval.source_segment;
+            changeTextBackground();
             setInterval({ ...source_segment });
         }
     };
     if (VideoData.length === 0) return <div />;
     if (sourceId !== props.selectedText.id) return <div />;
     return (
-        <ReactPlayer
-            url={url}
-            style={{ maxWidth: "100%" }}
-            ref={videoRef}
-            controls={true}
-            onDuration={(duration) =>
-                setState({ ...state, duration: duration })
-            }
-            playing={true}
-            onPlay={() => setState({ ...state, playing: true })}
-            onPause={() => setState({ ...state, playing: false })}
-            onProgress={handleProgress}
-        />
+        <Collapse in={props.open}>
+            <ReactPlayer
+                url={url}
+                style={{ maxWidth: "100%" }}
+                ref={videoRef}
+                controls={true}
+                onDuration={(duration) =>
+                    setState({ ...state, duration: duration })
+                }
+                light
+                playing
+                onPlay={() => setState({ ...state, playing: true })}
+                onPause={() => setState({ ...state, playing: false })}
+                onProgress={handleProgress}
+                onError={() => console.log("error in media sec")}
+            />
+        </Collapse>
     );
 }
 

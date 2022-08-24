@@ -156,6 +156,21 @@ export const getSelectedTextWitness = (state: AppState): Witness | null => {
 
     return witness;
 };
+
+export const getSelectedTextWitness2 = (state: AppState): Witness | null => {
+    const text2 = getSelectedText2(state);
+    let witness = null;
+
+    if (text2) {
+        const selectedWitnessId = getSelectedTextWitnessId2(state, text2.id);
+
+        if (selectedWitnessId) {
+            witness = getWitness2(state, selectedWitnessId);
+        }
+    }
+    return witness;
+};
+
 export const getTheme = (state: AppState): String => {
     return ui.getTheme(state.ui);
 };
@@ -429,6 +444,23 @@ export const hasLoadedWitnessAppliedAnnotations = (
     // return state.data["witnessActiveAnnotationsById"].hasOwnProperty(witnessId);
     return hasLoaded;
 };
+export const hasLoadedWitnessAppliedAnnotations2 = (
+    state: AppState,
+    witnessId: number
+): boolean => {
+    let hasLoaded = false;
+    if (state.data2.witnessAnnotationOperationsById.hasOwnProperty(witnessId)) {
+        if (
+            state.data2.witnessAnnotationOperationsById[
+                witnessId
+            ].hasOwnProperty(appliedOp)
+        ) {
+            hasLoaded = true;
+        }
+    }
+    // return state.data["witnessActiveAnnotationsById"].hasOwnProperty(witnessId);
+    return hasLoaded;
+};
 
 export const getAnnotationsForWitnessId = (
     state: AppState,
@@ -444,11 +476,31 @@ export const getAnnotationsForWitnessId = (
     );
 };
 
+export const getAnnotationsForWitnessId2 = (
+    state: AppState,
+    witnessId: number,
+    annotationType?: string,
+    creatorWitnessId?: number
+): { [AnnotationUniqueId]: AnnotationData } => {
+    return data2.getAnnotationsForWitnessId(
+        state.data2,
+        witnessId,
+        annotationType,
+        creatorWitnessId
+    );
+};
+
 export const getActiveAnnotationsForWitnessId = (
     state: AppState,
     witnessId: number
 ): { [AnnotationUniqueId]: AnnotationUniqueId } => {
     return data.getActiveAnnotationsForWitnessId(state.data, witnessId);
+};
+export const getActiveAnnotationsForWitnessId2 = (
+    state: AppState,
+    witnessId: number
+): { [AnnotationUniqueId]: AnnotationUniqueId } => {
+    return data2.getActiveAnnotationsForWitnessId(state.data2, witnessId);
 };
 
 export const getRemovedDefaultAnnotationsForWitnessId = (

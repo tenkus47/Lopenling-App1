@@ -43,6 +43,7 @@ function TextSheet(props) {
                 display: "flex",
                 flexDirection: "column",
                 width: "100%",
+                height: "100%",
                 overflow: "hidden",
                 position: "relative",
             }}
@@ -59,7 +60,7 @@ function TextSheet(props) {
                 {props.Media.isPanelVisible ? <MediaComponent /> : <div />} */}
             <SplitPane
                 split={landScape ? "vertical" : "horizontal"}
-                size={props.isSecondWindowOpen ? "50vw" : "100vw"}
+                size={props.isSecondWindowOpen ? "50%" : "100%"}
                 resizerClassName={classnames(
                     styles.Resizer,
                     { [styles.vertical]: landScape },

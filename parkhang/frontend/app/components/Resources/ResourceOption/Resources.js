@@ -31,10 +31,6 @@ function Resources(props) {
         props.selectedMedia.isAudioVisible,
     ]);
 
-    function handleScroll(id) {
-        console.log(id);
-        props.onSelectedSearchResult(139, id, 10, 139);
-    }
     return (
         <>
             <Typography variant="h6" gutterBottom component="div">
@@ -48,8 +44,10 @@ function Resources(props) {
                 }}
             >
                 <ListItemButton
-                    selected={props.selectedMedia.isImageVisible}
-                    onClick={() => handleMediaToggle("IMAGE")}
+                    selected={props.showPageImages}
+                    onClick={() =>
+                        props.changedShowPageImages(!props.showPageImages)
+                    }
                 >
                     <ListItemIcon>
                         <ImageIcon />
@@ -82,9 +80,11 @@ function Resources(props) {
 const mapStateToProps = (state: AppState): {} => {
     let selectedMedia = reducers.getMediaData(state);
     const alignmentData = reducers.getAlignment(state);
+    const showPageImages = reducers.showPageImages(state);
     return {
         alignmentData,
         selectedMedia,
+        showPageImages,
     };
 };
 
@@ -92,6 +92,9 @@ const mapDispatchToProps = (dispatch) => {
     const changeMediaSelection = (data) =>
         dispatch(actions.mediaSelection(data));
     return {
+        changedShowPageImages: (data) => {
+            dispatch(actions.changedShowPageImages(data));
+        },
         changeMediaSelection,
         onChangeWindowOpen: (data: boolean) => {
             dispatch(actions.toggleSecondWindow(data));

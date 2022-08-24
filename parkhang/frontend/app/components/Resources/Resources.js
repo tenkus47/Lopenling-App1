@@ -10,13 +10,13 @@ import { NavLink } from "redux-first-router-link";
 import lopenling_logo from "images/lopenling_logo_173x.png";
 import useLocalStorage from "components/utility/useLocalStorage";
 import { Tabs, Tab, Typography, Box } from "@mui/material";
-
+import { useTheme } from "@mui/styles";
 function Resources() {
     const [value, setValue] = useLocalStorage("selectedResources", 0);
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
-
+    const theme = useTheme();
     return (
         <Box
             sx={{
@@ -26,6 +26,11 @@ function Resources() {
                 height: "100%",
                 maxWidth: "250px",
                 zIndex: 10,
+                position: "relative",
+                borderRight:
+                    theme.palette.mode === "light"
+                        ? "2px solid lightgray"
+                        : "0",
             }}
         >
             <Box
@@ -65,7 +70,7 @@ function Resources() {
                     ></Tab>
                 </Tabs>
             </Box>
-            <Box flex={1}>
+            <Box>
                 <TabPanel value={value} index={0}>
                     <Index.About />
                 </TabPanel>
@@ -79,7 +84,7 @@ function Resources() {
                     <Index.Commentary />
                 </TabPanel>
             </Box>
-            <Box alignSelf="center">
+            <Box alignSelf="center" sx={{ position: "fixed", bottom: 0 }}>
                 <NavLink to="/">
                     <div className={styles.logo}>
                         <img

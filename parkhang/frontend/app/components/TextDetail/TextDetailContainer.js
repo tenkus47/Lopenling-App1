@@ -181,7 +181,6 @@ const mapStateToProps = (state) => {
             user: user,
             textListVisible,
             fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
-            isSecondWindowOpen: isSecondWindowOpen(state),
             isPanelLinked,
             textAlignmentById,
             imageAlignmentById: getImageAlignmentById(state),
@@ -224,7 +223,6 @@ const mapStateToProps = (state) => {
         if (selectedWitnessId) {
             selectedWitness = getWitness(state, selectedWitnessId);
         }
-
         if (!selectedWitness) {
             selectedWitness = workingWitness;
             selectedWitnessId = workingWitness.id;
@@ -310,8 +308,15 @@ const mapStateToProps = (state) => {
     const textAlignment = reducers.getTextAlignment(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const selectedWindow = reducers.getSelectedWindow(state);
+    const selectedWitness2 = reducers.getSelectedTextWitness2(state);
     let Media = reducers.getMediaData(state);
     const imageData = getImageData(state);
+    let isSecondWindowOpen = reducers.isSecondWindowOpen(state);
+    let condition =
+        textAlignment?.source?.witness === selectedWitness?.id &&
+        isSecondWindowOpen &&
+        textAlignment?.target?.witness === selectedWitness2?.id &&
+        isPanelLinked;
     return {
         text: selectedText,
         witnesses: witnesses,
@@ -320,7 +325,7 @@ const mapStateToProps = (state) => {
         annotations: annotations,
         loading: loading,
         paginated: paginated,
-        pageImagesVisible: false,
+        pageImagesVisible: pageImagesVisible,
         annotatedText: annotatedText,
         selectedAnnotatedSegments: selectedAnnotatedSegments,
         annotationPositions: annotationPositions,
@@ -334,7 +339,7 @@ const mapStateToProps = (state) => {
         selectedSearchResult,
         searchValue,
         fontSize,
-        isSecondWindowOpen: isSecondWindowOpen(state),
+        isSecondWindowOpen,
         imageData,
         isPanelLinked,
         selectedImage: getSelectedImage(state),
@@ -354,6 +359,7 @@ const mapStateToProps = (state) => {
         imageAlignmentById: getImageAlignmentById(state),
         imageScrollId: getImageScrollId(state),
         selectedMedia: Media,
+        condition: condition,
     };
 };
 

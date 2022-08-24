@@ -24,8 +24,9 @@ import UserIcon from "images/discourse_user.svg";
 import { NavLink } from "redux-first-router-link";
 import TranslateButton from "components/utility/TranslateButton";
 import { history } from "redux-first-router";
-import Resources from "components/Resources";
 import ToggleTheme from "./ToggleTheme";
+import Resources from "components/Resources";
+
 import {
     Container,
     Button,
@@ -203,18 +204,7 @@ export const Header = (props: HeaderProps) => {
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-    const drawer = React.useMemo(
-        () => (
-            <Drawer
-                anchor={"left"}
-                open={props.textListIsVisible}
-                onClose={props.navigationButtonClicked}
-            >
-                <Resources />
-            </Drawer>
-        ),
-        [props.textListIsVisible]
-    );
+
     const themeChange = useCallback((e) => props.themeButtonClicked(e), []);
     return (
         <AppBar
@@ -399,8 +389,6 @@ export const Header = (props: HeaderProps) => {
                     />
                 </Stack>
             </Stack>
-
-            <React.Fragment>{drawer}</React.Fragment>
         </AppBar>
     );
 };

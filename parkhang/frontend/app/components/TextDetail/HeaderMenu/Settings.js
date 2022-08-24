@@ -30,13 +30,9 @@ function Settings(props) {
         setFontSelect(value);
         document.body.style.setProperty("--tibetan-fonts", `${value}`);
         let update = document.getElementById("updateList");
-        let times = 1;
-        let timer = setInterval(() => {
+
+        setTimeout(() => {
             update.click();
-            times++;
-            if (times > 3) {
-                clearInterval(timer);
-            }
         }, 800);
         setShowOption(false);
     };

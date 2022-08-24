@@ -63,7 +63,6 @@ function HomePage(props) {
         //     });
         // }
         setFilteredData(tempData.sort((a, b) => a?.order - b?.order));
-        console.log(filteredData);
     }, [filteredTitle]);
 
     if (activeText === null) {
