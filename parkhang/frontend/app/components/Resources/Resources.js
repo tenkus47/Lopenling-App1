@@ -84,7 +84,7 @@ function Resources() {
                     <Index.Commentary />
                 </TabPanel>
             </Box>
-            <Box alignSelf="center" sx={{ position: "fixed", bottom: 0 }}>
+            <Box alignSelf="center" sx={{ position: "absolute", bottom: 0 }}>
                 <NavLink to="/">
                     <div className={styles.logo}>
                         <img

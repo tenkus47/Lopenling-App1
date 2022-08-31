@@ -380,8 +380,8 @@ export const Header = (props: HeaderProps) => {
                     alignItems="center"
                     sx={{ float: { sx: "right" } }}
                 >
-                    {/* <LocaleSwitcher /> */}
-                    <TranslateButton />
+                    <LocaleSwitcher />
+                    {/* <TranslateButton /> */}
                     {controls}
                     <ToggleTheme
                         theme={props.theme}

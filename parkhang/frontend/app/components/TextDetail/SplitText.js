@@ -3,6 +3,7 @@ import * as React from "react";
 import ReactDOM from "react-dom";
 import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import { List } from "react-virtualized/dist/es/List";
+import lopenlinglogo from "images/lopenling_logo.png";
 import {
     CellMeasurer,
     CellMeasurerCache,
@@ -29,8 +30,7 @@ import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
-import { ClickAwayListener } from "@mui/material";
-import { Box } from "@mui/system";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
@@ -227,7 +227,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         resetRows: number | number[] | null = null
     ) {
         if (
-            // !this.props.showImages &&
+            this.props.showImages &&
             !this.calculatedImageHeight &&
             this.imageHeight &&
             this.imageWidth
@@ -1012,7 +1012,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let start = witnessProperties[IMAGE_START_NUMBER_KEY];
         let suffix = witnessProperties[IMAGE_START_SUFFIX_KEY];
         let id = Number(start) + pageIndex;
-        return IMAGE_URL_PREFIX + prefix + id + "." + suffix + IMAGE_URL_SUFFIX;
+        console.log(id);
+        let url =
+            IMAGE_URL_PREFIX + prefix + id + "." + suffix + IMAGE_URL_SUFFIX;
+        console.log(url);
+        return url;
     }
 
     getStringPositions(
@@ -1106,16 +1110,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
 
         let imageUrl = "";
-        if (this.imageData?.alignment && props.selectedWitness) {
-            imageUrl = HttpUrl(
-                this.imageData?.alignment[index]?.target_segment
-            );
-        }
+        // if (this.imageData?.alignment && props.selectedWitness) {
+        //     imageUrl = HttpUrl(
+        //         this.imageData?.alignment[index]?.target_segment
+        //     );
+        // }
         if (
             props.selectedWitness &&
             props.selectedWitness.properties &&
             props.selectedWitness.properties.hasOwnProperty(IMAGE_START_PRE_KEY)
         ) {
+            console.log("running");
             imageUrl = this.getImageUrl(index);
         }
 
@@ -1162,15 +1167,17 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             >
                                 <img
                                     alt="Text related Image"
+                                    className={styles.image}
                                     src={imageUrl}
                                     width="100%"
                                     height="100%"
+                                    loading="lazy"
+                                    decoding="async"
                                     onLoad={(e) => {
                                         if (
                                             e.target &&
                                             component.imageWidth === null
                                         ) {
-                                            console.log(e.target);
                                             component.imageWidth =
                                                 e.target.naturalWidth;
                                             component.imageHeight =
@@ -1188,6 +1195,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 />
                             </div>
                         )}
+
                         <Text
                             ref={this.childRef}
                             segmentedText={props.splitText.texts[index]}

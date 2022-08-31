@@ -143,6 +143,10 @@ class Text extends React.Component<Props, State> {
     }
 
     selectedElement(element: Element) {
+        if (element.tagName === "DIV") {
+            this.props.selectedSegmentId("");
+            return;
+        }
         let sourceRangeSelection = [];
         let targetRangeSelection = [];
         const selection = document.getSelection();

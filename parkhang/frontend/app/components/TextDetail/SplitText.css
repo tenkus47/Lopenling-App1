@@ -56,6 +56,11 @@
     flex-shrink: 0;
 }
 
+.image {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
 .pechaImage img {
     object-fit: cover;
 }
@@ -88,4 +93,18 @@
 
 span {
     position: relative
+}
+
+.image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 1;
+    transition: opacity .5s;
+}
+
+.image-loading {
+    opacity: 0;
+    transition: none;
 }

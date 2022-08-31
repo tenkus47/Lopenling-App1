@@ -1,0 +1,12 @@
+.FontSize---fontSize {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin-right: 1em;
+}
+
+.FontSize---fontSize label {
+    font-size: 1em;
+}
+
+/*# sourceMappingURL=146.styles-dev.css.map*/

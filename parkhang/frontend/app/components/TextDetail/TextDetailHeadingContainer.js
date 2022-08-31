@@ -5,7 +5,6 @@ import TextDetailHeading from "./TextDetailHeading";
 import * as actions from "actions";
 import * as reducers from "reducers";
 import type { AppState } from "reducers";
-import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 
 const mapStateToProps = (state: AppState): {} => {
     const selectedText = reducers.getSelectedText(state);

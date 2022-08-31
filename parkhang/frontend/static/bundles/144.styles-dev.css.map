@@ -1,0 +1,1 @@
+{"version":3,"file":"144.styles-dev.css","sources":["webpack://parkhang/AnswerView.css"],"sourcesContent":[".name {\r\n    font-weight: bold;\r\n}\r\n\r\n.answer {\r\n    margin-top: 10px;\r\n    padding: 10px 0;\r\n    border-top: 1px solid #ddd;\r\n}"],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;","sourceRoot":""}

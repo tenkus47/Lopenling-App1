@@ -1,5 +1,5 @@
 // @flow
-import React, { Suspense } from "react";
+import React from "react";
 import classnames from "classnames";
 import imageStyle from "components/MediaComponent/Image.css";
 
@@ -97,6 +97,7 @@ class TextDetail extends React.Component<Props> {
     componentDidUpdate() {
         this.selectedWindow = this.props.selectedWindow;
     }
+
     render() {
         let text = {
             name: "",
@@ -162,7 +163,7 @@ class TextDetail extends React.Component<Props> {
                     textAlignmentById={this.props.textAlignmentById}
                     isPanelVisible={this.props.isPanelVisible}
                     scrollToId={this.props.scrollToId}
-                    selectedWindow={this.props.selectedWindow}
+                    selectedWindow={this.selectedWindow}
                     selectedSourceRange={this.props.selectedSourceRange}
                     selectedTargetRange={this.props.selectedTargetRange}
                     changeSelectedRange={this.props.changeSelectedRange}
@@ -219,6 +220,8 @@ class TextDetail extends React.Component<Props> {
                         direction="left"
                         in={this.props.showTableContent}
                         container={this.ref.current}
+                        unmountOnExit
+                        mountOnEnter
                     >
                         <Box
                             sx={{

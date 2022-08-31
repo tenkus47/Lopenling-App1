@@ -149,7 +149,7 @@ function TextDetailHeading(props: HeaderProps) {
                     />
                 </ButtonGroup>
             </Stack>
-            <Collapse in={showFind}>
+            <Collapse in={showFind} mountOnEnter unmountOnExit>
                 <form onSubmit={handleSearch}>
                     <Stack direction="row" spacing={2} position="relative">
                         <TextField

@@ -1,40 +1,19 @@
-.locale {
+.localeOptions {
     margin-right: 40px;
     display: flex;
-    position: relative;
-   font-size: 14px;
-   align-items: center;
-   justify-content: center;
+    align-items: center;
 }
 
-.localeOptions {
-    font-size: 15px;
-    padding: 0 10px;
+.localeOption {
+    font-size: 14px;
+    padding: 0 20px;
     cursor: pointer;
-    position : absolute;
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    width:max-content;
-    opacity: 0;
-    transition: 0.3s all linear;
-    left:-60px;
-    top:-200px;
-    background-color: rgba(12,32,12,0.1);
-    border-radius: 10px;
-    padding:4px;
 }
-.locale:hover .localeOptions{
- opacity:1;
- top:0;
+
+.selected {
+    font-weight: bold;
 }
-.activeLocale{
-    font-weight: 600;
-    color:black;
-}
-.Globe{
-    display: flex;
-    flex-direction: column;
-    gap:0;
-    margin-top: 10px;
+
+.localeOption:not(:nth-child(1)) {
+    border-left: 1px solid white;
 }

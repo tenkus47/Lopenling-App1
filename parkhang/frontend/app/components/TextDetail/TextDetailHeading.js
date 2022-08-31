@@ -22,11 +22,8 @@ import {
 } from "@mui/material";
 import Refresh from "./HeaderMenu/Refresh";
 import Search from "./HeaderMenu/Search";
-import WindowSplitter from "./HeaderMenu/WindowSplitter";
 import Settings from "./HeaderMenu/Settings";
 import TableOfContent from "./HeaderMenu/TableOfContent";
-import Autocomplete from "@mui/material/Autocomplete";
-import { AutoSizer } from "react-virtualized";
 import SearchList from "./HeaderMenu/SearchList";
 
 type HeaderProps = {

@@ -16,10 +16,17 @@ function Switcher(props) {
 const UniversalComponent = universal(
     (props) => import(`components/${props.page}`),
     {
-        minDelay: 500,
+        minDelay: 300,
         chunkName: (props) => props.page,
         loading: () => <Loader />,
-        error: () => <div className="notFound">PAGE NOT FOUND - 404</div>,
+        ignoreBabelRename: true,
+        error: (e) => (
+            <div className="notFound">
+                PAGE NOT FOUND - 404, click <a href="/">Here</a>
+                {`${e.toString()}`}
+            </div>
+        ),
+        loadingTransition: true,
     }
 );
 const mapState = ({ page, direction, ...state }) => ({

@@ -124,6 +124,8 @@ const Editor = (props) => {
                     sx={{ height: "100%" }}
                     orientation="horizontal"
                     in={props.textListIsVisible}
+                    mountOnEnter
+                    unmountOnExit
                 >
                     <Resources />
                 </Collapse>

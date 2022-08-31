@@ -1,0 +1,1 @@
+{"version":3,"file":"70.styles-dev.css","sources":["webpack://parkhang/TableOfContent.css"],"sourcesContent":[".TableContent :global(.loader) {\r\n    left: 0;\r\n    right: 0;\r\n\r\n}"],"mappings":"AAAA;AACA;AACA;AACA;AACA;","sourceRoot":""}

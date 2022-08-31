@@ -1,0 +1,1 @@
+{"version":3,"file":"163.styles-dev.css","sources":["webpack://parkhang/textDetailHeading.css"],"sourcesContent":["    @import 'css/colour.css';\r\n\r\n    .button_group_menu svg {\r\n        margin: 0 !important;\r\n    }"],"mappings":"AAEA;AACA;AACA;","sourceRoot":""}

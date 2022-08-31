@@ -1,0 +1,58 @@
+.textDetailHeading---button_group_menu svg {
+    margin: 0 !important;
+}
+.SelectVersion---selectVersion {
+    height: 30px;
+    overflow: hidden;
+    border: none;
+    outline: none;
+    padding: 0 10px;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1
+}
+.SelectVersion---selectEmpty {
+    width: 100%;
+    border-radius: 10px;
+}
+.SelectVersion---selectOptions {
+    text-align: center;
+}
+.SelectVersion---styled-select select {
+    -moz-appearance: none;
+    /* Firefox */
+    -webkit-appearance: none;
+    /* Safari and Chrome */
+    appearance: none;
+}
+.TextList---textlist {
+    max-width: 240px;
+    max-width: 15rem;
+    height: 300px;
+    cursor: pointer;
+    overflow: hidden;
+
+}
+
+.TextList---textlist.TextList---open {
+    width: 500px;
+    height: 500px;
+}
+.SearchStyle---highlight {
+    background-color: yellow;
+
+}
+
+.SearchStyle---searchListItem {
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    padding-top: 5px;
+}
+
+.SearchStyle---searchListItem:hover {
+    font-weight: 600;
+
+}
+
+/*# sourceMappingURL=24.styles-dev.css.map*/

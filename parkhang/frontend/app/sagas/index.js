@@ -221,7 +221,6 @@ function* loadSources() {
 }
 
 function* loadInitialData(): Saga<void> {
-    console.log("hi");
     yield all([call(loadTexts), call(loadSources)]);
     yield put(actions.loadedInitialData());
 }

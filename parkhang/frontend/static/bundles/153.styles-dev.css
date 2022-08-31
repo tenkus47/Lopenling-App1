@@ -1,0 +1,19 @@
+.QuestionView---question {
+    background-color: #ffffff;
+}
+
+.QuestionView---question blockquote {
+    display: none;
+}
+
+.QuestionView---question p {
+    margin: 0;
+    padding: 0;
+}
+
+.QuestionView---threadLink {
+    float: right;
+    color: green;
+}
+
+/*# sourceMappingURL=153.styles-dev.css.map*/

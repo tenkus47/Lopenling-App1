@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Suspense } from "react";
+import React, { useEffect, useRef } from "react";
 import TextDetailHeading from "./TextDetailHeadingContainer";
 import SplitText from "lib/SplitText";
 import Loader from "react-loader";
@@ -35,6 +35,7 @@ function TextDetail(props) {
     let inlineControls = false;
     let textComponent = null;
     let splitText = null;
+    const selectedWindow = props.selectedWindow;
     if (!props.annotatedText || !props.text || props.loading) {
         textComponent = <div key={`key-${Math.random()}`} />;
     } else {
@@ -75,7 +76,7 @@ function TextDetail(props) {
                 isPanelLinked={props.isPanelLinked}
                 changeScrollToId={props.changeScrollToId}
                 changeSyncIdOnClick={props.changeSyncIdOnClick}
-                selectedWindow={props.selectedWindow}
+                selectedWindow={selectedWindow}
                 selectedSourceRange={props.selectedSourceRange}
                 selectedTargetRange={props.selectedTargetRange}
                 changeSelectedRange={props.changeSelectedRange}
@@ -127,6 +128,8 @@ function TextDetail(props) {
                     direction="left"
                     in={props.showTableContent}
                     container={ref.current}
+                    unmountOnExit
+                    mountOnEnter
                 >
                     <Box
                         sx={{

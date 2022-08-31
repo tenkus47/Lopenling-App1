@@ -1,4 +1,4 @@
-import React, { memo, Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
