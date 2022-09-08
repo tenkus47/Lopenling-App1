@@ -5282,8 +5282,6 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
             id: (_list$ = list[0]) === null || _list$ === void 0 ? void 0 : _list$.start,
             from: 1
           });
-
-          console.log(list[0]);
         } // if (imagelist.length) {
         //     this.changeImageScrollId({
         //         id: {
@@ -5422,8 +5420,6 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
           var _start = req === null || req === void 0 ? void 0 : req.start;
 
           if (_start !== null) {
-            console.log(_start);
-
             var _selectedTextIndex3 = this.props.splitText.getTextIndexOfPosition(_start);
 
             this.scrollToIndex(_selectedTextIndex3);
@@ -5568,7 +5564,6 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
       var start = witnessProperties[IMAGE_START_NUMBER_KEY];
       var suffix = witnessProperties[IMAGE_START_SUFFIX_KEY];
       var id = Number(start) + pageIndex;
-      console.log(id);
       var url = IMAGE_URL_PREFIX + prefix + id + "." + suffix + IMAGE_URL_SUFFIX;
       console.log(url);
       return url;
@@ -5656,7 +5651,6 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
       // }
 
       if (props.selectedWitness && props.selectedWitness.properties && props.selectedWitness.properties.hasOwnProperty(IMAGE_START_PRE_KEY)) {
-        console.log("running");
         imageUrl = this.getImageUrl(index);
       }
 
@@ -6882,7 +6876,6 @@ var mapStateToProps = function mapStateToProps(state) {
   var user = Object(reducers__WEBPACK_IMPORTED_MODULE_13__["getUser"])(state);
   var loading = state.data.loadingWitnesses || state.data.loadingAnnotations;
   var textListVisible = Object(reducers__WEBPACK_IMPORTED_MODULE_13__["getTextListVisible"])(state);
-  var isPanelLinked = reducers__WEBPACK_IMPORTED_MODULE_13__["isPanelLinked"](state);
   var textAlignmentById = reducers__WEBPACK_IMPORTED_MODULE_13__["getTextAlignmentById"](state);
 
   if (loading) {
@@ -6902,7 +6895,6 @@ var mapStateToProps = function mapStateToProps(state) {
       user: user,
       textListVisible: textListVisible,
       fontSize: app_constants__WEBPACK_IMPORTED_MODULE_16__["DEFAULT_TEXT_FONT_SIZE"],
-      isPanelLinked: isPanelLinked,
       textAlignmentById: textAlignmentById,
       imageAlignmentById: Object(reducers__WEBPACK_IMPORTED_MODULE_13__["getImageAlignmentById"])(state)
     };
@@ -7008,6 +7000,7 @@ var mapStateToProps = function mapStateToProps(state) {
 
   _selectedWitness = selectedWitness;
   var scrollToId = reducers__WEBPACK_IMPORTED_MODULE_13__["getScrollToId"](state);
+  var isPanelLinked = reducers__WEBPACK_IMPORTED_MODULE_13__["isPanelLinked"](state);
   var textAlignment = reducers__WEBPACK_IMPORTED_MODULE_13__["getTextAlignment"](state);
   var syncIdOnClick = reducers__WEBPACK_IMPORTED_MODULE_13__["getSyncIdOnClick"](state);
   var selectedWindow = reducers__WEBPACK_IMPORTED_MODULE_13__["getSelectedWindow"](state);
@@ -7042,7 +7035,6 @@ var mapStateToProps = function mapStateToProps(state) {
     imageData: imageData,
     selectedImage: Object(reducers__WEBPACK_IMPORTED_MODULE_13__["getSelectedImage"])(state),
     isImagePortrait: Object(reducers__WEBPACK_IMPORTED_MODULE_13__["isImagePortrait"])(state),
-    isPanelVisible: Object(reducers__WEBPACK_IMPORTED_MODULE_13__["isPanelVisible"])(state),
     isAnnotating: reducers__WEBPACK_IMPORTED_MODULE_13__["isAnnotating"](state),
     textAlignment: textAlignment,
     textAlignmentById: textAlignmentById,
@@ -7057,7 +7049,7 @@ var mapStateToProps = function mapStateToProps(state) {
     imageAlignmentById: Object(reducers__WEBPACK_IMPORTED_MODULE_13__["getImageAlignmentById"])(state),
     imageScrollId: Object(reducers__WEBPACK_IMPORTED_MODULE_13__["getImageScrollId"])(state),
     selectedMedia: Media,
-    condition: condition
+    condition: condition && isPanelLinked && isSecondWindowOpen
   };
 };
 
@@ -7599,8 +7591,7 @@ function TextDetailHeading(props) {
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_HeaderMenu_Settings__WEBPACK_IMPORTED_MODULE_10__["default"], {
     textFontSize: props.textFontSize,
     onChangedFontSize: props.onChangedFontSize,
-    onExport: props.onExport,
-    isPanelLinked: props.isPanelLinked
+    onExport: props.onExport
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_HeaderMenu_TableOfContent__WEBPACK_IMPORTED_MODULE_11__["default"], {
     changeShowTableContent: props.changeShowTableContent,
     showTableContent: props.showTableContent
@@ -10523,12 +10514,8 @@ var mapStateToProps = function mapStateToProps(state) {
   var syncIdOnClick = reducers__WEBPACK_IMPORTED_MODULE_7__["getSyncIdOnClick"](state);
   var textAlignment = reducers__WEBPACK_IMPORTED_MODULE_7__["getTextAlignment"](state);
   var selectedWindow = reducers__WEBPACK_IMPORTED_MODULE_7__["getSelectedWindow"](state);
-  var searchValue = reducers__WEBPACK_IMPORTED_MODULE_7__["getSearchValue2"](state); // let condition =
-  //     textAlignment?.source?.witness === selectedWitness?.id &&
-  //     isSecondWindowOpen &&
-  //     textAlignment?.target?.witness === selectedWitness2?.id &&
-  //     isPanelLinked;
-
+  var searchValue = reducers__WEBPACK_IMPORTED_MODULE_7__["getSearchValue2"](state);
+  var isSecondWindowOpen = reducers__WEBPACK_IMPORTED_MODULE_7__["isSecondWindowOpen"](state);
   var condition = reducers__WEBPACK_IMPORTED_MODULE_7__["getConditionForAlignment"](state);
   return {
     text: selectedText,
@@ -10537,11 +10524,9 @@ var mapStateToProps = function mapStateToProps(state) {
     selectedWitness: selectedWitness,
     loading: loading,
     annotationPositions: annotationPositions,
-    isSecondWindowOpen: Object(reducers__WEBPACK_IMPORTED_MODULE_7__["isSecondWindowOpen"])(state),
     imageData: Object(reducers__WEBPACK_IMPORTED_MODULE_7__["getImageData"])(state),
     selectedImage: Object(reducers__WEBPACK_IMPORTED_MODULE_7__["getSelectedImage"])(state),
     isImagePortrait: Object(reducers__WEBPACK_IMPORTED_MODULE_7__["isImagePortrait"])(state),
-    isPanelVisible: Object(reducers__WEBPACK_IMPORTED_MODULE_7__["isPanelVisible"])(state),
     scrollToId: scrollToId,
     syncIdOnClick: syncIdOnClick,
     textAlignment: textAlignment,
@@ -10553,7 +10538,7 @@ var mapStateToProps = function mapStateToProps(state) {
     searchResults: Object(reducers__WEBPACK_IMPORTED_MODULE_7__["getSearchResults2"])(state, searchValue),
     searchValue: searchValue,
     syncIdOnSearch: reducers__WEBPACK_IMPORTED_MODULE_7__["getSyncIdOnSearch2"](state),
-    condition: condition
+    condition: condition && isPanelLinked && isSecondWindowOpen
   };
 };
 
@@ -10967,8 +10952,7 @@ function TextDetailHeading(props) {
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_HeaderMenu_Settings__WEBPACK_IMPORTED_MODULE_8__["default"], {
     textFontSize: props.textFontSize,
     onChangedFontSize: props.onChangedFontSize,
-    onExport: props.onExport,
-    isPanelLinked: props.isPanelLinked
+    onExport: props.onExport
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_HeaderMenu_TableOfContent__WEBPACK_IMPORTED_MODULE_10__["default"], {
     changeShowTableContent: props.changeShowTableContent,
     showTableContent: props.showTableContent

@@ -713,7 +713,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.debouncedScroll = _.debounce((list) => {
             if (list.length) {
                 this.changeScrollToId({ id: list[0]?.start, from: 1 });
-                console.log(list[0]);
             }
             // if (imagelist.length) {
             //     this.changeImageScrollId({
@@ -860,7 +859,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
                 let start = req?.start;
                 if (start !== null) {
-                    console.log(start);
                     let selectedTextIndex =
                         this.props.splitText.getTextIndexOfPosition(start);
                     this.scrollToIndex(selectedTextIndex);
@@ -1006,7 +1004,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let start = witnessProperties[IMAGE_START_NUMBER_KEY];
         let suffix = witnessProperties[IMAGE_START_SUFFIX_KEY];
         let id = Number(start) + pageIndex;
-        console.log(id);
         let url =
             IMAGE_URL_PREFIX + prefix + id + "." + suffix + IMAGE_URL_SUFFIX;
         console.log(url);
@@ -1114,7 +1111,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             props.selectedWitness.properties &&
             props.selectedWitness.properties.hasOwnProperty(IMAGE_START_PRE_KEY)
         ) {
-            console.log("running");
             imageUrl = this.getImageUrl(index);
         }
 

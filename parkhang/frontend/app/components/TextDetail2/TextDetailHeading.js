@@ -141,7 +141,6 @@ function TextDetailHeading(props: HeaderProps) {
                         textFontSize={props.textFontSize}
                         onChangedFontSize={props.onChangedFontSize}
                         onExport={props.onExport}
-                        isPanelLinked={props.isPanelLinked}
                     />
                     <TableOfContent
                         changeShowTableContent={props.changeShowTableContent}

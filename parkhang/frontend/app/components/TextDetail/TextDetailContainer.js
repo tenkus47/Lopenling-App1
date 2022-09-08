@@ -161,7 +161,6 @@ const mapStateToProps = (state) => {
     const loading =
         state.data.loadingWitnesses || state.data.loadingAnnotations;
     const textListVisible = getTextListVisible(state);
-    const isPanelLinked = reducers.isPanelLinked(state);
     const textAlignmentById = reducers.getTextAlignmentById(state);
 
     if (loading) {
@@ -181,7 +180,6 @@ const mapStateToProps = (state) => {
             user: user,
             textListVisible,
             fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
-            isPanelLinked,
             textAlignmentById,
             imageAlignmentById: getImageAlignmentById(state),
         };
@@ -305,13 +303,15 @@ const mapStateToProps = (state) => {
     }
     _selectedWitness = selectedWitness;
     const scrollToId = reducers.getScrollToId(state);
+    const isPanelLinked = reducers.isPanelLinked(state);
+
     const textAlignment = reducers.getTextAlignment(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const selectedWindow = reducers.getSelectedWindow(state);
     const selectedWitness2 = reducers.getSelectedTextWitness2(state);
     let Media = reducers.getMediaData(state);
     const imageData = getImageData(state);
-    let isSecondWindowOpen = reducers.isSecondWindowOpen(state);
+    const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
     const condition = reducers.getConditionForAlignment(state);
     return {
         text: selectedText,
@@ -339,7 +339,6 @@ const mapStateToProps = (state) => {
         imageData,
         selectedImage: getSelectedImage(state),
         isImagePortrait: isImagePortrait(state),
-        isPanelVisible: isPanelVisible(state),
         isAnnotating: reducers.isAnnotating(state),
         textAlignment,
         textAlignmentById,
@@ -354,7 +353,7 @@ const mapStateToProps = (state) => {
         imageAlignmentById: getImageAlignmentById(state),
         imageScrollId: getImageScrollId(state),
         selectedMedia: Media,
-        condition,
+        condition: condition && isPanelLinked && isSecondWindowOpen,
     };
 };
 

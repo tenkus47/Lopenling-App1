@@ -1027,16 +1027,18 @@ function* loadTextAlignment(action, AlignmentData) {
     }
     yield put(actions.setTextAlignment(data));
 }
+
+// checks if the alignment should work
+
 function* checkConditionForAlignment(action) {
     const selectedWitness = action.witnessId;
     const textAlignment = yield select(reducers.getAlignment);
-    const isPanelLinked = yield select(reducers.isPanelLinked);
-    const isSecondPanelOpen = yield select(reducers.isSecondWindowOpen);
+    console.log(textAlignment);
     const alignmentCondition = textAlignment.alignments.text.some(
         (element) => element?.target === selectedWitness
     );
 
-    let condition = alignmentCondition && isPanelLinked && isSecondPanelOpen;
+    let condition = alignmentCondition;
 
     yield put(actions.changeCondition(condition));
 }
