@@ -84,6 +84,7 @@ function TextDetail(props) {
                 searchValue={props.searchValue}
                 selectedText={props.text}
                 syncIdOnSearch={props.syncIdOnSearch}
+                condition={props.condition}
             ></SplitTextComponent>
         );
     }

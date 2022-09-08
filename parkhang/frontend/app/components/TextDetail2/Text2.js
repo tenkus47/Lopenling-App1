@@ -144,11 +144,7 @@ class Text2 extends React.Component<Props, State> {
         let sourceRangeSelection = [];
         let targetRangeSelection = [];
         const selection = document.getSelection();
-        if (
-            element?.id.includes("s2_") &&
-            this.props.isPanelLinked &&
-            this.props.condition
-        ) {
+        if (element?.id.includes("s2_") && this.props.condition) {
             var clickId = parseInt(element.id.replace("s2_", ""));
 
             this.props.changeSyncIdOnClick(clickId);

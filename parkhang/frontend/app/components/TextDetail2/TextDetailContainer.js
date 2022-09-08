@@ -167,6 +167,13 @@ const mapStateToProps = (state: AppState): {} => {
     const textAlignment = reducers.getTextAlignment(state);
     const selectedWindow = reducers.getSelectedWindow(state);
     const searchValue = reducers.getSearchValue2(state);
+    // let condition =
+    //     textAlignment?.source?.witness === selectedWitness?.id &&
+    //     isSecondWindowOpen &&
+    //     textAlignment?.target?.witness === selectedWitness2?.id &&
+    //     isPanelLinked;
+    const condition = reducers.getConditionForAlignment(state);
+
     return {
         text: selectedText,
         textFontSize,
@@ -176,7 +183,6 @@ const mapStateToProps = (state: AppState): {} => {
         annotationPositions,
         isSecondWindowOpen: isSecondWindowOpen(state),
         imageData: getImageData(state),
-        isPanelLinked,
         selectedImage: getSelectedImage(state),
         isImagePortrait: isImagePortrait(state),
         isPanelVisible: isPanelVisible(state),
@@ -191,6 +197,7 @@ const mapStateToProps = (state: AppState): {} => {
         searchResults: getSearchResults2(state, searchValue),
         searchValue,
         syncIdOnSearch: reducers.getSyncIdOnSearch2(state),
+        condition,
     };
 };
 

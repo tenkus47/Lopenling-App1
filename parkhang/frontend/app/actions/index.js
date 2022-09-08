@@ -81,6 +81,7 @@ export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 // UI
 export const CHANGE_THEME = "CHANGE_THEME";
+export const CHANGE_CONDITION = "CHANGE_CONDITION";
 export const CHANGE_ANNOTATING = "CHANGE_ANNOTATING";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
@@ -609,6 +610,13 @@ export function changeTheme(payload) {
         payload,
     };
 }
+export function changeCondition(payload) {
+    return {
+        type: CHANGE_CONDITION,
+        payload,
+    };
+}
+
 export type ChangedSearchValueAction = Action & {
     searchValue: string,
 };

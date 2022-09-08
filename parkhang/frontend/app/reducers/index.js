@@ -170,7 +170,9 @@ export const getSelectedTextWitness2 = (state: AppState): Witness | null => {
     }
     return witness;
 };
-
+export const getConditionForAlignment = (state) => {
+    return ui.getConditionForAlignment(state.ui);
+};
 export const getTheme = (state: AppState): String => {
     return ui.getTheme(state.ui);
 };

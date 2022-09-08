@@ -22,10 +22,8 @@ import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo_173x.png";
 import UserIcon from "images/discourse_user.svg";
 import { NavLink } from "redux-first-router-link";
-import TranslateButton from "components/utility/TranslateButton";
-import { history } from "redux-first-router";
 import ToggleTheme from "./ToggleTheme";
-import Resources from "components/Resources";
+import Sidebar from "components/Sidebar";
 
 import {
     Container,
@@ -48,12 +46,12 @@ type LoginProps = {
     csrfToken: string,
 };
 const image_location = lopenlingLogo;
-
 export const LoginControls = (props: LoginProps) => (
     <Stack direction="row" spacing={2}>
         <a href={SSO_SIGNUP_URL}>
             <Button
                 variant="contained"
+                className={styles.ButtonText}
                 style={{
                     padding: "6px 10px",
                     boxShadow:
@@ -71,7 +69,8 @@ export const LoginControls = (props: LoginProps) => (
             <Button
                 variant="contained"
                 type="submit"
-                style={{
+                className={styles.ButtonText}
+                sx={{
                     padding: "6px 10px",
                     display: "flex",
                     alignItems: "center",
@@ -79,7 +78,7 @@ export const LoginControls = (props: LoginProps) => (
                         "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
                 }}
             >
-                <PersonIcon style={{ height: 18, width: 19 }} />
+                <PersonIcon style={{ height: 16, width: 16 }} />
                 <FormattedMessage id="header.login" />
             </Button>
             <input
@@ -169,7 +168,6 @@ type HeaderProps = {
 export const Header = (props: HeaderProps) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
 
-    let locations = history();
     let controls = null;
     if (props.user.isLoggedIn) {
         controls = (
@@ -210,7 +208,7 @@ export const Header = (props: HeaderProps) => {
         <AppBar
             position="static"
             color="navbar"
-            sx={{ boxShadow: 1, paddingBlock: 1, zIndex: 3 }}
+            sx={{ boxShadow: 1, zIndex: 3 }}
             // className={styles.header}
         >
             <Stack
@@ -219,8 +217,8 @@ export const Header = (props: HeaderProps) => {
                 justifyContent={"space-between"}
                 sx={{
                     height: "100%",
-                    width: "100%",
-                    paddingInline: 2,
+                    maxWidth: "100%",
+                    paddingInline: 1,
                 }}
             >
                 <Box
@@ -320,7 +318,7 @@ export const Header = (props: HeaderProps) => {
                         <MenuItem onClick={handleCloseNavMenu}>
                             <Button
                                 to={"/"}
-                                style={{ color: "#676767" }}
+                                color="links"
                                 component={LinkRef}
                                 variant="text"
                             >
@@ -341,7 +339,7 @@ export const Header = (props: HeaderProps) => {
                         <MenuItem onClick={handleCloseNavMenu}>
                             <Button
                                 href={"https://www.lopenling.org"}
-                                style={{ color: "#676767" }}
+                                color="links"
                                 variant="text"
                                 component={"a"}
                             >
@@ -351,17 +349,24 @@ export const Header = (props: HeaderProps) => {
                         <MenuItem onClick={handleCloseNavMenu}>
                             <Button
                                 href={"https://www.nalanda.works"}
-                                style={{ color: "#676767" }}
+                                color="links"
                                 variant="text"
                                 component={"a"}
                             >
                                 <FormattedMessage id={"Nalanda"} />
                             </Button>
                         </MenuItem>
-                        <MenuItem onClick={handleCloseNavMenu}>
+
+                        <MenuItem
+                            onClick={handleCloseNavMenu}
+                            sx={{
+                                display:
+                                    props.page !== "Editors" ? "none" : "block",
+                            }}
+                        >
                             <Button
                                 sx={{
-                                    color: "#676767",
+                                    color: "links",
                                     display:
                                         props.page !== "Editors"
                                             ? "none"

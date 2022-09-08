@@ -219,9 +219,17 @@ function* loadSources() {
         console.log("FAILED loadSources! %o", e);
     }
 }
-
+function* loadTextInfo() {
+    try {
+        let texts = yield call(api.fetchChapterDetail);
+        let setTextData = actions.setTextData(texts);
+        yield put(setTextData);
+    } catch (e) {
+        console.log("FAILED loadTextInfo! %o", e);
+    }
+}
 function* loadInitialData(): Saga<void> {
-    yield all([call(loadTexts), call(loadSources)]);
+    yield all([call(loadTexts), call(loadSources), call(loadTextInfo)]);
     yield put(actions.loadedInitialData());
 }
 
@@ -238,7 +246,11 @@ export function* watchLoadInitialData(): any {
 function* selectedText(action: actions.SelectedTextAction): Saga<void> {
     if (action.text === null) return;
     yield put(actions.loadingWitnesses(action.text));
-    yield all([call(loadInitialTextData, action)]);
+
+    yield all([
+        call(loadAlignmentData, action, action.text.id),
+        call(loadInitialTextData, action),
+    ]);
 }
 
 function* watchSelectedText(): Saga<void> {
@@ -271,7 +283,6 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 baseWitnessData = witness;
             }
         }
-        yield call(loadAlignmentData, action, textId);
 
         if (workingWitnessData) {
             const workingWitness: Witness = yield (select(
@@ -306,6 +317,7 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     }
     let selectedWitness = yield select(reducers.getSelectedTextWitness);
     let AlignmentData = yield select(reducers.getAlignment);
+    console.log(AlignmentData);
     yield call(loadTextAlignment, action, AlignmentData);
     yield call(loadVideoData, action, AlignmentData);
 
@@ -382,7 +394,7 @@ function* loadInitialTextData2(action: actions.TextDataAction) {
 function* selectedWitness2(action: actions.SelectedTextWitnessAction) {
     const witnessId = action.witnessId;
     const textId = action.textId;
-    let witness = yield select(reducers.getWitness, witnessId);
+    yield call(checkConditionForAlignment, action);
 
     const hasLoadedAnnotations2 = yield select(
         reducers.hasLoadedWitnessAnnotations2,
@@ -782,7 +794,6 @@ function* loadedTextUrl(
             if (!textData) yield delay(100);
         } while (textData === null);
         const selectedTextAction = actions.selectedText(textData);
-        // console.log(witnessId, "initial");
 
         // Wait until the initial text witness has been selected.
         // Otherwise a race condition can happen when the initial witness
@@ -796,6 +807,7 @@ function* loadedTextUrl(
         }
         let selectedTextAction2 = actions.selectedText2(textData2);
         yield put(selectedTextAction);
+
         yield put(selectedTextAction2);
 
         let textWitnesses: Array<Witness> = [];
@@ -816,6 +828,7 @@ function* loadedTextUrl(
             textId,
             witnessId
         );
+
         yield put(selectedWitnessAction);
 
         let witnesses2 = null;
@@ -961,15 +974,9 @@ function* selectTextUrl(action) {
     _loadedTextUrl = false;
     let texts;
     let setTextData;
-
-    try {
-        texts = yield call(api.fetchChapterDetail);
-        setTextData = actions.setTextData(texts);
-        yield put(setTextData);
-    } catch (e) {
-        texts = { data: null };
-        yield put(setTextData);
-    }
+    //  texts = yield call(api.fetchChapterDetail);
+    //     setTextData = actions.setTextData(texts);
+    //     yield put(setTextData);
 
     // const nullSelect = actions.selectedText({ text: null });
     // yield put(nullSelect);
@@ -1019,6 +1026,19 @@ function* loadTextAlignment(action, AlignmentData) {
         data = { alignment: [], source: {}, target: {} };
     }
     yield put(actions.setTextAlignment(data));
+}
+function* checkConditionForAlignment(action) {
+    const selectedWitness = action.witnessId;
+    const textAlignment = yield select(reducers.getAlignment);
+    const isPanelLinked = yield select(reducers.isPanelLinked);
+    const isSecondPanelOpen = yield select(reducers.isSecondWindowOpen);
+    const alignmentCondition = textAlignment.alignments.text.some(
+        (element) => element?.target === selectedWitness
+    );
+
+    let condition = alignmentCondition && isPanelLinked && isSecondPanelOpen;
+
+    yield put(actions.changeCondition(condition));
 }
 //Media Load
 

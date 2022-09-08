@@ -312,11 +312,7 @@ const mapStateToProps = (state) => {
     let Media = reducers.getMediaData(state);
     const imageData = getImageData(state);
     let isSecondWindowOpen = reducers.isSecondWindowOpen(state);
-    let condition =
-        textAlignment?.source?.witness === selectedWitness?.id &&
-        isSecondWindowOpen &&
-        textAlignment?.target?.witness === selectedWitness2?.id &&
-        isPanelLinked;
+    const condition = reducers.getConditionForAlignment(state);
     return {
         text: selectedText,
         witnesses: witnesses,
@@ -341,7 +337,6 @@ const mapStateToProps = (state) => {
         fontSize,
         isSecondWindowOpen,
         imageData,
-        isPanelLinked,
         selectedImage: getSelectedImage(state),
         isImagePortrait: isImagePortrait(state),
         isPanelVisible: isPanelVisible(state),
@@ -359,7 +354,7 @@ const mapStateToProps = (state) => {
         imageAlignmentById: getImageAlignmentById(state),
         imageScrollId: getImageScrollId(state),
         selectedMedia: Media,
-        condition: condition,
+        condition,
     };
 };
 

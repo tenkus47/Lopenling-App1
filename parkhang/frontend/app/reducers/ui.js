@@ -56,7 +56,7 @@ export type UIState = {
 
     SyncIdOnSearch2: String,
     SyncIdOnScroll2: String,
-
+    conditionForAlignment: Boolean,
     theme: String,
 };
 
@@ -94,7 +94,7 @@ export const initialUIState = {
     SyncIdOnClick: 0,
     SyncIdOnSearch: null,
     SyncIdOnSearch2: null,
-
+    conditionForAlignment: false,
     theme: "light",
 };
 function changeTheme(state, action) {
@@ -103,7 +103,12 @@ function changeTheme(state, action) {
         theme: action.payload,
     };
 }
-
+function changeConditionForAlignment(state, action) {
+    return {
+        ...state,
+        conditionForAlignment: action.payload,
+    };
+}
 function changeSyncIdOnSearch(state, action) {
     return {
         ...state,
@@ -592,8 +597,13 @@ uiReducers[actions.SHOW_TABLE_CONTENT2] = showTableContent2;
 uiReducers[actions.SYNC_ID_ON_SEARCH] = changeSyncIdOnSearch;
 uiReducers[actions.SYNC_ID_ON_SEARCH2] = changeSyncIdOnSearch2;
 uiReducers[actions.CHANGE_THEME] = changeTheme;
+uiReducers[actions.CHANGE_CONDITION] = changeConditionForAlignment;
 
 export default uiReducers;
+
+export const getConditionForAlignment = (state) => {
+    return state.conditionForAlignment;
+};
 
 export const getSyncIdOnSearch = (state) => {
     return state.SyncIdOnSearch;
