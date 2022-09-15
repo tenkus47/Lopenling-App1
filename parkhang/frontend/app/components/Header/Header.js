@@ -113,11 +113,8 @@ export const LoggedInControls = (props: LoggedInControlsProps) => {
             <Menu
                 anchorEl={anchorEl}
                 id="account-menu"
-                open={props.overlayVisible}
+                open={props.overlayVisible || false}
                 onClose={props.accountButtonClicked}
-                MenuListProps={{
-                    "aria-labelledby": "account-menu-button",
-                }}
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "top" }}
                 style={{ top: 20 }}
@@ -186,7 +183,7 @@ export const Header = (props: HeaderProps) => {
         );
     }
 
-    let toggleTitle = props.intl.formatMessage({
+    let toggleTitle = props.intl?.formatMessage({
         id: "header.toggleTextList",
     });
 

@@ -337,7 +337,6 @@ class Text extends React.Component<Props, State> {
                         selectedCurrentLineBreak = true;
                     }
                 }
-
                 if (
                     remainingAnnotations.length > 0 ||
                     activeInsertions.length > 0

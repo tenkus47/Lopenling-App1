@@ -19,7 +19,6 @@ export default class QuestionView extends React.Component<Props> {
         const topicUrl = QUESTION_URL + this.props.question.topicId;
         let answerViews = [];
         let answers = this.props.question.answers;
-        console.log(answers);
         for (let i = 0; i < answers.length; i++) {
             const answer = answers[i];
             answerViews.push(
@@ -36,16 +35,6 @@ export default class QuestionView extends React.Component<Props> {
                 className={classnames(styles.question, controlStyles.padding)}
                 sx={{ boxShadow: 2 }}
             >
-                <span
-                    className={classnames(
-                        styles.threadLink,
-                        controlStyles.text
-                    )}
-                >
-                    <a href={topicUrl} target="_blank">
-                        <FormattedMessage id="question.viewThread" />
-                    </a>
-                </span>
                 <p
                     className={controlStyles.text}
                     dangerouslySetInnerHTML={{
@@ -53,9 +42,20 @@ export default class QuestionView extends React.Component<Props> {
                     }}
                 />
                 <p className={controlStyles.subTitle}>
-                    {name},{" "}
+                    {name}
                     <FormattedDate value={this.props.question.created} />
                 </p>
+                <span
+                    className={classnames(
+                        styles.threadLink,
+                        controlStyles.text
+                    )}
+                >
+                    <a href={topicUrl} target="_blank">
+                        {/* <FormattedMessage id="question.viewThread" /> */}
+                        answer
+                    </a>
+                </span>
                 {answerViews}
             </Box>
         );

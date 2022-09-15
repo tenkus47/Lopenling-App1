@@ -420,6 +420,5 @@ export function createQuestion(
 
 export function getQuestion(annotation: Annotation) {
     const url = getQuestionUrl(annotation.witness, annotation);
-
     return request(GET, url);
 }

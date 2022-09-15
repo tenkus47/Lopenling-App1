@@ -23,7 +23,7 @@ import Question from "lib/Question";
 
 import type { AnnotationUniqueId } from "lib/Annotation";
 export const CONTROLS_MARGIN_LEFT = 10;
-const FAKE_LOGIN = false;
+const FAKE_LOGIN = true;
 export type QuestionData = {
     loading: boolean,
     questions: Question[],
@@ -617,7 +617,7 @@ class AnnotationControls extends React.Component<Props> {
         }
 
         let allowQuestion =
-            props.questions.length === 0 &&
+            props.questions?.length === 0 &&
             props.temporaryQuestions.length === 0;
 
         let classes = [styles.annotationControls];

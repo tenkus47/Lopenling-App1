@@ -1266,7 +1266,7 @@ span {
     position: relative;
     -webkit-box-shadow: 0px 2px 1px rgba(0, 0, 0, .2);
             box-shadow: 0px 2px 1px rgba(0, 0, 0, .2);
-
+    cursor: pointer;
 }
 
 .AnnotationDetail---annotationDetail h3 {
@@ -1476,6 +1476,7 @@ span {
     padding-top: 10px;
     border-radius: 10px;
     z-index: 100;
+    cursor: pointer;
 }
 
 .AnnotationControls---annotationContent {
@@ -1484,7 +1485,7 @@ span {
 }
 
 .AnnotationControls---subTitle {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
 }
 
@@ -1502,7 +1503,7 @@ span {
 }
 
 .AnnotationControls---text {
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .AnnotationControls---padding {
@@ -1767,6 +1768,8 @@ blockquote {
 }
 .QuestionView---question {
     background-color: #ffffff;
+    font-size: 16px;
+    font-size: 1rem;
 }
 
 .QuestionView---question blockquote {
@@ -2298,6 +2301,7 @@ blockquote {
     padding-top: 10px;
     border-radius: 10px;
     z-index: 100;
+    cursor: pointer;
 }
 
 .SplitText---annotationContent {
@@ -2306,7 +2310,7 @@ blockquote {
 }
 
 .SplitText---subTitle {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
 }
 
@@ -2324,7 +2328,7 @@ blockquote {
 }
 
 .SplitText---text {
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .SplitText---padding {

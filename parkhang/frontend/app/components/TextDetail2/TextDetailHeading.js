@@ -86,14 +86,13 @@ function TextDetailHeading(props: HeaderProps) {
             ref={headingRef}
             spacing={1}
             sx={{
-                paddingInline: { md: 2, xs: 0 },
+                paddingInline: { md: 1, xs: 0 },
                 paddingBlock: { md: 1, xs: 0 },
                 borderTop: { md: 0, xs: "1px solid gray" },
                 bgcolor: "heading.main",
                 color: "text.primary",
             }}
         >
-            {" "}
             <Stack direction="row" spacing={1} justifyContent="space-between">
                 <Box
                     sx={{
@@ -126,7 +125,7 @@ function TextDetailHeading(props: HeaderProps) {
                         bgcolor: "background.paper",
                         color: "text.secondary",
                         "& svg": {
-                            m: 1.5,
+                            m: 1,
                         },
                         "& hr": {
                             mx: 0.5,

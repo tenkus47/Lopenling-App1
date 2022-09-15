@@ -27,8 +27,8 @@ function Video(props) {
     const VideoData = props?.videoData?.alignment || [];
     const url = "https://www.youtube.com/watch?v=2MMM_ggekfE";
     const [interval, setInterval] = useState({});
-    let VideoIdList = [];
-
+    let VideoIdListRange = [];
+    let closestID = [];
     // const syncIdOnScroll = props.syncIdOnScroll;
     const syncIdOnClick = props.syncIdOnClick;
     const [state, setState] = useState({
@@ -37,7 +37,10 @@ function Video(props) {
         playing: true,
     });
     if (!_.isEmpty(VideoData)) {
-        VideoIdList = VideoData.map((l) => parseInt(l.source_segment.start));
+        VideoIdListRange = VideoData.map((l) => [
+            parseInt(l.source_segment.start),
+            parseInt(l.source_segment.end),
+        ]);
     }
 
     useEffect(() => {
@@ -46,12 +49,18 @@ function Video(props) {
             //     newList= VideoData.filter(d=>d.source_segment===intersection[0]);
             //     jumpToTime(newList[0]?.target_segment.start)
             let ClickId = syncIdOnClick;
-            let closestID = getClosestNumber(VideoIdList, ClickId);
-            let data = VideoData.find(
-                (l) => l.source_segment.start === closestID.toString()
+
+            closestID = VideoIdListRange.find(
+                ([start, end]) => ClickId > start && ClickId < end
             );
-            if (!_.isEmpty(data)) {
-                jumpToTime(data.target_segment.start);
+            if (closestID) {
+                let data = VideoData.find(
+                    (l) => l.source_segment.start === closestID[0]?.toString()
+                );
+
+                if (!_.isEmpty(data)) {
+                    jumpToTime(data.target_segment.start);
+                }
             }
         }
     }, [syncIdOnClick]);

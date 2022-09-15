@@ -5,32 +5,35 @@ module.exports = {
             {
                 modules: false,
                 corejs: 3,
-            }
+                targets: {
+                    node: "current",
+                },
+            },
         ],
         "@babel/preset-react",
-        "@babel/preset-flow"
+        "@babel/preset-flow",
     ],
     plugins: [
         "@babel/plugin-proposal-object-rest-spread",
         "lodash",
-        "@babel/plugin-syntax-dynamic-import"
+        "@babel/plugin-syntax-dynamic-import",
     ],
     env: {
         test: {
             plugins: [
                 "@babel/plugin-transform-modules-commonjs",
-                "@babel/plugin-proposal-object-rest-spread"
+                "@babel/plugin-proposal-object-rest-spread",
             ],
             presets: [
                 [
                     "@babel/preset-env",
                     {
-                        modules: false
-                    }
+                        modules: false,
+                    },
                 ],
                 "@babel/preset-react",
-                "@babel/preset-flow"
-            ]
-        }
-    }
+                "@babel/preset-flow",
+            ],
+        },
+    },
 };

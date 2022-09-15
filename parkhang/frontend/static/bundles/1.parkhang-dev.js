@@ -1355,7 +1355,8 @@ function Video(props) {
       interval = _useState2[0],
       setInterval = _useState2[1];
 
-  var VideoIdList = []; // const syncIdOnScroll = props.syncIdOnScroll;
+  var VideoIdListRange = [];
+  var closestID = []; // const syncIdOnScroll = props.syncIdOnScroll;
 
   var syncIdOnClick = props.syncIdOnClick;
 
@@ -1369,8 +1370,8 @@ function Video(props) {
       setState = _useState4[1];
 
   if (!lodash_isEmpty__WEBPACK_IMPORTED_MODULE_0___default()(VideoData)) {
-    VideoIdList = VideoData.map(function (l) {
-      return parseInt(l.source_segment.start);
+    VideoIdListRange = VideoData.map(function (l) {
+      return [parseInt(l.source_segment.start), parseInt(l.source_segment.end)];
     });
   }
 
@@ -1380,13 +1381,24 @@ function Video(props) {
       //     newList= VideoData.filter(d=>d.source_segment===intersection[0]);
       //     jumpToTime(newList[0]?.target_segment.start)
       var ClickId = syncIdOnClick;
-      var closestID = getClosestNumber(VideoIdList, ClickId);
-      var data = VideoData.find(function (l) {
-        return l.source_segment.start === closestID.toString();
+      closestID = VideoIdListRange.find(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            start = _ref2[0],
+            end = _ref2[1];
+
+        return ClickId > start && ClickId < end;
       });
 
-      if (!lodash_isEmpty__WEBPACK_IMPORTED_MODULE_0___default()(data)) {
-        jumpToTime(data.target_segment.start);
+      if (closestID) {
+        var data = VideoData.find(function (l) {
+          var _closestID$;
+
+          return l.source_segment.start === ((_closestID$ = closestID[0]) === null || _closestID$ === void 0 ? void 0 : _closestID$.toString());
+        });
+
+        if (!lodash_isEmpty__WEBPACK_IMPORTED_MODULE_0___default()(data)) {
+          jumpToTime(data.target_segment.start);
+        }
       }
     }
   }, [syncIdOnClick]);
@@ -1634,7 +1646,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 var CONTROLS_MARGIN_LEFT = 10;
-var FAKE_LOGIN = false;
+var FAKE_LOGIN = true;
 var anchorPoints = {
   top: 1,
   left: 2,
@@ -1871,7 +1883,8 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this2 = this,
+          _props$questions;
 
       var props = this.props;
       var annotations = [];
@@ -2128,7 +2141,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
         questionsLoading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_QuestionsLoading__WEBPACK_IMPORTED_MODULE_13__["default"], null);
       }
 
-      var allowQuestion = props.questions.length === 0 && props.temporaryQuestions.length === 0;
+      var allowQuestion = ((_props$questions = props.questions) === null || _props$questions === void 0 ? void 0 : _props$questions.length) === 0 && props.temporaryQuestions.length === 0;
       var classes = [_AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.annotationControls];
 
       if (props.inline) {
@@ -2865,32 +2878,60 @@ var AnnotationControlsHeader = /*#__PURE__*/function (_React$Component) {
     _classCallCheck(this, AnnotationControlsHeader);
 
     return _super.call(this);
-  } // componentDidMount() {
-  //     this.keyHandler = (e) => {
-  //         if (e.key === "e" || e.key === "E") {
-  //             this.props.editAnnotationHandler();
-  //         }
-  //         if (e.key === "q" || e.key === "Q") {
-  //             this.props.addQuestion();
-  //         }
-  //         if (e.key === "l" || e.key === "L") {
-  //             this.props.addLineBreak();
-  //         }
-  //         if (e.key === "n" || e.key === "N") {
-  //             this.props.addNote();
-  //         }
-  //         if (e.key === "p" || e.key === "P") {
-  //             this.props.addPageBreak();
-  //         }
-  //     };
-  //     document.addEventListener("keyup", this.keyHandler, { once: true });
-  // }
-  // componentWillUnmount() {
-  //     document.removeEventListener("keyup", this.keyHandler);
-  // }
-
+  }
 
   _createClass(AnnotationControlsHeader, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this = this;
+
+      this.keyHandler = function (evtobj) {
+        var e = window.event ? event : evtobj;
+        var condition = e.ctrlKey;
+
+        if (condition && e.keyCode != 67) {
+          evtobj.preventDefault();
+        }
+
+        if (condition && e.keyCode == 69) {
+          _this.props.editAnnotationHandler();
+        }
+
+        if (condition && e.keyCode == 81) {
+          var _this$props;
+
+          (_this$props = _this.props) === null || _this$props === void 0 ? void 0 : _this$props.addQuestion();
+        }
+
+        if (condition && e.keyCode == 76) {
+          var _this$props2;
+
+          (_this$props2 = _this.props) === null || _this$props2 === void 0 ? void 0 : _this$props2.addLineBreak();
+        }
+
+        if (condition && e.keyCode == 78) {
+          var _this$props3;
+
+          (_this$props3 = _this.props) === null || _this$props3 === void 0 ? void 0 : _this$props3.addNote();
+        }
+
+        if (condition && e.keyCode == 80) {
+          var _this$props4;
+
+          (_this$props4 = _this.props) === null || _this$props4 === void 0 ? void 0 : _this$props4.addPageBreak();
+        }
+      };
+
+      document.addEventListener("keydown", this.keyHandler, {
+        once: false
+      });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      document.removeEventListener("keydown", this.keyHandler);
+    }
+  }, {
     key: "render",
     value: function render() {
       var allowPageBreak = this.props.addPageBreak != null;
@@ -4324,7 +4365,6 @@ var QuestionView = /*#__PURE__*/function (_React$Component) {
       var topicUrl = app_constants__WEBPACK_IMPORTED_MODULE_9__["QUESTION_URL"] + this.props.question.topicId;
       var answerViews = [];
       var answers = this.props.question.answers;
-      console.log(answers);
 
       for (var i = 0; i < answers.length; i++) {
         var answer = answers[i];
@@ -4340,23 +4380,21 @@ var QuestionView = /*#__PURE__*/function (_React$Component) {
         sx: {
           boxShadow: 2
         }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-        className: classnames__WEBPACK_IMPORTED_MODULE_8___default()(_QuestionView_css__WEBPACK_IMPORTED_MODULE_1___default.a.threadLink, _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_2___default.a.text)
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        href: topicUrl,
-        target: "_blank"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_7__["FormattedMessage"], {
-        id: "question.viewThread"
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
         className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_2___default.a.text,
         dangerouslySetInnerHTML: {
           __html: this.props.question.content
         }
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
         className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_2___default.a.subTitle
-      }, name, ",", " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_7__["FormattedDate"], {
+      }, name, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_7__["FormattedDate"], {
         value: this.props.question.created
-      })), answerViews);
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: classnames__WEBPACK_IMPORTED_MODULE_8___default()(_QuestionView_css__WEBPACK_IMPORTED_MODULE_1___default.a.threadLink, _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_2___default.a.text)
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: topicUrl,
+        target: "_blank"
+      }, "answer")), answerViews);
     }
   }]);
 
@@ -5565,7 +5603,6 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
       var suffix = witnessProperties[IMAGE_START_SUFFIX_KEY];
       var id = Number(start) + pageIndex;
       var url = IMAGE_URL_PREFIX + prefix + id + "." + suffix + IMAGE_URL_SUFFIX;
-      console.log(url);
       return url;
     }
   }, {
@@ -7596,7 +7633,9 @@ function TextDetailHeading(props) {
     changeShowTableContent: props.changeShowTableContent,
     showTableContent: props.showTableContent
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_7__["Collapse"], {
-    "in": showFind
+    "in": showFind,
+    mountOnEnter: true,
+    unmountOnExit: true
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("form", {
     onSubmit: handleSearch
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_7__["Stack"], {
@@ -10886,7 +10925,7 @@ function TextDetailHeading(props) {
     spacing: 1,
     sx: {
       paddingInline: {
-        md: 2,
+        md: 1,
         xs: 0
       },
       paddingBlock: {
@@ -10900,7 +10939,7 @@ function TextDetailHeading(props) {
       bgcolor: "heading.main",
       color: "text.primary"
     }
-  }, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_12__["Stack"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_12__["Stack"], {
     direction: "row",
     spacing: 1,
     justifyContent: "space-between"
@@ -10938,7 +10977,7 @@ function TextDetailHeading(props) {
       bgcolor: "background.paper",
       color: "text.secondary",
       "& svg": {
-        m: 1.5
+        m: 1
       },
       "& hr": {
         mx: 0.5

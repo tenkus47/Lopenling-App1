@@ -1006,7 +1006,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let id = Number(start) + pageIndex;
         let url =
             IMAGE_URL_PREFIX + prefix + id + "." + suffix + IMAGE_URL_SUFFIX;
-        console.log(url);
         return url;
     }
 

@@ -1010,7 +1010,6 @@ function* loadTextAlignment(action, AlignmentData) {
     let alignment = AlignmentData?.alignments;
     let payload = { source: [], target: [] };
     yield put(actions.changeSelectedRange(payload));
-    console.log("loadTextAlignment");
     if (alignment.text.length > 0) {
         let witnessAlignment = alignment.text?.find(
             (s) => s.source == textWitnessId
