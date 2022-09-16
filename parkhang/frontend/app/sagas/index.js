@@ -312,6 +312,8 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
         reducers.hasLoadedWitnessAnnotations,
         witnessId
     );
+    yield call(checkConditionForAlignment, action);
+
     if (!hasLoadedAnnotations) {
         yield call(loadWitnessAnnotations, action);
     }
@@ -1030,16 +1032,31 @@ function* loadTextAlignment(action, AlignmentData) {
 // checks if the alignment should work
 
 function* checkConditionForAlignment(action) {
-    const selectedWitness = action.witnessId;
-    const textAlignment = yield select(reducers.getAlignment);
-    console.log(textAlignment);
-    const alignmentCondition = textAlignment.alignments.text.some(
-        (element) => element?.target === selectedWitness
+    console.log(action);
+    const selectedText = yield select(reducers.getSelectedText);
+    const selectedText2 = yield select(reducers.getSelectedText2);
+
+    const witness1 = yield select(
+        reducers.getSelectedTextWitnessId,
+        selectedText.id
+    );
+    const witness2 = yield select(
+        reducers.getSelectedTextWitnessId2,
+        selectedText2.id
     );
 
-    let condition = alignmentCondition;
+    if (witness1 && witness2) {
+        const textAlignment = yield select(reducers.getAlignment);
+        const alignmentCondition = textAlignment.alignments.text.some(
+            (element) =>
+                element?.source === parseInt(witness1) &&
+                element?.target === parseInt(witness2)
+        );
 
-    yield put(actions.changeCondition(condition));
+        let condition = alignmentCondition;
+
+        yield put(actions.changeCondition(condition));
+    }
 }
 //Media Load
 

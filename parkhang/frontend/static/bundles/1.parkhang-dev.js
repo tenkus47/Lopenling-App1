@@ -382,9 +382,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _resizerStyle_css__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_resizerStyle_css__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _MediaComponent_DraggableMedia__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../MediaComponent/DraggableMedia */ "./app/components/MediaComponent/DraggableMedia.js");
-/* harmony import */ var components_TextDetail2_TextDetailContainer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! components/TextDetail2/TextDetailContainer */ "./app/components/TextDetail2/TextDetailContainer.js");
-/* harmony import */ var components_TextDetail_TextDetailContainer__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! components/TextDetail/TextDetailContainer */ "./app/components/TextDetail/TextDetailContainer.js");
+/* harmony import */ var components_TextDetail2_TextDetailContainer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! components/TextDetail2/TextDetailContainer */ "./app/components/TextDetail2/TextDetailContainer.js");
+/* harmony import */ var components_TextDetail_TextDetailContainer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! components/TextDetail/TextDetailContainer */ "./app/components/TextDetail/TextDetailContainer.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -402,7 +401,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 
 
 
@@ -462,7 +460,7 @@ function TextSheet(props) {
     onDragFinished: function onDragFinished(width) {
       if (width > 0) window.dispatchEvent(new Event("resize"));
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_ErrorBoundary_ErrorBoundary__WEBPACK_IMPORTED_MODULE_8__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_TextDetail_TextDetailContainer__WEBPACK_IMPORTED_MODULE_14__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_ErrorBoundary_ErrorBoundary__WEBPACK_IMPORTED_MODULE_8__["default"], null, props.isSecondWindowOpen && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_TextDetail2_TextDetailContainer__WEBPACK_IMPORTED_MODULE_13__["default"], null))), props.Media.isPanelVisible && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_ErrorBoundary_ErrorBoundary__WEBPACK_IMPORTED_MODULE_8__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_MediaComponent__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_ErrorBoundary_ErrorBoundary__WEBPACK_IMPORTED_MODULE_8__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_TextDetail_TextDetailContainer__WEBPACK_IMPORTED_MODULE_13__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_ErrorBoundary_ErrorBoundary__WEBPACK_IMPORTED_MODULE_8__["default"], null, props.isSecondWindowOpen && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_TextDetail2_TextDetailContainer__WEBPACK_IMPORTED_MODULE_12__["default"], null))), props.Media.isPanelVisible && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_ErrorBoundary_ErrorBoundary__WEBPACK_IMPORTED_MODULE_8__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_MediaComponent__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -1602,6 +1600,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_virtualized_dist_es_List__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! react-virtualized/dist/es/List */ "./node_modules/react-virtualized/dist/es/List/index.js");
 /* harmony import */ var _AnnotationControlsHeader__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./AnnotationControlsHeader */ "./app/components/TextDetail/AnnotationControlsHeader.js");
 /* harmony import */ var lib_Question__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! lib/Question */ "./app/lib/Question.js");
+/* harmony import */ var app_constants__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! app_constants */ "./app/app_constants/index.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1645,8 +1644,8 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 var CONTROLS_MARGIN_LEFT = 10;
-var FAKE_LOGIN = true;
 var anchorPoints = {
   top: 1,
   left: 2,
@@ -1891,7 +1890,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
       var temporaryAnnotations = [];
       var anonymousUserMessage = null;
       var nothingSelected = null;
-      var isLoggedIn = props.user.isLoggedIn || FAKE_LOGIN;
+      var isLoggedIn = props.user.isLoggedIn || app_constants__WEBPACK_IMPORTED_MODULE_21__["FAKE_LOGIN"];
       var breakSelected = false;
 
       if (props.activeAnnotation && (props.activeAnnotation.isType(lib_Annotation__WEBPACK_IMPORTED_MODULE_8__["ANNOTATION_TYPES"].pageBreak) || props.activeAnnotation.isType(lib_Annotation__WEBPACK_IMPORTED_MODULE_8__["ANNOTATION_TYPES"].lineBreak))) {
@@ -1952,7 +1951,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
           }
         }, this);
 
-        if (!props.user.isLoggedIn === !FAKE_LOGIN) {
+        if (!props.user.isLoggedIn === !app_constants__WEBPACK_IMPORTED_MODULE_21__["FAKE_LOGIN"]) {
           // NOTE: FormattedMessage cannot take a child when using
           // the values option, so need to wrap it in a div
           anonymousUserMessage = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
@@ -4385,16 +4384,18 @@ var QuestionView = /*#__PURE__*/function (_React$Component) {
         dangerouslySetInnerHTML: {
           __html: this.props.question.content
         }
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-        className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_2___default.a.subTitle
-      }, name, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_7__["FormattedDate"], {
-        value: this.props.question.created
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: classnames__WEBPACK_IMPORTED_MODULE_8___default()(_QuestionView_css__WEBPACK_IMPORTED_MODULE_1___default.a.threadLink, _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_2___default.a.text)
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: topicUrl,
         target: "_blank"
-      }, "answer")), answerViews);
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_7__["FormattedMessage"], {
+        id: "question.viewThread"
+      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_2___default.a.subTitle
+      }, name, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_7__["FormattedDate"], {
+        value: this.props.question.created
+      })), answerViews);
     }
   }]);
 
@@ -4676,6 +4677,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var grapheme_splitter__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! grapheme-splitter */ "./node_modules/grapheme-splitter/index.js");
 /* harmony import */ var grapheme_splitter__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(grapheme_splitter__WEBPACK_IMPORTED_MODULE_21__);
 /* harmony import */ var react_zoom_pan_pinch__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! react-zoom-pan-pinch */ "./node_modules/react-zoom-pan-pinch/dist/index.esm.js");
+/* harmony import */ var react_image_zoom__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! react-image-zoom */ "./node_modules/react-image-zoom/index.js");
+/* harmony import */ var react_image_zoom__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/__webpack_require__.n(react_image_zoom__WEBPACK_IMPORTED_MODULE_23__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 
@@ -4719,6 +4722,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -5467,7 +5471,7 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
       //for scrolling to the highlighted alignment if its outside visible DOM
 
 
-      if (this.targetId && scrollToId.from === "ua" && this.selectedWindow === 2 && scrollToId.id === "ua") {
+      if (this.targetId && scrollToId.from === "ua" && this.selectedWindow === 2 && scrollToId.id === "ua" && this.condition) {
         var _clickIdObj$source_se;
 
         var clickIdObj = Alignment.alignment.find(function (l) {

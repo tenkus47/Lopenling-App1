@@ -31,7 +31,7 @@ import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-
+import ReactImageZoom from "react-image-zoom";
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
@@ -873,7 +873,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.targetId &&
             scrollToId.from === "ua" &&
             this.selectedWindow === 2 &&
-            scrollToId.id === "ua"
+            scrollToId.id === "ua" &&
+            this.condition
         ) {
             let clickIdObj = Alignment.alignment.find(
                 (l) =>

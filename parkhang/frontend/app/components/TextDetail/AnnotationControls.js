@@ -20,10 +20,10 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
+import { FAKE_LOGIN } from "app_constants";
 
 import type { AnnotationUniqueId } from "lib/Annotation";
 export const CONTROLS_MARGIN_LEFT = 10;
-const FAKE_LOGIN = true;
 export type QuestionData = {
     loading: boolean,
     questions: Question[],

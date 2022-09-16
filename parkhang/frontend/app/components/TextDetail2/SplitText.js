@@ -540,7 +540,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
         // scroll dom with respect to window 1 click
         //for scrolling to the highlighted alignment if its outside visible DOM
-
         if (
             this.targetId2 &&
             scrollToId.from === null &&

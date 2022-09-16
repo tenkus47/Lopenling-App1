@@ -10,3 +10,5 @@ export const TEXT_EXTRACT_BOUNDARIES = [" ", "།"];
 export const QUESTION_URL = "https://lopenling.org/t/topic/"; // TODO: put this in global var from server?
 
 export const FONT_LIST = ["Tibetan", "Tsumachu", "Himalaya"];
+
+export const FAKE_LOGIN = false;

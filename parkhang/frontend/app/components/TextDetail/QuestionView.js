@@ -41,10 +41,7 @@ export default class QuestionView extends React.Component<Props> {
                         __html: this.props.question.content,
                     }}
                 />
-                <p className={controlStyles.subTitle}>
-                    {name}
-                    <FormattedDate value={this.props.question.created} />
-                </p>
+
                 <span
                     className={classnames(
                         styles.threadLink,
@@ -52,10 +49,13 @@ export default class QuestionView extends React.Component<Props> {
                     )}
                 >
                     <a href={topicUrl} target="_blank">
-                        {/* <FormattedMessage id="question.viewThread" /> */}
-                        answer
+                        <FormattedMessage id="question.viewThread" />
                     </a>
                 </span>
+                <p className={controlStyles.subTitle}>
+                    {name}
+                    <FormattedDate value={this.props.question.created} />
+                </p>
                 {answerViews}
             </Box>
         );
