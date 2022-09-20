@@ -90,7 +90,7 @@ function HomePage(props) {
                     alignItems: "center",
                     height: "4rem",
                 }}
-                mx={2}
+                m={4}
             >
                 <h3 className={styles.title} mx={3}>
                     <FormattedMessage id={"library"} />

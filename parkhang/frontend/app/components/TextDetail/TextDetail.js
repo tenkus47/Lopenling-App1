@@ -2,7 +2,7 @@
 import React from "react";
 import classnames from "classnames";
 import imageStyle from "components/MediaComponent/Image.css";
-
+import Placeholder from "components/utility/Placeholder";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import SplitText from "lib/SplitText";
@@ -86,7 +86,8 @@ class TextDetail extends React.Component<Props> {
     }
 
     mouseEnter() {
-        if (this.selectedWindow === 2) this.props.changeSelectedWindow(1);
+        if (this.selectedWindow === 2 && this.props.text.name)
+            this.props.changeSelectedWindow(1);
     }
     componentDidMount() {
         this.ref.current.addEventListener(
@@ -113,7 +114,11 @@ class TextDetail extends React.Component<Props> {
             !this.props.text ||
             this.props.loading
         ) {
-            textComponent = <div key={this.key} />;
+            textComponent = (
+                <div key={this.key}>
+                    <Placeholder />
+                </div>
+            );
         } else {
             let limitWidth = false;
             let splitter;

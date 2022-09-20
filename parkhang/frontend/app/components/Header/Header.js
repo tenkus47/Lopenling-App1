@@ -1,5 +1,5 @@
 // @flow
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
 import styles from "./Header.css";
@@ -23,10 +23,8 @@ import lopenlingLogo from "images/lopenling_logo_173x.png";
 import UserIcon from "images/discourse_user.svg";
 import { NavLink } from "redux-first-router-link";
 import ToggleTheme from "./ToggleTheme";
-import Sidebar from "components/Sidebar";
-
+import { pageList } from "reducers/pages";
 import {
-    Container,
     Button,
     Tooltip,
     Stack,
@@ -34,9 +32,6 @@ import {
     Menu,
     IconButton,
     MenuItem,
-    Typography,
-    Drawer,
-    getInitColorSchemeScript,
     AppBar,
 } from "@mui/material";
 import { Person as PersonIcon, Menu as MenuIcon } from "@mui/icons-material";
@@ -45,7 +40,8 @@ type LoginProps = {
     successRedirect: string,
     csrfToken: string,
 };
-const image_location = lopenlingLogo;
+let linkToEditor = "/editor";
+
 export const LoginControls = (props: LoginProps) => (
     <Stack direction="row" spacing={2}>
         <a href={SSO_SIGNUP_URL}>
@@ -164,7 +160,7 @@ type HeaderProps = {
 
 export const Header = (props: HeaderProps) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
-
+    const selectedText = props.selectedText;
     let controls = null;
     if (props.user.isLoggedIn) {
         controls = (
@@ -192,6 +188,11 @@ export const Header = (props: HeaderProps) => {
             <NavLink {...props} />
         </div>
     ));
+    React.useEffect(() => {
+        if (selectedText) {
+            linkToEditor = `/texts/${selectedText.id}`;
+        }
+    }, [selectedText]);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -199,7 +200,6 @@ export const Header = (props: HeaderProps) => {
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-
     const themeChange = useCallback((e) => props.themeButtonClicked(e), []);
     return (
         <AppBar
@@ -230,7 +230,7 @@ export const Header = (props: HeaderProps) => {
                         <NavLink to="/">
                             <div className={styles.logo}>
                                 <img
-                                    src={image_location}
+                                    src={lopenlingLogo}
                                     height="37"
                                     width={173}
                                     alt="parkhang-logo"
@@ -248,26 +248,27 @@ export const Header = (props: HeaderProps) => {
                         />
                     )}
                     <Box display={{ xs: "none", md: "flex" }}>
-                        <Button
-                            to={"/"}
-                            component={LinkRef}
-                            variant="text"
-                            color="links"
-                        >
-                            <FormattedMessage id={"header.texts"} />
-                        </Button>
-                        <Button
-                            to={"/editor"}
-                            component={LinkRef}
-                            variant="text"
-                            color="links"
-                            disabled={_.isEmpty(props.text)}
-                        >
-                            <FormattedMessage id={"header.editor"} />
-                        </Button>
+                        {pageList.map((page, i) => {
+                            return (
+                                <Button
+                                    to={
+                                        page.pageName === "Editors"
+                                            ? linkToEditor
+                                            : page.url
+                                    }
+                                    variant="text"
+                                    component={LinkRef}
+                                    color="links"
+                                    key={page.id}
+                                >
+                                    <FormattedMessage id={page.id} />
+                                </Button>
+                            );
+                        })}
+
                         <Tooltip title="Forum">
                             <Button
-                                href={"https://www.lopenling.org"}
+                                href={"https://lopenling.org"}
                                 variant="text"
                                 component={"a"}
                                 color="links"
@@ -324,11 +325,11 @@ export const Header = (props: HeaderProps) => {
                         </MenuItem>
                         <MenuItem onClick={handleCloseNavMenu}>
                             <Button
-                                to={"/editor"}
+                                to={linkToEditor}
                                 component={LinkRef}
                                 variant="text"
                                 color="links"
-                                disabled={_.isEmpty(props.text)}
+                                // disabled={_.isEmpty(props.text)}
                             >
                                 <FormattedMessage id={"header.editor"} />
                             </Button>
@@ -402,7 +403,6 @@ const mapStateToProps = (state: AppState): { user: User } => {
     // TODO: move global CSRF_TOKEN into redux
     const csrfToken = CSRF_TOKEN;
     const page = state.page;
-
     return {
         user: user,
         activeLocale: activeLocale,
@@ -414,6 +414,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
         theme: getTheme(state),
         text: getSelectedText(state),
         page,
+        selectedText: getSelectedText(state),
     };
 };
 

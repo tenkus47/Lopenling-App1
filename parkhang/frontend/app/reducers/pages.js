@@ -8,6 +8,19 @@ const components = {
 };
 export const initialPageState = "HomePage";
 
+export const pageList = [
+    {
+        pageName: "HomePage",
+        id: "header.texts",
+        url: "/",
+    },
+    {
+        pageName: "Editors",
+        id: "header.editor",
+        url: "/editors",
+    },
+];
+
 const pageReducers = {
     [actions.CHANGE_URL]: changeState,
 };

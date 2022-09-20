@@ -1,7 +1,6 @@
 // @flow
-import React, { useEffect } from "react";
+import React, { Suspense, lazy } from "react";
 import classnames from "classnames";
-import HeaderContainer from "components/Header";
 import type { AppState } from "reducers";
 import * as actions from "actions";
 import styles from "./App.css";
@@ -12,8 +11,12 @@ import HomePage from "components/HomePage";
 import Favicon from "react-favicon";
 import { history } from "redux-first-router";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Switcher from "./Switcher";
-import { Box } from "@mui/material";
+import { Backdrop, Box, CircularProgress, Skeleton } from "@mui/material";
+
+// import Switcher from "./Switcher";
+// import Header from "components/Header";
+const Switcher = lazy(() => import("./Switcher"));
+const Header = lazy(() => import("components/Header"));
 
 type Props = {
     title: string,
@@ -29,13 +32,14 @@ function setTitle(title: string) {
 
 const App = (props: Props) => {
     let mode = props.theme;
+
     const theme = React.useMemo(
         () =>
             createTheme({
                 palette: {
                     mode,
                     navbar: {
-                        main: mode !== "dark" ? "#FBFBFA" : "#272727",
+                        main: mode !== "dark" ? "#FBFBFA" : "#303030",
                     },
                     links: {
                         main: mode !== "dark" ? "#666666" : "#eee",
@@ -47,7 +51,7 @@ const App = (props: Props) => {
                         main: mode !== "dark" ? "#aaa" : "#383838",
                     },
                     texts: {
-                        main: mode !== "dark" ? "#333" : "#d3d3d3",
+                        main: mode !== "dark" ? "#303030" : "#d3d3d3",
                     },
                 },
                 typography: {
@@ -60,6 +64,9 @@ const App = (props: Props) => {
                         borderRadius: "4px",
                         fontFamily:
                             "'Qomolangma-UchenSarchen', 'Overpass', sans-serif",
+                    },
+                    h6: {
+                        color: mode !== "dark" ? "#303030" : "#d3d3d3",
                     },
                 },
                 props: {
@@ -101,8 +108,22 @@ const App = (props: Props) => {
                 }}
             >
                 <Favicon url={favimage} />
-                <HeaderContainer />
-                <Switcher />
+                <Suspense
+                    fallback={
+                        <Backdrop
+                            sx={{
+                                color: "#fff",
+                                zIndex: (theme) => theme.zIndex.drawer + 1,
+                            }}
+                            open={true}
+                        >
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
+                    }
+                >
+                    <Header />
+                    <Switcher />
+                </Suspense>
             </Box>
         </ThemeProvider>
     );

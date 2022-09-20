@@ -312,7 +312,11 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
         reducers.hasLoadedWitnessAnnotations,
         witnessId
     );
+    // check alignment condition between text1 and text2
     yield call(checkConditionForAlignment, action);
+
+    // Resetting scrolltoid eachTime witness changes
+    yield put(actions.changeScrollToId({ id: 0, from: 1 }));
 
     if (!hasLoadedAnnotations) {
         yield call(loadWitnessAnnotations, action);
@@ -959,7 +963,6 @@ function* loadedTextIdonlyUrl(action) {
 
     witnesses = yield call(api.fetchTextWitnesses, text);
     yield put(actions.loadedWitnesses(text, witnesses));
-
     let workingwitness = witnesses.find((l) => l.is_working === true);
     witnessId2 = workingwitness?.id || witnesses[0].id;
     witnessId = workingwitness?.id || witnesses[0].id;
@@ -1035,16 +1038,18 @@ function* checkConditionForAlignment(action) {
     console.log(action);
     const selectedText = yield select(reducers.getSelectedText);
     const selectedText2 = yield select(reducers.getSelectedText2);
-
-    const witness1 = yield select(
-        reducers.getSelectedTextWitnessId,
-        selectedText.id
-    );
-    const witness2 = yield select(
-        reducers.getSelectedTextWitnessId2,
-        selectedText2.id
-    );
-
+    let witness1;
+    let witness2;
+    if (selectedText && selectedText2) {
+        witness1 = yield select(
+            reducers.getSelectedTextWitnessId,
+            selectedText.id
+        );
+        witness2 = yield select(
+            reducers.getSelectedTextWitnessId2,
+            selectedText2.id
+        );
+    }
     if (witness1 && witness2) {
         const textAlignment = yield select(reducers.getAlignment);
         const alignmentCondition = textAlignment.alignments.text.some(

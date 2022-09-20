@@ -54,7 +54,11 @@ function TextSheet(props) {
                 {props.Media.isPanelVisible ? <MediaComponent /> : <div />} */}
             <SplitPane
                 split={landScape ? "vertical" : "horizontal"}
-                size={props.isSecondWindowOpen ? "50%" : "100%"}
+                size={
+                    props.isSecondWindowOpen && props.selectedText
+                        ? "50%"
+                        : "100%"
+                }
                 resizerClassName={classnames(
                     styles.Resizer,
                     { [styles.vertical]: landScape },
@@ -68,7 +72,9 @@ function TextSheet(props) {
                     <TextDetailContainer />
                 </ErrorBoundary>
                 <ErrorBoundary>
-                    {props.isSecondWindowOpen && <TextDetailContainer2 />}
+                    {props.isSecondWindowOpen && props.selectedText && (
+                        <TextDetailContainer2 />
+                    )}
                 </ErrorBoundary>
             </SplitPane>
             {props.Media.isPanelVisible && (
@@ -84,7 +90,9 @@ function TextSheet(props) {
 const mapStateToProps = (state: AppState): { user: User } => {
     const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
     const Media = reducers.getMediaData(state);
+    const selectedText = reducers.getSelectedText(state);
     return {
+        selectedText,
         isSecondWindowOpen,
         Media,
     };

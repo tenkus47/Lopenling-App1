@@ -1,0 +1,23 @@
+.placeholder {
+    animation: example infinite 2s;
+    padding: 10px;
+    scale: 3;
+    margin-left: 50px;
+}
+
+@keyframes example {
+    0% {
+        translate: 0 50px;
+        opacity: 0;
+    }
+
+    50% {
+        translate: 0 0;
+        opacity: 1;
+    }
+
+    100% {
+        translate: 0 50px;
+        opacity: 0;
+    }
+}

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import styles from "./textDetailHeading.css";
 import SelectVersion from "./SelectVersion";
 import Slider from "../UI/Slider";
-import TextListContainer from "./TextListContainer";
+import TextList from "./TextListContainer";
 import OptionsIcon from "images/options.svg";
 import Settings from "./HeaderMenu/Settings";
 import Search from "./HeaderMenu/Search";
@@ -101,7 +101,7 @@ function TextDetailHeading(props: HeaderProps) {
                         flexDirection: { md: "row", xs: "column" },
                     }}
                 >
-                    <TextListContainer />
+                    <TextList />
                     <SelectVersion
                         witnesses={props.witnesses}
                         activeWitness={props.selectedWitness}

@@ -15,9 +15,10 @@ import { ExpandMore } from "@mui/icons-material";
 function About(props) {
     const { Textdata, selectedText } = props;
 
+    if (!selectedText) return <div>no selected Text available</div>;
+
     let selected = Textdata.detail.find((l) => l.text === selectedText.id);
     if (!selected) return <div>No about info</div>;
-
     return (
         <>
             <Typography variant="h4" component="div" mb={3}>

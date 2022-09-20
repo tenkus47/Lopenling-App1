@@ -160,7 +160,7 @@ TEMPLATES = [
         },
     },
 ]
-#cors
+# cors
 CORS_ORIGIN_ALLOW_ALL = True
 
 # STATIC
@@ -172,7 +172,8 @@ STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 STATIC_URL = "/static/"
 
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(ROOT_DIR / "frontend" / "static"), str(ROOT_DIR / "static")]
+STATICFILES_DIRS = [str(ROOT_DIR / "frontend" / "static"),
+                    str(ROOT_DIR / "static")]
 
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
@@ -210,13 +211,13 @@ DEFAULT_FROM_EMAIL = "Nalanda Works <server@nalanda.works>"
 # WEBPACK
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'CACHE':not DEBUG,
+        'CACHE': not DEBUG,
         'BUNDLE_DIR_NAME': '/bundles/',
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
-        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats-dev.json'),
-  }
+        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
+    }
 }
 
 # Discourse SSO
