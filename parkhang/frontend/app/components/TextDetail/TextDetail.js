@@ -209,6 +209,7 @@ class TextDetail extends React.Component<Props> {
                         height: "100%",
                         width: "100%",
                         position: "relative",
+                        paddingBlock: 20,
                     }}
                 >
                     <Box

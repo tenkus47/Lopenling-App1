@@ -122,7 +122,7 @@ const Editor = (props) => {
                 style={{ height: "auto", position: "static" }}
             >
                 <Collapse
-                    sx={{ height: "100%" }}
+                    sx={{ height: "100%", position: "absolute", left: 0 }}
                     orientation="horizontal"
                     in={props.textListIsVisible}
                     mountOnEnter

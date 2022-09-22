@@ -26,6 +26,7 @@
 .splitTextRow {
     display: flex;
     flex-direction: row;
+    padding-inline: 20px;
 }
 
 

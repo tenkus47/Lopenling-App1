@@ -1,8 +1,9 @@
 .placeholder {
     animation: example infinite 2s;
-    padding: 10px;
+    position: relative;
+    top: 30px;
+    left: 51px;
     scale: 3;
-    margin-left: 50px;
 }
 
 @keyframes example {

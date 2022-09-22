@@ -30,12 +30,14 @@ function TextSheet(props) {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
     return (
         <div
             ref={editorRef}
             style={{
                 display: "flex",
                 flexDirection: "column",
+                backgroundColor: "#F8F9FA",
                 width: "100%",
                 height: "100%",
                 overflow: "hidden",
@@ -57,13 +59,24 @@ function TextSheet(props) {
                 size={
                     props.isSecondWindowOpen && props.selectedText
                         ? "50%"
-                        : "100%"
+                        : "70%"
                 }
-                resizerClassName={classnames(
-                    styles.Resizer,
-                    { [styles.vertical]: landScape },
-                    { [styles.horizontal]: !landScape }
-                )}
+                style={
+                    !props.isSecondWindowOpen && {
+                        marginLeft: "20%",
+                        marginTop: 10,
+                    }
+                }
+                resizerStyle={!props.isSecondWindowOpen && { display: "none" }}
+                resizerClassName={
+                    !props.isSecondWindowOpen
+                        ? classnames(
+                              styles.Resizer,
+                              { [styles.vertical]: landScape },
+                              { [styles.horizontal]: !landScape }
+                          )
+                        : null
+                }
                 onDragFinished={(width: number) => {
                     if (width > 0) window.dispatchEvent(new Event("resize"));
                 }}
