@@ -323,7 +323,6 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
     }
     let selectedWitness = yield select(reducers.getSelectedTextWitness);
     let AlignmentData = yield select(reducers.getAlignment);
-    console.log(AlignmentData);
     yield call(loadTextAlignment, action, AlignmentData);
     yield call(loadVideoData, action, AlignmentData);
 
@@ -1035,7 +1034,6 @@ function* loadTextAlignment(action, AlignmentData) {
 // checks if the alignment should work
 
 function* checkConditionForAlignment(action) {
-    console.log(action);
     const selectedText = yield select(reducers.getSelectedText);
     const selectedText2 = yield select(reducers.getSelectedText2);
     let witness1;

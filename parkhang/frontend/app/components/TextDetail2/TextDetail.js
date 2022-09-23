@@ -3,7 +3,7 @@ import TextDetailHeading from "./TextDetailHeadingContainer";
 import SplitText from "lib/SplitText";
 import Loader from "react-loader";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
-import styles from "./TextDetail.css";
+import styles from "components/TextDetail/TextDetail.css";
 import { Box, Divider, Slide } from "@mui/material";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
@@ -103,7 +103,7 @@ function TextDetail(props) {
     return (
         <Box
             ref={ref}
-            className={styles.textDetail2}
+            className={styles.textDetail}
             sx={{
                 height: "100%",
                 flex: 1,
@@ -113,7 +113,7 @@ function TextDetail(props) {
         >
             <TextDetailHeading />
             <Divider />
-            <Loader loaded={!props.loading} />
+            <Loader loaded={!props.loading} zIndex={5} />
             <Box
                 style={{
                     display: "flex",
@@ -123,15 +123,13 @@ function TextDetail(props) {
                 }}
             >
                 <Box
-                    style={{ flex: 1 }}
                     className={classnames(
-                        styles.textContainer2,
+                        styles.textContainer,
                         utilStyles.flex
                     )}
                 >
-                    {!props.loading ? textComponents : <div></div>}
+                    {!props.loading ? textComponents : <div />}
                 </Box>
-
                 <Slide
                     direction="left"
                     in={props.showTableContent}

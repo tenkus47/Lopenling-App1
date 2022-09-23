@@ -5,7 +5,7 @@ import React, {
     useEffect,
     useMemo,
 } from "react";
-import styles from "./textDetailHeading.css";
+import styles from "./TextDetailHeading.css";
 import SelectVersion from "./SelectVersion";
 import _ from "lodash";
 import TextList from "./TextListContainer";
@@ -204,11 +204,10 @@ function TextDetailHeading(props: HeaderProps) {
                                     boxShadow: 3,
                                     overflowX: "hidden",
                                     boxShadow: 3,
+                                    display:
+                                        results.length === 0 ? "none" : "block",
                                 }}
                             >
-                                {results.length === 0 && (
-                                    <p>no such word present</p>
-                                )}
                                 {condition && results.length > 0 && (
                                     <SearchList
                                         handleListItemClick={

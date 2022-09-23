@@ -769,7 +769,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     this.props.splitText.getTextIndexOfPosition(
                         this.SearchSyncId
                     );
-                this.srcollToIndex(selectedTextIndex);
+                this.scrollToIndex(selectedTextIndex);
             }
         }
 

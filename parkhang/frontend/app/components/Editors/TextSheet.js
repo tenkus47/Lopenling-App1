@@ -32,12 +32,12 @@ function TextSheet(props) {
     }, []);
 
     return (
-        <div
+        <Box
             ref={editorRef}
-            style={{
+            sx={{
                 display: "flex",
                 flexDirection: "column",
-                backgroundColor: "#F8F9FA",
+                bgcolor: "primary.main",
                 width: "100%",
                 height: "100%",
                 overflow: "hidden",
@@ -96,7 +96,7 @@ function TextSheet(props) {
                 </ErrorBoundary>
             )}
             {/* </SplitPane> */}
-        </div>
+        </Box>
     );
 }
 

@@ -5,6 +5,7 @@
     flex-grow: 1;
     font-size: 24px;
     width: 100%;
+    padding: 20px;
 }
 
 .splitText * {
@@ -26,9 +27,15 @@
 .splitTextRow {
     display: flex;
     flex-direction: row;
-    padding-inline: 20px;
 }
 
+/* .splitTextRow:first-child {
+    padding-top: 20px;
+}
+
+.splitTextRow:last-child {
+    padding-bottom: 20px;
+} */
 
 .splitTextRow * {
     -ms-overflow-style: none;

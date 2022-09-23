@@ -8,9 +8,9 @@ import {
     CellMeasurerCache,
 } from "react-virtualized/dist/es/CellMeasurer";
 import "react-virtualized/styles.css";
-import Text2 from "./Text2";
+import Text from "./Text";
 import SplitText from "lib/SplitText";
-import styles from "./SplitText.css";
+import styles from "components/TextDetail/SplitText.css";
 import _, { split } from "lodash";
 import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
@@ -774,7 +774,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
         return (
             <div
-                className={styles.splitText2}
+                className={styles.splitText}
                 ref={(div) => (this.splitText = div)}
                 key={key}
                 style={{
@@ -910,7 +910,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             );
         }
 
-        let newStyle = { ...style, height: style.height + 10 };
+        let newStyle = {
+            ...style,
+            height: style.height + 10,
+        };
         return (
             <CellMeasurer
                 columnIndex={0}
@@ -927,7 +930,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     className={styles.splitTextRow}
                 >
                     <div className={styles.splitTextRowContent}>
-                        <Text2
+                        <Text
                             segmentedText={props.splitText.texts[index]}
                             row={index}
                             selectedSegmentId={props.selectedSegmentId}

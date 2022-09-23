@@ -909,28 +909,34 @@ input[type='range']::-webkit-slider-thumb {
     font-weight: 600;
 
 }
-.TextDetail---textDetail2 {
-    /* background-color: white; */
+.TextDetail---textDetail {
+    /* background-color: var(--text-bg); */
     position: relative;
     width: 100%;
     /* color: var(--text-color); */
-    -webkit-transition: height 0.3s linear;
-    transition: height 0.3s linear;
-    overflow: hidden;
+    -webkit-transition: height 0.4s linear;
+    transition: height 0.4s linear;
+    -webkit-box-shadow: 1px 1px 10px rgba(0, 0, 0, .1),
+        inset -1px -1px 10px rgba(0, 0, 0, .1);
+            box-shadow: 1px 1px 10px rgba(0, 0, 0, .1),
+        inset -1px -1px 10px rgba(0, 0, 0, .1);
 }
-.TextDetail---textDetail2 ::-moz-selection {
+.TextDetail---textDetail ::-moz-selection {
     color: black;
-    background-color: #ccc;
+    background-color: #ccc
 }
-.TextDetail---textDetail2 ::selection {
+.TextDetail---textDetail ::selection {
     color: black;
-    background-color: #ccc;
+    background-color: #ccc
 }
-.TextDetail---textContainer2 {
+.TextDetail---textContainer {
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
     border-radius: 10px;
+}
+.TextDetail---tableContent {
+    padding-inline: 20px;
 }
 .loader {
     position: absolute;
@@ -1007,13 +1013,15 @@ input[type='range']::-webkit-slider-thumb {
     unicode-range: U+0F00-0FFF;
 }
 
-.Text2---text {
+.Text---text {
     font-size: 24px;
     line-height: 1.8;
-    padding: 0px 20px;
+    padding: 0 20px;
+    font-family: "Tibetan",
+        "Tsumachu",
+        "Dutsa";
     letter-spacing: 0.04em;
-    /* background-color: var(--text-bg); */
-    margin: 0px;
+    margin: 0;
     min-width: 0;
     width: 100%;
     display: -webkit-box;
@@ -1021,16 +1029,24 @@ input[type='range']::-webkit-slider-thumb {
     display: flex;
     -ms-flex-wrap: wrap;
         flex-wrap: wrap;
+    /* background-color: var(--text-bg); */
+
 }
 
-.Text2---textFirstRow {
-    margin-top: 0px;
+.Text---syncIdClass {
+    font-weight: 900;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.Text---textFirstRow {
+    padding-block: 5px;
     border-top: 15px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
 
-.Text2---textLine {
+.Text---textLine {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1039,17 +1055,19 @@ input[type='range']::-webkit-slider-thumb {
     margin: 0;
     padding: 0;
     white-space: pre;
+    scrollbar-color: red;
 }
 
-.Text2---textline>span {
+.Text---textline>span {
     max-height: 4ch;
 }
 
-.Text2---limitWidth.Text2---textFirstRow {
+.Text---limitWidth.Text---textFirstRow {
     margin-top: 20px;
 }
 
-.Text2---textContainer {
+.Text---textContainer {
+    /* background-color: white; */
     overflow: auto;
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
@@ -1066,21 +1084,27 @@ input[type='range']::-webkit-slider-thumb {
     position: relative;
 }
 
-.Text2---limitWidth {
+.Text---limitWidth {
     max-width: 600px;
 }
 
-.Text2---limitWidth.Text2---text {
+.Text---limitWidth.Text---text {
     margin-left: auto;
     margin-right: auto;
 }
 
-.Text2---annotation {
+.Text---annotation {
     color: #0366bc;
     cursor: pointer;
 }
 
-.Text2---removedByAnnotation {
+.Text---selectedAnnotation {
+    background-color: hsl(0, 0%, 93%);
+    color: hsl(0, 0%, 19%);
+
+}
+
+.Text---removedByAnnotation {
   color: #aaa;
   cursor: pointer;
     -webkit-text-decoration: line-through red;
@@ -1088,29 +1112,29 @@ input[type='range']::-webkit-slider-thumb {
 
 }
 
-.Text2---insertion {
+.Text---insertion {
   color: #aaa;
   cursor: pointer;
     -webkit-text-decoration: line-through green;
             text-decoration: line-through green;
 }
 
-.Text2---highlight {
+.Text---highlight {
     background-color: yellow;
 }
 
-.Text2---activeHighlight {
+.Text---activeHighlight {
     background-color: orange;
 }
 
-.Text2---lineBreak {
+.Text---lineBreak {
     color: #aaa;
     cursor: pointer;
     margin-left: 5px;
     font-size: 0.8em;
 }
 
-.Text2---pageBreak {
+.Text---pageBreak {
     color: #aaa;
     cursor: pointer;
     margin-left: 5px;
@@ -1118,27 +1142,25 @@ input[type='range']::-webkit-slider-thumb {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-
 }
 
-.Text2---pageBreak>svg {
+.Text---pageBreak>svg {
     width: 0.8em;
     pointer-events: none;
     max-height: 4ch;
 }
 
-.Text2---syncIdClass {
-    font-weight: 900;
-    font-size: 10px;
-    cursor: pointer;
-}
-
-.Text2---selectedRangelight {
+.Text---selectedRangelight {
     background-color: #eee;
 }
 
-.Text2---selectedRangeDark {
+.Text---selectedRangeDark {
     background-color: black;
+    color: #eee;
+}
+
+.Text---selectedImage {
+    font-weight: bolder;
 }
 @font-face {
     font-family: "Tibetan";
@@ -1193,6 +1215,7 @@ input[type='range']::-webkit-slider-thumb {
     padding-top: 10px;
     border-radius: 10px;
     z-index: 100;
+    cursor: pointer;
 }
 
 .SplitText---annotationContent {
@@ -1201,7 +1224,7 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 .SplitText---subTitle {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
 }
 
@@ -1212,10 +1235,14 @@ input[type='range']::-webkit-slider-thumb {
 .SplitText---sectionHeading {
     font-weight: normal;
     font-size: 15px;
+    background: #eee;
+    -webkit-box-shadow: 0px 0px 3px #777;
+            box-shadow: 0px 0px 3px #777;
+
 }
 
 .SplitText---text {
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .SplitText---padding {
@@ -1297,13 +1324,13 @@ input[type='range']::-webkit-slider-thumb {
 
 .SplitText---anonymousMessage {
     margin-top: -8px;
-    font-size: 16px;
-    line-height: 1.3;
-    color: black;
-    letter-spacing: 1px;
+    font-size: 12px;
+    line-height: 0.8;
+    background: rgba(175, 175, 175, .9);
+    color: #fff;
+    letter-spacing: 3px;
     font-weight: bold;
     height: 24px;
-    text-align: center;
 }
 
 .SplitText---anonymousMessage a:link,
@@ -1334,24 +1361,25 @@ input[type='range']::-webkit-slider-thumb {
 
 blockquote {
     font-size: 16px;
+    margin: 10px;
 }
 
-.SplitText---splitText2 {
+.SplitText---splitText {
     /* background-color: white; */
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
-    min-width: 0;
-    width: 100%;
     font-size: 24px;
+    width: 100%;
+    padding: 20px;
 }
 
-.SplitText---splitText2 * {
+.SplitText---splitText * {
     scroll-behavior: smooth;
-    overflow: hidden;
+
 }
 
-.SplitText---splitText2 *:focus {
+.SplitText---splitText *:focus {
     outline: none;
 }
 
@@ -1378,6 +1406,26 @@ blockquote {
             flex-direction: row;
 }
 
+/* .splitTextRow:first-child {
+    padding-top: 20px;
+}
+
+.splitTextRow:last-child {
+    padding-bottom: 20px;
+} */
+
+.SplitText---splitTextRow * {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.SplitText---splitTextRow *::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
 .SplitText---splitTextRow .SplitText---text {
     max-width: 100%;
 }
@@ -1399,9 +1447,14 @@ blockquote {
         flex-shrink: 0;
 }
 
+.SplitText---image {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
 .SplitText---pechaImage img {
-    -o-object-fit: contain;
-       object-fit: contain;
+    -o-object-fit: cover;
+       object-fit: cover;
 }
 
 .SplitText---controlsPlaceholder {
@@ -1417,6 +1470,10 @@ blockquote {
     margin-right: 0px;
 }
 
+.SplitText---hide {
+    display: none;
+}
+
 .SplitText---pageNumber {
     position: absolute;
     right: 20px;
@@ -1426,12 +1483,29 @@ blockquote {
 }
 
 .ReactVirtualized__Grid__innerScrollContainer {
-
+    overflow: visible !important;
     margin-bottom: 300px;
 }
 
 span {
     position: relative
+}
+
+.SplitText---image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    -o-object-fit: contain;
+       object-fit: contain;
+    opacity: 1;
+    -webkit-transition: opacity .5s;
+    transition: opacity .5s;
+}
+
+.SplitText---image-loading {
+    opacity: 0;
+    -webkit-transition: none;
+    transition: none;
 }
 @font-face {
     font-family: "Tibetan";
@@ -2140,10 +2214,7 @@ blockquote {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    margin: 0 auto;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content;
+    width: 134px;
     background-color: rgba(175, 175, 175, .9);
     border: 1px solid darkgray;
 }
@@ -2181,44 +2252,7 @@ blockquote {
     fill: #fff;
     cursor: pointer;
 }
-.TextDetail---textDetail {
-    /* background-color: var(--text-bg); */
-    position: relative;
-    width: 100%;
-    /* color: var(--text-color); */
-    -webkit-transition: height 0.4s linear;
-    transition: height 0.4s linear;
-    -webkit-box-shadow: 1px 1px 10px rgba(0, 0, 0, .1),
-        inset -1px -1px 10px rgba(0, 0, 0, .1);
-            box-shadow: 1px 1px 10px rgba(0, 0, 0, .1),
-        inset -1px -1px 10px rgba(0, 0, 0, .1);
-}
-.TextDetail---textDetail ::-moz-selection {
-    color: black;
-    background-color: #ccc
-}
-.TextDetail---textDetail ::selection {
-    color: black;
-    background-color: #ccc
-}
-.TextDetail---textContainer {
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-    border-radius: 10px;
-}
-.TextDetail---tableContent {
-    padding-inline: 20px;
-}
-.loader {
-    position: absolute;
-    left: 50%;
-    top: 20%;
-    padding: 50px;
-    border-radius: 5px;
-    background-color: transparent;
-}
-.textDetailHeading---button_group_menu svg {
+.TextDetailHeading---button_group_menu svg {
         margin: 0 !important;
     }
 .SelectVersion---selectVersion {
@@ -2284,517 +2318,6 @@ blockquote {
     left: 0;
     right: 0;
 
-}
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src: local("arial");
-}
-
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src:
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
-    unicode-range: U+0F00-0FFF;
-}
-
-@font-face {
-    font-family: "Tsumachu";
-    font-style: normal;
-    font-weight: 400;
-    src: url("/static/fonts/tsumachu.woff2") format("woff2");
-    unicode-range: U+0F00-0FFF;
-}
-
-.Text---text {
-    font-size: 24px;
-    line-height: 1.8;
-    padding: 0 20px;
-    font-family: "Tibetan",
-        "Tsumachu",
-        "Dutsa";
-    letter-spacing: 0.04em;
-    margin: 0;
-    min-width: 0;
-    width: 100%;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-    /* background-color: var(--text-bg); */
-
-}
-
-.Text---syncIdClass {
-    font-weight: 900;
-    font-size: 10px;
-    cursor: pointer;
-}
-
-.Text---textFirstRow {
-    padding-block: 5px;
-    border-top: 15px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-}
-
-.Text---textLine {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-    margin: 0;
-    padding: 0;
-    white-space: pre;
-    scrollbar-color: red;
-}
-
-.Text---textline>span {
-    max-height: 4ch;
-}
-
-.Text---limitWidth.Text---textFirstRow {
-    margin-top: 20px;
-}
-
-.Text---textContainer {
-    /* background-color: white; */
-    overflow: auto;
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-    padding-left: 0;
-    min-width: 200px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    position: relative;
-}
-
-.Text---limitWidth {
-    max-width: 600px;
-}
-
-.Text---limitWidth.Text---text {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.Text---annotation {
-    color: #0366bc;
-    cursor: pointer;
-}
-
-.Text---selectedAnnotation {
-    background-color: hsl(0, 0%, 93%);
-    color: hsl(0, 0%, 19%);
-
-}
-
-.Text---removedByAnnotation {
-  color: #aaa;
-  cursor: pointer;
-    -webkit-text-decoration: line-through red;
-            text-decoration: line-through red;
-
-}
-
-.Text---insertion {
-  color: #aaa;
-  cursor: pointer;
-    -webkit-text-decoration: line-through green;
-            text-decoration: line-through green;
-}
-
-.Text---highlight {
-    background-color: yellow;
-}
-
-.Text---activeHighlight {
-    background-color: orange;
-}
-
-.Text---lineBreak {
-    color: #aaa;
-    cursor: pointer;
-    margin-left: 5px;
-    font-size: 0.8em;
-}
-
-.Text---pageBreak {
-    color: #aaa;
-    cursor: pointer;
-    margin-left: 5px;
-    font-size: 0.8em;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-
-.Text---pageBreak>svg {
-    width: 0.8em;
-    pointer-events: none;
-    max-height: 4ch;
-}
-
-.Text---selectedRangelight {
-    background-color: #eee;
-}
-
-.Text---selectedRangeDark {
-    background-color: black;
-    color: #eee;
-}
-
-.Text---selectedImage {
-    font-weight: bolder;
-}
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src: local("arial");
-}
-
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src:
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
-    unicode-range: U+0F00-0FFF;
-}
-
-@font-face {
-    font-family: "Tsumachu";
-    font-style: normal;
-    font-weight: 400;
-    src: url("/static/fonts/tsumachu.woff2") format("woff2");
-    unicode-range: U+0F00-0FFF;
-}
-
-.SplitText---annotationControls {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    /* background-color: var(--controlsBackground);
-     */
-    background-color: transparent;
-    padding: 0px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-    -ms-flex-negative: 0;
-        flex-shrink: 0;
-    -ms-flex-item-align: start;
-        align-self: flex-start;
-    width: 264px;
-    top: 0;
-    left: 0;
-    right: 0;
-    position: absolute;
-    padding-top: 10px;
-    border-radius: 10px;
-    z-index: 100;
-    cursor: pointer;
-}
-
-.SplitText---annotationContent {
-    padding: 0 5px 5px 5px;
-
-}
-
-.SplitText---subTitle {
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.SplitText---title {
-    font-size: 12px;
-}
-
-.SplitText---sectionHeading {
-    font-weight: normal;
-    font-size: 15px;
-    background: #eee;
-    -webkit-box-shadow: 0px 0px 3px #777;
-            box-shadow: 0px 0px 3px #777;
-
-}
-
-.SplitText---text {
-    font-size: 15px;
-}
-
-.SplitText---padding {
-    padding: 5px;
-}
-
-.SplitText---arrowTop {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
-    border-bottom: 10px solid #eee;
-}
-
-.SplitText---arrowLeft {
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: - 10px;
-    border-top: 10px solid transparent;
-    border-right: 10px solid #eee;
-    border-bottom: 10px solid transparent;
-}
-
-.SplitText---arrowRight {
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: - 10px;
-    border-top: 10px solid transparent;
-    border-left: 10px solid #eee;
-    border-bottom: 10px solid transparent;
-}
-
-.SplitText---inline {
-    z-index: 1;
-}
-
-.SplitText---inline .SplitText---arrow {
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: -20px;
-    border-top: 20px solid transparent;
-    border-right: 20px solid #eee;
-    border-bottom: 20px solid transparent;
-}
-
-.SplitText---inline .SplitText---arrowDs {
-    position: absolute;
-    z-index: -1;
-    width: 0;
-    height: 0;
-    left: -20px;
-    border-top: 20px solid transparent;
-    border-right: 20px solid #bbb;
-    border-bottom: 20px solid transparent;
-}
-
-.SplitText---annotationContent>h3 {
-    font-family: "Overpass", "arial", "sans-serif";
-    font-size: 18px;
-    width: 100%;
-    padding: 0 0 0px 0;
-    margin: 5px 0 0px 0;
-    font-weight: normal;
-    color: #444;
-}
-
-.SplitText---nothingSelected {
-    position: relative;
-    top: 25%;
-    text-align: center;
-    width: 100%;
-    font-size: 24px;
-    color: #888;
-}
-
-.SplitText---anonymousMessage {
-    margin-top: -8px;
-    font-size: 12px;
-    line-height: 0.8;
-    background: rgba(175, 175, 175, .9);
-    color: #fff;
-    letter-spacing: 3px;
-    font-weight: bold;
-    height: 24px;
-}
-
-.SplitText---anonymousMessage a:link,
-.SplitText---anonymousMessage a:visited {
-    color: red;
-    font-weight: bold;
-}
-
-.SplitText---noNotes {
-    color: #aaa;
-    font-style: italic;
-    font-size: 18px;
-}
-
-.SplitText---breakButtons {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    /*margin-bottom: 20px;*/
-}
-
-.SplitText---breakButtons>button {
-    margin-top: 5px;
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-}
-
-blockquote {
-    font-size: 16px;
-    margin: 10px;
-}
-
-.SplitText---splitText {
-    /* background-color: white; */
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-    font-size: 24px;
-    width: 100%;
-}
-
-.SplitText---splitText * {
-    scroll-behavior: smooth;
-
-}
-
-.SplitText---splitText *:focus {
-    outline: none;
-}
-
-.SplitText---splitTextRowContent {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    -webkit-box-flex: 1;
-        -ms-flex: 1;
-            flex: 1;
-}
-
-.SplitText---splitTextRow {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-            flex-direction: row;
-    padding-inline: 20px;
-}
-
-.SplitText---splitTextRow * {
-    -ms-overflow-style: none;
-    /* Internet Explorer 10+ */
-    scrollbar-width: none;
-    /* Firefox */
-}
-
-.SplitText---splitTextRow *::-webkit-scrollbar {
-    display: none;
-    /* Safari and Chrome */
-}
-
-.SplitText---splitTextRow .SplitText---text {
-    max-width: 100%;
-}
-
-.SplitText---pechaImage {
-    background-color: #eee;
-    height: 260px;
-    text-align: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    -webkit-box-flex: 0;
-        -ms-flex-positive: 0;
-            flex-grow: 0;
-    -ms-flex-negative: 0;
-        flex-shrink: 0;
-}
-
-.SplitText---image {
-    border: 1px solid black;
-    border-radius: 5px;
-}
-
-.SplitText---pechaImage img {
-    -o-object-fit: cover;
-       object-fit: cover;
-}
-
-.SplitText---controlsPlaceholder {
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-    -ms-flex-negative: 0;
-        flex-shrink: 0;
-    -ms-flex-preferred-size: 264px;
-        flex-basis: 264px;
-    padding: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
-}
-
-.SplitText---hide {
-    display: none;
-}
-
-.SplitText---pageNumber {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    font-size: 42px;
-    color: #444;
-}
-
-.ReactVirtualized__Grid__innerScrollContainer {
-    overflow: visible !important;
-    margin-bottom: 300px;
-}
-
-span {
-    position: relative
-}
-
-.SplitText---image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    -o-object-fit: contain;
-       object-fit: contain;
-    opacity: 1;
-    -webkit-transition: opacity .5s;
-    transition: opacity .5s;
-}
-
-.SplitText---image-loading {
-    opacity: 0;
-    -webkit-transition: none;
-    transition: none;
 }
 
 /*# sourceMappingURL=2.styles-dev.css.map*/

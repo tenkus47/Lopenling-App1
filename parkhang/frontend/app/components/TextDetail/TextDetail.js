@@ -191,6 +191,7 @@ class TextDetail extends React.Component<Props> {
                     flex: 1,
                     bgcolor: "navbar.main",
                     color: "texts.main",
+                    overflow: "hidden",
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -209,11 +210,9 @@ class TextDetail extends React.Component<Props> {
                         height: "100%",
                         width: "100%",
                         position: "relative",
-                        paddingBlock: 20,
                     }}
                 >
                     <Box
-                        style={{ flex: 1 }}
                         className={classnames(
                             styles.textContainer,
                             utilStyles.flex
