@@ -191,7 +191,6 @@ class TextDetail extends React.Component<Props> {
                     flex: 1,
                     bgcolor: "navbar.main",
                     color: "texts.main",
-                    overflow: "hidden",
                 }}
                 className={classnames(
                     styles.textDetail,

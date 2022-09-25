@@ -1214,12 +1214,19 @@ input[type='range']::-webkit-slider-thumb {
     position: absolute;
     padding-top: 10px;
     border-radius: 10px;
-    z-index: 100;
     cursor: pointer;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
 }
 
 .SplitText---annotationContent {
-    padding: 0 5px 5px 5px;
+    /* padding: 0 var(--paddingWidth) var(--paddingWidth) var(--paddingWidth);
+     */
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    max-width: 400px;
 
 }
 
@@ -1371,7 +1378,6 @@ blockquote {
             flex-grow: 1;
     font-size: 24px;
     width: 100%;
-    padding: 20px;
 }
 
 .SplitText---splitText * {
@@ -1406,13 +1412,9 @@ blockquote {
             flex-direction: row;
 }
 
-/* .splitTextRow:first-child {
-    padding-top: 20px;
+.SplitText---splitTextRow:first-child {
+    padding-top: 30px;
 }
-
-.splitTextRow:last-child {
-    padding-bottom: 20px;
-} */
 
 .SplitText---splitTextRow * {
     -ms-overflow-style: none;
@@ -1756,12 +1758,19 @@ span {
     position: absolute;
     padding-top: 10px;
     border-radius: 10px;
-    z-index: 100;
     cursor: pointer;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
 }
 
 .AnnotationControls---annotationContent {
-    padding: 0 5px 5px 5px;
+    /* padding: 0 var(--paddingWidth) var(--paddingWidth) var(--paddingWidth);
+     */
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    max-width: 400px;
 
 }
 

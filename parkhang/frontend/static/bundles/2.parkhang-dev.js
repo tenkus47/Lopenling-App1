@@ -2186,30 +2186,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CONTROLS_MARGIN_LEFT", function() { return CONTROLS_MARGIN_LEFT; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _AnnotationDetail__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AnnotationDetail */ "./app/components/TextDetail/AnnotationDetail.js");
-/* harmony import */ var _AnnotationDetailEdit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AnnotationDetailEdit */ "./app/components/TextDetail/AnnotationDetailEdit.js");
-/* harmony import */ var _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AnnotationControls.css */ "./app/components/TextDetail/AnnotationControls.css");
-/* harmony import */ var _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var css_colour_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! css/colour.css */ "./app/css/colour.css");
-/* harmony import */ var css_colour_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(css_colour_css__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var lib_User__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lib/User */ "./app/lib/User.js");
-/* harmony import */ var lib_Witness__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lib/Witness */ "./app/lib/Witness.js");
-/* harmony import */ var lib_Annotation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lib/Annotation */ "./app/lib/Annotation.js");
-/* harmony import */ var _AnnotationControlsHeading__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./AnnotationControlsHeading */ "./app/components/TextDetail/AnnotationControlsHeading.js");
-/* harmony import */ var _NoteEditor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./NoteEditor */ "./app/components/TextDetail/NoteEditor.js");
-/* harmony import */ var _QuestionView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./QuestionView */ "./app/components/TextDetail/QuestionView.js");
-/* harmony import */ var _QuestionEditor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./QuestionEditor */ "./app/components/TextDetail/QuestionEditor.js");
-/* harmony import */ var _QuestionsLoading__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./QuestionsLoading */ "./app/components/TextDetail/QuestionsLoading.js");
-/* harmony import */ var react_intl__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react-intl */ "./node_modules/react-intl/lib/index.js");
-/* harmony import */ var _Note__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./Note */ "./app/components/TextDetail/Note.js");
-/* harmony import */ var components_UI_Button__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! components/UI/Button */ "./app/components/UI/Button.js");
-/* harmony import */ var images_page_break_icon_svg__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! images/page_break_icon.svg */ "./app/images/page_break_icon.svg");
-/* harmony import */ var react_virtualized_dist_es_List__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! react-virtualized/dist/es/List */ "./node_modules/react-virtualized/dist/es/List/index.js");
-/* harmony import */ var _AnnotationControlsHeader__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./AnnotationControlsHeader */ "./app/components/TextDetail/AnnotationControlsHeader.js");
-/* harmony import */ var lib_Question__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! lib/Question */ "./app/lib/Question.js");
-/* harmony import */ var app_constants__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! app_constants */ "./app/app_constants/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _AnnotationDetail__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AnnotationDetail */ "./app/components/TextDetail/AnnotationDetail.js");
+/* harmony import */ var _AnnotationDetailEdit__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AnnotationDetailEdit */ "./app/components/TextDetail/AnnotationDetailEdit.js");
+/* harmony import */ var _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./AnnotationControls.css */ "./app/components/TextDetail/AnnotationControls.css");
+/* harmony import */ var _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var css_colour_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! css/colour.css */ "./app/css/colour.css");
+/* harmony import */ var css_colour_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(css_colour_css__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var lib_User__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lib/User */ "./app/lib/User.js");
+/* harmony import */ var lib_Witness__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lib/Witness */ "./app/lib/Witness.js");
+/* harmony import */ var lib_Annotation__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! lib/Annotation */ "./app/lib/Annotation.js");
+/* harmony import */ var _AnnotationControlsHeading__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./AnnotationControlsHeading */ "./app/components/TextDetail/AnnotationControlsHeading.js");
+/* harmony import */ var _NoteEditor__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./NoteEditor */ "./app/components/TextDetail/NoteEditor.js");
+/* harmony import */ var _QuestionView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./QuestionView */ "./app/components/TextDetail/QuestionView.js");
+/* harmony import */ var _QuestionEditor__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./QuestionEditor */ "./app/components/TextDetail/QuestionEditor.js");
+/* harmony import */ var _QuestionsLoading__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./QuestionsLoading */ "./app/components/TextDetail/QuestionsLoading.js");
+/* harmony import */ var react_intl__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react-intl */ "./node_modules/react-intl/lib/index.js");
+/* harmony import */ var _Note__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./Note */ "./app/components/TextDetail/Note.js");
+/* harmony import */ var components_UI_Button__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! components/UI/Button */ "./app/components/UI/Button.js");
+/* harmony import */ var images_page_break_icon_svg__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! images/page_break_icon.svg */ "./app/images/page_break_icon.svg");
+/* harmony import */ var react_virtualized_dist_es_List__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! react-virtualized/dist/es/List */ "./node_modules/react-virtualized/dist/es/List/index.js");
+/* harmony import */ var _AnnotationControlsHeader__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./AnnotationControlsHeader */ "./app/components/TextDetail/AnnotationControlsHeader.js");
+/* harmony import */ var lib_Question__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! lib/Question */ "./app/lib/Question.js");
+/* harmony import */ var app_constants__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! app_constants */ "./app/app_constants/index.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/index.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2231,6 +2234,8 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
 
 
 
@@ -2300,7 +2305,6 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
         return;
       }
 
-      var headerWidth = 60;
       var controls = this.controls;
       var height = controls.offsetHeight;
       var width = controls.offsetWidth;
@@ -2350,13 +2354,14 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
       var anchorPoint = anchorPoints.bottom;
       var moveToSide = false;
       var moveRight = 0;
+      console.log(bottomGap, offScreen, height);
 
       if (!offScreen && bottomGap < height) {
         moveToSide = true;
       }
 
       if (moveToSide) {
-        arrow.className = _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.arrowLeft;
+        arrow.className = _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.arrowLeft;
 
         if (selectedLeft - width - arrow.offsetWidth < 0) {
           anchorPoint = anchorPoints.right;
@@ -2380,7 +2385,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
         var arrowLeft = 0;
 
         if (this.arrow) {
-          this.arrow.className = _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.arrowTop;
+          this.arrow.className = _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.arrowTop;
           arrowLeft = width / 2 - this.arrow.offsetWidth / 2 - moveRight;
           if (arrowLeft < 0) arrowLeft = 0;
           this.arrow.style.left = arrowLeft + "px";
@@ -2389,13 +2394,14 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
         } // controls.style.top = top + measurements.height + arrowHeight + "px";
 
 
-        controls.style.top = top - measurements.height - 10 + "px"; // controls.style.left =
-        //     selectedLeft + selectedWidth / 2 - width / 2 + moveRight + "px";
+        controls.style.top = top - measurements.height + 20 + "px"; // 20 added due to 30 px padding on splitTextRow first child
+        // controls.style.left =
+        // selectedLeft + selectedWidth / 2 - width / 2 + moveRight + "px";
 
         controls.style.left = measurements.left + "px";
       } else if (moveToSide) {
         console.log("moveToSide");
-        arrow.className = _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.arrowRight;
+        arrow.className = _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.arrowRight;
         var _arrowHeight = arrow.offsetHeight;
         var controlsTop = measurements.top + measurements.height / 2 - _arrowHeight / 2;
 
@@ -2409,7 +2415,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
           controls.style.left = selectedLeft - width - arrow.offsetWidth + "px";
         } else {
           // right-side of selection
-          arrow.className = _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.arrowLeft;
+          arrow.className = _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.arrowLeft;
           arrow.style.left = -arrow.offsetWidth + "px";
           controls.style.left = selectedLeft + selectedWidth + arrow.offsetWidth + "px"; // controls.style.right = 0 + "px";
         }
@@ -2417,6 +2423,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
         arrow.style.top = measurements.top - controlsTop + measurements.height / 2 - _arrowHeight / 2 + "px";
         controls.style.top = controlsTop + "px";
       } else {
+        console.log("last");
         controls.style.top = top + "px";
       }
     }
@@ -2504,10 +2511,10 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
       var temporaryAnnotations = [];
       var anonymousUserMessage = null;
       var nothingSelected = null;
-      var isLoggedIn = props.user.isLoggedIn || app_constants__WEBPACK_IMPORTED_MODULE_21__["FAKE_LOGIN"];
+      var isLoggedIn = props.user.isLoggedIn || app_constants__WEBPACK_IMPORTED_MODULE_22__["FAKE_LOGIN"];
       var breakSelected = false;
 
-      if (props.activeAnnotation && (props.activeAnnotation.isType(lib_Annotation__WEBPACK_IMPORTED_MODULE_8__["ANNOTATION_TYPES"].pageBreak) || props.activeAnnotation.isType(lib_Annotation__WEBPACK_IMPORTED_MODULE_8__["ANNOTATION_TYPES"].lineBreak))) {
+      if (props.activeAnnotation && (props.activeAnnotation.isType(lib_Annotation__WEBPACK_IMPORTED_MODULE_9__["ANNOTATION_TYPES"].pageBreak) || props.activeAnnotation.isType(lib_Annotation__WEBPACK_IMPORTED_MODULE_9__["ANNOTATION_TYPES"].lineBreak))) {
         breakSelected = true;
       } // the selected word/sentence is props.anotationsData
 
@@ -2525,7 +2532,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
           }
 
           if (isEditing) {
-            var annotationDetail = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_AnnotationDetailEdit__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            var annotationDetail = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_AnnotationDetailEdit__WEBPACK_IMPORTED_MODULE_4__["default"], {
               annotationData: annotationData,
               key: annotationData.annotation.uniqueId,
               isActive: isActive,
@@ -2541,7 +2548,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
             });
             temporaryAnnotations.push(annotationDetail);
           } else {
-            var _annotationDetail = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_AnnotationDetail__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            var _annotationDetail = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_AnnotationDetail__WEBPACK_IMPORTED_MODULE_3__["default"], {
               isWorkingSection: false,
               fontSize: props.fontSize,
               annotationData: annotationData,
@@ -2565,21 +2572,21 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
           }
         }, this);
 
-        if (!props.user.isLoggedIn === !app_constants__WEBPACK_IMPORTED_MODULE_21__["FAKE_LOGIN"]) {
+        if (!props.user.isLoggedIn === !app_constants__WEBPACK_IMPORTED_MODULE_22__["FAKE_LOGIN"]) {
           // NOTE: FormattedMessage cannot take a child when using
           // the values option, so need to wrap it in a div
           anonymousUserMessage = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
-            className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.anonymousMessage,
+            className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.anonymousMessage,
             style: {
               position: "relative",
               width: "fit-content",
               border: "1px solid gray",
               paddingInline: 10
             }
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react_intl__WEBPACK_IMPORTED_MODULE_14__["FormattedMessage"], {
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react_intl__WEBPACK_IMPORTED_MODULE_15__["FormattedMessage"], {
             id: "annotations.loginMessage",
             values: {
-              loginLink: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react_intl__WEBPACK_IMPORTED_MODULE_14__["FormattedMessage"], {
+              loginLink: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react_intl__WEBPACK_IMPORTED_MODULE_15__["FormattedMessage"], {
                 id: "annotations.loginLink"
               }))
             }
@@ -2587,7 +2594,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
         }
       } else {
         nothingSelected = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
-          className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.nothingSelected
+          className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.nothingSelected
         }, "Nothing Selected");
       }
 
@@ -2602,20 +2609,20 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
 
         if (this.props.availableAnnotations) {
           pageBreaks = this.props.availableAnnotations.filter(function (annotation) {
-            return annotation.type === lib_Annotation__WEBPACK_IMPORTED_MODULE_8__["ANNOTATION_TYPES"].pageBreak && annotation.creatorWitness.id === _this2.props.selectedWitness.id;
+            return annotation.type === lib_Annotation__WEBPACK_IMPORTED_MODULE_9__["ANNOTATION_TYPES"].pageBreak && annotation.creatorWitness.id === _this2.props.selectedWitness.id;
           });
           lineBreaks = this.props.availableAnnotations.filter(function (annotation) {
-            return annotation.type === lib_Annotation__WEBPACK_IMPORTED_MODULE_8__["ANNOTATION_TYPES"].lineBreak && annotation.creatorWitness.id === _this2.props.selectedWitness.id;
+            return annotation.type === lib_Annotation__WEBPACK_IMPORTED_MODULE_9__["ANNOTATION_TYPES"].lineBreak && annotation.creatorWitness.id === _this2.props.selectedWitness.id;
           });
         }
 
         if (pageBreaks.length > 0) {
           pageBreaksButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
-            className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.breakButtons
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](components_UI_Button__WEBPACK_IMPORTED_MODULE_16__["default"], {
+            className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.breakButtons
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](components_UI_Button__WEBPACK_IMPORTED_MODULE_17__["default"], {
             title: "Page Break",
             accessoryType: "DELETE",
-            icon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](images_page_break_icon_svg__WEBPACK_IMPORTED_MODULE_17__["default"], {
+            icon: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](images_page_break_icon_svg__WEBPACK_IMPORTED_MODULE_18__["default"], {
               width: 20,
               height: 20
             }),
@@ -2623,15 +2630,15 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
               _this2.props.deleteAnnotation(pageBreaks[0]);
             },
             isActive: true,
-            backgroundColor: css_colour_css__WEBPACK_IMPORTED_MODULE_5___default.a.activeButton
+            backgroundColor: css_colour_css__WEBPACK_IMPORTED_MODULE_6___default.a.activeButton
           }));
           allowPageBreak = false;
         }
 
         if (lineBreaks.length > 0) {
           lineBreaksButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
-            className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.breakButtons
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](components_UI_Button__WEBPACK_IMPORTED_MODULE_16__["default"], {
+            className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.breakButtons
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](components_UI_Button__WEBPACK_IMPORTED_MODULE_17__["default"], {
             title: "Line Break",
             accessoryType: "DELETE",
             icon: "\xB6",
@@ -2639,7 +2646,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
               _this2.props.deleteAnnotation(lineBreaks[0]);
             },
             isActive: true,
-            backgroundColor: css_colour_css__WEBPACK_IMPORTED_MODULE_5___default.a.activeButton
+            backgroundColor: css_colour_css__WEBPACK_IMPORTED_MODULE_6___default.a.activeButton
           }));
           allowLineBreak = false;
         } // Can't have line break and page break in same place.
@@ -2660,7 +2667,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
             tempNoteIds[note.basedOn.uniqueId] = note.uniqueId;
           }
 
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_NoteEditor__WEBPACK_IMPORTED_MODULE_10__["default"], {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_NoteEditor__WEBPACK_IMPORTED_MODULE_11__["default"], {
             note: note,
             key: key,
             saveNote: props.saveAnnotation,
@@ -2680,7 +2687,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
         });
         notes = validNotes.map(function (note) {
           var key = "NOTE_" + note.uniqueId;
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_Note__WEBPACK_IMPORTED_MODULE_15__["default"], {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_Note__WEBPACK_IMPORTED_MODULE_16__["default"], {
             note: note,
             key: key,
             "delete": _this2.props.deleteAnnotation,
@@ -2696,7 +2703,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
         tempQuestions = props.temporaryQuestions.map(function (question) {
           tempQuestionIds[question.uniqueId] = question.uniqueId;
           var key = "QUESTION_" + question.uniqueId;
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_QuestionEditor__WEBPACK_IMPORTED_MODULE_12__["default"], {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_QuestionEditor__WEBPACK_IMPORTED_MODULE_13__["default"], {
             question: question,
             questionQuote: props.questionQuote,
             defaultTitle: props.selectedWitness.text.name,
@@ -2733,7 +2740,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
 
         questionViews = questions.map(function (question) {
           var key = "QUESTION_" + question.annotationUniqueId;
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_QuestionView__WEBPACK_IMPORTED_MODULE_11__["default"], {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_QuestionView__WEBPACK_IMPORTED_MODULE_12__["default"], {
             question: question,
             key: "question_" + question.annotationUniqueId
           });
@@ -2744,31 +2751,34 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
 
       if (questionViews.length > 0) {
         questionHeading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("h3", {
-          className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.sectionHeading
+          className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.sectionHeading
         }, "Questions");
       }
 
       var questionsLoading = null;
 
       if (questionsAreLoading) {
-        questionsLoading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_QuestionsLoading__WEBPACK_IMPORTED_MODULE_13__["default"], null);
+        questionsLoading = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_QuestionsLoading__WEBPACK_IMPORTED_MODULE_14__["default"], null);
       }
 
       var allowQuestion = ((_props$questions = props.questions) === null || _props$questions === void 0 ? void 0 : _props$questions.length) === 0 && props.temporaryQuestions.length === 0;
-      var classes = [_AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.annotationControls];
+      var classes = [_AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.annotationControls];
 
       if (props.inline) {
-        classes.push(_AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.inline);
+        classes.push(_AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.inline);
       }
 
       var showHeader = true;
       if (anonymousUserMessage || breakSelected) showHeader = false;
+      var annotationBody = /*#__PURE__*/react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.createPortal( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
+        className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.annotationContent
+      }, anonymousUserMessage, nothingSelected, !breakSelected && temporaryAnnotations, !breakSelected && annotations, pageBreaksButton, lineBreaksButton, tempNotes, notes, questionHeading, tempQuestions, questionsLoading, questionViews), document.getElementById("annotation-portal"));
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
-        className: classnames__WEBPACK_IMPORTED_MODULE_1___default.a.apply(void 0, classes),
+        className: classnames__WEBPACK_IMPORTED_MODULE_2___default.a.apply(void 0, classes),
         ref: function ref(controls) {
           return _this2.controls = controls;
         }
-      }, showHeader && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_AnnotationControlsHeader__WEBPACK_IMPORTED_MODULE_19__["default"], {
+      }, showHeader && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"](_AnnotationControlsHeader__WEBPACK_IMPORTED_MODULE_20__["default"], {
         addPageBreak: allowPageBreak ? props.addPageBreak : null,
         addLineBreak: allowLineBreak ? props.addLineBreak : null,
         addNote: isLoggedIn && !tempNotes ? function () {
@@ -2781,8 +2791,8 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
           editBtn === null || editBtn === void 0 ? void 0 : editBtn.click();
         },
         userLoggedIn: isLoggedIn
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
-        className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_4___default.a.arrow,
+      }), annotationBody, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("div", {
+        className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_5___default.a.arrow,
         ref: function ref(div) {
           return _this2.arrow = div;
         }
@@ -5671,7 +5681,9 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
 
         var positionEnd = startPos + activeAnnotation.length;
         if (activeAnnotation.length > 0) positionEnd -= 1;
-        selectedTextIndex = props.splitText.getTextIndexOfPosition(positionEnd);
+        selectedTextIndex = // props.splitText.getTextIndexOfPosition(positionEnd);
+        props.splitText.getTextIndexOfPosition(startPos); //to position the control on start of selection
+
         splitTextRect = splitTextComponent.getBoundingClientRect();
       }
 
@@ -7301,8 +7313,7 @@ var TextDetail = /*#__PURE__*/function (_React$Component) {
           height: "100%",
           flex: 1,
           bgcolor: "navbar.main",
-          color: "texts.main",
-          overflow: "hidden"
+          color: "texts.main"
         },
         className: classnames__WEBPACK_IMPORTED_MODULE_1___default()(_TextDetail_css__WEBPACK_IMPORTED_MODULE_13___default.a.textDetail, css_util_css__WEBPACK_IMPORTED_MODULE_14___default.a.flex, css_util_css__WEBPACK_IMPORTED_MODULE_14___default.a.flexColumn),
         key: this.key,

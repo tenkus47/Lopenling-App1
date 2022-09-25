@@ -411,7 +411,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             let positionEnd = startPos + activeAnnotation.length;
             if (activeAnnotation.length > 0) positionEnd -= 1;
             selectedTextIndex =
-                props.splitText.getTextIndexOfPosition(positionEnd);
+                // props.splitText.getTextIndexOfPosition(positionEnd);
+                props.splitText.getTextIndexOfPosition(startPos); //to position the control on start of selection
+
             splitTextRect = splitTextComponent.getBoundingClientRect();
         }
         let selectedAnnotatedSegments = [];
