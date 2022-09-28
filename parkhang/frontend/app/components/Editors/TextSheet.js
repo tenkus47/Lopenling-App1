@@ -37,7 +37,7 @@ function TextSheet(props) {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                bgcolor: "primary.main",
+                bgcolor: "#d4dde5",
                 width: "100%",
                 height: "100%",
                 overflow: "hidden",

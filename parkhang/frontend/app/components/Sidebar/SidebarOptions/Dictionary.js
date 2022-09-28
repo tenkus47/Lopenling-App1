@@ -11,7 +11,7 @@ function Dictionary() {
             <Box p={2}>
                 <input type="text" placeholder="search Terms"></input>
             </Box>
-            <DiscourseForum />
+            <DiscourseForum  topicId={1433}/>
         </>
     );
 }

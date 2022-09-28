@@ -638,7 +638,6 @@ class AnnotationControls extends React.Component<Props> {
             <div className={styles.annotationContent}>
                 {anonymousUserMessage}
                 {nothingSelected}
-                {!breakSelected && temporaryAnnotations}
                 {!breakSelected && annotations}
                 {pageBreaksButton}
                 {lineBreaksButton}
@@ -680,6 +679,7 @@ class AnnotationControls extends React.Component<Props> {
                         userLoggedIn={isLoggedIn}
                     />
                 )}
+                {!breakSelected && temporaryAnnotations}
 
                 {annotationBody}
                 <div

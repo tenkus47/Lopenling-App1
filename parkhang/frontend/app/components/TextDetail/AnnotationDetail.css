@@ -49,6 +49,8 @@
     background-color: var(--dark-gray);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
     color: var(--text-color)
+
+    
 }
 
 .annotationHeader {
@@ -111,10 +113,26 @@
 }
 
 .save {
-    color: white;
+    /* color: white;
     background-color: var(--main-tint);
     @apply --button;
-    transition: all 0.5s ease;
+    transition: all 0.5s ease; */
+
+    border: 1px solid transparent;
+    height:30px;
+        font-size: 10px;
+        line-height: normal;
+        box-sizing: border-box;
+        padding: 0.5em 0.65em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        font-weight: normal;
+        color: white;
+        background: var(--main-tint);
+        cursor: pointer;
+        transition: all 0.25s;
 }
 
 .save:hover {

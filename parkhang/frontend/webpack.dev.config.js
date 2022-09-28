@@ -5,6 +5,7 @@ var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
+// const { extendDefaultPlugins } = require('svgo');
 module.exports = {
     context: __dirname,
 
@@ -33,6 +34,7 @@ module.exports = {
             },
         }),
         new LodashModuleReplacementPlugin(),
+       
     ],
 
     module: {
@@ -123,24 +125,9 @@ module.exports = {
                 ],
             },
             {
-                test: /\.svg$/,
-                use: [
-                    {
-                        loader: "@svgr/webpack",
-                        options: {
-                            svgoConfig: {
-                                plugins: [
-                                    {
-                                        inlineStyles: {
-                                            onlyMatchedOnce: false,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                ],
-            },
+  test: /\.svg$/,
+  use: ['@svgr/webpack'],
+},
             {
                 test: /\.(png|jpe?g|gif)$/i,
                 use: [
