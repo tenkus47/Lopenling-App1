@@ -988,6 +988,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             }}
                             style={{
                                 width: "100%",
+                                paddingTop:30
                             }}
                         ></List>
                     )}

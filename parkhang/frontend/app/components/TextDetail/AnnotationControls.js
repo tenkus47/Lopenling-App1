@@ -160,7 +160,6 @@ class AnnotationControls extends React.Component<Props> {
         let anchorPoint = anchorPoints.bottom;
         let moveToSide = false;
         let moveRight = 0;
-        console.log(bottomGap, offScreen, height);
         if (!offScreen && bottomGap < height) {
             moveToSide = true;
         }
@@ -194,12 +193,11 @@ class AnnotationControls extends React.Component<Props> {
                 this.arrow.style.top = 0 - arrowHeight + "px";
             }
             // controls.style.top = top + measurements.height + arrowHeight + "px";
-            controls.style.top = top - measurements.height + 20 + "px"; // 20 added due to 30 px padding on splitTextRow first child
+            controls.style.top = top - measurements.height -10 + "px"; // 20 added due to 30 px padding on splitTextRow first child
             // controls.style.left =
             // selectedLeft + selectedWidth / 2 - width / 2 + moveRight + "px";
             controls.style.left = measurements.left + "px";
         } else if (moveToSide) {
-            console.log("moveToSide");
 
             arrow.className = styles.arrowRight;
             let arrowHeight = arrow.offsetHeight;
@@ -600,7 +598,7 @@ class AnnotationControls extends React.Component<Props> {
                     }
                 }
             }
-
+ 
             questionViews = questions.map((question: Question) => {
                 let key = "QUESTION_" + question.annotationUniqueId;
                 return (

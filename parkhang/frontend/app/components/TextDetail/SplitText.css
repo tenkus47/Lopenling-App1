@@ -28,9 +28,6 @@
     flex-direction: row;
 }
 
-.splitTextRow:first-child {
-    padding-top: 30px;
-}
 
 .splitTextRow * {
     -ms-overflow-style: none;

@@ -5,6 +5,7 @@
     /* background-color: var(--text-bg); */
     position: relative;
     width: 100%;
+    overflow: hidden;
     /* color: var(--text-color); */
     transition: height 0.4s linear;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, .1),

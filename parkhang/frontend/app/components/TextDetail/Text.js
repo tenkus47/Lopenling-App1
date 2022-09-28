@@ -258,7 +258,8 @@ class Text extends React.Component<Props, State> {
                                 activeDeletions.push(annotation);
                             }
                         } else if (
-                            annotation.type === ANNOTATION_TYPES.pageBreak &&
+                            annotation.type === ANNOTATION_TYPES.pageBreak 
+                            &&
                             !renderProps.activeWitness.isWorking
                         ) {
                             pageBreakAnnotation = annotation;
@@ -341,7 +342,15 @@ class Text extends React.Component<Props, State> {
                     remainingAnnotations.length > 0 ||
                     activeInsertions.length > 0
                 ) {
-                    classes.push(styles.annotation);
+                    if(remainingAnnotations.some(l=>l.type==='V')){
+                    classes.push(styles.V_annotation);
+                    }
+                    else if(remainingAnnotations.some(l=>l.type==='P')){
+                        // classes.push(styles.P_annotation)
+                    }else{
+                        classes.push(styles.Q_annotation)
+
+                    }
                 }
             }
 
