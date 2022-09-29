@@ -418,8 +418,8 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
             );
         }
     }
-    let fontSize = getTextFontSize(state);
-
+    let fontSize = getTextFontSize(state);  
+console.log(variantsData)
     return {
         annotationsData: variantsData,
         activeAnnotation: activeAnnotation,

@@ -1,4 +1,4 @@
-import React, { memo, Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
@@ -10,12 +10,8 @@ import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 import SplitPane from "react-split-pane";
 import styles from "./resizerStyle.css";
 import classnames from "classnames";
-const TextDetailContainer2 = React.lazy(() =>
-    import("components/TextDetail2/TextDetailContainer")
-);
-const TextDetailContainer = React.lazy(() =>
-    import("components/TextDetail/TextDetailContainer")
-);
+import TextDetailContainer2 from "components/TextDetail2/TextDetailContainer";
+import TextDetailContainer from "components/TextDetail/TextDetailContainer";
 
 function TextSheet(props) {
     let [landScape, setLandScape] = useState(true);
@@ -36,17 +32,18 @@ function TextSheet(props) {
     }, []);
 
     return (
-        <div
+        <Box
             ref={editorRef}
-            style={{
+            sx={{
                 display: "flex",
                 flexDirection: "column",
+                bgcolor: "#d4dde5",
                 width: "100%",
-                overflow: "hidden",
+                height: "100%",
                 position: "relative",
             }}
         >
-            <SplitPane
+            {/* <SplitPane
                 defaultSize={props.Media.isPanelVisible ? "35vh" : 0}
                 size={props.Media.isPanelVisible ? "35vh" : 0}
                 split="horizontal"
@@ -55,37 +52,59 @@ function TextSheet(props) {
                     display: !props.Media.isPanelVisible ? "none" : "block",
                 }}
             >
-                {props.Media.isPanelVisible ? <MediaComponent /> : <div />}
-
-                <SplitPane
-                    split={landScape ? "vertical" : "horizontal"}
-                    size={props.isSecondWindowOpen ? "50vw" : "100vw"}
-                    resizerClassName={classnames(
-                        styles.Resizer,
-                        { [styles.vertical]: landScape },
-                        { [styles.horizontal]: !landScape }
+                {props.Media.isPanelVisible ? <MediaComponent /> : <div />} */}
+            <SplitPane
+                split={landScape ? "vertical" : "horizontal"}
+                size={
+                    props.isSecondWindowOpen && props.selectedText
+                        ? "50%"
+                        : "60%"
+                }
+                style={
+                    !props.isSecondWindowOpen && {
+                        marginLeft: "10%",
+                        marginTop: 10,
+                    }
+                }
+                resizerStyle={!props.isSecondWindowOpen && { display: "none" }}
+                resizerClassName={
+                    !props.isSecondWindowOpen
+                        ? classnames(
+                              styles.Resizer,
+                              { [styles.vertical]: landScape },
+                              { [styles.horizontal]: !landScape }
+                          )
+                        : null
+                }
+                onDragFinished={(width: number) => {
+                    if (width > 0) window.dispatchEvent(new Event("resize"));
+                }}
+            >
+                <ErrorBoundary>
+                    <TextDetailContainer />
+                </ErrorBoundary>
+                <ErrorBoundary>
+                    {props.isSecondWindowOpen && props.selectedText && (
+                        <TextDetailContainer2 />
                     )}
-                    onDragFinished={(width: number) => {
-                        if (width > 0)
-                            window.dispatchEvent(new Event("resize"));
-                    }}
-                >
-                    <ErrorBoundary>
-                        <TextDetailContainer />
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                        {props.isSecondWindowOpen && <TextDetailContainer2 />}
-                    </ErrorBoundary>
-                </SplitPane>
+                </ErrorBoundary>
             </SplitPane>
-        </div>
+            {props.Media.isPanelVisible && (
+                <ErrorBoundary>
+                    <MediaComponent />
+                </ErrorBoundary>
+            )}
+            {/* </SplitPane> */}
+        </Box>
     );
 }
 
 const mapStateToProps = (state: AppState): { user: User } => {
     const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
     const Media = reducers.getMediaData(state);
+    const selectedText = reducers.getSelectedText(state);
     return {
+        selectedText,
         isSecondWindowOpen,
         Media,
     };

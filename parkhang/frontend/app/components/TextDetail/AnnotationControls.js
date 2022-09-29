@@ -1,5 +1,6 @@
 // @flow
 import * as React from "react";
+import ReactDom from "react-dom";
 import classnames from "classnames";
 import AnnotationDetail from "./AnnotationDetail";
 import AnnotationDetailEdit from "./AnnotationDetailEdit";
@@ -20,10 +21,11 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
+import { FAKE_LOGIN } from "app_constants";
 
 import type { AnnotationUniqueId } from "lib/Annotation";
+import { Snackbar } from "@mui/material";
 export const CONTROLS_MARGIN_LEFT = 10;
-const FAKE_LOGIN = false;
 export type QuestionData = {
     loading: boolean,
     questions: Question[],
@@ -119,7 +121,6 @@ class AnnotationControls extends React.Component<Props> {
 
         let top = measurements.top;
         const viewPortWidth = measurements.viewPortWidth || 0;
-
         let selectedLeft = measurements.left;
         let selectedRight = selectedLeft + measurements.width;
 
@@ -156,7 +157,6 @@ class AnnotationControls extends React.Component<Props> {
             }
         }
         let selectedWidth = selectedRight - selectedLeft;
-
         let anchorPoint = anchorPoints.bottom;
         let moveToSide = false;
         let moveRight = 0;
@@ -192,10 +192,13 @@ class AnnotationControls extends React.Component<Props> {
                 arrowHeight = this.arrow.offsetHeight;
                 this.arrow.style.top = 0 - arrowHeight + "px";
             }
-            controls.style.top = top + measurements.height + arrowHeight + "px";
-            controls.style.left =
-                selectedLeft + selectedWidth / 2 - width / 2 + moveRight + "px";
+            // controls.style.top = top + measurements.height + arrowHeight + "px";
+            controls.style.top = top - measurements.height -10 + "px"; // 20 added due to 30 px padding on splitTextRow first child
+            // controls.style.left =
+            // selectedLeft + selectedWidth / 2 - width / 2 + moveRight + "px";
+            controls.style.left = measurements.left + "px";
         } else if (moveToSide) {
+
             arrow.className = styles.arrowRight;
             let arrowHeight = arrow.offsetHeight;
             let controlsTop =
@@ -212,12 +215,12 @@ class AnnotationControls extends React.Component<Props> {
             }
             if (anchorPoint === anchorPoints.left) {
                 // left side of selection
+
                 arrow.style.left = width - 2 + "px";
                 controls.style.left =
                     selectedLeft - width - arrow.offsetWidth + "px";
             } else {
                 // right-side of selection
-
                 arrow.className = styles.arrowLeft;
                 arrow.style.left = -arrow.offsetWidth + "px";
                 controls.style.left =
@@ -234,6 +237,7 @@ class AnnotationControls extends React.Component<Props> {
 
             controls.style.top = controlsTop + "px";
         } else {
+            console.log("last");
             controls.style.top = top + "px";
         }
     }
@@ -274,7 +278,7 @@ class AnnotationControls extends React.Component<Props> {
             )[0];
             extraTop = pechaImage.offsetHeight;
         }
-        if (!lastElement) {
+        if (!firstElement) {
             console.warn(
                 "no valid element found in getMeasurements, elementId: %s",
                 this.props.selectedElementId
@@ -291,26 +295,27 @@ class AnnotationControls extends React.Component<Props> {
                 viewPortWidth: 1,
             };
         }
-        const top = lastElement.offsetTop + extraTop;
-        const textTop = lastElement.offsetTop;
-        const left = lastElement.offsetLeft;
-        const width = lastElement.offsetWidth;
-        const height = lastElement.offsetHeight;
+        const top = firstElement.offsetTop + extraTop;
+        const textTop = firstElement.offsetTop;
+        const left = firstElement.offsetLeft;
+        const width = firstElement.offsetWidth;
+        const height = firstElement.offsetHeight;
         let rowTop = top;
 
         let viewPortWidth = null;
         let topGap = 0;
         let bottomGap = 0;
+
+        if (firstElement && splitTextRect) {
+            const elRect = firstElement.getBoundingClientRect();
+            topGap = splitTextRect.height - elRect.top;
+        }
         if (lastElement && splitTextRect) {
             const elRect = lastElement.getBoundingClientRect();
 
             bottomGap =
                 splitTextRect.height + splitTextRect.top - elRect.bottom;
             viewPortWidth = splitTextRect.width;
-        }
-        if (firstElement && splitTextRect) {
-            const elRect = firstElement.getBoundingClientRect();
-            topGap = splitTextRect.height - elRect.top;
         }
 
         return {
@@ -593,7 +598,7 @@ class AnnotationControls extends React.Component<Props> {
                     }
                 }
             }
-
+ 
             questionViews = questions.map((question: Question) => {
                 let key = "QUESTION_" + question.annotationUniqueId;
                 return (
@@ -617,7 +622,7 @@ class AnnotationControls extends React.Component<Props> {
         }
 
         let allowQuestion =
-            props.questions.length === 0 &&
+            props.questions?.length === 0 &&
             props.temporaryQuestions.length === 0;
 
         let classes = [styles.annotationControls];
@@ -627,7 +632,22 @@ class AnnotationControls extends React.Component<Props> {
 
         let showHeader = true;
         if (anonymousUserMessage || breakSelected) showHeader = false;
-
+        const annotationBody = ReactDom.createPortal(
+            <div className={styles.annotationContent}>
+                {anonymousUserMessage}
+                {nothingSelected}
+                {!breakSelected && annotations}
+                {pageBreaksButton}
+                {lineBreaksButton}
+                {tempNotes}
+                {notes}
+                {questionHeading}
+                {tempQuestions}
+                {questionsLoading}
+                {questionViews}
+            </div>,
+            document.getElementById("annotation-portal")
+        );
         return (
             <div
                 className={classnames(...classes)}
@@ -657,21 +677,9 @@ class AnnotationControls extends React.Component<Props> {
                         userLoggedIn={isLoggedIn}
                     />
                 )}
+                {!breakSelected && temporaryAnnotations}
 
-                <div className={styles.annotationContent}>
-                    {anonymousUserMessage}
-                    {nothingSelected}
-                    {!breakSelected && temporaryAnnotations}
-                    {!breakSelected && annotations}
-                    {pageBreaksButton}
-                    {lineBreaksButton}
-                    {tempNotes}
-                    {notes}
-                    {questionHeading}
-                    {tempQuestions}
-                    {questionsLoading}
-                    {questionViews}
-                </div>
+                {annotationBody}
                 <div
                     className={styles.arrow}
                     ref={(div) => (this.arrow = div)}

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
 import MediaOptions from "./MediaOptions";
-
+import DraggableMedia from "./DraggableMedia";
 const mapStateToProps = (state) => {
     const scrollToId = reducers.getScrollToId(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
@@ -74,12 +74,17 @@ const matchDispatchToProps = (dispatch) => {
         changeIsImagePortrait,
         changeImageVersion,
         changeSelectedImage,
+        changeSelectedRange: (payload) => {
+            dispatch(actions.changeSelectedRange(payload));
+        },
+        changeScrollToId: (payload) =>
+            dispatch(actions.changeScrollToId(payload)),
     };
 };
 
 const MediaContainer = connect(
     mapStateToProps,
     matchDispatchToProps
-)(MediaOptions);
+)(DraggableMedia);
 
 export default MediaContainer;

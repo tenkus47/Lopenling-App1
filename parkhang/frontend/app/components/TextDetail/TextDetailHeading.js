@@ -5,7 +5,7 @@ import React, {
     useEffect,
     useMemo,
 } from "react";
-import styles from "./textDetailHeading.css";
+import styles from "./TextDetailHeading.css";
 import SelectVersion from "./SelectVersion";
 import _ from "lodash";
 import TextList from "./TextListContainer";
@@ -18,17 +18,12 @@ import {
     Collapse,
     Divider,
     ButtonGroup,
-    ListItem,
-    List,
     IconButton,
 } from "@mui/material";
 import Refresh from "./HeaderMenu/Refresh";
 import Search from "./HeaderMenu/Search";
-import WindowSplitter from "./HeaderMenu/WindowSplitter";
 import Settings from "./HeaderMenu/Settings";
 import TableOfContent from "./HeaderMenu/TableOfContent";
-import Autocomplete from "@mui/material/Autocomplete";
-import { AutoSizer } from "react-virtualized";
 import SearchList from "./HeaderMenu/SearchList";
 
 type HeaderProps = {
@@ -160,7 +155,6 @@ function TextDetailHeading(props: HeaderProps) {
                         textFontSize={props.textFontSize}
                         onChangedFontSize={props.onChangedFontSize}
                         onExport={props.onExport}
-                        isPanelLinked={props.isPanelLinked}
                     />
                     <TableOfContent
                         changeShowTableContent={props.changeShowTableContent}
@@ -169,7 +163,7 @@ function TextDetailHeading(props: HeaderProps) {
                 </ButtonGroup>
             </Stack>
 
-            <Collapse in={showFind}>
+            <Collapse in={showFind} mountOnEnter unmountOnExit>
                 <form onSubmit={handleSearch}>
                     <Stack direction="row" spacing={2} position="relative">
                         <TextField
@@ -210,11 +204,10 @@ function TextDetailHeading(props: HeaderProps) {
                                     boxShadow: 3,
                                     overflowX: "hidden",
                                     boxShadow: 3,
+                                    display:
+                                        results.length === 0 ? "none" : "block",
                                 }}
                             >
-                                {results.length === 0 && (
-                                    <p>no such word present</p>
-                                )}
                                 {condition && results.length > 0 && (
                                     <SearchList
                                         handleListItemClick={

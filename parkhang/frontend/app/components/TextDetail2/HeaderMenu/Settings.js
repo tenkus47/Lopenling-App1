@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import WrenchIcon from "images/wrench.svg";
-import Slider from "../../UI/Slider";
 import useLocalStorage from "components/utility/useLocalStorage";
+import FontContainer from 'components/textDetail/fontSize'
 
 import CheckIcon from "@mui/icons-material/Check";
 import {
@@ -59,12 +59,8 @@ function Settings(props) {
                             bgcolor: "heading.main",
                         }}
                     >
-                        <Slider
-                            max={20}
-                            min={7}
-                            initialvalue={props.textFontSize}
-                            changeSize={props.onChangedFontSize}
-                        />
+                         <FontContainer  fontSize={props.textFontSize}
+                            onChange={props.onChangedFontSize}/>
                         <Divider />
                         <FontSelection
                             selectFont={handlefont}

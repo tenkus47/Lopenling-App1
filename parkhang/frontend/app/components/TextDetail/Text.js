@@ -39,14 +39,6 @@ export function idForLineBreak(segment: TextSegment): string {
     return "l_" + (segment.end + 1);
 }
 
-function isOverflown(element) {
-    console.log(element.style.overflow);
-    return (
-        element.scrollHeight > element.clientHeight ||
-        element.scrollWidth > element.clientWidth
-    );
-}
-
 export type Props = {
     segmentedText: SegmentedText,
     annotationPositions: { [string]: Annotation[] },
@@ -67,7 +59,6 @@ export type Props = {
     activeWitness: Witness,
     changeSyncIdOnClick: () => void,
     changeScrollToId: () => void,
-    isPanelLinked: Boolean,
     textAlignmentById: {},
     selectedSourceRange: [],
     selectedTargetRange: [],
@@ -152,16 +143,16 @@ class Text extends React.Component<Props, State> {
     }
 
     selectedElement(element: Element) {
+        if (element.tagName === "DIV") {
+            this.props.selectedSegmentId("");
+            return;
+        }
         let sourceRangeSelection = [];
         let targetRangeSelection = [];
         const selection = document.getSelection();
         var clickId = parseInt(element.id.replace("s_", ""));
         this.props.changeSyncIdOnClick(clickId);
-        if (
-            element?.id.includes("s_") &&
-            this.props.isPanelLinked &&
-            this.props.condition
-        ) {
+        if (element?.id.includes("s_") && this.props.condition) {
             this.props.changeScrollToId({ id: null, from: null });
 
             let id = parseInt(element.id.replace("s_", ""));
@@ -267,7 +258,8 @@ class Text extends React.Component<Props, State> {
                                 activeDeletions.push(annotation);
                             }
                         } else if (
-                            annotation.type === ANNOTATION_TYPES.pageBreak &&
+                            annotation.type === ANNOTATION_TYPES.pageBreak 
+                            &&
                             !renderProps.activeWitness.isWorking
                         ) {
                             pageBreakAnnotation = annotation;
@@ -346,12 +338,18 @@ class Text extends React.Component<Props, State> {
                         selectedCurrentLineBreak = true;
                     }
                 }
-
                 if (
                     remainingAnnotations.length > 0 ||
                     activeInsertions.length > 0
                 ) {
-                    classes.push(styles.annotation);
+                    if(remainingAnnotations.some(l=>l.type==='V')){
+                    classes.push(styles.V_annotation);
+                    }
+                    else if(remainingAnnotations.some(l=>l.type==='P')){
+                        classes.push(styles.P_annotation)
+                    }else{
+                        classes.push(styles.Q_annotation)
+                    }
                 }
             }
 
@@ -382,19 +380,17 @@ class Text extends React.Component<Props, State> {
                 classes.push(styles.selectedAnnotation);
             }
 
-            if (renderProps.selectedSourceRange.includes(segment.start)) {
+            if (
+                renderProps.selectedSourceRange.includes(segment.start) &&
+                renderProps.condition
+            ) {
                 let newClass =
                     renderProps.theme.palette.mode === "light"
                         ? styles.selectedRangelight
                         : styles.selectedRangeDark;
                 classes.push(newClass);
             }
-            if (
-                renderProps.imageScrollId.id.start < segment.start &&
-                renderProps.imageScrollId.id.end > segment.start
-            ) {
-                classes.push(styles.selectedImage);
-            }
+
             if (classes.length > 0) {
                 let className = classnames(...classes);
                 classAttribute = 'class="' + className + '"';
@@ -452,21 +448,7 @@ class Text extends React.Component<Props, State> {
                     }
                 }
             }
-            // if (this.props.textAlignmentById !== null) {
-            //     let r = this.props.textAlignmentById.find(
-            //         (d) => d.start === segment.start
-            //     );
-            //     if (r) {
-            //         segmentHTML +=
-            //             "<span id='alignment_" +
-            //             segment.start +
-            //             "'>" +
-            //             `<sup class=` +
-            //             styles.syncIdClass +
-            //             `>${r.id}</sup>` +
-            //             "</span>";
-            //     }
-            // }
+
             segmentHTML +=
                 "<span id=" +
                 id +
@@ -527,9 +509,6 @@ class Text extends React.Component<Props, State> {
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
 
-        if (this.props.imageScrollId !== nextProps.imageScrollId) {
-            return true;
-        }
         if (this.props.fontSize !== nextProps.fontSize) {
             return true;
         } else if (
@@ -543,8 +522,11 @@ class Text extends React.Component<Props, State> {
         }
         // return false;
     }
+   
     componentDidUpdate() {
         this.textAlignmentById = this.props.textAlignmentById;
+
+
     }
 
     render() {
@@ -561,7 +543,7 @@ class Text extends React.Component<Props, State> {
             this._renderedHtml = html;
         }
         return (
-            <div className={styles.textContainer}>
+            <div className={styles.textContainer} >
                 <div
                     className={classnames(...classes)}
                     id="text1"

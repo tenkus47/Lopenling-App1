@@ -6,7 +6,8 @@ import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
-import ApplyTooltip from "../UI/ApplyTooltip";
+import Share from 'components/UI/ShareButton'
+import Voting from "components/UI/Voting";
 export type Props = {
     annotationData: AnnotationData,
     isActive: boolean,
@@ -19,7 +20,6 @@ export type Props = {
 const MAXIMUM_TEXT_LENGTH = 250;
 
 const AnnotationDetail = (props: Props) => {
-    const [imageUrl, setImageUrl] = useState(null);
 
     function longest_str_in_array(arra) {
         var max_str = arra[0].length;
@@ -101,8 +101,11 @@ const AnnotationDetail = (props: Props) => {
                 )}
             </div>
 
-            {!props.isWorkingSection && desc}
-
+            {!props.isWorkingSection && desc }
+        {props.isActive &&     <div className={styles.contentOptions}>
+             <Voting data={props.annotationData}/>
+             <Share content={props.annotationData.content}/>
+</div>}
             {/* {props.isWorkingSection  && <ShareButton props={props}/>} */}
         </div>
     );

@@ -5,7 +5,6 @@ import TextDetailHeading from "./TextDetailHeading";
 import * as actions from "actions";
 import * as reducers from "reducers";
 import type { AppState } from "reducers";
-import { getTextListVisible, getAccountOverlayVisible } from "reducers";
 
 const mapStateToProps = (state: AppState): {} => {
     const selectedText = reducers.getSelectedText(state);
@@ -59,13 +58,8 @@ const mapStateToProps = (state: AppState): {} => {
         selectedText2,
         selectedWitness,
         selectedWitness2,
-        textListIsVisible: getTextListVisible(state),
-        accountOverlayVisible: getAccountOverlayVisible(state),
         textFontSize,
-        isSecondWindowOpen: reducers.isSecondWindowOpen(state),
         exportingWitness,
-        user: reducers.getUser(state),
-        isAnnotating: reducers.isAnnotating(state),
         searchValue,
         showTableContent: reducers.getShowTableContent(state),
         searchResults: reducers.getSearchResults(state, searchValue),

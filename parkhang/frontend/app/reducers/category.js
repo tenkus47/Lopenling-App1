@@ -4,7 +4,6 @@ import * as actions from "actions";
 export const initialCategoryState = {
     detail: [],
     activeText: null,
-    isloaded: false,
 };
 
 function selecteTextData(state, action) {
@@ -24,18 +23,9 @@ function selectTextTitle(state, action) {
     };
 }
 
-function changeIsLoaded(state, action) {
-    const isloaded = action.payload;
-    return {
-        ...state,
-        isloaded,
-    };
-}
-
 const categoryReducers = {
     [actions.SELECT_TEXTTITLE]: selectTextTitle,
     [actions.SET_TEXTDATA]: selecteTextData,
-    [actions.IS_LOADED]: changeIsLoaded,
 };
 
 export const getTextTitleData = (state) => {

@@ -7,17 +7,22 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { Box, IconButton } from "@mui/material";
 
 function MediaOptions(props) {
-    if (props.selectedMedia.isImageVisible)
-        return <ImageComponent {...props} />;
+    // if (props.selectedMedia.isImageVisible)
+    //     return <ImageComponent {...props} />;
 
     return (
         <Box
             className={styles.MediaOption}
             sx={{
                 boxShadow: 2,
+                width: "100%",
+                height: "100%",
             }}
         >
-            <div className={styles.header}>
+            <Box
+                className={styles.header}
+                sx={{ bgcolor: "heading.main", color: "text.primary" }}
+            >
                 <h3>
                     {props.selectedMedia.isVideoVisible && "VIDEO"}
                     {props.selectedMedia.isAudioVisible && "AUDIO"}
@@ -29,15 +34,22 @@ function MediaOptions(props) {
                 >
                     <CancelIcon />
                 </IconButton>
-            </div>
-            <div style={{ marginTop: 20, paddingInline: 10 }}>
-                {props.selectedMedia.isVideoVisible && (
+            </Box>
+            <Box
+                sx={{
+                    height: "100%",
+                    paddingInline: 2,
+                    bgcolor: "navbar.main",
+                    color: "texts.main",
+                }}
+            >
+                {/* {props.selectedMedia.isVideoVisible && (
                     <VideoComponent {...props} />
                 )}
                 {props.selectedMedia.isAudioVisible && (
                     <AudioComponent {...props} />
-                )}
-            </div>
+                )} */}
+            </Box>
         </Box>
     );
 }

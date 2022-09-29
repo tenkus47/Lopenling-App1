@@ -9,6 +9,7 @@ import { FormattedMessage, FormattedDate } from "react-intl";
 import classnames from "classnames";
 import { QUESTION_URL } from "app_constants";
 import { Box } from "@mui/material";
+import DiscourseForum from "components/utility/discourseForum";
 
 type Props = {
     question: Question,
@@ -16,10 +17,10 @@ type Props = {
 
 export default class QuestionView extends React.Component<Props> {
     render() {
-        const topicUrl = QUESTION_URL + this.props.question.topicId;
+        const topicId=this.props.question.topicId
+        const topicUrl = QUESTION_URL + topicId;
         let answerViews = [];
         let answers = this.props.question.answers;
-        console.log(answers);
         for (let i = 0; i < answers.length; i++) {
             const answer = answers[i];
             answerViews.push(
@@ -36,6 +37,13 @@ export default class QuestionView extends React.Component<Props> {
                 className={classnames(styles.question, controlStyles.padding)}
                 sx={{ boxShadow: 2 }}
             >
+                <p
+                    className={controlStyles.text}
+                    dangerouslySetInnerHTML={{
+                        __html: this.props.question.content,
+                    }}
+                />
+
                 <span
                     className={classnames(
                         styles.threadLink,
@@ -46,17 +54,13 @@ export default class QuestionView extends React.Component<Props> {
                         <FormattedMessage id="question.viewThread" />
                     </a>
                 </span>
-                <p
-                    className={controlStyles.text}
-                    dangerouslySetInnerHTML={{
-                        __html: this.props.question.content,
-                    }}
-                />
                 <p className={controlStyles.subTitle}>
-                    {name},{" "}
+                    {name}
                     <FormattedDate value={this.props.question.created} />
                 </p>
-                {answerViews}
+                {/* {answerViews} */}
+                {topicId &&
+            <DiscourseForum  topicId={topicId}/>}
             </Box>
         );
     }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import WrenchIcon from "images/wrench.svg";
-import Slider from "../../UI/Slider";
 import CheckIcon from "@mui/icons-material/Check";
 import useLocalStorage from "components/utility/useLocalStorage";
+import FontContainer from 'components/textDetail/fontSize'
 import {
     IconButton,
     MenuList,
@@ -30,13 +30,9 @@ function Settings(props) {
         setFontSelect(value);
         document.body.style.setProperty("--tibetan-fonts", `${value}`);
         let update = document.getElementById("updateList");
-        let times = 1;
-        let timer = setInterval(() => {
+
+        setTimeout(() => {
             update.click();
-            times++;
-            if (times > 3) {
-                clearInterval(timer);
-            }
         }, 800);
         setShowOption(false);
     };
@@ -58,12 +54,9 @@ function Settings(props) {
                             bgcolor: "heading.main",
                         }}
                     >
-                        <Slider
-                            max={20}
-                            min={7}
-                            initialvalue={props.textFontSize}
-                            changeSize={props.onChangedFontSize}
-                        />
+                    
+                        <FontContainer  fontSize={props.textFontSize}
+                            onChange={props.onChangedFontSize}/>
                         <Divider />
                         <FontSelection
                             selectFont={handlefont}

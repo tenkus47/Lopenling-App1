@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import styles from "./textDetailHeading.css";
 import SelectVersion from "./SelectVersion";
-import Slider from "../UI/Slider";
-import TextListContainer from "./TextListContainer";
+import TextList from "./TextListContainer";
 import OptionsIcon from "images/options.svg";
 import Settings from "./HeaderMenu/Settings";
 import Search from "./HeaderMenu/Search";
@@ -86,14 +85,13 @@ function TextDetailHeading(props: HeaderProps) {
             ref={headingRef}
             spacing={1}
             sx={{
-                paddingInline: { md: 2, xs: 0 },
+                paddingInline: { md: 1, xs: 0 },
                 paddingBlock: { md: 1, xs: 0 },
                 borderTop: { md: 0, xs: "1px solid gray" },
                 bgcolor: "heading.main",
                 color: "text.primary",
             }}
         >
-            {" "}
             <Stack direction="row" spacing={1} justifyContent="space-between">
                 <Box
                     sx={{
@@ -102,7 +100,7 @@ function TextDetailHeading(props: HeaderProps) {
                         flexDirection: { md: "row", xs: "column" },
                     }}
                 >
-                    <TextListContainer />
+                    <TextList />
                     <SelectVersion
                         witnesses={props.witnesses}
                         activeWitness={props.selectedWitness}
@@ -126,7 +124,7 @@ function TextDetailHeading(props: HeaderProps) {
                         bgcolor: "background.paper",
                         color: "text.secondary",
                         "& svg": {
-                            m: 1.5,
+                            m: 1,
                         },
                         "& hr": {
                             mx: 0.5,
@@ -141,7 +139,6 @@ function TextDetailHeading(props: HeaderProps) {
                         textFontSize={props.textFontSize}
                         onChangedFontSize={props.onChangedFontSize}
                         onExport={props.onExport}
-                        isPanelLinked={props.isPanelLinked}
                     />
                     <TableOfContent
                         changeShowTableContent={props.changeShowTableContent}
@@ -149,7 +146,7 @@ function TextDetailHeading(props: HeaderProps) {
                     />
                 </ButtonGroup>
             </Stack>
-            <Collapse in={showFind}>
+            <Collapse in={showFind} mountOnEnter unmountOnExit>
                 <form onSubmit={handleSearch}>
                     <Stack direction="row" spacing={2} position="relative">
                         <TextField

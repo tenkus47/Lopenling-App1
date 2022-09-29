@@ -6,6 +6,10 @@ import Witness from "lib/Witness";
 import type { LocalesData } from "i18n";
 
 /** Actions types **/
+//page
+
+export const CHANGE_URL = "CHANGE_URL";
+
 //Media
 
 export const ACTIVATE_MEDIA = "MEDIA_SELECTION";
@@ -77,6 +81,7 @@ export const REMOVED_TEMPORARY_ANNOTATION = "text/REMOVED_TEMPORARY_ANNOTATION";
 
 // UI
 export const CHANGE_THEME = "CHANGE_THEME";
+export const CHANGE_CONDITION = "CHANGE_CONDITION";
 export const CHANGE_ANNOTATING = "CHANGE_ANNOTATING";
 export const SELECTED_TEXT = "textList/SELECTED_TEXT";
 export const SELECTED_TEXT2 = "textList/SELECTED_TEXT2";
@@ -143,7 +148,6 @@ export const SELECTED_LOCALE = "i18n/SELECT_LOCALE";
 // HOMEPAGE
 export const SELECT_TEXTTITLE = "title/SELECT_TEXTTITLE";
 export const SET_TEXTDATA = "title/SET_TEXTDATA";
-export const IS_LOADED = "title/IS_LOADED";
 
 // URLS
 export const TEXTS = "urls/textSelection";
@@ -606,6 +610,13 @@ export function changeTheme(payload) {
         payload,
     };
 }
+export function changeCondition(payload) {
+    return {
+        type: CHANGE_CONDITION,
+        payload,
+    };
+}
+
 export type ChangedSearchValueAction = Action & {
     searchValue: string,
 };
@@ -938,13 +949,6 @@ export function setTextData(featuredText) {
     };
 }
 
-export function changeIsLoaded(loaded) {
-    return {
-        type: IS_LOADED,
-        payload: loaded,
-    };
-}
-
 export function searchTerm(data) {
     return {
         type: SEARCH_TERM,
@@ -1057,6 +1061,12 @@ export function mediaSelection(data) {
     return {
         type: ACTIVATE_MEDIA,
         payload,
+    };
+}
+export function changeUrl(data) {
+    return {
+        type: CHANGE_URL,
+        data,
     };
 }
 

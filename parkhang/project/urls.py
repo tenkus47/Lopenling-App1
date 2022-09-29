@@ -38,7 +38,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("swagger/", schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^db/admin', admin.site.urls),
+    url(r'^db/admin/', admin.site.urls),
     url(r'^discourse/', include('discourse.urls')),
     url(r'^api/', include('api.urls')),
     url(r'^[^.]*$', HomeView.as_view())

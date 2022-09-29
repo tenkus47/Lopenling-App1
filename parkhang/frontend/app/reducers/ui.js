@@ -56,7 +56,7 @@ export type UIState = {
 
     SyncIdOnSearch2: String,
     SyncIdOnScroll2: String,
-
+    conditionForAlignment: Boolean,
     theme: String,
 };
 
@@ -70,7 +70,7 @@ export const initialUIState = {
     searchValue: "",
     searchValue2: "",
 
-    showPageImages: true,
+    showPageImages: false,
     activeAnnotations: {},
     activeTextAnnotations: {},
     textListVisible: false,
@@ -81,12 +81,12 @@ export const initialUIState = {
     showAccountOverlay: false,
     textFontSize: constants.DEFAULT_TEXT_FONT_SIZE,
     textFontSize2: constants.DEFAULT_TEXT_FONT_SIZE,
-    showSecondWindow: true,
+    showSecondWindow: false,
     openTableContent2: false,
     selectedSourceRange: [],
     selectedTargetRange: [],
     isPanelLinked: true,
-    isAnnotating: false,
+    isAnnotating: true,
     selectedWindow: 1,
     openTableContent: false,
     scrollToId: { from: 1, id: 0 },
@@ -94,7 +94,7 @@ export const initialUIState = {
     SyncIdOnClick: 0,
     SyncIdOnSearch: null,
     SyncIdOnSearch2: null,
-
+    conditionForAlignment: false,
     theme: "light",
 };
 function changeTheme(state, action) {
@@ -103,7 +103,12 @@ function changeTheme(state, action) {
         theme: action.payload,
     };
 }
-
+function changeConditionForAlignment(state, action) {
+    return {
+        ...state,
+        conditionForAlignment: action.payload,
+    };
+}
 function changeSyncIdOnSearch(state, action) {
     return {
         ...state,
@@ -592,8 +597,13 @@ uiReducers[actions.SHOW_TABLE_CONTENT2] = showTableContent2;
 uiReducers[actions.SYNC_ID_ON_SEARCH] = changeSyncIdOnSearch;
 uiReducers[actions.SYNC_ID_ON_SEARCH2] = changeSyncIdOnSearch2;
 uiReducers[actions.CHANGE_THEME] = changeTheme;
+uiReducers[actions.CHANGE_CONDITION] = changeConditionForAlignment;
 
 export default uiReducers;
+
+export const getConditionForAlignment = (state) => {
+    return state.conditionForAlignment;
+};
 
 export const getSyncIdOnSearch = (state) => {
     return state.SyncIdOnSearch;
@@ -675,6 +685,22 @@ export const getActiveTextAnnotation = (
         }
         if (textId) {
             return state.activeTextAnnotations[textId];
+        }
+        return null;
+    } else {
+        return null;
+    }
+};
+export const getActiveTextAnnotation2 = (
+    state: UIState,
+    textId?: number
+): Annotation | null => {
+    if (state.selectedText) {
+        if (!textId) {
+            textId = state.selectedText.id;
+        }
+        if (textId) {
+            return state.activeTextAnnotations2[textId];
         }
         return null;
     } else {

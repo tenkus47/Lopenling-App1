@@ -70,9 +70,15 @@ body {
 
 ::-webkit-scrollbar {
     width: 8px;
+    cursor: pointer;
+
 }
 
 ::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-track:hover {
     background-color: transparent;
 }
 
@@ -88,11 +94,11 @@ body {
 }
 
 
-@supports(scrollbar-color: gray var(--text-bg)) {
+@supports(scrollbar-color: gray) {
 
-
+    /* firefox support */
     * {
-        scrollbar-color: gray var(--text-bg);
-        scrollbar-width: none;
+        scrollbar-color: gray;
+        scrollbar-width: thin;
     }
 }
