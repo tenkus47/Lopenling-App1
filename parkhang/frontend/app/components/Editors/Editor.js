@@ -41,7 +41,6 @@ const Editor = (props) => {
 
     bodyHeight = "calc(100vh - " + headerStyles.headerHeight + ")";
 
-    const image_location = lopenlingLogo;
     const handleClose = (event, reason) => {
         if (reason === "clickaway") {
             return;
@@ -113,27 +112,10 @@ const Editor = (props) => {
     }, [props.textListIsVisible]);
     return (
         <div className={classnames(styles.interface, utilStyles.flex)}>
-            <SplitPane
-                size="fit-content"
-                onDragFinished={(width: number) => {
-                    if (width > 0) window.dispatchEvent(new Event("resize"));
-                }}
-                resizerStyle={{ display: "none" }}
-                style={{ height: "auto", position: "static" }}
-            >
-                <Collapse
-                    sx={{ height: "100%", position: "static", left: 0 }}
-                    orientation="horizontal"
-                    in={props.textListIsVisible}
-                    mountOnEnter
-                    unmountOnExit
-                >
+       
+                 
                     <Sidebar />
-                </Collapse>
-                <Box sx={{ height: "100vh", width: "100%" }}>
                     <TextSheet bodyHeight={bodyHeight} />
-                </Box>
-            </SplitPane>
             <SpeedDial
                 ariaLabel="SpeedDial basic"
                 sx={{ position: "absolute", bottom: 60, right: 16 }}

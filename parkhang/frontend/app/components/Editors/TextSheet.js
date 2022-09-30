@@ -37,9 +37,9 @@ function TextSheet(props) {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                bgcolor: "#d4dde5",
+                // bgcolor: "#d4dde5",
                 width: "100%",
-                height: "100%",
+                height: props.bodyHeight,
                 position: "relative",
             }}
         >
@@ -58,7 +58,7 @@ function TextSheet(props) {
                 size={
                     props.isSecondWindowOpen && props.selectedText
                         ? "50%"
-                        : "60%"
+                        : "50vw"
                 }
                 style={
                     !props.isSecondWindowOpen && {

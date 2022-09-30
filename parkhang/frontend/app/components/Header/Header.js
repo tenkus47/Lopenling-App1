@@ -201,11 +201,12 @@ export const Header = (props: HeaderProps) => {
         setAnchorElNav(null);
     };
     const themeChange = useCallback((e) => props.themeButtonClicked(e), []);
+    console.log(props.page)
     return (
         <AppBar
             position="static"
             color="navbar"
-            sx={{ boxShadow: 1, zIndex: 3 }}
+            sx={{ boxShadow: 1, zIndex: 3,display: props.page==='Vote' ?'none':'block' }}
             // className={styles.header}
         >
             <Stack
@@ -226,7 +227,6 @@ export const Header = (props: HeaderProps) => {
                         alignItems: { md: "center" },
                     }}
                 >
-                    {props.page !== "Editors" && (
                         <NavLink to="/">
                             <div className={styles.logo}>
                                 <img
@@ -237,16 +237,15 @@ export const Header = (props: HeaderProps) => {
                                 />
                             </div>
                         </NavLink>
-                    )}
 
-                    {props.page === "Editors" && (
+                    {/* {props.page === "Editors" && (
                         <NavigationButton
                             onClick={props.navigationButtonClicked}
                             className={styles.navigationButton}
                             title={toggleTitle}
                             isListVisible={props.textListVisible}
                         />
-                    )}
+                    )} */}
                     <Box display={{ xs: "none", md: "flex" }}>
                         {pageList.map((page, i) => {
                             return (
@@ -355,27 +354,7 @@ export const Header = (props: HeaderProps) => {
                             </Button>
                         </MenuItem>
 
-                        <MenuItem
-                            onClick={handleCloseNavMenu}
-                            sx={{
-                                display:
-                                    props.page !== "Editors" ? "none" : "block",
-                            }}
-                        >
-                            <Button
-                                sx={{
-                                    color: "links",
-                                    display:
-                                        props.page !== "Editors"
-                                            ? "none"
-                                            : "block",
-                                }}
-                                variant="text"
-                                onClick={props.navigationButtonClicked}
-                            >
-                                Options
-                            </Button>
-                        </MenuItem>
+                    
                     </Menu>
                 </Box>
                 <Stack
@@ -403,6 +382,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
     const csrfToken = CSRF_TOKEN;
     const page = state.page;
     return {
+        page:state.page,
         user: user,
         activeLocale: activeLocale,
         textListIsVisible: getTextListVisible(state),

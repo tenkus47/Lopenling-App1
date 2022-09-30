@@ -6,8 +6,6 @@ import BookIcon from "@mui/icons-material/Book";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 import YoutubeSearchedForIcon from "@mui/icons-material/YoutubeSearchedFor";
 import Index from "./SidebarOptions";
-import { NavLink } from "redux-first-router-link";
-import lopenling_logo from "images/lopenling_logo_173x.png";
 import useLocalStorage from "components/utility/useLocalStorage";
 import { Tabs, Tab, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/styles";
@@ -21,6 +19,7 @@ function Resources() {
     <Box
       sx={{
         width: "100%",
+        marginTop:1,
         display: "flex",
         flexDirection: "column",
         bgcolor: "background.default",
@@ -29,7 +28,7 @@ function Resources() {
         zIndex: 10,
         position: "relative",
         borderRight:
-          theme.palette.mode === "light" ? "2px solid lightgray" : "0",
+          theme.palette.mode === "light" ? "2px solid lightgray" : "2px solid #d3d3d3",
       }}
     >
       <Box
@@ -80,21 +79,10 @@ function Resources() {
           <Index.Dictionary />
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <Index.Commentary />
+          <Index.Discussion />
         </TabPanel>
       </>
-      <Box alignSelf="center" sx={{ position: "absolute", bottom: 0 }}>
-        <NavLink to="/">
-          <div className={styles.logo}>
-            <img
-              src={lopenling_logo}
-              alt={"lopenling-logo"}
-              height={37}
-              width={172}
-            />
-          </div>
-        </NavLink>
-      </Box>
+     
     </Box>
   );
 }

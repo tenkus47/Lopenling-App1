@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./ResourceOption.css";
 import { Typography, Box } from "@mui/material";
-import DiscourseForum from "components/utility/discourseForum";
 function Dictionary() {
     return (
         <>
@@ -11,7 +10,6 @@ function Dictionary() {
             <Box p={2}>
                 <input type="text" placeholder="search Terms"></input>
             </Box>
-            <DiscourseForum/>
         </>
     );
 }

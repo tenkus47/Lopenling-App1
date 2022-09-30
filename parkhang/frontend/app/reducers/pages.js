@@ -4,6 +4,7 @@ import * as actions from "actions";
 const components = {
     HOME: "HomePage",
     Editors: "Editors",
+    Vote:"Vote",
     [NOT_FOUND]: "NotFound",
 };
 export const initialPageState = "HomePage";
@@ -17,8 +18,13 @@ export const pageList = [
     {
         pageName: "Editors",
         id: "header.editor",
-        url: "/editors",
+        url: "/editor",
     },
+    {
+        pageName:"Vote",
+        id:"header.vote",
+        url: "/vote"
+    }
 ];
 
 const pageReducers = {

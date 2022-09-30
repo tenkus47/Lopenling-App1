@@ -37,7 +37,9 @@
         "library":"Library",
             "Resource.About":"About",
         "text.title":"Title",
-        "text.description":"Description"
+        "text.description":"Description",
+        "header.vote":"vote"
+
 
     }
 }

@@ -6,6 +6,7 @@ import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import Toolbar from "@mui/material/Toolbar";
+import Commentary from "./Commentary";
 const Search = styled("div")(({ theme }) => ({
     position: "relative",
     borderRadius: theme.shape.borderRadius,
@@ -88,6 +89,7 @@ function TableOfContent() {
                 </Search>
             </Toolbar>
             {/* <Loader loaded={loaded} /> */}
+            <Commentary/>
             <Box>
                 {data.map((list, index) => {
                     return (

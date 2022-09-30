@@ -9,7 +9,7 @@ import { FormattedMessage, FormattedDate } from "react-intl";
 import classnames from "classnames";
 import { QUESTION_URL } from "app_constants";
 import { Box } from "@mui/material";
-import DiscourseForum from "components/utility/discourseForum";
+import {DiscourseForum} from "components/utility/discourseForum";
 
 type Props = {
     question: Question,

@@ -443,12 +443,14 @@ var Header = function Header(props) {
   var themeChange = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (e) {
     return props.themeButtonClicked(e);
   }, []);
+  console.log(props.page);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_21__["default"], {
     position: "static",
     color: "navbar",
     sx: {
       boxShadow: 1,
-      zIndex: 3
+      zIndex: 3,
+      display: props.page === 'Vote' ? 'none' : 'block'
     } // className={styles.header}
 
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_16__["default"], {
@@ -472,7 +474,7 @@ var Header = function Header(props) {
         md: "center"
       }
     }
-  }, props.page !== "Editors" && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(redux_first_router_link__WEBPACK_IMPORTED_MODULE_13__.NavLink, {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(redux_first_router_link__WEBPACK_IMPORTED_MODULE_13__.NavLink, {
     to: "/"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: (_Header_css__WEBPACK_IMPORTED_MODULE_3___default().logo)
@@ -481,12 +483,7 @@ var Header = function Header(props) {
     height: "37",
     width: 173,
     alt: "parkhang-logo"
-  }))), props.page === "Editors" && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(components_UI_NavigationButton__WEBPACK_IMPORTED_MODULE_6__["default"], {
-    onClick: props.navigationButtonClicked,
-    className: (_Header_css__WEBPACK_IMPORTED_MODULE_3___default().navigationButton),
-    title: toggleTitle,
-    isListVisible: props.textListVisible
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_22__["default"], {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_22__["default"], {
     display: {
       xs: "none",
       md: "flex"
@@ -588,19 +585,7 @@ var Header = function Header(props) {
     component: "a"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_intl__WEBPACK_IMPORTED_MODULE_18__["default"], {
     id: "Nalanda"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_26__["default"], {
-    onClick: handleCloseNavMenu,
-    sx: {
-      display: props.page !== "Editors" ? "none" : "block"
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_17__["default"], {
-    sx: {
-      color: "links",
-      display: props.page !== "Editors" ? "none" : "block"
-    },
-    variant: "text",
-    onClick: props.navigationButtonClicked
-  }, "Options")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_16__["default"], {
     direction: "row",
     alignItems: "center",
     sx: {
@@ -615,13 +600,16 @@ var Header = function Header(props) {
 };
 
 var mapStateToProps = function mapStateToProps(state) {
+  var _ref;
+
   var user = (0,reducers__WEBPACK_IMPORTED_MODULE_9__.getUser)(state);
   var activeLocale = (0,reducers__WEBPACK_IMPORTED_MODULE_9__.getActiveLocale)(state);
   var successRedirect = document.location.pathname; // TODO: move global CSRF_TOKEN into redux
 
   var csrfToken = CSRF_TOKEN;
   var page = state.page;
-  return {
+  return _ref = {
+    page: state.page,
     user: user,
     activeLocale: activeLocale,
     textListIsVisible: (0,reducers__WEBPACK_IMPORTED_MODULE_9__.getTextListVisible)(state),
@@ -630,10 +618,8 @@ var mapStateToProps = function mapStateToProps(state) {
     successRedirect: successRedirect,
     csrfToken: csrfToken,
     theme: (0,reducers__WEBPACK_IMPORTED_MODULE_9__.getTheme)(state),
-    text: (0,reducers__WEBPACK_IMPORTED_MODULE_9__.getSelectedText)(state),
-    page: page,
-    selectedText: (0,reducers__WEBPACK_IMPORTED_MODULE_9__.getSelectedText)(state)
-  };
+    text: (0,reducers__WEBPACK_IMPORTED_MODULE_9__.getSelectedText)(state)
+  }, _defineProperty(_ref, "page", page), _defineProperty(_ref, "selectedText", (0,reducers__WEBPACK_IMPORTED_MODULE_9__.getSelectedText)(state)), _ref;
 };
 
 var mergeProps = function mergeProps(stateProps, dispatchProps, ownProps) {

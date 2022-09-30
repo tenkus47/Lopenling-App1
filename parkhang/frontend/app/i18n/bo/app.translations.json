@@ -37,6 +37,7 @@
         "library":"དཔེ་མཛོད།",
         "Resource.About":"དཔེ་ཆ་སྐོར།",
         "text.title":"འགོ་བརྗོད།",
-        "text.description":"འགྲེལ་བཤད།"
+        "text.description":"འགྲེལ་བཤད།",
+        "header.vote":"vote"
     }
 }

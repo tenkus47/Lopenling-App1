@@ -26,7 +26,7 @@ function Commentary({ alignmentData, text, selectSecondWindowText }) {
                                 style={{ cursor: "pointer" }}
                                 onClick={() =>
                                     handleSelectText({
-                                        id: 140,
+                                        id: 2,
                                         name: "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་པའི་འགྲེལ་པ།",
                                     })
                                 }

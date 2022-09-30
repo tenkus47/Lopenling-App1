@@ -93,6 +93,12 @@ const routesMap = {
         path: "/editor",
         thunk: RouteEditorPage,
     },
+    vote:{
+        path:"/vote",
+        thunk: (dispatch, getState) => {
+            dispatch(actions.changeUrl("Vote"));
+        },
+    }
 };
 
 const routes = connectRoutes(routesMap, {
