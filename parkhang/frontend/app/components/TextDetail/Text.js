@@ -520,7 +520,6 @@ class Text extends React.Component<Props, State> {
             this._renderedHtml = renderedHtml;
             return true;
         }
-        // return false;
     }
    
     componentDidUpdate() {

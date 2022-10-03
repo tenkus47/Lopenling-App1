@@ -583,6 +583,7 @@ class AnnotationControls extends React.Component<Props> {
             let questions: Question[] = [];
             for (let i = 0; i < props.questions.length; i++) {
                 const question = props.questions[i];
+                
                 let isValid = !tempQuestionIds.hasOwnProperty(
                     question.uniqueId
                 );
@@ -598,12 +599,13 @@ class AnnotationControls extends React.Component<Props> {
                 }
             }
  
-            questionViews = questions.map((question: Question) => {
+            questionViews = questions.map((question: Question,index) => {
                 let key = "QUESTION_" + question.annotationUniqueId;
                 return (
                     <QuestionView
                         question={question}
                         key={"question_" + question.annotationUniqueId}
+                        delete={()=>this.props.deleteAnnotation(this.props.questions[index])}
                     />
                 );
             });
@@ -688,4 +690,4 @@ class AnnotationControls extends React.Component<Props> {
     }
 }
 
-export default React.memo(AnnotationControls);
+export default AnnotationControls;
