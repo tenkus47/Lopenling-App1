@@ -11,7 +11,6 @@ export const QUESTION_URL = "https://lopenling.org/t/topic/"; // TODO: put this 
 
 export const FONT_LIST = ["Tibetan", "Tsumachu", "Himalaya"];
 
-export const FAKE_LOGIN = true;
 
 const DISCUSSION_START_LINK =
     "https://lopenling.org/embed/comments?topic_id=1433";

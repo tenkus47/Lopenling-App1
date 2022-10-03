@@ -6,7 +6,7 @@ import {
     CellMeasurerCache,
 } from "react-virtualized";
 import classname from "classnames";
-import styles from "./TextList.css";
+import styles from "components/TextDetail/TextList.css";
 import addShay from "lib/addTibetanShay";
 
 import {

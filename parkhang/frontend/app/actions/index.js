@@ -968,6 +968,9 @@ export function setTextAlignment(data) {
     };
 }
 export function toggleSecondWindow(data, textId) {
+    setTimeout(()=>{
+   window.dispatchEvent(new Event('resize'));
+    },10)
     return {
         type: SECOND_WINDOW,
         payload: data,

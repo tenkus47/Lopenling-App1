@@ -66,16 +66,16 @@ function TextSheet(props) {
                         marginTop: 10,
                     }
                 }
-                resizerStyle={!props.isSecondWindowOpen && { display: "none" }}
-                resizerClassName={
-                    !props.isSecondWindowOpen
-                        ? classnames(
-                              styles.Resizer,
-                              { [styles.vertical]: landScape },
-                              { [styles.horizontal]: !landScape }
-                          )
-                        : null
-                }
+                resizerStyle={{display:!props.isSecondWindowOpen ?'none':'block'}}
+                // resizerClassName={
+                //     !props.isSecondWindowOpen
+                //         ? classnames(
+                //               styles.Resizer,
+                //               { [styles.vertical]: landScape },
+                //               { [styles.horizontal]: !landScape }
+                //           )
+                //         : null
+                // }
                 onDragFinished={(width: number) => {
                     if (width > 0) window.dispatchEvent(new Event("resize"));
                 }}

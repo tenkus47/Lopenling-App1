@@ -25,13 +25,14 @@ class DiscourseAPI:
             'category': category_id,
             'raw': post_text
         }
-
+        print(new_topic_data)
         r = requests.post(
-            f'{self.SITE_URL}/posts.json',
+            '{self.SITE_URL}/posts.json',
             json=new_topic_data,
             headers=auth_headers,
             timeout=(10, 60)
         )
+        print('response',r)
 
         # TODO: handle potential error properly
         try:
@@ -47,6 +48,7 @@ class DiscourseAPI:
 
     def get_topic_posts(self, topic_id, raw_text=False):
         auth_headers = self.auth_headers(settings.DISCOURSE_SYSTEM_USER)
+
         endpoint = f'{self.SITE_URL}/t/{topic_id}.json'
         if raw_text:
             endpoint += '?include_raw=true'

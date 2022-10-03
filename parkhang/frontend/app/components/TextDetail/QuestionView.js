@@ -17,7 +17,7 @@ type Props = {
 
 export default class QuestionView extends React.Component<Props> {
     render() {
-        const topicId=this.props.question.topicId
+        const topicId=this.props.question.topicId|| null
         const topicUrl = QUESTION_URL + topicId;
         let answerViews = [];
         let answers = this.props.question.answers;
@@ -59,8 +59,7 @@ export default class QuestionView extends React.Component<Props> {
                     <FormattedDate value={this.props.question.created} />
                 </p>
                 {/* {answerViews} */}
-                {topicId &&
-            <DiscourseForum  topicId={topicId}/>}
+              <DiscourseForum  topicId={topicId}/>
             </Box>
         );
     }

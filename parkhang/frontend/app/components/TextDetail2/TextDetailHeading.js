@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import styles from "./textDetailHeading.css";
+import styles from "components/TextDetail/TextDetailHeading.css";
 import SelectVersion from "./SelectVersion";
 import TextList from "./TextListContainer";
 import OptionsIcon from "images/options.svg";

@@ -21,7 +21,6 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
-import { FAKE_LOGIN } from "app_constants";
 
 import type { AnnotationUniqueId } from "lib/Annotation";
 import { Snackbar } from "@mui/material";
@@ -337,7 +336,7 @@ class AnnotationControls extends React.Component<Props> {
         let temporaryAnnotations = [];
         let anonymousUserMessage = null;
         let nothingSelected = null;
-        const isLoggedIn = props.user.isLoggedIn || FAKE_LOGIN;
+        const isLoggedIn = props.user.isLoggedIn ;
 
         let breakSelected = false;
         if (
@@ -417,7 +416,7 @@ class AnnotationControls extends React.Component<Props> {
                     annotations.push(annotationDetail);
                 }
             }, this);
-            if (!props.user.isLoggedIn === !FAKE_LOGIN) {
+            if (!props.user.isLoggedIn) {
                 // NOTE: FormattedMessage cannot take a child when using
                 // the values option, so need to wrap it in a div
                 anonymousUserMessage = (

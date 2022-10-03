@@ -435,7 +435,6 @@ class QuestionList(APIView):
             length=length,
             type=AnnotationType.question.value,
         )
-
         discourse_api = DiscourseAPI(
             settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY
         )
@@ -492,15 +491,17 @@ class QuestionList(APIView):
         question.annotation = annotation
         question.title = question_title
         question.question = question_content
-
+       
         try:
             api = DiscourseAPI(settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY)
+            print(settings)
             topic_data = api.add_topic(
                 user.sso_username,
                 settings.DISCOURSE_QA_CATEGORY_ID,
                 question_title,
                 question_content,
-            )
+            ) 
+            print(topic_data)
             topic_id = topic_data["id"]
         except:
             topic_id = None
@@ -520,7 +521,6 @@ class QuestionPostDetail(APIView):
         posts = [
             post for post in posts if post["is_question"] or post["is_accepted_answer"]
         ]
-
         serializer = QuestionPostSerializer(posts, many=True)
         return Response(serializer.data)
 

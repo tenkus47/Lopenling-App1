@@ -419,7 +419,6 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         }
     }
     let fontSize = getTextFontSize(state);  
-console.log(variantsData)
     return {
         annotationsData: variantsData,
         activeAnnotation: activeAnnotation,
@@ -812,13 +811,13 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
                 stateProps.questionQuote
             );
             let questionText = questionQuoteText + content;
-
             saveAnnotation(question, content);
             const createdQuestionAction = actions.createdQuestion(
                 question,
                 title,
                 questionText
             );
+        
             dispatch(createdQuestionAction);
         },
     };

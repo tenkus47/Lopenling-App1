@@ -19,11 +19,6 @@ export const pageList = [
         pageName: "Editors",
         id: "header.editor",
         url: "/editor",
-    },
-    {
-        pageName:"Vote",
-        id:"header.vote",
-        url: "/vote"
     }
 ];
 

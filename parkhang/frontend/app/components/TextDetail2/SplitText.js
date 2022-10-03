@@ -799,13 +799,16 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
                             scrollToAlignment="start"
-                            containerStyle={{
+                             containerStyle={{
                                 width: "100%",
                                 maxWidth: "100%",
+
                             }}
                             style={{
                                 width: "100%",
-                            }}
+                                paddingTop:30,
+                                paddingInline:50
+                                                            }}
                         ></List>
                     )}
                 </AutoSizer>
