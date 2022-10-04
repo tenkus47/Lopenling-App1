@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import { List } from "react-virtualized/dist/es/List";
 import lopenlinglogo from "images/lopenling_logo.png";
-import Zoom from 'components/utility/imageZoom.js';
+import Zoom from 'components/utility/imageZoom';
 import {
     CellMeasurer,
     CellMeasurerCache,

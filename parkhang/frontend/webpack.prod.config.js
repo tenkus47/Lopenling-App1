@@ -1,12 +1,11 @@
 var path = require("path");
 var webpack = require("webpack");
-
 var BundleTracker = require("webpack-bundle-tracker");
 var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const UglifyJsPlugin  = require("uglifyjs-webpack-plugin");
 
 module.exports = {
     context: __dirname,
@@ -29,15 +28,14 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "styles-[hash].css",
         }),
-        new UglifyJSPlugin(),
         new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: JSON.stringify("production"),
             },
         }),
         new LodashModuleReplacementPlugin(),
+        new UglifyJsPlugin()
     ],
-
     module: {
         rules: [
             {
@@ -135,14 +133,14 @@ module.exports = {
                                 plugins: [
                                     {
                                         inlineStyles: {
-                                            onlyMatchedOnce: false,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                ],
+                                            onlyMatchedOnce: false
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(png|jpe?g|gif)$/i,
@@ -159,6 +157,6 @@ module.exports = {
         extensions: [".js", ".jsx", "*", ".mjs"],
         modules: [path.resolve("./node_modules"), path.resolve("./app")],
     },
-
     devtool: "source-map",
+
 };
