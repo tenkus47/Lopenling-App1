@@ -161,7 +161,6 @@ const mapStateToProps = (state) => {
     const loading =
         state.data.loadingWitnesses || state.data.loadingAnnotations;
     const textListVisible = getTextListVisible(state);
-    const isPanelLinked = reducers.isPanelLinked(state);
     const textAlignmentById = reducers.getTextAlignmentById(state);
 
     if (loading) {
@@ -181,8 +180,6 @@ const mapStateToProps = (state) => {
             user: user,
             textListVisible,
             fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
-            isSecondWindowOpen: isSecondWindowOpen(state),
-            isPanelLinked,
             textAlignmentById,
             imageAlignmentById: getImageAlignmentById(state),
         };
@@ -224,7 +221,6 @@ const mapStateToProps = (state) => {
         if (selectedWitnessId) {
             selectedWitness = getWitness(state, selectedWitnessId);
         }
-
         if (!selectedWitness) {
             selectedWitness = workingWitness;
             selectedWitnessId = workingWitness.id;
@@ -269,13 +265,11 @@ const mapStateToProps = (state) => {
                     annotatedText.segmentsForAnnotation(activeAnnotation);
             }
         }
-
         if (selectedWitness && baseWitness && annotatedText) {
             let witnessPageBreaks =
                 annotatedText.getAnnotationsOfType(
                     ANNOTATION_TYPES.pageBreak
                 ) || {};
-            // console.log(witnessPageBreaks);
             let basePageBreaks = null;
             if (selectedWitness.id !== baseWitness.id) {
                 basePageBreaks = getAnnotationsForWitnessId(
@@ -309,10 +303,16 @@ const mapStateToProps = (state) => {
     }
     _selectedWitness = selectedWitness;
     const scrollToId = reducers.getScrollToId(state);
-    const textAlignment = reducers.getTextAlignment(state);
+    const isPanelLinked = reducers.isPanelLinked(state);
 
+    const textAlignment = reducers.getTextAlignment(state);
     const syncIdOnClick = reducers.getSyncIdOnClick(state);
     const selectedWindow = reducers.getSelectedWindow(state);
+    const selectedWitness2 = reducers.getSelectedTextWitness2(state);
+    let Media = reducers.getMediaData(state);
+    const imageData = getImageData(state);
+    const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
+    const condition = reducers.getConditionForAlignment(state);
     return {
         text: selectedText,
         witnesses: witnesses,
@@ -321,7 +321,7 @@ const mapStateToProps = (state) => {
         annotations: annotations,
         loading: loading,
         paginated: paginated,
-        pageImagesVisible: false,
+        pageImagesVisible: pageImagesVisible,
         annotatedText: annotatedText,
         selectedAnnotatedSegments: selectedAnnotatedSegments,
         annotationPositions: annotationPositions,
@@ -335,12 +335,10 @@ const mapStateToProps = (state) => {
         selectedSearchResult,
         searchValue,
         fontSize,
-        isSecondWindowOpen: isSecondWindowOpen(state),
-        imageData: getImageData(state),
-        isPanelLinked,
+        isSecondWindowOpen,
+        imageData,
         selectedImage: getSelectedImage(state),
         isImagePortrait: isImagePortrait(state),
-        isPanelVisible: isPanelVisible(state),
         isAnnotating: reducers.isAnnotating(state),
         textAlignment,
         textAlignmentById,
@@ -354,6 +352,8 @@ const mapStateToProps = (state) => {
         syncIdOnSearch: reducers.getSyncIdOnSearch(state),
         imageAlignmentById: getImageAlignmentById(state),
         imageScrollId: getImageScrollId(state),
+        selectedMedia: Media,
+        condition: condition && isPanelLinked && isSecondWindowOpen,
     };
 };
 
@@ -629,7 +629,7 @@ const getPageBreaks = (
             if (start > lastWitnessPageStart) witnessStarts.push(start);
         }
     }
-
+    console.log(witnessStarts);
     return witnessStarts;
 };
 

@@ -4,6 +4,7 @@ import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
 import type { Props as AnnotationDetailProps } from "./AnnotationDetail";
+import PencilAltIcon from "images/PencilAltIcon.svg";
 
 export type Props = AnnotationDetailProps & {
     saveAnnotationHandler: (text: string) => void,
@@ -43,14 +44,19 @@ const AnnotationDetailEdit = (props: Props) => {
                             }
                         }}
                     >
+                         <PencilAltIcon
+                         height='12px'
+                         width='12px'
+                                style={{ fill: "#fff",marginRight:10 }}
+                            />
                         <FormattedMessage id="annotation.save" />
                     </div>
-                    <div
+                    {/* <div
                         className={styles.cancel}
                         onClick={props.cancelAnnotationHandler}
                     >
                         <FormattedMessage id="annotation.cancel" />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@ import {
     CellMeasurerCache,
 } from "react-virtualized";
 import classname from "classnames";
-import styles from "./TextList.css";
+import styles from "components/TextDetail/TextList.css";
 import addShay from "lib/addTibetanShay";
 
 import {
@@ -22,13 +22,12 @@ function TextList(props) {
     const temptext = useRef(props.texts);
     const [textslist, setTextList] = useState(temptext.current);
     const [filterValue, setFilterValue] = useState(null);
-
     const onSelectedText = props.onSelectedText;
     const selectedText = props.selectedText;
     const [isOpen, setIsOpen] = useState(false);
-    let selected = useMemo(() => {
-        return selectedText ? selectedText.name : textslist[0].name;
-    }, [selectedText, textslist]);
+
+    let selected = selectedText?.name;
+    let selectedText1 = props.selectedText1;
     useEffect(() => {
         let temp = [];
         if (filterValue === "") {
@@ -59,6 +58,50 @@ function TextList(props) {
         let value = e.target.value;
         setFilterValue(value);
     };
+    const rowRenderer = React.useCallback(
+        ({ key, index, style, parent }) => {
+            let data = textslist[index];
+            return (
+                <CellMeasurer
+                    key={`optionvalues-${key}`}
+                    cache={cache.current}
+                    parent={parent}
+                    columnIndex={0}
+                    rowIndex={index}
+                >
+                    <div
+                        style={style}
+                        onClick={() => {
+                            setIsOpen(false);
+                            onSelectedText(data);
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                width: "13rem",
+                                paddingLeft: 2,
+                                fontSize: {
+                                    lg: 12,
+                                    md: 11,
+                                    sm: 10,
+                                    xs: 10,
+                                },
+                                color: "text.primary",
+                            }}
+                            component="div"
+                        >
+                            <Typography noWrap={true}>
+                                {addShay(data.name)}
+                            </Typography>
+                        </Box>
+                    </div>
+                </CellMeasurer>
+            );
+        },
+        [textslist]
+    );
     return (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
             <div style={{ position: "relative", marginLeft: 10 }}>
@@ -73,8 +116,11 @@ function TextList(props) {
                         height: "100%",
                         color: "text.primary",
                     }}
+                    disabled={selectedText1 === null}
                 >
-                    <Typography noWrap={true}>{selected}</Typography>
+                    <Typography noWrap={true}>
+                        {selected ? selected : "select Text here"}
+                    </Typography>
                 </Button>
                 <Grow in={isOpen}>
                     <Box
@@ -100,55 +146,7 @@ function TextList(props) {
                                     rowHeight={40}
                                     deferredMeasurementCache={cache.current}
                                     rowCount={textslist.length}
-                                    rowRenderer={({
-                                        key,
-                                        index,
-                                        style,
-                                        parent,
-                                    }) => {
-                                        let data = textslist[index];
-                                        return (
-                                            <CellMeasurer
-                                                key={`optionvalues-${key}`}
-                                                cache={cache.current}
-                                                parent={parent}
-                                                columnIndex={0}
-                                                rowIndex={index}
-                                            >
-                                                <div
-                                                    style={style}
-                                                    onClick={() => {
-                                                        setIsOpen(false);
-                                                        onSelectedText(data);
-                                                    }}
-                                                >
-                                                    <Box
-                                                        sx={{
-                                                            overflow: "hidden",
-                                                            textOverflow:
-                                                                "ellipsis",
-                                                            width: "13rem",
-                                                            paddingLeft: 2,
-                                                            fontSize: {
-                                                                lg: 12,
-                                                                md: 11,
-                                                                sm: 10,
-                                                                xs: 10,
-                                                            },
-                                                            color: "text.primary",
-                                                        }}
-                                                        component="div"
-                                                    >
-                                                        <Typography
-                                                            noWrap={true}
-                                                        >
-                                                            {addShay(data.name)}
-                                                        </Typography>
-                                                    </Box>
-                                                </div>
-                                            </CellMeasurer>
-                                        );
-                                    }}
+                                    rowRenderer={rowRenderer}
                                 />
                             )}
                         </AutoSizer>

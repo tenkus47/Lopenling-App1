@@ -6,7 +6,7 @@ import Source from "lib/Source";
 import Witness from "lib/Witness";
 import Annotation, {
     TemporaryAnnotation,
-    ANNOTATION_TYPES
+    ANNOTATION_TYPES,
 } from "lib/Annotation";
 import { BASE_ANNOTATION_ID } from "lib/AnnotatedText";
 import addTibetanShay from "lib/addTibetanShay";
@@ -14,7 +14,6 @@ import User, { getAnonymousUser } from "lib/User";
 import AnnotationControls from "./AnnotationControls";
 import AnnotationDetail from "./AnnotationDetail";
 import AnnotationDetailEdit from "./AnnotationDetailEdit";
-
 configure({ adapter: new Adapter() });
 
 const source1 = new Source(1, "Derge");
@@ -68,26 +67,26 @@ const temporaryAnnotation = new TemporaryAnnotation(
 
 const extraName = [
     addTibetanShay(annotation1.getSourceName()),
-    addTibetanShay(annotation2.getSourceName())
+    addTibetanShay(annotation2.getSourceName()),
 ].join(" ");
 const baseAnnotationData = {
     id: baseAnnotation.id,
     name: addTibetanShay(baseAnnotation.getSourceName()),
     content: baseAnnotation.content,
-    annotation: baseAnnotation
+    annotation: baseAnnotation,
 };
 const annotation1Data = {
     id: annotation1.id,
     name: extraName,
     content: annotation1.content,
-    annotation: annotation1
+    annotation: annotation1,
 };
 const temporaryData = {
     id: temporaryAnnotation.id,
     name: temporaryAnnotation.getSourceName(),
     content: temporaryAnnotation.content,
     isTemporary: true,
-    annotation: temporaryAnnotation
+    annotation: temporaryAnnotation,
 };
 
 describe("AnnotationControls", () => {
@@ -120,12 +119,12 @@ test("Editing annotation", () => {
     const availableAnnotations = [
         temporaryAnnotation.basedOn,
         annotation1,
-        annotation2
+        annotation2,
     ];
     const annotationsData = [
         temporaryData,
         baseAnnotationData,
-        annotation1Data
+        annotation1Data,
     ];
 
     const controls = shallow(

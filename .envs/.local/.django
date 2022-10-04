@@ -1,0 +1,22 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+
+DATABASE_URL=
+
+# Discourse SSO
+DISCOURSE_SSO_KEY='wUGb7FoYCp9ioHRettehipMKbzjAPqVPXmUQXw]gCsbwq6UrV'
+DISCOURSE_SSO_REDIRECT='https://parkhang.lopenling.org/discourse/sso/'
+DISCOURSE_SSO_LOGIN_URL='https://lopenling.org/session/sso_provider'
+DISCOURSE_SSO_SIGNUP_URL='https://lopenling.org/signup'
+
+# Discourse API
+DISCOURSE_SITE='https://lopenling.org/'
+DISCOURSE_API_KEY='80e7929618fe0518f7275956b203d36b25450c68c95d49cea630d1cad85fd5ac'
+DISCOURSE_SYSTEM_USER='system'
+DISCOURSE_QA_TOPIC_ID=
+DISCOURSE_QA_CATEGORY_ID=55
+
+
+DJANGO_ALLOWED_HOSTS=["localhost", "0.0.0.0", "127.0.0.1","192.168.1.6","localhost:9500"]

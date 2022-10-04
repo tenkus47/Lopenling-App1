@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextsSearchContainer from "components/TextsSearch/TextsSearchContainer";
 import TextListContainer from "containers/TextListContainer";
 import TextListTabContainer from "components/TextList/TextListTabContainer";
 import * as constants from "app_constants";
 import lopenlingLogo from "images/lopenling_logo.png";
 import headerStyles from "components/Header/Header.css";
-import Resources from "components/Resources";
+import Sidebar from "components/Sidebar";
 import SplitPane, { Pane } from "react-split-pane";
 import styles from "./EditorContainer.css";
 import classnames from "classnames";
@@ -17,9 +17,11 @@ import {
     SpeedDialIcon,
     Snackbar,
     Alert,
+    Collapse,
 } from "@mui/material";
 
 import { Edit, Share, VerticalSplit, SyncAlt } from "@mui/icons-material";
+import { Box } from "@mui/system";
 const Editor = (props) => {
     let textListClassnames = [styles.listContainer];
     let bodyHeight;
@@ -39,12 +41,10 @@ const Editor = (props) => {
 
     bodyHeight = "calc(100vh - " + headerStyles.headerHeight + ")";
 
-    const image_location = lopenlingLogo;
     const handleClose = (event, reason) => {
         if (reason === "clickaway") {
             return;
         }
-
         setOpen(false);
     };
     const handleShare = () => {
@@ -104,13 +104,21 @@ const Editor = (props) => {
                 props.onChangeWindowOpen(!props.isSecondWindowOpen, 140),
         },
     ];
-
+    useEffect(() => {
+        let timer = setTimeout(() => {
+            window.dispatchEvent(new Event("resize"));
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [props.textListIsVisible]);
     return (
         <div className={classnames(styles.interface, utilStyles.flex)}>
-            <TextSheet bodyHeight={bodyHeight} />
+       
+                 
+                    <Sidebar />
+                    <TextSheet bodyHeight={bodyHeight} />
             <SpeedDial
                 ariaLabel="SpeedDial basic"
-                sx={{ position: "absolute", bottom: 16, right: 16 }}
+                sx={{ position: "absolute", bottom: 60, right: 16 }}
                 icon={<SpeedDialIcon />}
             >
                 {actions.map((action) => (

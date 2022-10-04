@@ -1,8 +1,8 @@
 // @flow
-import React, { Suspense } from "react";
+import React from "react";
 import classnames from "classnames";
 import imageStyle from "components/MediaComponent/Image.css";
-
+import Placeholder from "components/utility/Placeholder";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import SplitText from "lib/SplitText";
@@ -24,6 +24,7 @@ import TableOfContent from "./TableOfContent/TableOfContent";
 import SplitTextComponent from "components/TextDetail/SplitText";
 
 export type Props = {
+    condition: Boolean,
     paginated: boolean,
     pageImagesVisible: boolean,
     text: TextData | null,
@@ -85,7 +86,8 @@ class TextDetail extends React.Component<Props> {
     }
 
     mouseEnter() {
-        if (this.selectedWindow === 2) this.props.changeSelectedWindow(1);
+        if (this.selectedWindow === 2 && this.props.text.name)
+            this.props.changeSelectedWindow(1);
     }
     componentDidMount() {
         this.ref.current.addEventListener(
@@ -96,6 +98,7 @@ class TextDetail extends React.Component<Props> {
     componentDidUpdate() {
         this.selectedWindow = this.props.selectedWindow;
     }
+
     render() {
         let text = {
             name: "",
@@ -111,7 +114,11 @@ class TextDetail extends React.Component<Props> {
             !this.props.text ||
             this.props.loading
         ) {
-            textComponent = <div key={this.key} />;
+            textComponent = (
+                <div key={this.key}>
+                    <Placeholder />
+                </div>
+            );
         } else {
             let limitWidth = false;
             let splitter;
@@ -140,8 +147,10 @@ class TextDetail extends React.Component<Props> {
                     syncIdOnClick={this.props.syncIdOnClick}
                     textListVisible={this.props.textListVisible}
                     showImages={this.props.pageImagesVisible}
+                    // showImages={this.props.selectedMedia.isImageVisible}
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
+                    selectedWitness2={this.props.selectedWitness2}
                     key={this.key}
                     selectedSearchResult={this.props.selectedSearchResult}
                     searchValue={this.props.searchValue}
@@ -159,7 +168,7 @@ class TextDetail extends React.Component<Props> {
                     textAlignmentById={this.props.textAlignmentById}
                     isPanelVisible={this.props.isPanelVisible}
                     scrollToId={this.props.scrollToId}
-                    selectedWindow={this.props.selectedWindow}
+                    selectedWindow={this.selectedWindow}
                     selectedSourceRange={this.props.selectedSourceRange}
                     selectedTargetRange={this.props.selectedTargetRange}
                     changeSelectedRange={this.props.changeSelectedRange}
@@ -170,6 +179,7 @@ class TextDetail extends React.Component<Props> {
                     imageAlignmentById={this.props.imageAlignmentById}
                     changeImageScrollId={this.props.changeImageScrollId}
                     imageScrollId={this.props.imageScrollId}
+                    condition={this.props.condition}
                 />
             );
         }
@@ -180,7 +190,7 @@ class TextDetail extends React.Component<Props> {
                     height: "100%",
                     flex: 1,
                     bgcolor: "navbar.main",
-                    color: "text.primary",
+                    color: "texts.main",
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -198,11 +208,9 @@ class TextDetail extends React.Component<Props> {
                         display: "flex",
                         height: "100%",
                         width: "100%",
-                        position: "relative",
                     }}
                 >
                     <Box
-                        style={{ flex: 1 }}
                         className={classnames(
                             styles.textContainer,
                             utilStyles.flex
@@ -215,6 +223,8 @@ class TextDetail extends React.Component<Props> {
                         direction="left"
                         in={this.props.showTableContent}
                         container={this.ref.current}
+                        unmountOnExit
+                        mountOnEnter
                     >
                         <Box
                             sx={{

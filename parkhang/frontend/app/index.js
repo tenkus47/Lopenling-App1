@@ -2,9 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import Cookies from "js-cookie";
 import AppContainer from "components/App/AppContainer";
-import flagsmith from "flagsmith";
-import { FlagsmithProvider } from "flagsmith/react";
-import * as serviceWorker from "./service-worker";
+
 // For dev only
 import { composeWithDevTools } from "redux-devtools-extension";
 import * as api from "api";
@@ -66,31 +64,43 @@ import * as constants from "app_constants";
 function Fragment(props) {
     return props.children || <span {...props} /> || null;
 }
-
+const RouteEditorPage = (dispatch, getState) => {
+    dispatch(actions.changeUrl("Editors"));
+};
 const sagaMiddleware = createSagaMiddleware();
-
 // redux-first-router
 const routesMap = {
-    HOME: {
+    [actions.TEXTS]: {
         path: "/",
-        thunk: () => {
-            let h = history();
-            h.push("/textSelection");
+        thunk: (dispatch, getState) => {
+            dispatch(actions.changeUrl("HOME"));
         },
     },
-    [actions.TEXT_URL]: "/texts/:textId/witnesses/:witnessId/:annotation?",
-    [actions.TEXT_URL2]:
-        "/texts/:textId/witnesses/:witnessId/texts2/:textId2/witnesses2/:witnessId2?",
+    [actions.TEXT_URL]: {
+        path: "/texts/:textId/witnesses/:witnessId/:annotation?",
+        thunk: RouteEditorPage,
+    },
+    [actions.TEXT_URL2]: {
+        path: "/texts/:textId/witnesses/:witnessId/texts2/:textId2/witnesses2/:witnessId2?",
+        thunk: RouteEditorPage,
+    },
     USER: "/user/:id",
-    [actions.TEXTID_ONLY_URL]: "/texts/:textId",
-    [actions.TEXTS]: "/textSelection",
-    Text: {
-        path: "/test",
-        thunk: (data) => {
-            console.log(data);
-        },
+    [actions.TEXTID_ONLY_URL]: {
+        path: "/texts/:textId",
+        thunk: RouteEditorPage,
     },
+    editor: {
+        path: "/editor",
+        thunk: RouteEditorPage,
+    },
+    vote:{
+        path:"/vote",
+        thunk: (dispatch, getState) => {
+            dispatch(actions.changeUrl("Vote"));
+        },
+    }
 };
+
 const routes = connectRoutes(routesMap, {
     initialDispatch: false,
 });
@@ -149,22 +159,11 @@ function intlSelector(state) {
     };
 }
 
-const environmentID =
-    process.env.NODE_ENV === "development"
-        ? "3Dt7CemgqtVS5RUzFovjx9"
-        : "YrffVXdfn7BzSFVmLBFdrv";
 const root = ReactDOM.createRoot(document.getElementById("app"));
 root.render(
     <Provider store={store}>
         <IntlProvider textComponent={Fragment} intlSelector={intlSelector}>
-            {/* <FlagsmithProvider
-                options={{
-                    environmentID,
-                }}
-                flagsmith={flagsmith}
-            > */}
             <AppContainer />
-            {/* </FlagsmithProvider> */}
         </IntlProvider>
     </Provider>
 );

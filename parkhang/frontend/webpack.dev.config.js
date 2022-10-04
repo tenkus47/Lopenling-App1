@@ -1,6 +1,5 @@
 var path = require("path");
 var webpack = require("webpack");
-
 var BundleTracker = require("webpack-bundle-tracker");
 var postcssImport = require("postcss-import");
 var postcssCssnext = require("postcss-cssnext");
@@ -35,6 +34,7 @@ module.exports = {
             },
         }),
         new LodashModuleReplacementPlugin(),
+       
     ],
 
     module: {
@@ -124,7 +124,7 @@ module.exports = {
                     },
                 ],
             },
-            {
+           {
                 test: /\.svg$/,
                 use: [
                     {
@@ -134,14 +134,14 @@ module.exports = {
                                 plugins: [
                                     {
                                         inlineStyles: {
-                                            onlyMatchedOnce: false,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                ],
+                                            onlyMatchedOnce: false
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(png|jpe?g|gif)$/i,
@@ -160,4 +160,7 @@ module.exports = {
     },
 
     devtool: "cheap-module-source-map",
+    devServer: {
+        hot: true,
+    },
 };

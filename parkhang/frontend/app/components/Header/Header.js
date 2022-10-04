@@ -1,5 +1,5 @@
 // @flow
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { connect } from "react-redux";
 import classnames from "classnames";
 import styles from "./Header.css";
@@ -16,17 +16,15 @@ import {
     getUser,
     getActiveLocale,
     getTheme,
+    getSelectedText,
 } from "reducers";
 import * as actions from "actions";
 import lopenlingLogo from "images/lopenling_logo_173x.png";
 import UserIcon from "images/discourse_user.svg";
 import { NavLink } from "redux-first-router-link";
-import TranslateButton from "components/utility/TranslateButton";
-import { history } from "redux-first-router";
-import Resources from "components/Resources";
 import ToggleTheme from "./ToggleTheme";
+import { pageList } from "reducers/pages";
 import {
-    Container,
     Button,
     Tooltip,
     Stack,
@@ -34,24 +32,22 @@ import {
     Menu,
     IconButton,
     MenuItem,
-    Typography,
-    Drawer,
-    getInitColorSchemeScript,
     AppBar,
 } from "@mui/material";
 import { Person as PersonIcon, Menu as MenuIcon } from "@mui/icons-material";
-import { useLayoutEffect } from "react";
+import _ from "lodash";
 type LoginProps = {
     successRedirect: string,
     csrfToken: string,
 };
-const image_location = lopenlingLogo;
+let linkToEditor = "/editor";
 
 export const LoginControls = (props: LoginProps) => (
     <Stack direction="row" spacing={2}>
         <a href={SSO_SIGNUP_URL}>
             <Button
                 variant="contained"
+                className={styles.ButtonText}
                 style={{
                     padding: "6px 10px",
                     boxShadow:
@@ -69,7 +65,8 @@ export const LoginControls = (props: LoginProps) => (
             <Button
                 variant="contained"
                 type="submit"
-                style={{
+                className={styles.ButtonText}
+                sx={{
                     padding: "6px 10px",
                     display: "flex",
                     alignItems: "center",
@@ -77,7 +74,7 @@ export const LoginControls = (props: LoginProps) => (
                         "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
                 }}
             >
-                <PersonIcon style={{ height: 18, width: 19 }} />
+                <PersonIcon style={{ height: 16, width: 16 }} />
                 <FormattedMessage id="header.login" />
             </Button>
             <input
@@ -112,11 +109,8 @@ export const LoggedInControls = (props: LoggedInControlsProps) => {
             <Menu
                 anchorEl={anchorEl}
                 id="account-menu"
-                open={props.overlayVisible}
+                open={props.overlayVisible || false}
                 onClose={props.accountButtonClicked}
-                MenuListProps={{
-                    "aria-labelledby": "account-menu-button",
-                }}
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "top" }}
                 style={{ top: 20 }}
@@ -166,8 +160,7 @@ type HeaderProps = {
 
 export const Header = (props: HeaderProps) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
-
-    let locations = history();
+    const selectedText = props.selectedText;
     let controls = null;
     if (props.user.isLoggedIn) {
         controls = (
@@ -186,7 +179,7 @@ export const Header = (props: HeaderProps) => {
         );
     }
 
-    let toggleTitle = props.intl.formatMessage({
+    let toggleTitle = props.intl?.formatMessage({
         id: "header.toggleTextList",
     });
 
@@ -195,6 +188,11 @@ export const Header = (props: HeaderProps) => {
             <NavLink {...props} />
         </div>
     ));
+    React.useEffect(() => {
+        if (selectedText) {
+            linkToEditor = `/texts/${selectedText.id}`;
+        }
+    }, [selectedText]);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -202,24 +200,13 @@ export const Header = (props: HeaderProps) => {
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-    const drawer = React.useMemo(
-        () => (
-            <Drawer
-                anchor={"left"}
-                open={props.textListIsVisible}
-                onClose={props.navigationButtonClicked}
-            >
-                <Resources />
-            </Drawer>
-        ),
-        [props.textListIsVisible]
-    );
     const themeChange = useCallback((e) => props.themeButtonClicked(e), []);
+    console.log(props.page)
     return (
         <AppBar
             position="static"
             color="navbar"
-            sx={{ boxShadow: 1, paddingBlock: 1, zIndex: 3 }}
+            sx={{ boxShadow: 1, zIndex: 3,display: props.page==='Vote' ?'none':'block' }}
             // className={styles.header}
         >
             <Stack
@@ -228,8 +215,8 @@ export const Header = (props: HeaderProps) => {
                 justifyContent={"space-between"}
                 sx={{
                     height: "100%",
-                    width: "100%",
-                    paddingInline: 2,
+                    maxWidth: "100%",
+                    paddingInline: 1,
                 }}
             >
                 <Box
@@ -240,48 +227,47 @@ export const Header = (props: HeaderProps) => {
                         alignItems: { md: "center" },
                     }}
                 >
-                    {!locations.location.pathname.includes("/texts") && (
                         <NavLink to="/">
                             <div className={styles.logo}>
                                 <img
-                                    src={image_location}
+                                    src={lopenlingLogo}
                                     height="37"
                                     width={173}
                                     alt="parkhang-logo"
                                 />
                             </div>
                         </NavLink>
-                    )}
 
-                    {locations.location.pathname.includes("/texts") && (
+                    {/* {props.page === "Editors" && (
                         <NavigationButton
                             onClick={props.navigationButtonClicked}
                             className={styles.navigationButton}
                             title={toggleTitle}
                             isListVisible={props.textListVisible}
                         />
-                    )}
+                    )} */}
                     <Box display={{ xs: "none", md: "flex" }}>
-                        <Button
-                            to={"/textSelection"}
-                            component={LinkRef}
-                            variant="text"
-                            color="links"
-                        >
-                            <FormattedMessage id={"header.texts"} />
-                        </Button>
-                        <Button
-                            to={"/texts/2"}
-                            component={LinkRef}
-                            variant="text"
-                            disabled
-                            color="links"
-                        >
-                            <FormattedMessage id={"header.editor"} />
-                        </Button>
+                        {pageList.map((page, i) => {
+                            return (
+                                <Button
+                                    to={
+                                        page.pageName === "Editors"
+                                            ? linkToEditor
+                                            : page.url
+                                    }
+                                    variant="text"
+                                    component={LinkRef}
+                                    color="links"
+                                    key={page.id}
+                                >
+                                    <FormattedMessage id={page.id} />
+                                </Button>
+                            );
+                        })}
+
                         <Tooltip title="Forum">
                             <Button
-                                href={"https://www.lopenling.org"}
+                                href={"https://lopenling.org"}
                                 variant="text"
                                 component={"a"}
                                 color="links"
@@ -328,8 +314,8 @@ export const Header = (props: HeaderProps) => {
                     >
                         <MenuItem onClick={handleCloseNavMenu}>
                             <Button
-                                to={"/textSelection"}
-                                style={{ color: "#676767" }}
+                                to={"/"}
+                                color="links"
                                 component={LinkRef}
                                 variant="text"
                             >
@@ -338,8 +324,19 @@ export const Header = (props: HeaderProps) => {
                         </MenuItem>
                         <MenuItem onClick={handleCloseNavMenu}>
                             <Button
+                                to={linkToEditor}
+                                component={LinkRef}
+                                variant="text"
+                                color="links"
+                                // disabled={_.isEmpty(props.text)}
+                            >
+                                <FormattedMessage id={"header.editor"} />
+                            </Button>
+                        </MenuItem>
+                        <MenuItem onClick={handleCloseNavMenu}>
+                            <Button
                                 href={"https://www.lopenling.org"}
-                                style={{ color: "#676767" }}
+                                color="links"
                                 variant="text"
                                 component={"a"}
                             >
@@ -349,13 +346,15 @@ export const Header = (props: HeaderProps) => {
                         <MenuItem onClick={handleCloseNavMenu}>
                             <Button
                                 href={"https://www.nalanda.works"}
-                                style={{ color: "#676767" }}
+                                color="links"
                                 variant="text"
                                 component={"a"}
                             >
                                 <FormattedMessage id={"Nalanda"} />
                             </Button>
                         </MenuItem>
+
+                    
                     </Menu>
                 </Box>
                 <Stack
@@ -363,8 +362,7 @@ export const Header = (props: HeaderProps) => {
                     alignItems="center"
                     sx={{ float: { sx: "right" } }}
                 >
-                    {/* <LocaleSwitcher /> */}
-                    <TranslateButton />
+                    <LocaleSwitcher />
                     {controls}
                     <ToggleTheme
                         theme={props.theme}
@@ -372,8 +370,6 @@ export const Header = (props: HeaderProps) => {
                     />
                 </Stack>
             </Stack>
-
-            <React.Fragment>{drawer}</React.Fragment>
         </AppBar>
     );
 };
@@ -384,8 +380,9 @@ const mapStateToProps = (state: AppState): { user: User } => {
     const successRedirect = document.location.pathname;
     // TODO: move global CSRF_TOKEN into redux
     const csrfToken = CSRF_TOKEN;
-
+    const page = state.page;
     return {
+        page:state.page,
         user: user,
         activeLocale: activeLocale,
         textListIsVisible: getTextListVisible(state),
@@ -394,6 +391,9 @@ const mapStateToProps = (state: AppState): { user: User } => {
         successRedirect: successRedirect,
         csrfToken: csrfToken,
         theme: getTheme(state),
+        text: getSelectedText(state),
+        page,
+        selectedText: getSelectedText(state),
     };
 };
 

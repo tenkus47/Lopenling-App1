@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useRef, Suspense } from "react";
+import React, { useEffect, useRef } from "react";
 import TextDetailHeading from "./TextDetailHeadingContainer";
 import SplitText from "lib/SplitText";
 import Loader from "react-loader";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
-import styles from "./TextDetail.css";
+import styles from "components/TextDetail/TextDetail.css";
 import { Box, Divider, Slide } from "@mui/material";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
 import classnames from "classnames";
+import Placeholder from "components/utility/Placeholder";
 
 import imageStyle from "components/MediaComponent/Image.css";
 import SplitTextComponent from "./SplitText";
@@ -29,14 +30,21 @@ function TextDetail(props) {
     }, []);
 
     function mouseEnter() {
-        props.changeSelectedWindow(2);
+        if (text.name) {
+            props.changeSelectedWindow(2);
+        }
     }
 
     let inlineControls = false;
     let textComponent = null;
     let splitText = null;
+    const selectedWindow = props.selectedWindow;
     if (!props.annotatedText || !props.text || props.loading) {
-        textComponent = <div key={`key-${Math.random()}`} />;
+        textComponent = (
+            <div key={Math.random()}>
+                <Placeholder />
+            </div>
+        );
     } else {
         let limitWidth = false;
         let splitter;
@@ -75,7 +83,7 @@ function TextDetail(props) {
                 isPanelLinked={props.isPanelLinked}
                 changeScrollToId={props.changeScrollToId}
                 changeSyncIdOnClick={props.changeSyncIdOnClick}
-                selectedWindow={props.selectedWindow}
+                selectedWindow={selectedWindow}
                 selectedSourceRange={props.selectedSourceRange}
                 selectedTargetRange={props.selectedTargetRange}
                 changeSelectedRange={props.changeSelectedRange}
@@ -83,6 +91,7 @@ function TextDetail(props) {
                 searchValue={props.searchValue}
                 selectedText={props.text}
                 syncIdOnSearch={props.syncIdOnSearch}
+                condition={props.condition}
             ></SplitTextComponent>
         );
     }
@@ -94,17 +103,17 @@ function TextDetail(props) {
     return (
         <Box
             ref={ref}
-            className={styles.textDetail2}
+            className={styles.textDetail}
             sx={{
                 height: "100%",
                 flex: 1,
                 bgcolor: "navbar.main",
-                color: "text.primary",
+                color: "texts.main",
             }}
         >
             <TextDetailHeading />
             <Divider />
-            <Loader loaded={!props.loading} />
+            <Loader loaded={!props.loading} zIndex={5} />
             <Box
                 style={{
                     display: "flex",
@@ -114,21 +123,19 @@ function TextDetail(props) {
                 }}
             >
                 <Box
-                    style={{ flex: 1 }}
                     className={classnames(
-                        styles.textContainer2,
+                        styles.textContainer,
                         utilStyles.flex
                     )}
                 >
-                    <Suspense fallback={<div />}>
-                        {!props.loading ? textComponents : <div></div>}
-                    </Suspense>
+                    {!props.loading ? textComponents : <div />}
                 </Box>
-
                 <Slide
                     direction="left"
                     in={props.showTableContent}
                     container={ref.current}
+                    unmountOnExit
+                    mountOnEnter
                 >
                     <Box
                         sx={{

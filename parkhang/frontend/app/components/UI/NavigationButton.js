@@ -3,6 +3,7 @@ import classnames from "classnames";
 import styles from "./NavigationButton.css";
 import HamburgerIcon from "images/hamburger.svg";
 import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 type Props = {
     onClick?: () => void,
     className?: string,
@@ -23,7 +24,11 @@ const NavigationButton = (props: Props) => {
             onClick={props.onClick}
             title={props.title}
         >
-            <HamburgerIcon fill="currentColor" />
+            {!props.isListVisible ? (
+                <HamburgerIcon fill="currentColor" />
+            ) : (
+                <CloseIcon fill="currentColor" />
+            )}
         </IconButton>
     );
 };

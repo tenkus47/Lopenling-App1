@@ -1,20 +1,8 @@
-import React, {
-    useRef,
-    useEffect,
-    useState,
-    useCallback,
-    useMemo,
-} from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import ReactPlayer from "react-player";
 import _ from "lodash";
-import styles from "./Video.css";
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Typography,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Collapse } from "@mui/material";
+
 function toHMS(seconds) {
     var date = new Date(null);
     date.setSeconds(seconds);
@@ -30,178 +18,125 @@ function calTimeToSeek(maxValue, currentTime) {
     let i = toSec(currentTime) / maxValue;
     return parseFloat(i);
 }
-
+function getClosestNumber(arr, d) {
+    return arr.reduce((a, b) => (b <= d && a < b ? b : a), 0);
+}
 function Video(props) {
     let textIdfromAlignment = props.alignmentData.text;
-    const VideoData = props.videoData.alignment || [];
-    const url = props.videoData.url || "";
-    const sourceId = parseInt(props.videoData.source);
+    let sourceId = props?.videoData?.source?.text;
+    const VideoData = props?.videoData?.alignment || [];
+    const url = "https://www.youtube.com/watch?v=2MMM_ggekfE";
     const [interval, setInterval] = useState({});
-    let VideoIdList = [];
-    let newList = ["0"];
-    const syncIdOnScroll = props.syncIdOnScroll;
+    let VideoIdListRange = [];
+    let closestID = [];
+    // const syncIdOnScroll = props.syncIdOnScroll;
     const syncIdOnClick = props.syncIdOnClick;
     const [state, setState] = useState({
-        seeking: false,
         played: 0,
         duration: 0,
         playing: true,
     });
-    let inter = useMemo(() => interval, [interval]);
     if (!_.isEmpty(VideoData)) {
-        VideoIdList = VideoData.map((l) => parseInt(l.source_segment.start));
+        VideoIdListRange = VideoData.map((l) => [
+            parseInt(l.source_segment.start),
+            parseInt(l.source_segment.end),
+        ]);
     }
+
     useEffect(() => {
         if (textIdfromAlignment === props.selectedText.id) {
             //     let intersection = syncIdOnScroll.filter(element => VideoIdList.includes(element));
             //     newList= VideoData.filter(d=>d.source_segment===intersection[0]);
             //     jumpToTime(newList[0]?.target_segment.start)
-            let ClickId = syncIdOnClick.toString().replace("s_", "");
+            let ClickId = syncIdOnClick;
 
-            let temp = 0;
-            VideoIdList.sort().forEach((l) => {
-                if (l <= ClickId) {
-                    temp = l;
-                }
-            });
-            let data = VideoData.find(
-                (l) => l.source_segment.start === temp.toString()
+            closestID = VideoIdListRange.find(
+                ([start, end]) => ClickId > start && ClickId < end
             );
-            if (!_.isEmpty(data)) {
-                jumpToTime(data.target_segment.start);
+            if (closestID) {
+                let data = VideoData.find(
+                    (l) => l.source_segment.start === closestID[0]?.toString()
+                );
+
+                if (!_.isEmpty(data)) {
+                    jumpToTime(data.target_segment.start);
+                }
             }
         }
     }, [syncIdOnClick]);
 
     const changeTextBackground = useCallback(() => {
-        let current = inter;
+        let current = interval;
         if (textIdfromAlignment === props.selectedText.id) {
             for (let i = current.start; i < current.end; i++) {
                 let currentIds = document.getElementById(`s_${i}`);
                 if (currentIds) {
-                    currentIds.style.background = "rgb(224, 224, 81)";
                     currentIds.style.fontWeight = "bold";
                 }
             }
         }
-    }, [inter]);
+    }, [interval.start]);
 
     useEffect(() => {
-        let timer = setTimeout(() => changeTextBackground(), 300);
+        let timer = setTimeout(() => changeTextBackground(), 800);
+        let current = interval;
+        if (interval.start) {
+            props.changeScrollToId({
+                id: current.start || null,
+                from: "video",
+            });
+        }
         return () => {
             clearTimeout(timer);
-            let current = interval;
             for (let i = current.start; i < current.end; i++) {
                 let currentIds = document.getElementById(`s_${i}`);
                 if (currentIds) {
-                    currentIds.style.background = "white";
                     currentIds.style.fontWeight = "normal";
                 }
             }
         };
-    }, [inter.start]);
+    }, [interval.start]);
 
     const videoRef = useRef();
 
-    const jumpToTime = useCallback(
-        (time) => {
-            let newData = calTimeToSeek(state.duration, time);
-            videoRef.current.seekTo(parseFloat(newData));
-        },
-        [state]
-    );
+    const jumpToTime = (time) => {
+        let newData = calTimeToSeek(state.duration, time);
+        videoRef.current.seekTo(parseFloat(newData));
+    };
 
     const handleProgress = (e) => {
-        changeTextBackground();
         const played = e.playedSeconds;
-        const Interval = VideoData.filter(
+        const Interval = VideoData.find(
             (time) =>
                 toSec(time.target_segment.start) < played &&
                 toSec(time.target_segment.end) > played
         );
         if (!_.isEmpty(Interval)) {
-            let source_segment = Interval[0].source_segment;
+            let source_segment = Interval.source_segment;
+            changeTextBackground();
             setInterval({ ...source_segment });
-            let length = source_segment.end - source_segment.start;
-            props.onSelectedSearchResult(
-                textIdfromAlignment,
-                source_segment.start,
-                length,
-                textIdfromAlignment
-            );
         }
     };
-
+    if (VideoData.length === 0) return <div />;
+    if (sourceId !== props.selectedText.id) return <div />;
     return (
-        <div style={{ width: "100%" }}>
+        <Collapse in={props.open}>
             <ReactPlayer
                 url={url}
+                style={{ maxWidth: "100%" }}
                 ref={videoRef}
-                width="100%"
                 controls={true}
                 onDuration={(duration) =>
                     setState({ ...state, duration: duration })
                 }
-                playing={true}
+                light
+                playing
                 onPlay={() => setState({ ...state, playing: true })}
                 onPause={() => setState({ ...state, playing: false })}
                 onProgress={handleProgress}
+                onError={() => console.log("error in media sec")}
             />
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
-                    <Typography>Info</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Typography>Text: ###</Typography>
-                    <Typography>Explained By :###</Typography>
-                </AccordionDetails>
-            </Accordion>
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
-                    <Typography>Timeline </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th>Sr</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Jump</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {VideoData.map((list, i) => (
-                                <tr key={i + "key"} className={styles.Timeline}>
-                                    <td>{i + 1}</td>
-                                    <td>{list.target_segment.start}</td>
-                                    <td>{list.target_segment.end}</td>
-                                    <td>
-                                        <button
-                                            onClick={() =>
-                                                jumpToTime(
-                                                    list.target_segment.start
-                                                )
-                                            }
-                                        >
-                                            Jump
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </AccordionDetails>
-            </Accordion>
-        </div>
+        </Collapse>
     );
 }
 

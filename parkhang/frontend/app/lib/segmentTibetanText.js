@@ -4,8 +4,7 @@ import TextSegment from "./TextSegment";
 
 export default function segmentTibetanText(text: string): SegmentedText {
     const breaks = "།།";
-    const spaces = "༌་ \n";
-    const sharSpace = "། །";
+    const spaces = "་་ \n";
 
     let segments = [];
     let currentSegment = "";

@@ -8,24 +8,33 @@ import AnswerView from "./AnswerView";
 import { FormattedMessage, FormattedDate } from "react-intl";
 import classnames from "classnames";
 import { QUESTION_URL } from "app_constants";
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
+import {DiscourseForum} from "components/utility/discourseForum";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 type Props = {
     question: Question,
 };
 
 export default class QuestionView extends React.Component<Props> {
+     delete() {
+        if (this.props.delete) {
+            this.props.delete();
+        }
+    }
+    
     render() {
-        const topicUrl = QUESTION_URL + this.props.question.topicId;
+        const topicId=this.props.question.topicId|| null
+        const topicUrl = QUESTION_URL + topicId;
         let answerViews = [];
         let answers = this.props.question.answers;
-        console.log(answers);
         for (let i = 0; i < answers.length; i++) {
             const answer = answers[i];
             answerViews.push(
                 <AnswerView answer={answer} key={"answer_" + answer.created} />
             );
         }
+       
         const name =
             this.props.question.name.length > 0
                 ? this.props.question.name
@@ -36,6 +45,13 @@ export default class QuestionView extends React.Component<Props> {
                 className={classnames(styles.question, controlStyles.padding)}
                 sx={{ boxShadow: 2 }}
             >
+                <p
+                    className={controlStyles.text}
+                    dangerouslySetInnerHTML={{
+                        __html: this.props.question.content,
+                    }}
+                />
+<div style={{display:'flex',alignItems:'center'}}>
                 <span
                     className={classnames(
                         styles.threadLink,
@@ -45,18 +61,25 @@ export default class QuestionView extends React.Component<Props> {
                     <a href={topicUrl} target="_blank">
                         <FormattedMessage id="question.viewThread" />
                     </a>
-                </span>
-                <p
-                    className={controlStyles.text}
-                    dangerouslySetInnerHTML={{
-                        __html: this.props.question.content,
-                    }}
-                />
+                     </span>
+               
+                 {this.props.delete && (
+                        <div
+                            className={styles.delete}
+                            onClick={this.delete.bind(this)}
+                        >
+                            <IconButton aria-label="delete" size="small">
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
+                        </div>
+                    )}
+     </div>
                 <p className={controlStyles.subTitle}>
-                    {name},{" "}
+                    {name}
                     <FormattedDate value={this.props.question.created} />
                 </p>
-                {answerViews}
+                {/* {answerViews} */}
+              <DiscourseForum  topicId={topicId}/>
             </Box>
         );
     }
