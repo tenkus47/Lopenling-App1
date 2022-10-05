@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from "react";
+import React from "react";
 import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
@@ -100,13 +100,12 @@ const AnnotationDetail = (props: Props) => {
                     ></button>
                 )}
             </div>
-
             {!props.isWorkingSection && desc }
-        {props.isActive &&     <div className={styles.contentOptions}>
+        {props.isActive &&<div className={styles.contentOptions}>
+
              <Voting data={props.annotationData}/>
              <Share content={props.annotationData.content}/>
 </div>}
-            {/* {props.isWorkingSection  && <ShareButton props={props}/>} */}
         </div>
     );
 };

@@ -57,8 +57,8 @@ const matchDispatchToProps = (dispatch) => {
                 dispatch(actions.changedActiveTextAnnotation(null));
             }
         },
-        onChangeWindowOpen: (data: boolean, textId) => {
-            dispatch(actions.toggleSecondWindow(data, textId));
+        onChangeWindowOpen: (data: boolean) => {
+            dispatch(actions.toggleSecondWindow(data));
         },
         dispatch,
     };

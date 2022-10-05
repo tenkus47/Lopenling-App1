@@ -54,6 +54,11 @@ const mapStateToProps = (state: AppState): {} => {
 const mapDispatchToProps = (dispatch) => {
     const changeMediaSelection = (data) =>
         dispatch(actions.mediaSelection(data));
+    
+    const onChangeWindowOpen=(data: boolean ) => {
+            dispatch(actions.toggleSecondWindow(data));
+        }
+
     return {
         changeMediaSelection,
         onChangeWindowOpen: (data: boolean) => {
@@ -67,8 +72,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(actions.selectedSearchResult(text, start, length));
         },
         selectSecondWindowText: (data) => {
+            onChangeWindowOpen(true);
             dispatch(actions.selectedText2(data));
-        },
+        }
     };
 };
 

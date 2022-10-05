@@ -201,7 +201,6 @@ export const Header = (props: HeaderProps) => {
         setAnchorElNav(null);
     };
     const themeChange = useCallback((e) => props.themeButtonClicked(e), []);
-    console.log(props.page)
     return (
         <AppBar
             position="static"

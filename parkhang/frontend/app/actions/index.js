@@ -93,7 +93,7 @@ export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
 export const UPDATED_SEARCH_RESULTS2 = "textList/UPDATED_SEARCH_RESULTS2";
 
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
-export const SECOND_WINDOW = "notification/SECOND_WINDOW";
+export const SECOND_WINDOW = "UI/SECOND_WINDOW";
 
 export const CHANGE_RANGE_SELECTION = "CHANGE_RANGE_SELECTION";
 
@@ -967,14 +967,13 @@ export function setTextAlignment(data) {
         data,
     };
 }
-export function toggleSecondWindow(data, textId) {
+export function toggleSecondWindow(data) {
     setTimeout(()=>{
    window.dispatchEvent(new Event('resize'));
     },10)
     return {
         type: SECOND_WINDOW,
         payload: data,
-        textId,
     };
 }
 
@@ -985,12 +984,7 @@ export function changeScrollToId(payload) {
     };
 }
 
-export function changeImageScrollId(data) {
-    return {
-        type: IMAGE_SCROLL_ID,
-        data,
-    };
-}
+
 
 export function changeSyncIdOnClick(payload) {
     return {

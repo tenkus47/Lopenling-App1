@@ -410,6 +410,7 @@ class AnnotationControls extends React.Component<Props> {
                                     );
                                 }
                             }}
+                          
                             isLoggedIn={isLoggedIn}
                         />
                     );

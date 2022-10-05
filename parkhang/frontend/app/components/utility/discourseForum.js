@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-
+import setting from './discourseforumsettings';
 function postMessageReceived(e) {
     if (!e) {
       return;
@@ -16,26 +16,25 @@ window.addEventListener("message", postMessageReceived, false);
 
 
 export function DiscourseForum({topicId}) {
+        if(!topicId) topicId=12*Math.floor(Math.random()*100);
+
     useEffect(() => {
         window.DiscourseEmbed = {
             discourseUrl: "https://lopenling.org/",
-            topicId:topicId?topicId:null,
-            discourseEmbedUrl: !topicId && '{{url absolute="true"}}'
+            topicId:topicId,
         };
         const d = document.createElement("script");
         d.type = "text/javascript";
         d.async = true;
-        d.src = window.DiscourseEmbed.discourseUrl + "javascripts/embed.js";
+        d.src = setting(topicId);
         (
             document.getElementsByTagName("head")[0] ||
             document.getElementsByTagName("body")[0]
         ).appendChild(d);
-    }, [topicId]);
+    }, []);
 
     return (
-        <div>
-            <div id="discourse-comments"></div>
-        </div>
+            <div id={`discourse-comments-${topicId}`}></div>
     );
 }
 
@@ -46,7 +45,6 @@ React.useEffect(()=>{
     for (var i = 0; i < lists.length; i++) {
       var list = lists[i];
       var url = list.getAttribute("url");
-      console.log(url)
       if (!url || url.length === 0) {
         console.error("Error, `discourse-url` was not found");
         continue;
@@ -76,4 +74,10 @@ return <div id='topics' url="https://lopenling.org/" style={{maxHeight:'70vh',ov
                ></div>
     
 }
+
+
+
+
+
+
 

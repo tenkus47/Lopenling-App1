@@ -88,8 +88,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         onChangedFontSize: (fontSize: number) => {
             dispatch(actions.changedTextFontSize(fontSize));
         },
-        onChangeWindowOpen: (data: boolean, textId) => {
-            dispatch(actions.toggleSecondWindow(data, textId));
+        onChangeWindowOpen: (data: boolean) => {
+            dispatch(actions.toggleSecondWindow(data));
         },
         onExport: () => {
             dispatch(

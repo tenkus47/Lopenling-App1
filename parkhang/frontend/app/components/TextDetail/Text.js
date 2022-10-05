@@ -347,8 +347,11 @@ class Text extends React.Component<Props, State> {
                     }
                     else if(remainingAnnotations.some(l=>l.type==='P')){
                         classes.push(styles.P_annotation)
-                    }else{
+                    }else if(remainingAnnotations.some(l=>l.type==='Q')){
                         classes.push(styles.Q_annotation)
+                    }
+                    else{
+                        classes.push(styles.V_annotation)
                     }
                 }
             }
@@ -508,7 +511,7 @@ class Text extends React.Component<Props, State> {
     }
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const renderedHtml = this.generateHtml(nextProps, nextState);
-
+       
         if (this.props.fontSize !== nextProps.fontSize) {
             return true;
         } else if (
@@ -520,6 +523,7 @@ class Text extends React.Component<Props, State> {
             this._renderedHtml = renderedHtml;
             return true;
         }
+
     }
    
     componentDidUpdate() {

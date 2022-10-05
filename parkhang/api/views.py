@@ -421,7 +421,6 @@ class UserAnnotationOperationDetail(APIView):
             raise NotFound("That annotation id is not applied to the given witness")
 
         user_annotation_operation.delete()
-
         return Response("", status=status.HTTP_204_NO_CONTENT)
 
 

@@ -92,7 +92,6 @@ export type Props = {
     showTableContent: Boolean,
     syncIdOnSearch: String,
     imageAlignmentById: [],
-    changeImageScrollId: () => void,
     condition: Boolean,
 };
 
@@ -128,7 +127,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     imageHeight: number | null;
     calculatedImageHeight: number | null;
     changeScrollToId: () => void;
-    changeImageScrollId: () => void;
     changeSyncIdOnClick: () => void;
     wheelScrolling: () => void;
     closeAnnotation: () => void;
@@ -143,7 +141,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     targetId;
     condition;
     imageAlignmentById;
-    changeImageScrollId;
     imageData;
     constructor(props: Props) {
         super(props);
@@ -154,7 +151,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             fixedWidth: true,
         });
         this.imageAlignmentById = this.props.imageAlignmentById;
-        this.changeImageScrollId = this.props.changeImageScrollId;
         this.splitTextRef = React.createRef(null);
         this.rowRenderer = this.rowRenderer.bind(this);
         this.textListVisible = props.textListVisible;
@@ -177,7 +173,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.textAlignmentById = [];
         this.scrollEvent = this.scrollEvent.bind(this);
         this.selectedWindow = props.selectedWindow;
-        this.changeImageScrollId = props.changeImageScrollId;
         this.imageData = props.imageData;
         this.condition = props.condition;
     }
@@ -714,15 +709,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             if (list.length) {
                 this.changeScrollToId({ id: list[0]?.start, from: 1 });
             }
-            // if (imagelist.length) {
-            //     this.changeImageScrollId({
-            //         id: {
-            //             start: imagelist[0]?.start,
-            //             end: imagelist[0]?.end,
-            //         },
-            //         from: 1,
-            //     });
-            // }
+         
         }, 1000);
 
         window.addEventListener("resize", this.resizeHandler);
@@ -754,10 +741,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.imageAlignmentById = this.props.imageAlignmentById;
         this.SearchSyncId = this.props.syncIdOnSearch || null;
         this.condition = this.props.condition;
-
         let scrollToId = this.props.scrollToId;
         let list = this.list;
-
+        if(!this.props.isAnnotating){
+            this.activeSelection=null
+        }
         let con =
             prevProps?.searchResults !== this.props?.searchResults ||
             prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;

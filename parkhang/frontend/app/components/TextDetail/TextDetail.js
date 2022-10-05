@@ -56,6 +56,7 @@ export type Props = {
     changeScrollToId: () => void,
     changeSelectedImage: () => void,
     closeAnnotation: () => void,
+    textAlignment:[],
     textAlignmentById: {},
     selectedWindow: Number,
     changeSelectedWindow: () => void,
@@ -68,8 +69,8 @@ export type Props = {
     showTableContent: Boolean,
     syncIdOnSearch: String,
     imageAlignmentById: [],
-    changeImageScrollId: () => void,
     imageScrollId: {},
+    isAnnotating:Boolean
 };
 
 let textDetailId = 0;
@@ -144,13 +145,12 @@ class TextDetail extends React.Component<Props> {
                     selectedAnnotatedSegments={
                         this.props.selectedAnnotatedSegments
                     }
+                    isAnnotating={this.props.isAnnotating}
                     syncIdOnClick={this.props.syncIdOnClick}
                     textListVisible={this.props.textListVisible}
                     showImages={this.props.pageImagesVisible}
-                    // showImages={this.props.selectedMedia.isImageVisible}
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
-                    selectedWitness2={this.props.selectedWitness2}
                     key={this.key}
                     selectedSearchResult={this.props.selectedSearchResult}
                     searchValue={this.props.searchValue}
@@ -177,8 +177,6 @@ class TextDetail extends React.Component<Props> {
                     selectedText={this.props.text}
                     syncIdOnSearch={this.props.syncIdOnSearch}
                     imageAlignmentById={this.props.imageAlignmentById}
-                    changeImageScrollId={this.props.changeImageScrollId}
-                    imageScrollId={this.props.imageScrollId}
                     condition={this.props.condition}
                 />
             );
