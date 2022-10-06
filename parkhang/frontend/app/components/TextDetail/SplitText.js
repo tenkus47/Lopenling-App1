@@ -47,10 +47,8 @@ let _searchResultsCache: {
         },
     },
 } = {};
-// function HttpUrl(data = "") {
-//     if (data.includes("https")) return data;
-//     return "https://" + data;
-// }
+
+
 export type Props = {
     textListVisible: boolean,
     editMenuVisible: Boolean,
@@ -90,8 +88,6 @@ export type Props = {
     selectedSourceRange: [],
     searchResults: [],
     showTableContent: Boolean,
-    syncIdOnSearch: String,
-    imageAlignmentById: [],
     condition: Boolean,
 };
 
@@ -140,7 +136,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     debouncedScroll;
     targetId;
     condition;
-    imageAlignmentById;
     imageData;
     constructor(props: Props) {
         super(props);
@@ -150,7 +145,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
         });
-        this.imageAlignmentById = this.props.imageAlignmentById;
         this.splitTextRef = React.createRef(null);
         this.rowRenderer = this.rowRenderer.bind(this);
         this.textListVisible = props.textListVisible;
@@ -195,19 +189,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }
                 }
             });
-            // this.imageAlignmentById.map((l) => {
-            //     let number = document.getElementById("s_" + l?.start);
-            //     if (number) {
-            //         let position = number.getBoundingClientRect();
-            //         if (position.top > 102) {
-            //             imageIdList.push({
-            //                 id: l.id,
-            //                 start: l.start,
-            //                 end: l.end,
-            //             });
-            //         }
-            //     }
-            // });
+      
             if (!_.isEmpty(list) || !_.isEmpty(imageIdList)) {
                 if (this.selectedWindow === 1) {
                     this.debouncedScroll(list);
@@ -705,6 +687,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.calculatedImageHeight = null;
             this.updateList();
         }, 600).bind(this);
+        this.processProps(this.props);
+
         this.debouncedScroll = _.debounce((list) => {
             if (list.length) {
                 this.changeScrollToId({ id: list[0]?.start, from: 1 });
@@ -717,16 +701,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.selectionHandler = _.debounce((e) => {
             this.handleSelection(e);
         }, 200).bind(this);
-
+        setTimeout(()=>{
+window.dispatchEvent(new Event('resize'));
+        },1000)
         document.addEventListener("selectionchange", this.selectionHandler);
         document.addEventListener("mousedown", this.mouseDown.bind(this), true);
         document.addEventListener("mouseup", this.mouseUp.bind(this), true);
-        this.processProps(this.props);
-        this.timer = setTimeout(() => {
-            this.resizeHandler();
-        }, 2000);
-        this.splitText.style.scrollBehavior = "smooth";
-
         this.componentDidUpdate();
     }
 
@@ -738,27 +718,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.updateList(true);
         }
         let Alignment = this.props.textAlignment;
-        this.imageAlignmentById = this.props.imageAlignmentById;
-        this.SearchSyncId = this.props.syncIdOnSearch || null;
         this.condition = this.props.condition;
         let scrollToId = this.props.scrollToId;
         let list = this.list;
         if(!this.props.isAnnotating){
             this.activeSelection=null
-        }
-        let con =
-            prevProps?.searchResults !== this.props?.searchResults ||
-            prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
-
-        // scroll to word searched using search input
-        if (con && this.props.searchResults) {
-            if (this.SearchSyncId) {
-                let selectedTextIndex =
-                    this.props.splitText.getTextIndexOfPosition(
-                        this.SearchSyncId
-                    );
-                this.scrollToIndex(selectedTextIndex);
-            }
         }
 
         this.textAlignmentById = this.props.textAlignmentById;
@@ -882,7 +846,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         window.removeEventListener("resize", this.resizeHandler);
 
         document.removeEventListener("selectionchange", this.selectionHandler);
-        clearTimeout(this.timer);
+       
     }
 
     calculateImageHeight() {
@@ -949,11 +913,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 ref={(div) => (this.splitText = div)}
                 key={key}
             >
-                <button
-                    id="updateList"
-                    style={{ display: "none" }}
-                    onClick={()=>this.updateList()}
-                ></button>
+               
                 <AutoSizer disableWidth>
                     {({ height }) => (
                         <List
@@ -1125,10 +1085,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             height: style.height + 10,
             cursor: !this.props.isAnnotating ? "pointer" : "text",
         };
-        return (
+        return (<div key={key}> 
+        <button
+                    id="update-list"
+                    style={{ display: "none" }}
+                    onClick={()=>this.updateList(true)}
+                ></button>
             <CellMeasurer
                 columnIndex={0}
-                key={key}
+                
                 parent={parent}
                 rowIndex={index}
                 cache={cache}
@@ -1228,6 +1193,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                         )}
                 </div>
             </CellMeasurer>
+            </div>
         );
     }
 }

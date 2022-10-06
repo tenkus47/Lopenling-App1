@@ -1,16 +1,13 @@
 import React, { useCallback, useEffect } from "react";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { IconButton } from "@mui/material";
+import updater from 'components/utility/updater';
 function Refresh({ isSecondWindowOpen }) {
-    const handleRefresh = useCallback(() => {
-        let updatelistBtn = document.getElementById("updateList");
-
-        if (updatelistBtn) updatelistBtn.click();
-    }, [isSecondWindowOpen]);
+   
 
     useEffect(() => {
         let timer = setTimeout(() => {
-            handleRefresh();
+            updater(1);
         }, 500);
         return () => clearTimeout(timer);
     }, [isSecondWindowOpen]);
@@ -20,7 +17,7 @@ function Refresh({ isSecondWindowOpen }) {
             variant="text"
             size="small"
             disableRipple
-            onClick={handleRefresh}
+            onClick={()=>updater(1)}
         >
             <RefreshIcon />
         </IconButton>

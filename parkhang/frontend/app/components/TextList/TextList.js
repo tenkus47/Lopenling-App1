@@ -1,10 +1,10 @@
 // @flow
-import React from "react";
+import * as React from "react";
 import classnames from "classnames";
 import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import {
     CellMeasurer,
-    CellMeasurerCache,
+    CellMeasurerCache
 } from "react-virtualized/dist/es/CellMeasurer";
 import "react-virtualized/styles.css"; // only needs to be imported once
 import { List } from "react-virtualized/dist/es/List";
@@ -32,9 +32,9 @@ type Props = {
     selectedSearchResult: null | {
         textId: number,
         start: number,
-        length: number,
+        length: number
     },
-    searching: boolean,
+    searching: boolean
 };
 
 const DEFAULT_ROW_HEIGHT = 60;
@@ -46,7 +46,7 @@ class TextList extends React.Component<Props> {
         key: string,
         index: number,
         parent: {},
-        style: {},
+        style: {}
     }) => React.Element<CellMeasurer>;
 
     constructor(props: Props) {
@@ -54,7 +54,7 @@ class TextList extends React.Component<Props> {
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
             defaultHeight: DEFAULT_ROW_HEIGHT,
-            minHeight: DEFAULT_ROW_HEIGHT,
+            minHeight: DEFAULT_ROW_HEIGHT
         });
         this.rowRenderer = this.rowRenderer.bind(this);
     }
@@ -63,29 +63,29 @@ class TextList extends React.Component<Props> {
         this.cache.clearAll();
         if (this.list) this.list.forceUpdateGrid();
     }
-    componentDidMount() {}
 
     rowRenderer({
         key,
         index,
         parent,
-        style,
+        style
     }: {
         key: string,
         index: number,
         parent: {},
-        style: {},
+        style: {}
     }): React.Element<CellMeasurer> {
         const selectedText = this.props.selectedText;
         const selectedTextId = selectedText ? selectedText.id : -1;
         const selectedSearchResult = this.props.selectedSearchResult;
         const texts = this.props.texts;
+        
         const onSelectedText = this.props.onSelectedText;
         const onSelectedSearchResult = this.props.onSelectedSearchResult;
         const searchTerm = this.props.searchTerm;
         const searchResults = this.props.searchResults;
-        let className = styles.textListRow;
 
+        let className = styles.textListRow;
         const text = texts[index];
         if (text.id === selectedTextId) {
             className = classnames(className, styles.selectedRow);
@@ -123,7 +123,7 @@ class TextList extends React.Component<Props> {
 
         let textSearchResultRows = [];
         if (textSearchResults.length > 0) {
-            textSearchResultRows = textSearchResults.map((result) => {
+            textSearchResultRows = textSearchResults.map(result => {
                 const isSelected =
                     selectedSearchResult &&
                     selectedSearchResult.textId === text.id &&
@@ -133,7 +133,7 @@ class TextList extends React.Component<Props> {
                     : styles.searchResult;
                 if (isSelected) {
                     // TODO: keeps getting rendered when selecting a syllable
-                    // console.log("got selected result: %o", result);
+                    console.log("got selected result: %o", result);
                 }
                 return (
                     <div
@@ -161,72 +161,58 @@ class TextList extends React.Component<Props> {
         const searchText = () => {
             this.props.onSearchText(text, searchTerm);
         };
-        if (searchResults !== null)
-            return (
-                <CellMeasurer
-                    columnIndex={0}
-                    key={key}
-                    parent={parent}
-                    rowIndex={index}
-                    cache={cache}
-                >
+
+        return (
+            <CellMeasurer
+                columnIndex={0}
+                key={key}
+                parent={parent}
+                rowIndex={index}
+                cache={cache}
+            >
+                <div key={key} style={style} className={className}>
                     <div
-                        key={`listkeys-${key}`}
-                        style={style}
-                        className={className}
+                        className={styles.textNameRow}
+                        onClick={() => {
+                            onSelectedText(texts[index]);
+                        }}
                     >
-                        {searchTerm && (
-                            <div
-                                className={styles.textNameRow}
-                                onClick={() => {
-                                    onSelectedText(texts[index]);
-                                }}
-                            >
-                                {nameHtml} {resultsCount}
-                            </div>
-                        )}
-                        {textSearchResults.length > 0 && (
-                            <div className={styles.searchResults}>
-                                {textSearchResultRows}
-                            </div>
-                        )}
-                        {extraRemaining && (
-                            <div
-                                className={styles.loadMore}
-                                onClick={searchText}
-                            >
-                                <LoadMore loading={loadingResults} />
-                            </div>
-                        )}
+                        {nameHtml} {resultsCount}
                     </div>
-                </CellMeasurer>
-            );
-        else return null;
+                    {textSearchResults.length > 0 && (
+                        <div className={styles.searchResults}>
+                            {textSearchResultRows}
+                        </div>
+                    )}
+                    {extraRemaining && (
+                        <div className={styles.loadMore} onClick={searchText}>
+                            <LoadMore loading={loadingResults} />
+                        </div>
+                    )}
+                </div>
+            </CellMeasurer>
+        );
     }
-    findRowHeight({ searchTerm }) {
-        return searchTerm ? null : 40;
-    }
+
     render() {
         const texts = this.props.texts;
         let rowCount = texts.length;
+
         return (
             <div className={styles.textList}>
                 {this.props.texts && this.props.texts.length > 0 ? (
                     <AutoSizer>
                         {({ height, width }) => (
                             <List
-                                ref={(list) => (this.list = list)}
+                                ref={list => (this.list = list)}
                                 height={height}
                                 rowCount={rowCount}
-                                rowHeight={
-                                    this.findRowHeight(this.props) ||
-                                    this.cache.rowHeight
-                                }
+                                rowHeight={this.cache.rowHeight}
                                 rowRenderer={this.rowRenderer}
                                 width={width}
-                                overscanRowCount={1}
+                                overscanRowCount={3}
                                 deferredMeasurementCache={this.cache}
-                            ></List>
+                            />
                         )}
                     </AutoSizer>
                 ) : this.props.searching ? (

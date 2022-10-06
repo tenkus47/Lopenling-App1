@@ -22,20 +22,20 @@ const SelectVersion = (props: Props) => {
         r = props.witnesses.findIndex((l) => l.id === props.activeWitness.id);
         witnesses = props.witnesses.map((witness) => witness);
         witnesses.sort((a, b) => {
-            if (a.isWorking) {
-                return -1;
-            }
-            if (b.isWorking) {
-                return 1;
-            }
-            if (a.isBase) {
-                return -1;
-            }
-            if (b.isBase) {
-                return 1;
-            }
-            return 0;
-        });
+                if (a.isWorking) {
+                    return -1;
+                }
+                if (b.isWorking) {
+                    return 1;
+                }
+                if (a.isBase) {
+                    return -1;
+                }
+                if (b.isBase) {
+                    return 1;
+                }
+                return 0;
+            });
         witnesses = witnesses.sort((a, b) => a.id - b.id);
     }
 

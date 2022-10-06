@@ -67,8 +67,6 @@ export type Props = {
     searchResults: [],
     changeShowTableContent: () => void,
     showTableContent: Boolean,
-    syncIdOnSearch: String,
-    imageAlignmentById: [],
     imageScrollId: {},
     isAnnotating:Boolean
 };
@@ -98,6 +96,7 @@ class TextDetail extends React.Component<Props> {
     }
     componentDidUpdate() {
         this.selectedWindow = this.props.selectedWindow;
+        
     }
 
     render() {
@@ -162,7 +161,6 @@ class TextDetail extends React.Component<Props> {
                     isPanelLinked={this.props.isPanelLinked}
                     selectedImage={this.props.selectedImage}
                     changeSelectedImage={this.props.changeSelectedImage}
-                    isAnnotating={this.props.isAnnotating}
                     closeAnnotation={this.props.closeAnnotation}
                     textAlignment={this.props.textAlignment}
                     textAlignmentById={this.props.textAlignmentById}
@@ -175,8 +173,6 @@ class TextDetail extends React.Component<Props> {
                     searchResults={this.props.searchResults}
                     showTableContent={this.props.showTableContent}
                     selectedText={this.props.text}
-                    syncIdOnSearch={this.props.syncIdOnSearch}
-                    imageAlignmentById={this.props.imageAlignmentById}
                     condition={this.props.condition}
                 />
             );

@@ -93,6 +93,8 @@ export const UPDATED_SEARCH_RESULTS = "textList/UPDATED_SEARCH_RESULTS";
 export const UPDATED_SEARCH_RESULTS2 = "textList/UPDATED_SEARCH_RESULTS2";
 
 export const SELECTED_SEARCH_RESULT = "textList/SELECTED_SEARCH_RESULT";
+export const SELECTED_SEARCH_RESULT2 = "textList/SELECTED_SEARCH_RESULT2";
+
 export const SECOND_WINDOW = "UI/SECOND_WINDOW";
 
 export const CHANGE_RANGE_SELECTION = "CHANGE_RANGE_SELECTION";
@@ -705,6 +707,18 @@ export function selectedSearchResult(
         length,
     };
 }
+export function selectedSearchResult2(
+    textId: number | null,
+    start: number | null,
+    length: number | null
+): SelectedSearchResultAction {
+    return {
+        type: SELECTED_SEARCH_RESULT2,
+        textId,
+        start,
+        length,
+    };
+}
 
 export type ChangedTextListWidth = Action & {
     width: number,
@@ -993,19 +1007,8 @@ export function changeSyncIdOnClick(payload) {
     };
 }
 
-export function changeSyncIdOnSearch(payload) {
-    return {
-        type: SYNC_ID_ON_SEARCH,
-        payload,
-    };
-}
 
-export function changeSyncIdOnSearch2(payload) {
-    return {
-        type: SYNC_ID_ON_SEARCH2,
-        payload,
-    };
-}
+
 
 export function changeSelectedRange(payload) {
     return {

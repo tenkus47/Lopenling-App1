@@ -46,6 +46,7 @@ type HeaderProps = {
     searchValue: String,
     changeShowTableContent: () => void,
     searchResults: [],
+    onSelectedSearchResult:()=>void
 };
 
 function TextDetailHeading(props: HeaderProps) {
@@ -210,8 +211,8 @@ function TextDetailHeading(props: HeaderProps) {
                             >
                                 {condition && results.length > 0 && (
                                     <SearchList
-                                        handleListItemClick={
-                                            handleListItemClick
+                                        onSelectedSearchResult={
+                                            props.onSelectedSearchResult
                                         }
                                         searchValue={props.searchValue}
                                         results={results}

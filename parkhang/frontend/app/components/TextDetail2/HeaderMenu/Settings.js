@@ -14,6 +14,7 @@ import {
     ClickAwayListener,
 } from "@mui/material";
 import { FONT_LIST } from "app_constants";
+import updater from 'components/utility/updater'
 
 function Settings(props) {
     let [showOption, setShowOption] = useState(false);
@@ -30,16 +31,9 @@ function Settings(props) {
     const handlefont = (value) => {
         setFontSelect(value);
         document.body.style.setProperty("--tibetan-fonts2", `${value}`);
-        let update = document.getElementById("updateList2");
-        let times = 1;
-        let timer = setInterval(() => {
-            update.click();
-            times++;
-            console.log("ran");
-            if (times > 4) {
-                clearInterval(timer);
-            }
-        }, 800);
+        setTimeout(()=>{
+        updater(2);
+        },1000)
         setShowOption(false);
     };
     return (

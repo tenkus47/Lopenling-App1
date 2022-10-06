@@ -17,7 +17,6 @@ const mapStateToProps = (state) => {
     const witnesses = reducers.getTextWitnesses(state, selectedText.id);
     const ImageVersion = reducers.getSelectedImageVersion(state);
     const selectedImage = reducers.getSelectedImage(state);
-    const imageAlignmentById = reducers.getImageAlignmentById(state);
     //  const selectedSegmentId=reducers.getSelectedSegmentId(state);
 
     return {

@@ -349,6 +349,8 @@ class Text extends React.Component<Props, State> {
                         classes.push(styles.P_annotation)
                     }else if(remainingAnnotations.some(l=>l.type==='Q')){
                         classes.push(styles.Q_annotation)
+                    }if(remainingAnnotations.some(l=>l.type==='N')){
+                        classes.push(styles.N_annotation)
                     }
                     else{
                         classes.push(styles.V_annotation)
@@ -510,8 +512,9 @@ class Text extends React.Component<Props, State> {
         return html;
     }
     shouldComponentUpdate(nextProps: Props, nextState: State) {
+        this.textAlignmentById = this.props.textAlignmentById;
+
         const renderedHtml = this.generateHtml(nextProps, nextState);
-       
         if (this.props.fontSize !== nextProps.fontSize) {
             return true;
         } else if (
@@ -525,13 +528,6 @@ class Text extends React.Component<Props, State> {
         }
 
     }
-   
-    componentDidUpdate() {
-        this.textAlignmentById = this.props.textAlignmentById;
-
-
-    }
-
     render() {
         let classes = [styles.text];
         if (this.props.row === 0) {

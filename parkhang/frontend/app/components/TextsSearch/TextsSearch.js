@@ -31,16 +31,7 @@ const TextsSearch = (props: Props) => {
         }
     };
 
-    const handleChange = (e) => {
-        startTransition(() => {
-            if (e.target.value === "") {
-                props.searchChanged(null);
-                return;
-            }
-            props.searchChanged(e.target.value);
-        });
-    };
-    console.log(props.textListWidth);
+
     return (
         <div
             className={styles.textsSearchContainer}
@@ -49,7 +40,6 @@ const TextsSearch = (props: Props) => {
             <div className={styles.textsSearch}>
                 <form onSubmit={initiateSearch}>
                     <input
-                        onChange={handleChange}
                         style={{ outline: "none", width: 150 }}
                         type="text"
                         id="textSearchInput"

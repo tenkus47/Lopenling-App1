@@ -519,6 +519,7 @@ function* watchUpdatedAnnotation() {
 }
 
 function deleteAnnotation(action) {
+    console.log(action.annotation)
     return call(api.deleteAnnotation, action.annotation);
 }
 

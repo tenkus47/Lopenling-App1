@@ -62,8 +62,8 @@ function TextSheet(props) {
                 }
                 style={
                     !props.isSecondWindowOpen && {
-                        marginLeft: "10%",
-                        marginTop: 10,
+                        marginLeft: "24%",
+                        marginTop:'10px',
                     }
                 }
                 resizerStyle={{display:!props.isSecondWindowOpen ?'none':'block'}}
@@ -83,11 +83,12 @@ function TextSheet(props) {
                 <ErrorBoundary>
                     <TextDetailContainer />
                 </ErrorBoundary>
-                <ErrorBoundary>
                     {props.isSecondWindowOpen && props.selectedText && (
+                <ErrorBoundary>
                         <TextDetailContainer2 />
-                    )}
                 </ErrorBoundary>
+
+                    )}
             </SplitPane>
             {props.Media.isPanelVisible && (
                 <ErrorBoundary>

@@ -54,7 +54,6 @@ import {
     getSelectedTargetRange,
     getSearchResults,
     getShowTableContent,
-    getImageAlignmentById,
 } from "reducers";
 import * as reducers from "reducers";
 import _ from "lodash";
@@ -180,7 +179,6 @@ const mapStateToProps = (state) => {
             textListVisible,
             fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
             textAlignmentById,
-            imageAlignmentById: getImageAlignmentById(state),
         };
     }
 
@@ -348,7 +346,6 @@ const mapStateToProps = (state) => {
         selectedTargetRange: getSelectedTargetRange(state),
         searchResults: getSearchResults(state, searchValue),
         showTableContent: getShowTableContent(state),
-        syncIdOnSearch: reducers.getSyncIdOnSearch(state),
         selectedMedia: Media,
         condition: condition && isPanelLinked && isSecondWindowOpen,
     };

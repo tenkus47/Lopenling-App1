@@ -1,5 +1,5 @@
 import About from "./About";
 import Resources from "./Resources";
-import Dictionary from "./Dictionary";
+import FullTextSearch from "./FullTextSearch";
 import Discussion from './Discussions'
-export default { About, Resources,  Dictionary,Discussion };
+export default { About, Resources,  FullTextSearch,Discussion };
