@@ -27,16 +27,21 @@
                 position: relative;
 }
 .sidebar{
-    transition: 1s all linear;
     margin-top:10px;
     display: flex;
      flex-direction: column;
     height: 100%;
     max-width: 250px;
     z-index: 10;
+    transition: width ease-in 0.5s;
+}
+.menu_title{
+transition: all ease-out 0.4s;
+z-index: -2;
 }
 .sidebar_header{
     display: flex;
     justify-content: space-between;
     margin-inline:10px;
+position: relative;
 }

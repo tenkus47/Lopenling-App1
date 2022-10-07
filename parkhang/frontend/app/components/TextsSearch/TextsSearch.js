@@ -4,8 +4,10 @@ import styles from "./TextsSearch.css";
 import * as constants from "app_constants";
 
 import { injectIntl } from "react-intl";
-import Button from "components/UI/Button";
-import SearchIcon from "images/search.svg";
+// import Button from "components/UI/Button";
+import {Button, IconButton} from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search';
+import { Box } from "@mui/system";
 
 type Props = {
     searchValue: string,
@@ -33,9 +35,10 @@ const TextsSearch = (props: Props) => {
 
 
     return (
-        <div
+        <Box
+        sx={{bgcolor:'inherit'}}
             className={styles.textsSearchContainer}
-            style={{ maxWidth: props.textListWidth }}
+            // style={{ maxWidth: props.textListWidth }}
         >
             <div className={styles.textsSearch}>
                 <form onSubmit={initiateSearch}>
@@ -49,17 +52,17 @@ const TextsSearch = (props: Props) => {
                         ref={textInput}
                     />
                     <Button
-                        backgroundColor="#35BF5C"
                         onClick={initiateSearch}
-                        // title={props.intl.formatMessage({
-                        //     id: "leftbar.search",
-                        // })}
-                        noBezel={true}
-                        icon={<SearchIcon />}
-                    />
+                        variant="outlined"
+                        size='small'
+                        sx={{minWidth:2}}
+                    >
+                       <SearchIcon />
+                    </Button>
+                   
                 </form>
             </div>
-        </div>
+        </Box>
     );
 };
 

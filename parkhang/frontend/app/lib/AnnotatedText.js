@@ -385,6 +385,7 @@ export default class AnnotatedText {
             }, "");
         }
         if (origLength !== content.length) {
+            console.warn(origLength , content.length)
             console.warn(
                 "Base annotation has different content length to length"
             );

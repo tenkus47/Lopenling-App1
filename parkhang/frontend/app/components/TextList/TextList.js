@@ -15,7 +15,7 @@ import Loader from "react-loader";
 import HighlightedString from "./HighlightedString";
 import ResultCount from "./ResultCount";
 import LoadMore from "./LoadMore";
-
+import {Box} from  "@mui/material"
 type Props = {
     selectedText: api.TextData,
     texts: api.TextData[],
@@ -136,7 +136,7 @@ class TextList extends React.Component<Props> {
                     console.log("got selected result: %o", result);
                 }
                 return (
-                    <div
+                    <Box
                         key={text.id + "_" + result[0]}
                         onClick={() => {
                             onSelectedSearchResult(
@@ -146,6 +146,7 @@ class TextList extends React.Component<Props> {
                                 selectedText
                             );
                         }}
+                        sx={{bgcolor:'inherit',color:'inherit'}}
                         className={className}
                     >
                         <HighlightedString
@@ -153,7 +154,7 @@ class TextList extends React.Component<Props> {
                             highlightClass={styles.highlight}
                             searchTerm={searchTerm}
                         />
-                    </div>
+                    </Box>
                 );
             });
         }

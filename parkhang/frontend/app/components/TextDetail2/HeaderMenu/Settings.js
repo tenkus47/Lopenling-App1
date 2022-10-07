@@ -14,7 +14,6 @@ import {
     ClickAwayListener,
 } from "@mui/material";
 import { FONT_LIST } from "app_constants";
-import updater from 'components/utility/updater'
 
 function Settings(props) {
     let [showOption, setShowOption] = useState(false);
@@ -32,7 +31,8 @@ function Settings(props) {
         setFontSelect(value);
         document.body.style.setProperty("--tibetan-fonts2", `${value}`);
         setTimeout(()=>{
-        updater(2);
+           window.dispatchEvent(new Event("resize"));
+
         },1000)
         setShowOption(false);
     };

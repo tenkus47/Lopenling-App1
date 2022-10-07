@@ -13,7 +13,6 @@ import {
     Box,
     ClickAwayListener,
 } from "@mui/material";
-import updater from 'components/utility/updater'
 
 import { FONT_LIST } from "app_constants";
 function Settings(props) {
@@ -32,10 +31,9 @@ function Settings(props) {
         setFontSelect(value);
         document.body.style.setProperty("--tibetan-fonts", `${value}`);
         
- setTimeout(()=>{
-        updater(1);
-        },1000)
+        setTimeout(()=>{
         
+        },1000)
         setShowOption(false);
     };
 

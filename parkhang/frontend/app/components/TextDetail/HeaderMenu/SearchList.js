@@ -27,8 +27,8 @@ function SearchList(props) {
                 parent={parent}
                 columnIndex={0}
                 rowIndex={index}
+                style={style}
             >
-                <div style={style}>
                     {results.length > 0 && (
                         <div
                             className={styles.searchListItem}
@@ -46,7 +46,6 @@ function SearchList(props) {
                             />
                         </div>
                     )}
-                </div>
             </CellMeasurer>
         );
     };

@@ -674,7 +674,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
     scrollToIndex(selectedTextIndex) {
         let list = this.list;
-        console.log('scrolling to index')
         setTimeout(() => {
             list.scrollToRow(selectedTextIndex);
             setTimeout(() => {
@@ -702,7 +701,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.handleSelection(e);
         }, 200).bind(this);
         setTimeout(()=>{
-window.dispatchEvent(new Event('resize'));
+          window.dispatchEvent(new Event("resize"));
         },1000)
         document.addEventListener("selectionchange", this.selectionHandler);
         document.addEventListener("mousedown", this.mouseDown.bind(this), true);
@@ -1093,7 +1092,6 @@ window.dispatchEvent(new Event('resize'));
                 ></button>
             <CellMeasurer
                 columnIndex={0}
-                
                 parent={parent}
                 rowIndex={index}
                 cache={cache}

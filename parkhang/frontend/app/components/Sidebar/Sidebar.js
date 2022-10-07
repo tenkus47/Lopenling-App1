@@ -20,7 +20,9 @@ function Sidebar(props) {
 
   React.useEffect(()=>{
    let timer= setTimeout(()=>{
-      window.dispatchEvent(new Event('resize'));
+    if(props.isSecondWindowOpen){
+      window.dispatchEvent(new Event("resize"));
+    }
     },1000)
     return ()=>clearTimeout(timer)
   },[isOpen])
@@ -44,8 +46,8 @@ function Sidebar(props) {
       className={styles.sidebar}
     >
       <Box className={styles.sidebar_header}>
-        <Typography sx={{display:isOpen?'block':'none'}} >Menu</Typography>
-        <div onClick={handleOpen} style={{cursor:'pointer'}}><MenuIcon/></div>
+        <Typography className={styles.menu_title} sx={isOpen?{width:'fit-content',opacity:1}:{width:'0',opacity:0}}>Menu</Typography>
+        <div onClick={handleOpen} style={{cursor:'pointer',zIndex:1}}><MenuIcon/></div>
       </Box>
       <div
         style={{

@@ -5,14 +5,13 @@
 }
 
 .TextsSearch---textsSearch {
-    padding: 10px;
+    padding: 4px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    background-color: white;
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
+    -webkit-box-flex:1;
+        -ms-flex:1;
+            flex:1;
 }
 
 .TextsSearch---textsSearch form {
@@ -31,7 +30,6 @@
 
 .TextsSearch---textsSearch input {
     font-size: 1em;
-    margin-right: 10px;
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
@@ -72,138 +70,6 @@
     font-size: 12px;
     line-height: 29px;
     cursor: pointer;
-}
-
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src: local("arial");
-}
-
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src:
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
-    unicode-range: U+0F00-0FFF;
-}
-
-@font-face {
-    font-family: "Tsumachu";
-    font-style: normal;
-    font-weight: 400;
-    src: url("/static/fonts/tsumachu.woff2") format("woff2");
-    unicode-range: U+0F00-0FFF;
-}
-
-.Button---button {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  padding: 5px 8px 5px 5px;
-  border: 0;
-  border-radius: 3px;
-  font-weight: normal;
-  font-size: 12px;
-  -webkit-box-shadow: 0px 1px 1px #555;
-          box-shadow: 0px 1px 1px #555;
-  cursor: pointer;
-  color: #fff;
-}
-
-.Button---buttonNoBezel {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  padding: 5px 8px 5px 5px;
-  border: 0;
-  border-radius: 3px;
-  font-weight: normal;
-  font-size: 12px;
-  -webkit-box-shadow: 0px 1px 1px #555;
-          box-shadow: 0px 1px 1px #555;
-  cursor: pointer;
-  color: #fff;
-    border-radius: 0;
-    -webkit-box-shadow: none;
-            box-shadow: none;
-    -ms-flex-preferred-size: 0;
-        flex-basis: 0;
-}
-
-.Button---button:disabled,
-.Button---buttonNoBezel:disabled {
-    opacity: 0.2;
-}
-
-.Button---active {
-    -webkit-box-shadow: none;
-            box-shadow: none;
-}
-
-.Button---leftAlign {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  padding: 5px 8px 5px 5px;
-  border: 0;
-  border-radius: 3px;
-  font-weight: normal;
-  font-size: 12px;
-  -webkit-box-shadow: 0px 1px 1px #555;
-          box-shadow: 0px 1px 1px #555;
-  cursor: pointer;
-  color: #fff;
-    text-align: left;
-}
-
-.Button---title {
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-}
-
-.Button---icon {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-.Accessory---accessory {
-    background-color: gray;
-    border-radius: 50%;
-    color: #fff;
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
-    text-align: center;
-    cursor: pointer;
-    -webkit-box-flex: 0;
-        -ms-flex-positive: 0;
-            flex-grow: 0;
-}
-.Accessory---accessory:hover {
-    background-color: rgba(0, 0, 0, .2);
 }
 @font-face {
     font-family: "Tibetan";
@@ -264,8 +130,6 @@
     -webkit-box-pack: center;
         -ms-flex-pack: center;
             justify-content: center;
-    background-color: hsla(0, 8%, 88%, .109);
-    color: black;
     padding: 0;
     cursor: pointer;
     white-space: nowrap;
@@ -276,7 +140,7 @@
 }
 
 .TextList---textListRow:hover {
-    color: black;
+    color: hsl(240, 51%, 51%);
 }
 
 .TextList---selectedRow {
@@ -304,10 +168,9 @@
     padding: 0 10px;
     font-size: 13px;
     position: sticky;
-    background-color: #222;
-    color:#eee;
     top: 0;
     z-index: 2;
+       
 }
 
 .TextList---textName {
@@ -318,6 +181,8 @@
         flex-shrink: 0;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
+    max-width: 240px;
 }
 
 .TextList---highlight {
@@ -643,8 +508,6 @@
 }
 
 .Sidebar---sidebar{
-    -webkit-transition: 1s all linear;
-    transition: 1s all linear;
     margin-top:10px;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -656,6 +519,14 @@
     height: 100%;
     max-width: 250px;
     z-index: 10;
+    -webkit-transition: width ease-in 0.5s;
+    transition: width ease-in 0.5s;
+}
+
+.Sidebar---menu_title{
+-webkit-transition: all ease-out 0.4s;
+transition: all ease-out 0.4s;
+z-index: -2;
 }
 
 .Sidebar---sidebar_header{
@@ -666,6 +537,7 @@
         -ms-flex-pack: justify;
             justify-content: space-between;
     margin-inline:10px;
+position: relative;
 }
 
 
@@ -1799,6 +1671,7 @@ span {
                 align-items: center;
 }
 
+
 .Sharebutton---shareContainer{
     display: -webkit-box;
     display: -ms-flexbox;
@@ -2412,6 +2285,137 @@ blockquote {
     text-align: center;
     line-height: 16px;
     cursor: pointer;
+}
+@font-face {
+    font-family: "Tibetan";
+    font-style: normal;
+    font-weight: 400;
+    src: local("arial");
+}
+
+@font-face {
+    font-family: "Tibetan";
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
+        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
+    unicode-range: U+0F00-0FFF;
+}
+
+@font-face {
+    font-family: "Tsumachu";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/tsumachu.woff2") format("woff2");
+    unicode-range: U+0F00-0FFF;
+}
+
+.Button---button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 5px 8px 5px 5px;
+  border: 0;
+  border-radius: 3px;
+  font-weight: normal;
+  font-size: 12px;
+  -webkit-box-shadow: 0px 1px 1px #555;
+          box-shadow: 0px 1px 1px #555;
+  cursor: pointer;
+  color: #fff;
+}
+
+.Button---buttonNoBezel {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 5px 8px 5px 5px;
+  border: 0;
+  border-radius: 3px;
+  font-weight: normal;
+  font-size: 12px;
+  -webkit-box-shadow: 0px 1px 1px #555;
+          box-shadow: 0px 1px 1px #555;
+  cursor: pointer;
+  color: #fff;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    -ms-flex-preferred-size: 0;
+        flex-basis: 0;
+}
+
+.Button---button:disabled,
+.Button---buttonNoBezel:disabled {
+    opacity: 0.2;
+}
+
+.Button---active {
+    -webkit-box-shadow: none;
+            box-shadow: none;
+}
+
+.Button---leftAlign {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 5px 8px 5px 5px;
+  border: 0;
+  border-radius: 3px;
+  font-weight: normal;
+  font-size: 12px;
+  -webkit-box-shadow: 0px 1px 1px #555;
+          box-shadow: 0px 1px 1px #555;
+  cursor: pointer;
+  color: #fff;
+    text-align: left;
+}
+
+.Button---title {
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+}
+
+.Button---icon {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.Accessory---accessory {
+    background-color: gray;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    text-align: center;
+    cursor: pointer;
+    -webkit-box-flex: 0;
+        -ms-flex-positive: 0;
+            flex-grow: 0;
+}
+.Accessory---accessory:hover {
+    background-color: rgba(0, 0, 0, .2);
 }
 .AnnotationControlsHeader---header {
     height: 27px;

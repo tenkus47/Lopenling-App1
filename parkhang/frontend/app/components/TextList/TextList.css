@@ -24,8 +24,6 @@
     flex-shrink: 0;
     flex-direction: column;
     justify-content: center;
-    background-color: var(--text-list-colour);
-    color: black;
     padding: 0;
     cursor: pointer;
     white-space: nowrap;
@@ -34,7 +32,7 @@
 }
 
 .textListRow:hover {
-    color: black;
+    color: hsl(240, 51%, 51%);
 }
 
 .selectedRow {
@@ -55,10 +53,9 @@
     padding: 0 var(--padding-left);
     font-size: 13px;
     position: sticky;
-    background-color: #222;
-    color:#eee;
     top: 0;
     z-index: 2;
+       
 }
 
 .textName {
@@ -66,6 +63,8 @@
     flex-shrink: 0;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
+    max-width: 240px;
 }
 
 .highlight {

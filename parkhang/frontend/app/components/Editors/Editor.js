@@ -6,7 +6,6 @@ import * as constants from "app_constants";
 import lopenlingLogo from "images/lopenling_logo.png";
 import headerStyles from "components/Header/Header.css";
 import Sidebar from "components/Sidebar";
-import SplitPane, { Pane } from "react-split-pane";
 import styles from "./EditorContainer.css";
 import classnames from "classnames";
 import utilStyles from "css/util.css";
@@ -112,8 +111,6 @@ const Editor = (props) => {
     }, [props.textListIsVisible]);
     return (
         <div className={classnames(styles.interface, utilStyles.flex)}>
-       
-                 
                     <Sidebar />
                     <TextSheet bodyHeight={bodyHeight} />
             <SpeedDial
@@ -145,36 +142,3 @@ const Editor = (props) => {
 };
 
 export default Editor;
-
-// return (
-//     <div className={classnames(styles.interface, utilStyles.flex)}>
-//         <SplitPane
-//             split="vertical"
-//             minSize={minSize}
-//             maxSize={maxSize}
-//             defaultSize={defaultSize}
-//             size={size}
-//             paneStyle={{
-//                 display: "flex",
-//             }}
-//             style={{
-//                 height: bodyHeight,
-//             }}
-//             onDragFinished={(width: number) => {
-//                 if (width > 0) {
-//                     props.onChangedTextWidth(width);
-//                     if (!props.textListIsVisible) {
-//                         props.onChangedTextListVisible(true);
-//                     }
-//                 }
-//                 window.dispatchEvent(new Event("resize"));
-//             }}
-//         >
-//             <div className={classnames(...textListClassnames)}>
-//                 <Resources />
-//             </div>
-
-//             <TextSheet bodyHeight={bodyHeight} />
-//         </SplitPane>
-//     </div>
-// );

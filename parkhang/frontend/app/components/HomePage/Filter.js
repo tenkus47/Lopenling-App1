@@ -17,9 +17,9 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 function Filter({
     setFiltered,
-    setLengthRange,
-    setCategoryList,
-    setAuthor = () => {},
+    // setLengthRange,
+    // setCategoryList,
+    // setAuthor = () => {},
     featureText = [],
 }) {
     const handleChange = (e) => {
@@ -44,13 +44,13 @@ function Filter({
             </Box>
             {/* <Box flex={1}>
                 <Author setAuthor={setAuthor} AuthorList={AuthorList} />
-            </Box>
-            <Box flex={0}>
+            </Box> */}
+            {/* <Box flex={0}>
                 <Typography>Category</Typography>
                 <Category setCategoryList={setCategoryList} />
-            </Box>
+            </Box> */}
 
-            <Box flex={2}>
+            {/* <Box flex={2}>
                 <Typography mt={2}>Text Length</Typography>
                 <TextLength setLengthRange={setLengthRange} />
             </Box> */}
@@ -129,38 +129,38 @@ const SearchBar = ({ handleChange }) => (
 //         />
 //     );
 // };
-// const Author = ({ setAuthor, AuthorList }) => {
-//     const handleChange = (e, value) => {
-//         setAuthor([...value]);
-//     };
-//     return (
-//         <Autocomplete
-//             multiple
-//             id="checkboxes-tags-demo"
-//             options={AuthorList}
-//             onChange={handleChange}
-//             disableCloseOnSelect
-//             getOptionLabel={(option) => option}
-//             renderOption={(props, option, { selected }) => (
-//                 <li {...props}>
-//                     <Checkbox
-//                         icon={icon}
-//                         checkedIcon={checkedIcon}
-//                         style={{ marginRight: 8 }}
-//                         checked={selected}
-//                     />
-//                     {option}
-//                 </li>
-//             )}
-//             style={{ width: 500 }}
-//             renderInput={(params) => (
-//                 <TextField
-//                     {...params}
-//                     label="Author"
-//                     placeholder="Name"
-//                     size="small"
-//                 />
-//             )}
-//         />
-//     );
-// };
+const Author = ({ setAuthor, AuthorList }) => {
+    const handleChange = (e, value) => {
+        setAuthor([...value]);
+    };
+    return (
+        <Autocomplete
+            multiple
+            id="checkboxes-tags-demo"
+            options={AuthorList}
+            onChange={handleChange}
+            disableCloseOnSelect
+            getOptionLabel={(option) => option}
+            renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                    <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                    />
+                    {option}
+                </li>
+            )}
+            style={{ width: 500 }}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label="Author"
+                    placeholder="Name"
+                    size="small"
+                />
+            )}
+        />
+    );
+};
