@@ -9,21 +9,22 @@ import { FormattedMessage, FormattedDate } from "react-intl";
 import classnames from "classnames";
 import { QUESTION_URL } from "app_constants";
 import { Box, IconButton } from "@mui/material";
-import {DiscourseForum} from "components/utility/discourseForum";
+import { DiscourseForum } from "components/utility/discourseForum";
 
 type Props = {
     question: Question,
+    delete: () => void,
 };
 
 export default class QuestionView extends React.Component<Props> {
-     delete() {
+    delete = () => {
         if (this.props.delete) {
             this.props.delete();
         }
-    }
-    
+    };
+
     render() {
-        const topicId=this.props.question.topicId|| null
+        const topicId = this.props.question.topicId || null;
         const topicUrl = QUESTION_URL + topicId;
         let answerViews = [];
         let answers = this.props.question.answers;
@@ -33,7 +34,7 @@ export default class QuestionView extends React.Component<Props> {
                 <AnswerView answer={answer} key={"answer_" + answer.created} />
             );
         }
-       
+
         const name =
             this.props.question.name.length > 0
                 ? this.props.question.name
@@ -50,26 +51,25 @@ export default class QuestionView extends React.Component<Props> {
                         __html: this.props.question.content,
                     }}
                 />
-<div style={{display:'flex',alignItems:'center'}}>
-                <span
-                    className={classnames(
-                        styles.threadLink,
-                        controlStyles.text
-                    )}
-                >
-                    <a href={topicUrl} target="_blank">
-                        <FormattedMessage id="question.viewThread" />
-                    </a>
-                     </span>
-               
-           
-     </div>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <span
+                        className={classnames(
+                            styles.threadLink,
+                            controlStyles.text
+                        )}
+                    >
+                        <a href={topicUrl} target="_blank">
+                            <FormattedMessage id="question.viewThread" />
+                        </a>
+                    </span>
+                    <button onClick={this.delete}>delete</button>
+                </div>
                 <p className={controlStyles.subTitle}>
                     {name}
                     <FormattedDate value={this.props.question.created} />
                 </p>
                 {/* {answerViews} */}
-              <DiscourseForum  topicId={topicId}/>
+                <DiscourseForum topicId={topicId} />
             </Box>
         );
     }

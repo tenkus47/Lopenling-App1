@@ -111,8 +111,8 @@ const Editor = (props) => {
     }, [props.textListIsVisible]);
     return (
         <div className={classnames(styles.interface, utilStyles.flex)}>
-                    <Sidebar />
-                    <TextSheet bodyHeight={bodyHeight} />
+            <Sidebar />
+            <TextSheet bodyHeight={bodyHeight} />
             <SpeedDial
                 ariaLabel="SpeedDial basic"
                 sx={{ position: "absolute", bottom: 60, right: 16 }}

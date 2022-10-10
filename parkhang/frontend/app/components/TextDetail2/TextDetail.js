@@ -8,7 +8,6 @@ import { Box, Divider, Slide } from "@mui/material";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
 import classnames from "classnames";
-import Placeholder from "components/utility/Placeholder";
 
 import imageStyle from "components/MediaComponent/Image.css";
 import SplitTextComponent from "./SplitText";
@@ -40,11 +39,7 @@ function TextDetail(props) {
     let splitText = null;
     const selectedWindow = props.selectedWindow;
     if (!props.annotatedText || !props.text || props.loading) {
-        textComponent = (
-            <div key={Math.random()}>
-                <Placeholder />
-            </div>
-        );
+        textComponent = <div key={Math.random()} />;
     } else {
         let limitWidth = false;
         let splitter;
@@ -60,12 +55,10 @@ function TextDetail(props) {
         textComponent = (
             <SplitTextComponent
                 splitText={splitText}
-            
                 limitWidth={limitWidth}
                 selectedSegmentId={props.selectedSegmentId}
                 annotationPositions={props.annotationPositions}
                 selectedAnnotatedSegments={props?.selectedAnnotatedSegments}
-  
                 selectedWitness={props.selectedWitness}
                 key={key}
                 selectedSearchResult={props.selectedSearchResult}

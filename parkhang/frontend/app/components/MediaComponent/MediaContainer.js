@@ -33,7 +33,6 @@ const mapStateToProps = (state) => {
         witnesses,
         ImageVersion,
         selectedImage,
-        imageAlignmentById,
     };
 };
 

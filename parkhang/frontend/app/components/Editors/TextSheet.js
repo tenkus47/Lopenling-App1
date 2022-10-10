@@ -15,7 +15,6 @@ import TextDetailContainer from "components/TextDetail/TextDetailContainer";
 
 function TextSheet(props) {
     let editorRef = useRef(null);
- 
 
     return (
         <Box
@@ -29,29 +28,16 @@ function TextSheet(props) {
                 position: "relative",
             }}
         >
-            {/* <SplitPane
-                defaultSize={props.Media.isPanelVisible ? "35vh" : 0}
-                size={props.Media.isPanelVisible ? "35vh" : 0}
-                split="horizontal"
-                resizerClassName={classnames(styles.Resizer, styles.horizontal)}
-                resizerStyle={{
-                    display: !props.Media.isPanelVisible ? "none" : "block",
-                }}
-            >
-                {props.Media.isPanelVisible ? <MediaComponent /> : <div />} */}
             <SplitPane
                 size={
                     props.isSecondWindowOpen && props.selectedText
                         ? "50%"
-                        : "50vw"
+                        : "100%"
                 }
-                style={
-                    !props.isSecondWindowOpen && {
-                        marginLeft: "24%",
-                        marginTop:'10px',
-                    }
-                }
-                resizerStyle={{display:!props.isSecondWindowOpen ?'none':'block'}}
+                pane1Style={{ display: "flex", justifyContent: "center" }}
+                resizerStyle={{
+                    display: !props.isSecondWindowOpen ? "none" : "block",
+                }}
                 onDragFinished={(width: number) => {
                     if (width > 0) window.dispatchEvent(new Event("resize"));
                 }}
@@ -59,19 +45,19 @@ function TextSheet(props) {
                 <ErrorBoundary>
                     <TextDetailContainer />
                 </ErrorBoundary>
-                    {props.isSecondWindowOpen && props.selectedText ? (
-                <ErrorBoundary>
+                {props.isSecondWindowOpen && props.selectedText ? (
+                    <ErrorBoundary>
                         <TextDetailContainer2 />
-                </ErrorBoundary>
-
-                    ):<div/>}
+                    </ErrorBoundary>
+                ) : (
+                    <div />
+                )}
             </SplitPane>
             {props.Media.isPanelVisible && (
                 <ErrorBoundary>
                     <MediaComponent />
                 </ErrorBoundary>
             )}
-            {/* </SplitPane> */}
         </Box>
     );
 }

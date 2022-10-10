@@ -418,7 +418,7 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
             );
         }
     }
-    let fontSize = getTextFontSize(state);  
+    let fontSize = getTextFontSize(state);
     return {
         annotationsData: variantsData,
         activeAnnotation: activeAnnotation,
@@ -450,8 +450,8 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
             if (stateProps.questionsData.hasOwnProperty(question.uniqueId)) {
                 if (
                     stateProps.questionsData[question.uniqueId].questions
-                        .length > 0 ||
-                    stateProps.questionsData[question.uniqueId].loading
+                        .length > 0 &&
+                    !stateProps.questionsData[question.uniqueId].loading
                 ) {
                     loadQuestionData = false;
                 }
@@ -817,7 +817,7 @@ const mergeProps = (stateProps: StateProps, dispatchProps, ownProps) => {
                 title,
                 questionText
             );
-        
+
             dispatch(createdQuestionAction);
         },
     };

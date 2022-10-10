@@ -500,7 +500,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let result = this.props.searchResults;
         let Alignment = this.props.textAlignment;
         this.condition = this.props.condition;
-       
+
         if (!this._didSetInitialScrollPosition && this.list) {
             const list = this.list;
             if (
@@ -519,7 +519,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             }
             this._didSetInitialScrollPosition = true;
         }
-       
+
         // scroll dom with respect to window 1 scrolling
 
         if (
@@ -785,7 +785,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     cursor: "pointer",
                 }}
             >
-               
                 <AutoSizer disableWidth>
                     {({ height }) => (
                         <List
@@ -799,16 +798,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
                             scrollToAlignment="start"
-                             containerStyle={{
+                            containerStyle={{
                                 width: "100%",
                                 maxWidth: "100%",
-
                             }}
                             style={{
                                 width: "100%",
-                                paddingTop:30,
-                                paddingInline:50
-                                                            }}
+                                paddingTop: 30,
+                                paddingInline: 50,
+                            }}
                         ></List>
                     )}
                 </AutoSizer>
@@ -917,50 +915,46 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             ...style,
             height: style.height + 10,
         };
-        return (<div
-                key={key}
-         >
-         <button
-                    id="updateList2"
-                    style={{ display: "none" }}
-                    onClick={() => this.updateList(true)}
-                ></button>
-            <CellMeasurer
-                columnIndex={0}
-                parent={parent}
-                rowIndex={index}
-                cache={cache}
-            >
-                <div
-                    key={key}
-                    style={newStyle}
-                    ref={this.splitTextRef}
-                    id={`index2_${index}`}
-                    className={styles.splitTextRow}
+        return (
+            <div key={key}>
+                <CellMeasurer
+                    columnIndex={0}
+                    parent={parent}
+                    rowIndex={index}
+                    cache={cache}
                 >
-                    <div className={styles.splitTextRowContent}>
-                        <Text
-                            segmentedText={props.splitText.texts[index]}
-                            row={index}
-                            selectedSegmentId={props.selectedSegmentId}
-                            // searchValue={searchValue}
-                            // selectedSearchResult={
-                            //     this.props.selectedSearchResult
-                            // }
-                            searchStringPositions={searchStringPositions}
-                            textAlignmentById={props.textAlignmentById}
-                            fontSize={props.fontSize}
-                            isPanelLinked={this.props.isPanelLinked}
-                            selectedSourceRange={props.selectedSourceRange}
-                            selectedTargetRange={props.selectedTargetRange}
-                            changeSelectedRange={props.changeSelectedRange}
-                            changeSyncIdOnClick={this.props.changeSyncIdOnClick}
-                            changeScrollToId={this.props.changeScrollToId}
-                            condition={this.condition}
-                        />
+                    <div
+                        key={key}
+                        style={newStyle}
+                        ref={this.splitTextRef}
+                        id={`index2_${index}`}
+                        className={styles.splitTextRow}
+                    >
+                        <div className={styles.splitTextRowContent}>
+                            <Text
+                                segmentedText={props.splitText.texts[index]}
+                                row={index}
+                                selectedSegmentId={props.selectedSegmentId}
+                                // searchValue={searchValue}
+                                // selectedSearchResult={
+                                //     this.props.selectedSearchResult
+                                // }
+                                searchStringPositions={searchStringPositions}
+                                textAlignmentById={props.textAlignmentById}
+                                fontSize={props.fontSize}
+                                isPanelLinked={this.props.isPanelLinked}
+                                selectedSourceRange={props.selectedSourceRange}
+                                selectedTargetRange={props.selectedTargetRange}
+                                changeSelectedRange={props.changeSelectedRange}
+                                changeSyncIdOnClick={
+                                    this.props.changeSyncIdOnClick
+                                }
+                                changeScrollToId={this.props.changeScrollToId}
+                                condition={this.condition}
+                            />
+                        </div>
                     </div>
-                </div>
-            </CellMeasurer>
+                </CellMeasurer>
             </div>
         );
     }

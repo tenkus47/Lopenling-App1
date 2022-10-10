@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import { List } from "react-virtualized/dist/es/List";
 import lopenlinglogo from "images/lopenling_logo.png";
-import Zoom from 'components/utility/imageZoom';
+import Zoom from "components/utility/imageZoom";
 import {
     CellMeasurer,
     CellMeasurerCache,
@@ -47,7 +47,6 @@ let _searchResultsCache: {
         },
     },
 } = {};
-
 
 export type Props = {
     textListVisible: boolean,
@@ -189,7 +188,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }
                 }
             });
-      
+
             if (!_.isEmpty(list) || !_.isEmpty(imageIdList)) {
                 if (this.selectedWindow === 1) {
                     this.debouncedScroll(list);
@@ -692,7 +691,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             if (list.length) {
                 this.changeScrollToId({ id: list[0]?.start, from: 1 });
             }
-         
         }, 1000);
 
         window.addEventListener("resize", this.resizeHandler);
@@ -700,9 +698,9 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.selectionHandler = _.debounce((e) => {
             this.handleSelection(e);
         }, 200).bind(this);
-        setTimeout(()=>{
-          window.dispatchEvent(new Event("resize"));
-        },1000)
+        setTimeout(() => {
+            window.dispatchEvent(new Event("resize"));
+        }, 1000);
         document.addEventListener("selectionchange", this.selectionHandler);
         document.addEventListener("mousedown", this.mouseDown.bind(this), true);
         document.addEventListener("mouseup", this.mouseUp.bind(this), true);
@@ -720,8 +718,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.condition = this.props.condition;
         let scrollToId = this.props.scrollToId;
         let list = this.list;
-        if(!this.props.isAnnotating){
-            this.activeSelection=null
+        if (!this.props.isAnnotating) {
+            this.activeSelection = null;
         }
 
         this.textAlignmentById = this.props.textAlignmentById;
@@ -845,7 +843,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         window.removeEventListener("resize", this.resizeHandler);
 
         document.removeEventListener("selectionchange", this.selectionHandler);
-       
     }
 
     calculateImageHeight() {
@@ -912,7 +909,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 ref={(div) => (this.splitText = div)}
                 key={key}
             >
-               
                 <AutoSizer disableWidth>
                     {({ height }) => (
                         <List
@@ -929,13 +925,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             containerStyle={{
                                 width: "100%",
                                 maxWidth: "100%",
-
                             }}
                             style={{
                                 width: "100%",
-                                paddingTop:30,
-                                paddingInline:50
-                                                            }}
+                                paddingTop: 30,
+                                paddingInline: 50,
+                            }}
                         ></List>
                     )}
                 </AutoSizer>
@@ -1044,12 +1039,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         parent: {},
         style: {},
     }): React.Element<CellMeasurer> {
-        
         const props = this.props;
         const cache = this.cache;
         const component = this;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
-
 
         let imageUrl = "";
         // if (this.imageData?.alignment && props.selectedWitness) {
@@ -1074,7 +1067,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 index
             );
         }
-        let containerHeight=style.height;
+        let containerHeight = style.height;
         let pechaStyles = {};
         if (props.showImages && pechaImageClass && this.calculatedImageHeight) {
             pechaStyles["height"] = this.calculatedImageHeight + "px";
@@ -1084,113 +1077,124 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             height: style.height + 10,
             cursor: !this.props.isAnnotating ? "pointer" : "text",
         };
-        return (<div key={key}> 
-        <button
-                    id="update-list"
-                    style={{ display: "none" }}
-                    onClick={()=>this.updateList(true)}
-                ></button>
-            <CellMeasurer
-                columnIndex={0}
-                parent={parent}
-                rowIndex={index}
-                cache={cache}
-            >
-                <div
-                    key={key}
-                    style={newStyle}
-                    className={styles.splitTextRow}
-                    ref={this.splitTextRef}
-                    id={`index_${index}`}
+        return (
+            <div key={key}>
+                <CellMeasurer
+                    columnIndex={0}
+                    parent={parent}
+                    rowIndex={index}
+                    cache={cache}
                 >
-                    <div className={styles.splitTextRowContent}>
-                        {props.showImages && (
-                            <div
-                                className={pechaImageClass}
-                                style={pechaStyles}
-                            >
-                                <Zoom>
-                                <img
-                                    alt="Text related Image"
-                                    className={styles.image}
-                                    src={imageUrl}
-                                    width="100%"
-                                    height="100%"
-                                    loading="lazy"
-                                    decoding="async"
-                                    onLoad={(e) => {
-                                        if (
-                                            e.target &&
-                                            component.imageWidth === null
-                                        ) {
-                                            component.imageWidth =
-                                                e.target.naturalWidth;
-                                            component.imageHeight =
-                                                e.target.naturalHeight;
-                                            component.calculatedImageHeight =
-                                                null;
-                                            window.setTimeout(
-                                                component.updateList.bind(
-                                                    component
-                                                ),
-                                                0
-                                            );
-                                        }
-                                    }}
-                                />
-                                </Zoom>
-                            </div>
-                        )}
-
-                        <Text
-                            segmentedText={props.splitText.texts[index]}
-                            annotations={props.annotations}
-                            activeAnnotations={props.activeAnnotations}
-                            activeAnnotation={props.activeAnnotation}
-                            row={index}
-                            selectedSegmentId={props.selectedSegmentId}
-                            annotationPositions={props.annotationPositions}
-                            selectedAnnotatedSegments={
-                                this._filteredSelectedAnnotatedSegments
-                            }
-                            getBaseAnnotation={this.getBaseAnnotation.bind(
-                                this
+                    <div
+                        key={key}
+                        style={newStyle}
+                        className={styles.splitTextRow}
+                        ref={this.splitTextRef}
+                        id={`index_${index}`}
+                    >
+                        <div className={styles.splitTextRowContent}>
+                            {props.showImages && (
+                                <div
+                                    className={pechaImageClass}
+                                    style={pechaStyles}
+                                >
+                                    <Zoom>
+                                        <img
+                                            alt="Text related Image"
+                                            className={styles.image}
+                                            src={imageUrl}
+                                            width="100%"
+                                            height="100%"
+                                            loading="lazy"
+                                            decoding="async"
+                                            onLoad={(e) => {
+                                                if (
+                                                    e.target &&
+                                                    component.imageWidth ===
+                                                        null
+                                                ) {
+                                                    component.imageWidth =
+                                                        e.target.naturalWidth;
+                                                    component.imageHeight =
+                                                        e.target.naturalHeight;
+                                                    component.calculatedImageHeight =
+                                                        null;
+                                                    window.setTimeout(
+                                                        component.updateList.bind(
+                                                            component
+                                                        ),
+                                                        0
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                    </Zoom>
+                                </div>
                             )}
-                            activeWitness={this.props.selectedWitness}
-                            searchValue={searchValue}
-                            selectedSearchResult={
-                                this.props.selectedSearchResult
-                            }
-                            searchStringPositions={searchStringPositions}
-                            fontSize={props.fontSize}
-                            changeSyncIdOnClick={this.props.changeSyncIdOnClick}
-                            changeScrollToId={this.props.changeScrollToId}
-                            textAlignmentById={this.props.textAlignmentById}
-                            selectedSourceRange={this.props.selectedSourceRange}
-                            selectedTargetRange={this.props.selectedTargetRange}
-                            changeSelectedRange={this.props.changeSelectedRange}
-                            condition={this.condition}
-                        />
-                    </div>
-                    {this.props.isAnnotating &&
-                        this.selectedTextIndex === index &&
-                        this.props.activeAnnotation && (
-                            <AnnotationControlsContainer
-                                annotationPositions={props.annotationPositions}
-                                annotatedText={props.splitText.annotatedText}
+
+                            <Text
+                                segmentedText={props.splitText.texts[index]}
+                                annotations={props.annotations}
+                                activeAnnotations={props.activeAnnotations}
                                 activeAnnotation={props.activeAnnotation}
-                                inline={true}
-                                firstSelectedSegment={this.firstSelectedSegment}
-                                splitTextRect={this.splitTextRect}
-                                selectedElementId={this.selectedElementId}
-                                pechaImageClass={pechaImageClass}
-                                splitText={props.splitText}
-                                selectedElementIds={this.selectedElementIds}
-                                list={this.list}
+                                row={index}
+                                selectedSegmentId={props.selectedSegmentId}
+                                annotationPositions={props.annotationPositions}
+                                selectedAnnotatedSegments={
+                                    this._filteredSelectedAnnotatedSegments
+                                }
+                                getBaseAnnotation={this.getBaseAnnotation.bind(
+                                    this
+                                )}
+                                activeWitness={this.props.selectedWitness}
+                                searchValue={searchValue}
+                                selectedSearchResult={
+                                    this.props.selectedSearchResult
+                                }
+                                searchStringPositions={searchStringPositions}
+                                fontSize={props.fontSize}
+                                changeSyncIdOnClick={
+                                    this.props.changeSyncIdOnClick
+                                }
+                                changeScrollToId={this.props.changeScrollToId}
+                                textAlignmentById={this.props.textAlignmentById}
+                                selectedSourceRange={
+                                    this.props.selectedSourceRange
+                                }
+                                selectedTargetRange={
+                                    this.props.selectedTargetRange
+                                }
+                                changeSelectedRange={
+                                    this.props.changeSelectedRange
+                                }
+                                condition={this.condition}
                             />
-                        )}
-                </div>
-            </CellMeasurer>
+                        </div>
+                        {this.props.isAnnotating &&
+                            this.selectedTextIndex === index &&
+                            this.props.activeAnnotation && (
+                                <AnnotationControlsContainer
+                                    annotationPositions={
+                                        props.annotationPositions
+                                    }
+                                    annotatedText={
+                                        props.splitText.annotatedText
+                                    }
+                                    activeAnnotation={props.activeAnnotation}
+                                    inline={true}
+                                    firstSelectedSegment={
+                                        this.firstSelectedSegment
+                                    }
+                                    splitTextRect={this.splitTextRect}
+                                    selectedElementId={this.selectedElementId}
+                                    pechaImageClass={pechaImageClass}
+                                    splitText={props.splitText}
+                                    selectedElementIds={this.selectedElementIds}
+                                    list={this.list}
+                                />
+                            )}
+                    </div>
+                </CellMeasurer>
             </div>
         );
     }

@@ -21,7 +21,6 @@ import {
     List,
     IconButton,
 } from "@mui/material";
-import Refresh from "./HeaderMenu/Refresh";
 
 import SearchList from "./HeaderMenu/SearchList";
 type HeaderProps = {
@@ -29,8 +28,7 @@ type HeaderProps = {
     textFontSize: Number,
     onChangedFontSize: () => void,
     searchResults: [],
-    onSelectedSearchResult:()=>void
-
+    onSelectedSearchResult: () => void,
 };
 
 function TextDetailHeading(props: HeaderProps) {
@@ -134,8 +132,6 @@ function TextDetailHeading(props: HeaderProps) {
                     }}
                     className={styles.button_group_menu}
                 >
-                    <Refresh isSecondWindowOpen={props.isSecondWindowOpen} />
-
                     <Search handleWindowSearch={handleWindowSearch} />
                     <Settings
                         textFontSize={props.textFontSize}
@@ -194,7 +190,7 @@ function TextDetailHeading(props: HeaderProps) {
                                 )}
                                 {condition && results.length > 0 && (
                                     <SearchList
-                                         onSelectedSearchResult={
+                                        onSelectedSearchResult={
                                             props.onSelectedSearchResult
                                         }
                                         searchValue={props.searchValue}

@@ -9,33 +9,29 @@ function Commentary({ alignmentData, text, selectSecondWindowText }) {
     const handleSelectText = (text) => {
         selectSecondWindowText(text);
     };
-
+    if (!textAlignments.length) return null;
     return (
         <Box>
             <Typography variant="h6" gutterBottom component="div">
                 Commentary
             </Typography>
-            {textAlignments.length > 0 &&
-                textAlignments.map((alignment, index) => {
-                    return (
-                        <ul
-                            style={{ paddingLeft: 18 }}
-                            key={`commentary-${index}`}
+            {textAlignments.map((alignment, index) => {
+                return (
+                    <ul style={{ paddingLeft: 18 }} key={`commentary-${index}`}>
+                        <li
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                                handleSelectText({
+                                    id: 2,
+                                    name: "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་པའི་འགྲེལ་པ།",
+                                })
+                            }
                         >
-                            <li
-                                style={{ cursor: "pointer" }}
-                                onClick={() =>
-                                    handleSelectText({
-                                        id: 2,
-                                        name: "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་པའི་འགྲེལ་པ།",
-                                    })
-                                }
-                            >
-                                {alignment.target}
-                            </li>
-                        </ul>
-                    );
-                })}
+                            {alignment.target}
+                        </li>
+                    </ul>
+                );
+            })}
         </Box>
     );
 }
@@ -54,10 +50,10 @@ const mapStateToProps = (state: AppState): {} => {
 const mapDispatchToProps = (dispatch) => {
     const changeMediaSelection = (data) =>
         dispatch(actions.mediaSelection(data));
-    
-    const onChangeWindowOpen=(data: boolean ) => {
-            dispatch(actions.toggleSecondWindow(data));
-        }
+
+    const onChangeWindowOpen = (data: boolean) => {
+        dispatch(actions.toggleSecondWindow(data));
+    };
 
     return {
         changeMediaSelection,
@@ -74,7 +70,7 @@ const mapDispatchToProps = (dispatch) => {
         selectSecondWindowText: (data) => {
             onChangeWindowOpen(true);
             dispatch(actions.selectedText2(data));
-        }
+        },
     };
 };
 

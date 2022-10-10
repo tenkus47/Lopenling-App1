@@ -192,12 +192,11 @@ class AnnotationControls extends React.Component<Props> {
                 this.arrow.style.top = 0 - arrowHeight + "px";
             }
             // controls.style.top = top + measurements.height + arrowHeight + "px";
-            controls.style.top = top - measurements.height -10 + "px"; // 20 added due to 30 px padding on splitTextRow first child
+            controls.style.top = top - measurements.height - 10 + "px"; // 20 added due to 30 px padding on splitTextRow first child
             // controls.style.left =
             // selectedLeft + selectedWidth / 2 - width / 2 + moveRight + "px";
             controls.style.left = measurements.left + "px";
         } else if (moveToSide) {
-
             arrow.className = styles.arrowRight;
             let arrowHeight = arrow.offsetHeight;
             let controlsTop =
@@ -336,7 +335,7 @@ class AnnotationControls extends React.Component<Props> {
         let temporaryAnnotations = [];
         let anonymousUserMessage = null;
         let nothingSelected = null;
-        const isLoggedIn = props.user.isLoggedIn ;
+        const isLoggedIn = props.user.isLoggedIn;
 
         let breakSelected = false;
         if (
@@ -389,8 +388,6 @@ class AnnotationControls extends React.Component<Props> {
                 } else {
                     let annotationDetail = (
                         <AnnotationDetail
-                            isWorkingSection={false}
-                            fontSize={props.fontSize}
                             annotationData={annotationData}
                             key={annotationData.annotation.uniqueId}
                             isActive={isActive}
@@ -403,14 +400,11 @@ class AnnotationControls extends React.Component<Props> {
                             }}
                             editAnnotationHandler={() => {
                                 if (isLoggedIn && !isEditing) {
-                                    this.annotation = annotationData.annotation;
-
                                     props.editAnnotation(
                                         annotationData.annotation
                                     );
                                 }
                             }}
-                          
                             isLoggedIn={isLoggedIn}
                         />
                     );
@@ -584,7 +578,7 @@ class AnnotationControls extends React.Component<Props> {
             let questions: Question[] = [];
             for (let i = 0; i < props.questions.length; i++) {
                 const question = props.questions[i];
-                
+
                 let isValid = !tempQuestionIds.hasOwnProperty(
                     question.uniqueId
                 );
@@ -599,14 +593,17 @@ class AnnotationControls extends React.Component<Props> {
                     }
                 }
             }
- 
-            questionViews = questions.map((question: Question,index) => {
+            questionViews = questions.map((question: Question, index) => {
                 let key = "QUESTION_" + question.annotationUniqueId;
                 return (
                     <QuestionView
                         question={question}
                         key={"question_" + question.annotationUniqueId}
-                        delete={()=>this.props.deleteAnnotation(this.props.questions[index])}
+                        delete={() =>
+                            this.props.deleteAnnotation(
+                                this.props.questions[index]
+                            )
+                        }
                     />
                 );
             });
@@ -680,7 +677,6 @@ class AnnotationControls extends React.Component<Props> {
                     />
                 )}
                 {!breakSelected && temporaryAnnotations}
-
                 {annotationBody}
                 <div
                     className={styles.arrow}

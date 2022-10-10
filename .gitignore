@@ -15,6 +15,7 @@ parkhang/frontend/static/bundles/styles-dev.css.map
 parkhang/frontend/coverage
 /data/texts-orig
 /data
+.envs/.local/.django
 parkhang/static/images/texts
 .vscode
 vendors~docx-dev.js

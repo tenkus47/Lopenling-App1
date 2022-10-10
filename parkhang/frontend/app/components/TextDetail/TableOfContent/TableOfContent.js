@@ -68,6 +68,8 @@ function TableOfContent() {
                 paddingInline: 2,
             }}
         >
+            <Commentary />
+
             <Toolbar
                 sx={{
                     justifyContent: "space-between",
@@ -89,7 +91,6 @@ function TableOfContent() {
                 </Search>
             </Toolbar>
             {/* <Loader loaded={loaded} /> */}
-            <Commentary/>
             <Box>
                 {data.map((list, index) => {
                     return (

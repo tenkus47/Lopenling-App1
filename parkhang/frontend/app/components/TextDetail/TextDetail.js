@@ -2,7 +2,6 @@
 import React from "react";
 import classnames from "classnames";
 import imageStyle from "components/MediaComponent/Image.css";
-import Placeholder from "components/utility/Placeholder";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import SplitText from "lib/SplitText";
@@ -56,7 +55,7 @@ export type Props = {
     changeScrollToId: () => void,
     changeSelectedImage: () => void,
     closeAnnotation: () => void,
-    textAlignment:[],
+    textAlignment: [],
     textAlignmentById: {},
     selectedWindow: Number,
     changeSelectedWindow: () => void,
@@ -68,7 +67,7 @@ export type Props = {
     changeShowTableContent: () => void,
     showTableContent: Boolean,
     imageScrollId: {},
-    isAnnotating:Boolean
+    isAnnotating: Boolean,
 };
 
 let textDetailId = 0;
@@ -96,7 +95,6 @@ class TextDetail extends React.Component<Props> {
     }
     componentDidUpdate() {
         this.selectedWindow = this.props.selectedWindow;
-        
     }
 
     render() {
@@ -114,11 +112,7 @@ class TextDetail extends React.Component<Props> {
             !this.props.text ||
             this.props.loading
         ) {
-            textComponent = (
-                <div key={this.key}>
-                    <Placeholder />
-                </div>
-            );
+            textComponent = <div key={this.key} />;
         } else {
             let limitWidth = false;
             let splitter;
@@ -181,8 +175,6 @@ class TextDetail extends React.Component<Props> {
         return (
             <Box
                 sx={{
-                    height: "100%",
-                    flex: 1,
                     bgcolor: "navbar.main",
                     color: "texts.main",
                 }}

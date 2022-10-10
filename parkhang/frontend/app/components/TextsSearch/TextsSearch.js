@@ -5,8 +5,8 @@ import * as constants from "app_constants";
 
 import { injectIntl } from "react-intl";
 // import Button from "components/UI/Button";
-import {Button, IconButton} from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search';
+import { Button, IconButton } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { Box } from "@mui/system";
 
 type Props = {
@@ -33,17 +33,16 @@ const TextsSearch = (props: Props) => {
         }
     };
 
-
     return (
         <Box
-        sx={{bgcolor:'inherit'}}
+            sx={{ bgcolor: "inherit" }}
             className={styles.textsSearchContainer}
             // style={{ maxWidth: props.textListWidth }}
         >
             <div className={styles.textsSearch}>
                 <form onSubmit={initiateSearch}>
                     <input
-                        style={{ outline: "none", width: 150 }}
+                        style={{ outline: "none", maxWidth: 196 }}
                         type="text"
                         id="textSearchInput"
                         placeholder={props.intl.formatMessage({
@@ -54,12 +53,11 @@ const TextsSearch = (props: Props) => {
                     <Button
                         onClick={initiateSearch}
                         variant="outlined"
-                        size='small'
-                        sx={{minWidth:2}}
+                        size="small"
+                        sx={{ minWidth: 2 }}
                     >
-                       <SearchIcon />
+                        <SearchIcon />
                     </Button>
-                   
                 </form>
             </div>
         </Box>

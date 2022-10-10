@@ -261,6 +261,7 @@ export default class AnnotatedText {
             startKey = String(annotation.start) + INSERTION_KEY;
         }
         if (orginalCurrentSegmentPositions[String(startKey)] == undefined) {
+            console.log(annotation);
             if (this.originalText.getText().length === annotation.start) {
                 // if the annotation is an insertion at the end of the text
                 return [this.getText().length, 0];
@@ -385,7 +386,6 @@ export default class AnnotatedText {
             }, "");
         }
         if (origLength !== content.length) {
-            console.warn(origLength , content.length)
             console.warn(
                 "Base annotation has different content length to length"
             );
