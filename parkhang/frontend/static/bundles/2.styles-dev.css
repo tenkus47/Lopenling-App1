@@ -968,7 +968,7 @@ position: relative;
 }
 
 .Text---P_annotation {
-    color: green;
+    color: inherit;
     cursor: pointer;
 }
 

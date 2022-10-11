@@ -5,7 +5,6 @@ import type { AppState } from "reducers";
 import * as actions from "actions";
 import styles from "./App.css";
 import utilStyles from "css/util.css";
-import { handleKeyDown } from "../../shortcuts";
 import favimage from "images/favicon.png";
 import HomePage from "components/HomePage";
 import Favicon from "react-favicon";
@@ -103,9 +102,6 @@ const App = (props: Props) => {
                     utilStyles.flex,
                     utilStyles.flexColumn
                 )}
-                onKeyDown={(e: SyntheticKeyboardEvent<*>) => {
-                    handleKeyDown(e, props.state, props.dispatch);
-                }}
             >
                 <Favicon url={favimage} />
                 <Suspense

@@ -916,46 +916,42 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             height: style.height + 10,
         };
         return (
-            <div key={key}>
-                <CellMeasurer
-                    columnIndex={0}
-                    parent={parent}
-                    rowIndex={index}
-                    cache={cache}
+            <CellMeasurer
+                columnIndex={0}
+                parent={parent}
+                rowIndex={index}
+                cache={cache}
+                key={key}
+            >
+                <div
+                    style={newStyle}
+                    ref={this.splitTextRef}
+                    id={`index2_${index}`}
+                    className={styles.splitTextRow}
                 >
-                    <div
-                        key={key}
-                        style={newStyle}
-                        ref={this.splitTextRef}
-                        id={`index2_${index}`}
-                        className={styles.splitTextRow}
-                    >
-                        <div className={styles.splitTextRowContent}>
-                            <Text
-                                segmentedText={props.splitText.texts[index]}
-                                row={index}
-                                selectedSegmentId={props.selectedSegmentId}
-                                // searchValue={searchValue}
-                                // selectedSearchResult={
-                                //     this.props.selectedSearchResult
-                                // }
-                                searchStringPositions={searchStringPositions}
-                                textAlignmentById={props.textAlignmentById}
-                                fontSize={props.fontSize}
-                                isPanelLinked={this.props.isPanelLinked}
-                                selectedSourceRange={props.selectedSourceRange}
-                                selectedTargetRange={props.selectedTargetRange}
-                                changeSelectedRange={props.changeSelectedRange}
-                                changeSyncIdOnClick={
-                                    this.props.changeSyncIdOnClick
-                                }
-                                changeScrollToId={this.props.changeScrollToId}
-                                condition={this.condition}
-                            />
-                        </div>
+                    <div className={styles.splitTextRowContent}>
+                        <Text
+                            segmentedText={props.splitText.texts[index]}
+                            row={index}
+                            selectedSegmentId={props.selectedSegmentId}
+                            // searchValue={searchValue}
+                            // selectedSearchResult={
+                            //     this.props.selectedSearchResult
+                            // }
+                            searchStringPositions={searchStringPositions}
+                            textAlignmentById={props.textAlignmentById}
+                            fontSize={props.fontSize}
+                            isPanelLinked={this.props.isPanelLinked}
+                            selectedSourceRange={props.selectedSourceRange}
+                            selectedTargetRange={props.selectedTargetRange}
+                            changeSelectedRange={props.changeSelectedRange}
+                            changeSyncIdOnClick={this.props.changeSyncIdOnClick}
+                            changeScrollToId={this.props.changeScrollToId}
+                            condition={this.condition}
+                        />
                     </div>
-                </CellMeasurer>
-            </div>
+                </div>
+            </CellMeasurer>
         );
     }
 }

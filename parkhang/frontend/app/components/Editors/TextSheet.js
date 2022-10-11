@@ -12,6 +12,7 @@ import styles from "./resizerStyle.css";
 import classnames from "classnames";
 import TextDetailContainer2 from "components/TextDetail2/TextDetailContainer";
 import TextDetailContainer from "components/TextDetail/TextDetailContainer";
+import { handleKeyDown } from "../../shortcuts";
 
 function TextSheet(props) {
     let editorRef = useRef(null);
@@ -26,6 +27,9 @@ function TextSheet(props) {
                 width: "100%",
                 height: props.bodyHeight,
                 position: "relative",
+            }}
+            onKeyDown={(e: SyntheticKeyboardEvent<*>) => {
+                handleKeyDown(e, props.state, props.dispatch);
             }}
         >
             <SplitPane
@@ -67,6 +71,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
     const Media = reducers.getMediaData(state);
     const selectedText = reducers.getSelectedText(state);
     return {
+        state,
         selectedText,
         isSecondWindowOpen,
         Media,
@@ -77,6 +82,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
 
     return {
+        dispatch,
         ...ownProps,
         ...stateProps,
     };

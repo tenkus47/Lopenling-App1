@@ -497,7 +497,7 @@ class QuestionList(APIView):
                 question_title,
                 question_content,
             ) 
-            print(topic_data)
+           
             topic_id = topic_data["id"]
         except:
             topic_id = None

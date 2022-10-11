@@ -10,7 +10,7 @@ import classnames from "classnames";
 import { QUESTION_URL } from "app_constants";
 import { Box, IconButton } from "@mui/material";
 import { DiscourseForum } from "components/utility/discourseForum";
-
+import DeleteIcon from "@mui/icons-material/Delete";
 type Props = {
     question: Question,
     delete: () => void,
@@ -62,7 +62,13 @@ export default class QuestionView extends React.Component<Props> {
                             <FormattedMessage id="question.viewThread" />
                         </a>
                     </span>
-                    <button onClick={this.delete}>delete</button>
+                    <IconButton
+                        aria-label="delete"
+                        size="small"
+                        onClick={this.delete}
+                    >
+                        <DeleteIcon fontSize="inherit" />
+                    </IconButton>
                 </div>
                 <p className={controlStyles.subTitle}>
                     {name}

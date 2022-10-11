@@ -451,11 +451,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony import */ var components_TextDetail2_TextDetailContainer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! components/TextDetail2/TextDetailContainer */ "./app/components/TextDetail2/TextDetailContainer.js");
 /* harmony import */ var components_TextDetail_TextDetailContainer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! components/TextDetail/TextDetailContainer */ "./app/components/TextDetail/TextDetailContainer.js");
+/* harmony import */ var _shortcuts__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../shortcuts */ "./app/shortcuts.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -483,6 +485,9 @@ function TextSheet(props) {
       width: "100%",
       height: props.bodyHeight,
       position: "relative"
+    },
+    onKeyDown: function onKeyDown(e) {
+      Object(_shortcuts__WEBPACK_IMPORTED_MODULE_14__["handleKeyDown"])(e, props.state, props.dispatch);
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_split_pane__WEBPACK_IMPORTED_MODULE_9__["default"], {
     size: props.isSecondWindowOpen && props.selectedText ? "50%" : "100%",
@@ -504,6 +509,7 @@ var mapStateToProps = function mapStateToProps(state) {
   var Media = reducers__WEBPACK_IMPORTED_MODULE_2__["getMediaData"](state);
   var selectedText = reducers__WEBPACK_IMPORTED_MODULE_2__["getSelectedText"](state);
   return {
+    state: state,
     selectedText: selectedText,
     isSecondWindowOpen: isSecondWindowOpen,
     Media: Media
@@ -512,7 +518,9 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mergeProps = function mergeProps(stateProps, dispatchProps, ownProps) {
   var dispatch = dispatchProps.dispatch;
-  return _objectSpread(_objectSpread({}, ownProps), stateProps);
+  return _objectSpread(_objectSpread({
+    dispatch: dispatch
+  }, ownProps), stateProps);
 };
 
 var TextSheetContainer = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps, null, mergeProps)(TextSheet);
@@ -3508,49 +3516,29 @@ var AnnotationControlsHeader = /*#__PURE__*/function (_React$Component) {
 
   _createClass(AnnotationControlsHeader, [{
     key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this = this;
-
-      this.keyHandler = function (evtobj) {
-        var e = window.event ? event : evtobj;
-        var condition = e.ctrlKey;
-
-        if (condition && e.keyCode != 67) {
-          evtobj.preventDefault();
-        }
-
-        if (condition && e.keyCode == 69) {
-          _this.props.editAnnotationHandler();
-        }
-
-        if (condition && e.keyCode == 81) {
-          var _this$props;
-
-          (_this$props = _this.props) === null || _this$props === void 0 ? void 0 : _this$props.addQuestion();
-        }
-
-        if (condition && e.keyCode == 76) {
-          var _this$props2;
-
-          (_this$props2 = _this.props) === null || _this$props2 === void 0 ? void 0 : _this$props2.addLineBreak();
-        }
-
-        if (condition && e.keyCode == 78) {
-          var _this$props3;
-
-          (_this$props3 = _this.props) === null || _this$props3 === void 0 ? void 0 : _this$props3.addNote();
-        }
-
-        if (condition && e.keyCode == 80) {
-          var _this$props4;
-
-          (_this$props4 = _this.props) === null || _this$props4 === void 0 ? void 0 : _this$props4.addPageBreak();
-        }
-      };
-
-      document.addEventListener("keydown", this.keyHandler, {
-        once: false
-      });
+    value: function componentDidMount() {// this.keyHandler = (evtobj) => {
+      //     var e = window.event ? event : evtobj;
+      //     let condition = e.ctrlKey;
+      //     if (condition && e.keyCode != 67) {
+      //         evtobj.preventDefault();
+      //     }
+      //     if (condition && e.keyCode == 69) {
+      //         this.props.editAnnotationHandler();
+      //     }
+      //     if (condition && e.keyCode == 81) {
+      //         this.props?.addQuestion();
+      //     }
+      //     if (condition && e.keyCode == 76) {
+      //         this.props?.addLineBreak();
+      //     }
+      //     if (condition && e.keyCode == 78) {
+      //         this.props?.addNote();
+      //     }
+      //     if (condition && e.keyCode == 80) {
+      //         this.props?.addPageBreak();
+      //     }
+      // };
+      // document.addEventListener("keydown", this.keyHandler, { once: false });
     }
   }, {
     key: "componentWillUnmount",
@@ -4861,6 +4849,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var app_constants__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! app_constants */ "./app/app_constants/index.js");
 /* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/esm/index.js");
 /* harmony import */ var components_utility_discourseForum__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! components/utility/discourseForum */ "./app/components/utility/discourseForum.js");
+/* harmony import */ var _mui_icons_material_Delete__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @mui/icons-material/Delete */ "./node_modules/@mui/icons-material/Delete.js");
+/* harmony import */ var _mui_icons_material_Delete__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_mui_icons_material_Delete__WEBPACK_IMPORTED_MODULE_12__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4884,6 +4874,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -4962,9 +4953,13 @@ var QuestionView = /*#__PURE__*/function (_React$Component) {
         target: "_blank"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_7__["FormattedMessage"], {
         id: "question.viewThread"
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_10__["IconButton"], {
+        "aria-label": "delete",
+        size: "small",
         onClick: this["delete"]
-      }, "delete")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_icons_material_Delete__WEBPACK_IMPORTED_MODULE_12___default.a, {
+        fontSize: "inherit"
+      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
         className: _AnnotationControls_css__WEBPACK_IMPORTED_MODULE_2___default.a.subTitle
       }, name, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_7__["FormattedDate"], {
         value: this.props.question.created
@@ -5885,7 +5880,7 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
       }, 200).bind(this);
       setTimeout(function () {
         window.dispatchEvent(new Event("resize"));
-      }, 1000);
+      }, 2000);
       document.addEventListener("selectionchange", this.selectionHandler);
       document.addEventListener("mousedown", this.mouseDown.bind(this), true);
       document.addEventListener("mouseup", this.mouseUp.bind(this), true);
@@ -6242,13 +6237,12 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
         cursor: !this.props.isAnnotating ? "pointer" : "text"
       });
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"]("div", {
-        key: key
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](react_virtualized_dist_es_CellMeasurer__WEBPACK_IMPORTED_MODULE_9__["CellMeasurer"], {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](react_virtualized_dist_es_CellMeasurer__WEBPACK_IMPORTED_MODULE_9__["CellMeasurer"], {
         columnIndex: 0,
         parent: parent,
         rowIndex: index,
-        cache: cache
+        cache: cache,
+        key: key
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"]("div", {
         key: key,
         style: newStyle,
@@ -6310,7 +6304,7 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
         splitText: props.splitText,
         selectedElementIds: this.selectedElementIds,
         list: this.list
-      }))));
+      })));
     }
   }]);
 
@@ -6919,21 +6913,15 @@ var Text = /*#__PURE__*/function (_React$Component) {
 
           if (remainingAnnotations.length > 0 || activeInsertions.length > 0) {
             if (remainingAnnotations.some(function (l) {
-              return l.type === 'V';
-            })) {
-              classes.push(_Text_css__WEBPACK_IMPORTED_MODULE_3___default.a.V_annotation);
-            } else if (remainingAnnotations.some(function (l) {
-              return l.type === 'P';
+              return l.type === "P";
             })) {
               classes.push(_Text_css__WEBPACK_IMPORTED_MODULE_3___default.a.P_annotation);
             } else if (remainingAnnotations.some(function (l) {
-              return l.type === 'Q';
+              return l.type === "Q";
             })) {
               classes.push(_Text_css__WEBPACK_IMPORTED_MODULE_3___default.a.Q_annotation);
-            }
-
-            if (remainingAnnotations.some(function (l) {
-              return l.type === 'N';
+            } else if (remainingAnnotations.some(function (l) {
+              return l.type === "N";
             })) {
               classes.push(_Text_css__WEBPACK_IMPORTED_MODULE_3___default.a.N_annotation);
             } else {
@@ -10123,15 +10111,13 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
         height: style.height + 10
       });
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"]("div", {
-        key: key
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](react_virtualized_dist_es_CellMeasurer__WEBPACK_IMPORTED_MODULE_7__["CellMeasurer"], {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](react_virtualized_dist_es_CellMeasurer__WEBPACK_IMPORTED_MODULE_7__["CellMeasurer"], {
         columnIndex: 0,
         parent: parent,
         rowIndex: index,
-        cache: cache
+        cache: cache,
+        key: key
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"]("div", {
-        key: key,
         style: newStyle,
         ref: this.splitTextRef,
         id: "index2_".concat(index),
@@ -10156,7 +10142,7 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
         changeSyncIdOnClick: this.props.changeSyncIdOnClick,
         changeScrollToId: this.props.changeScrollToId,
         condition: this.condition
-      })))));
+      }))));
     }
   }]);
 
@@ -13159,7 +13145,6 @@ function postMessageReceived(e) {
 window.addEventListener("message", postMessageReceived, false);
 function DiscourseForum(_ref) {
   var topicId = _ref.topicId;
-  if (!topicId) topicId = 12 * Math.floor(Math.random() * 100);
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     window.DiscourseEmbed = {
       discourseUrl: "https://lopenling.org/",
@@ -13171,13 +13156,14 @@ function DiscourseForum(_ref) {
     d.src = Object(_discourseforumsettings__WEBPACK_IMPORTED_MODULE_1__["default"])(topicId);
     (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(d);
   }, []);
+  if (!topicId) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Topic unavailable");
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "discourse-comments-".concat(topicId)
   });
 }
 function DiscourseTopicList(_ref2) {
   var _ref2$category = _ref2.category,
-      category = _ref2$category === void 0 ? '' : _ref2$category,
+      category = _ref2$category === void 0 ? "" : _ref2$category,
       _ref2$perPage = _ref2.perPage,
       perPage = _ref2$perPage === void 0 ? 5 : _ref2$perPage;
   react__WEBPACK_IMPORTED_MODULE_0___default.a.useEffect(function () {
@@ -13206,7 +13192,7 @@ function DiscourseTopicList(_ref2) {
       iframe.id = frameId;
       iframe.frameBorder = 0;
       iframe.scrolling = "no";
-      iframe.width = '100%';
+      iframe.width = "100%";
       list.appendChild(iframe);
     }
   }, []);
@@ -13214,8 +13200,8 @@ function DiscourseTopicList(_ref2) {
     id: "topics",
     url: "https://lopenling.org/",
     style: {
-      maxHeight: '70vh',
-      overflow: 'scroll'
+      maxHeight: "70vh",
+      overflow: "scroll"
     },
     "per-page": perPage,
     category: category,
@@ -14075,6 +14061,343 @@ function positionSplitter(positions) {
     return newPositions;
   };
 }
+
+/***/ }),
+
+/***/ "./app/shortcuts.js":
+/*!**************************!*\
+  !*** ./app/shortcuts.js ***!
+  \**************************/
+/*! exports provided: handleKeyDown, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handleKeyDown", function() { return handleKeyDown; });
+/* harmony import */ var actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! actions */ "./app/actions/index.js");
+/* harmony import */ var reducers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! reducers */ "./app/reducers/index.js");
+/* harmony import */ var state_helpers_TextStore__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! state_helpers/TextStore */ "./app/state_helpers/TextStore.js");
+/* harmony import */ var lib_AnnotatedText__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lib/AnnotatedText */ "./app/lib/AnnotatedText.js");
+/* harmony import */ var lib_Source__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lib/Source */ "./app/lib/Source.js");
+/* harmony import */ var lib_Annotation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lib/Annotation */ "./app/lib/Annotation.js");
+/* harmony import */ var lib_TextSegment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lib/TextSegment */ "./app/lib/TextSegment.js");
+/* harmony import */ var redux_batched_actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! redux-batched-actions */ "./node_modules/redux-batched-actions/lib/index.js");
+/* harmony import */ var redux_batched_actions__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(redux_batched_actions__WEBPACK_IMPORTED_MODULE_7__);
+var _shortcuts;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+
+
+
+
+var closeAnnotationControls = function closeAnnotationControls(state, dispatch) {
+  var activeAnnotation = reducers__WEBPACK_IMPORTED_MODULE_1__["getActiveTextAnnotation"](state);
+
+  if (activeAnnotation) {
+    var dismissTextAnnotation = actions__WEBPACK_IMPORTED_MODULE_0__["changedActiveTextAnnotation"](null);
+    dispatch(dismissTextAnnotation);
+  }
+};
+
+var addPageBreak = function addPageBreak(state, dispatch) {
+  addBreak(state, dispatch, lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].pageBreak);
+};
+
+var addLineBreak = function addLineBreak(state, dispatch) {
+  addBreak(state, dispatch, lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].lineBreak);
+};
+
+var addBreak = function addBreak(state, dispatch, breakType) {
+  var selectBreak = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  var selectedWitness = reducers__WEBPACK_IMPORTED_MODULE_1__["getSelectedTextWitness"](state);
+  var activeAnnotation = reducers__WEBPACK_IMPORTED_MODULE_1__["getActiveTextAnnotation"](state);
+
+  if (!activeAnnotation || activeAnnotation.isType(lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].pageBreak) || activeAnnotation.isType(lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].lineBreak)) {
+    return;
+  }
+
+  var annotatedText = null;
+
+  if (selectedWitness) {
+    annotatedText = state_helpers_TextStore__WEBPACK_IMPORTED_MODULE_2__["getWitnessText"](state, selectedWitness.id);
+  }
+
+  var user = reducers__WEBPACK_IMPORTED_MODULE_1__["getUser"](state);
+
+  if (activeAnnotation && selectedWitness && annotatedText && user) {
+    var breakAnnotation = new lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["default"](null, activeAnnotation.witness, activeAnnotation.end + 1, 0, null, breakType, selectedWitness, user);
+
+    if (!breakExists(annotatedText, breakAnnotation)) {
+      var selectedWitnessData = reducers__WEBPACK_IMPORTED_MODULE_1__["dataFromWitness"](selectedWitness);
+      var actionsBatch = [];
+      actionsBatch.push(actions__WEBPACK_IMPORTED_MODULE_0__["createdAnnotation"](breakAnnotation));
+      actionsBatch.push(actions__WEBPACK_IMPORTED_MODULE_0__["appliedAnnotation"](breakAnnotation.uniqueId, selectedWitnessData));
+
+      if (selectBreak) {
+        actionsBatch.push(actions__WEBPACK_IMPORTED_MODULE_0__["changedActiveTextAnnotation"](breakAnnotation));
+      } else {
+        actionsBatch.push(actions__WEBPACK_IMPORTED_MODULE_0__["changedActiveTextAnnotation"](null));
+      }
+
+      dispatch(Object(redux_batched_actions__WEBPACK_IMPORTED_MODULE_7__["batchActions"])(actionsBatch));
+    }
+  }
+};
+
+var breakExists = function breakExists(annotatedText, breakAnnotation) {
+  return annotationTypeExists(annotatedText, lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].pageBreak, breakAnnotation.start) || annotationTypeExists(annotatedText, lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].lineBreak, breakAnnotation.start);
+};
+
+var annotationTypeExists = function annotationTypeExists(annotatedText, type, position) {
+  var annotations = annotatedText.getAnnotationsOfType(type);
+
+  for (var id in annotations) {
+    if (annotations.hasOwnProperty(id)) {
+      var annotation = annotations[id];
+
+      if (position === annotation.start) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+var selectNextSegment = function selectNextSegment(state, dispatch) {
+  var selectedWitness = reducers__WEBPACK_IMPORTED_MODULE_1__["getSelectedTextWitness"](state);
+  var activeAnnotation = reducers__WEBPACK_IMPORTED_MODULE_1__["getActiveTextAnnotation"](state);
+  var annotatedText = null;
+
+  if (selectedWitness) {
+    annotatedText = state_helpers_TextStore__WEBPACK_IMPORTED_MODULE_2__["getWitnessText"](state, selectedWitness.id);
+  }
+
+  if (!selectedWitness || !activeAnnotation || !annotatedText) return;
+  var segments, start, length, nextPos;
+
+  if (activeAnnotation.isDeletion) {
+    var nextOriginalPos = activeAnnotation.end + 1;
+    var nextSegment = annotatedText.segmentAtOriginalPosition(nextOriginalPos);
+
+    if (nextSegment && nextSegment instanceof lib_TextSegment__WEBPACK_IMPORTED_MODULE_6__["default"]) {
+      nextPos = nextSegment.start;
+    } else if (nextSegment && typeof nextSegment == "number") {// TODO: finish this - deletion after another deletion
+    }
+  } else {
+    segments = annotatedText.segmentsForAnnotation(activeAnnotation);
+    start = typeof segments[0] == "number" ? segments[0] : segments[0].start;
+    length = activeAnnotation.content.length;
+    nextPos = start + length;
+  } // TODO: needs to add support for non-active insertion.
+  // These are visible on the working edition.
+
+
+  if (nextPos === undefined) {
+    console.warn("Can't get next segment after %o", activeAnnotation);
+    return;
+  }
+
+  var existingAnnotations = annotatedText.annotationsForPosition(nextPos);
+
+  if (activeAnnotation.isDeletion) {
+    // The current deletion will be in exisitingAnnotations as it
+    // shares a position with the next segment.
+    existingAnnotations = existingAnnotations.filter(function (annotation) {
+      activeAnnotation.uniqueId !== annotation.uniqueId;
+    });
+  }
+
+  var newActiveAnnotation = null;
+
+  if (existingAnnotations.length > 0) {
+    newActiveAnnotation = existingAnnotations[0];
+  } else {
+    var segment = annotatedText.segmentedText.segmentAtPosition(nextPos);
+
+    if (segment) {
+      var baseAnnotation = annotatedText.getBaseAnnotation(nextPos, segment.length);
+      var workingWitness = reducers__WEBPACK_IMPORTED_MODULE_1__["getWorkingWitness"](state, selectedWitness.text.id);
+      var user = reducers__WEBPACK_IMPORTED_MODULE_1__["getUser"](state);
+
+      if (baseAnnotation && workingWitness && user && segment) {
+        newActiveAnnotation = new lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["default"](lib_AnnotatedText__WEBPACK_IMPORTED_MODULE_3__["WORKING_VERSION_ANNOTATION_ID"], workingWitness, baseAnnotation.start, baseAnnotation.length, segment.text, lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].variant, selectedWitness, user);
+      }
+    }
+  }
+
+  if (newActiveAnnotation) {
+    dispatch(actions__WEBPACK_IMPORTED_MODULE_0__["changedActiveTextAnnotation"](newActiveAnnotation));
+  }
+};
+
+var selectPreviousSegment = function selectPreviousSegment(state, dispatch) {
+  var selectedWitness = reducers__WEBPACK_IMPORTED_MODULE_1__["getSelectedTextWitness"](state);
+  var activeAnnotation = reducers__WEBPACK_IMPORTED_MODULE_1__["getActiveTextAnnotation"](state);
+  var annotatedText = null;
+
+  if (selectedWitness) {
+    annotatedText = state_helpers_TextStore__WEBPACK_IMPORTED_MODULE_2__["getWitnessText"](state, selectedWitness.id);
+  }
+
+  if (!selectedWitness || !activeAnnotation || !annotatedText || activeAnnotation.start === 0) return;
+  var segments, start, prevPos;
+  var prevOriginalPos = activeAnnotation.start - 1;
+  var prevSegment = annotatedText.segmentAtOriginalPosition(prevOriginalPos);
+
+  if (prevSegment && prevSegment instanceof lib_TextSegment__WEBPACK_IMPORTED_MODULE_6__["default"]) {
+    prevPos = prevSegment.start;
+  } else if (prevSegment && typeof prevSegment == "number") {
+    var prevAnnotation = annotatedText.annotationsForPosition(prevSegment);
+
+    var _segments = annotatedText.segmentsForAnnotation(activeAnnotation);
+
+    if (_segments.length > 0) {
+      prevPos = typeof _segments[0] == "number" ? _segments[0] : _segments[0].start;
+    }
+  } // TODO: needs to add support for non-active insertion.
+  // These are visible on the working edition.
+
+
+  if (prevPos === undefined) {
+    console.warn("Can't get previous segment before %o", activeAnnotation);
+    return;
+  }
+
+  var existingAnnotations = annotatedText.annotationsForPosition(prevPos);
+  var newActiveAnnotation = null;
+
+  if (existingAnnotations.length > 0) {
+    newActiveAnnotation = existingAnnotations[0];
+
+    if (newActiveAnnotation.isDeletion && prevSegment && prevSegment instanceof lib_TextSegment__WEBPACK_IMPORTED_MODULE_6__["default"]) {
+      newActiveAnnotation = null;
+    }
+  }
+
+  if (!newActiveAnnotation && prevSegment && prevSegment instanceof lib_TextSegment__WEBPACK_IMPORTED_MODULE_6__["default"]) {
+    var baseAnnotation = annotatedText.getBaseAnnotation(prevPos, prevSegment.length);
+    var workingWitness = reducers__WEBPACK_IMPORTED_MODULE_1__["getWorkingWitness"](state, selectedWitness.text.id);
+    var user = reducers__WEBPACK_IMPORTED_MODULE_1__["getUser"](state);
+
+    if (baseAnnotation && workingWitness && user && prevSegment) {
+      newActiveAnnotation = new lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["default"](lib_AnnotatedText__WEBPACK_IMPORTED_MODULE_3__["WORKING_VERSION_ANNOTATION_ID"], workingWitness, baseAnnotation.start, baseAnnotation.length, prevSegment.text, lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].variant, selectedWitness, user);
+    }
+  }
+
+  if (newActiveAnnotation) {
+    dispatch(actions__WEBPACK_IMPORTED_MODULE_0__["changedActiveTextAnnotation"](newActiveAnnotation));
+  }
+};
+
+var extendSelectionRight = function extendSelectionRight(state, dispatch) {
+  var selectedWitness = reducers__WEBPACK_IMPORTED_MODULE_1__["getSelectedTextWitness"](state);
+  var activeAnnotation = reducers__WEBPACK_IMPORTED_MODULE_1__["getActiveTextAnnotation"](state);
+  var annotatedText = null;
+
+  if (selectedWitness) {
+    annotatedText = state_helpers_TextStore__WEBPACK_IMPORTED_MODULE_2__["getWitnessText"](state, selectedWitness.id);
+  }
+
+  if (!selectedWitness || !activeAnnotation || !annotatedText) return; // Don't support deletions yet
+
+  if (activeAnnotation.isDeletion) {
+    return;
+  }
+
+  var segments = annotatedText.segmentsForAnnotation(activeAnnotation);
+  var start = typeof segments[0] == "number" ? segments[0] : segments[0].start;
+  var length = activeAnnotation.content.length;
+  var nextPos = start + length;
+
+  if (nextPos === undefined) {
+    console.warn("Can't get next segment after %o", activeAnnotation);
+    return;
+  }
+
+  var existingAnnotations = annotatedText.annotationsForPosition(nextPos);
+  var nextAnnotation = null;
+
+  if (existingAnnotations.length > 0) {
+    nextAnnotation = existingAnnotations[0];
+  } else {
+    var segment = annotatedText.segmentedText.segmentAtPosition(nextPos);
+
+    if (segment) {
+      var baseAnnotation = annotatedText.getBaseAnnotation(nextPos, segment.length);
+      var workingWitness = reducers__WEBPACK_IMPORTED_MODULE_1__["getWorkingWitness"](state, selectedWitness.text.id);
+      var user = reducers__WEBPACK_IMPORTED_MODULE_1__["getUser"](state);
+
+      if (baseAnnotation && workingWitness && user && segment) {
+        nextAnnotation = new lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["default"](lib_AnnotatedText__WEBPACK_IMPORTED_MODULE_3__["WORKING_VERSION_ANNOTATION_ID"], workingWitness, baseAnnotation.start, baseAnnotation.length, segment.text, lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["ANNOTATION_TYPES"].variant, selectedWitness, user);
+      }
+    }
+  }
+
+  if (nextAnnotation) {
+    var newAnnotation = new lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["default"](lib_AnnotatedText__WEBPACK_IMPORTED_MODULE_3__["WORKING_VERSION_ANNOTATION_ID"], nextAnnotation.witness, activeAnnotation.start, activeAnnotation.length + nextAnnotation.length, activeAnnotation.content + nextAnnotation.content, activeAnnotation.type, activeAnnotation.creatorWitness, activeAnnotation.creatorUser);
+    dispatch(actions__WEBPACK_IMPORTED_MODULE_0__["changedActiveTextAnnotation"](newAnnotation));
+  }
+};
+
+var reduceSelectionLeft = function reduceSelectionLeft(state, dispatch) {
+  var selectedWitness = reducers__WEBPACK_IMPORTED_MODULE_1__["getSelectedTextWitness"](state);
+  var activeAnnotation = reducers__WEBPACK_IMPORTED_MODULE_1__["getActiveTextAnnotation"](state);
+  var annotatedText = null;
+
+  if (selectedWitness) {
+    annotatedText = state_helpers_TextStore__WEBPACK_IMPORTED_MODULE_2__["getWitnessText"](state, selectedWitness.id);
+  }
+
+  if (!selectedWitness || !activeAnnotation || activeAnnotation.isSaved || !annotatedText) return; // Don't support deletions yet
+
+  if (activeAnnotation.isDeletion) {
+    return;
+  }
+
+  var segments = annotatedText.segmentsForAnnotation(activeAnnotation); // Last segment, can't reduce further
+
+  if (segments.length === 1) return;
+  segments.pop();
+  var content = segments.reduce(function (acc, current) {
+    if (current instanceof lib_TextSegment__WEBPACK_IMPORTED_MODULE_6__["default"]) {
+      acc += current.text;
+    }
+
+    return acc;
+  }, '');
+  var newAnnotation = new lib_Annotation__WEBPACK_IMPORTED_MODULE_5__["default"](lib_AnnotatedText__WEBPACK_IMPORTED_MODULE_3__["WORKING_VERSION_ANNOTATION_ID"], activeAnnotation.witness, activeAnnotation.start, content.length, content, activeAnnotation.type, activeAnnotation.creatorWitness, activeAnnotation.creatorUser);
+  dispatch(actions__WEBPACK_IMPORTED_MODULE_0__["changedActiveTextAnnotation"](newAnnotation));
+};
+
+var shortcuts = (_shortcuts = {
+  Escape: closeAnnotationControls
+}, _defineProperty(_shortcuts, "shift-Enter", addPageBreak), _defineProperty(_shortcuts, "Enter", addLineBreak), _defineProperty(_shortcuts, "ArrowLeft", selectPreviousSegment), _defineProperty(_shortcuts, "ArrowRight", selectNextSegment), _defineProperty(_shortcuts, "shift-ArrowRight", extendSelectionRight), _defineProperty(_shortcuts, "shift-ArrowLeft", reduceSelectionLeft), _shortcuts);
+
+var getShortcutKey = function getShortcutKey(e) {
+  var key = e.key;
+
+  if (e.shiftKey) {
+    key = "shift-" + key;
+  }
+
+  return key;
+};
+
+var handleKeyDown = function handleKeyDown(e, state, dispatch) {
+  var key = getShortcutKey(e);
+
+  if (shortcuts.hasOwnProperty(key)) {
+    shortcuts[key](state, dispatch);
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (shortcuts);
 
 /***/ }),
 

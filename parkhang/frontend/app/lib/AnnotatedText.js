@@ -261,7 +261,6 @@ export default class AnnotatedText {
             startKey = String(annotation.start) + INSERTION_KEY;
         }
         if (orginalCurrentSegmentPositions[String(startKey)] == undefined) {
-            console.log(annotation);
             if (this.originalText.getText().length === annotation.start) {
                 // if the annotation is an insertion at the end of the text
                 return [this.getText().length, 0];
@@ -284,6 +283,8 @@ export default class AnnotatedText {
             length = 0;
         } else if (annotation.type === ANNOTATION_TYPES.lineBreak && isActive) {
             length = 0;
+        } else if (annotation.type === ANNOTATION_TYPES.question && isActive) {
+            length = annotation.length;
         } else {
             const startSegment = this.segmentedText.segmentAtPosition(startPos);
             let endSegment;
@@ -310,7 +311,6 @@ export default class AnnotatedText {
                 }
             }
         }
-
         return [startPos, length];
     }
 

@@ -105,7 +105,6 @@ function changeConditionForAlignment(state, action) {
     };
 }
 
-
 function loadedUserSettings(
     state: UIState,
     action: actions.LoadedUserSettingsAction
@@ -176,7 +175,6 @@ function changeScrollToId(state, action) {
     };
 }
 
-
 function changeSyncIdOnClick(
     state: UIState,
     action: actions.SelectedTextAction
@@ -240,6 +238,7 @@ function changedSearchValue(
 ): UIState {
     let searchValue = action.searchValue;
     if (!searchValue) {
+        state = clearSearchResult(state);
         searchValue = "";
     }
     return {
@@ -606,8 +605,6 @@ export const getConditionForAlignment = (state) => {
     return state.conditionForAlignment;
 };
 
-
-
 export const getShowTableContent = (state) => {
     return state.openTableContent;
 };
@@ -786,4 +783,3 @@ export const getTextFontSize2 = (state: UIState): number => {
 export const isSecondWindowOpen = (state: UIState): number => {
     return state.showSecondWindow;
 };
-

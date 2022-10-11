@@ -125,7 +125,7 @@ export const isAnnotating = (state) => {
     return ui.isAnnotating(state.ui);
 };
 export const getSelectedText = (state: AppState): TextData | null => {
-    return ui?.getSelectedText(state.ui);
+    return ui.getSelectedText(state.ui);
 };
 export const getSelectedText2 = (state: AppState): TextData | null => {
     return ui.getSelectedText2(state.ui);
@@ -269,7 +269,6 @@ export const getScrollToId = (state) => {
     return ui.getScrollToId(state.ui);
 };
 
-
 export const getSyncIdOnClick = (state: AppState): number => {
     return ui.getSyncIdOnCLick(state.ui);
 };
@@ -282,8 +281,6 @@ export const getSelectedSourceRange = (state) => {
 export const getSelectedTargetRange = (state) => {
     return ui.getSelectedTargetRange(state.ui);
 };
-
-
 
 //media
 export const isPanelVisible = (state) => {
