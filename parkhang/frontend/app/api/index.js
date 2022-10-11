@@ -52,7 +52,7 @@ function request(method: ReqMethod, url, data: any = null): Promise<*> {
             })
             .catch((error) => {
                 // console.dir(error);
-                console.log("couldnot get the data . check connection");
+                console.log("connection problem");
                 reject(error);
             });
     });
@@ -379,6 +379,10 @@ export function updateAnnotation(annotation: Annotation) {
 
 export function deleteAnnotation(annotation: Annotation) {
     const url = getAnnotationUrl(annotation.witness, annotation);
+
+    if (annotation.type === "Q") {
+        deleteQuestion(annotation);
+    }
     return request(DELETE, url);
 }
 
@@ -416,6 +420,11 @@ export function createQuestion(
     };
 
     return request(POST, url, data);
+}
+
+export function deleteQuestion(annotation: Annotation) {
+    const url = getQuestionUrl(annotation.witness, annotation);
+    return request(DELETE, url);
 }
 
 export function getQuestion(annotation: Annotation) {

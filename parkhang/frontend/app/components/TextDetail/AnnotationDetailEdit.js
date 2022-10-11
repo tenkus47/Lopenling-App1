@@ -45,18 +45,18 @@ const AnnotationDetailEdit = (props: Props) => {
                         }}
                     >
                          <PencilAltIcon
-                         height='12px'
-                         width='12px'
-                                style={{ fill: "#fff",marginRight:10 }}
+                         height='0.8em'
+                         width='0.8em'
+                                style={{ fill: "currentColor",marginRight:6 }}
                             />
                         <FormattedMessage id="annotation.save" />
                     </div>
-                    {/* <div
+                    <div
                         className={styles.cancel}
                         onClick={props.cancelAnnotationHandler}
                     >
                         <FormattedMessage id="annotation.cancel" />
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </div>

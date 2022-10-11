@@ -30,16 +30,10 @@ function Settings(props) {
     const handlefont = (value) => {
         setFontSelect(value);
         document.body.style.setProperty("--tibetan-fonts2", `${value}`);
-        let update = document.getElementById("updateList2");
-        let times = 1;
-        let timer = setInterval(() => {
-            update.click();
-            times++;
-            console.log("ran");
-            if (times > 4) {
-                clearInterval(timer);
-            }
-        }, 800);
+        setTimeout(()=>{
+           window.dispatchEvent(new Event("resize"));
+
+        },1000)
         setShowOption(false);
     };
     return (

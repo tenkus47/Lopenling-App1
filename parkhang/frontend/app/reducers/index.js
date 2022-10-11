@@ -244,6 +244,11 @@ export const getSelectedSearchResult = (
 ): null | { textId: number, start: number, length: number } => {
     return ui.getSelectedSearchResult(state.ui);
 };
+export const getSelectedSearchResult2 = (
+    state: AppState
+): null | { textId: number, start: number, length: number } => {
+    return ui.getSelectedSearchResult2(state.ui);
+};
 
 export const getAccountOverlayVisible = (state: AppState): boolean => {
     return ui.getAccountOverlayVisible(state.ui);
@@ -263,9 +268,6 @@ export const isSecondWindowOpen = (state: AppState): number => {
 export const getScrollToId = (state) => {
     return ui.getScrollToId(state.ui);
 };
-export const getImageScrollId = (state) => {
-    return ui.getImageScrollId(state.ui);
-};
 
 export const getSyncIdOnClick = (state: AppState): number => {
     return ui.getSyncIdOnCLick(state.ui);
@@ -280,13 +282,6 @@ export const getSelectedTargetRange = (state) => {
     return ui.getSelectedTargetRange(state.ui);
 };
 
-export const getSyncIdOnSearch = (state) => {
-    return ui.getSyncIdOnSearch(state.ui);
-};
-
-export const getSyncIdOnSearch2 = (state) => {
-    return ui.getSyncIdOnSearch2(state.ui);
-};
 //media
 export const isPanelVisible = (state) => {
     return media.isPanelVisible(state.media);
@@ -310,9 +305,6 @@ export const getSelectedImage = (state: AppState) => {
     return media.getSelectedImage(state.media);
 };
 
-export const getImageAlignmentById = (state) => {
-    return media.getImageAlignmentById(state.media);
-};
 // data
 export const getAlignment = (state: AppState) => {
     return data.getAlignment(state.data);

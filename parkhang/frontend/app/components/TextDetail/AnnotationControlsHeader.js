@@ -23,29 +23,29 @@ class AnnotationControlsHeader extends React.Component<Props> {
         super();
     }
     componentDidMount() {
-        this.keyHandler = (evtobj) => {
-            var e = window.event ? event : evtobj;
-            let condition = e.ctrlKey;
-            if (condition && e.keyCode != 67) {
-                evtobj.preventDefault();
-            }
-            if (condition && e.keyCode == 69) {
-                this.props.editAnnotationHandler();
-            }
-            if (condition && e.keyCode == 81) {
-                this.props?.addQuestion();
-            }
-            if (condition && e.keyCode == 76) {
-                this.props?.addLineBreak();
-            }
-            if (condition && e.keyCode == 78) {
-                this.props?.addNote();
-            }
-            if (condition && e.keyCode == 80) {
-                this.props?.addPageBreak();
-            }
-        };
-        document.addEventListener("keydown", this.keyHandler, { once: false });
+        // this.keyHandler = (evtobj) => {
+        //     var e = window.event ? event : evtobj;
+        //     let condition = e.ctrlKey;
+        //     if (condition && e.keyCode != 67) {
+        //         evtobj.preventDefault();
+        //     }
+        //     if (condition && e.keyCode == 69) {
+        //         this.props.editAnnotationHandler();
+        //     }
+        //     if (condition && e.keyCode == 81) {
+        //         this.props?.addQuestion();
+        //     }
+        //     if (condition && e.keyCode == 76) {
+        //         this.props?.addLineBreak();
+        //     }
+        //     if (condition && e.keyCode == 78) {
+        //         this.props?.addNote();
+        //     }
+        //     if (condition && e.keyCode == 80) {
+        //         this.props?.addPageBreak();
+        //     }
+        // };
+        // document.addEventListener("keydown", this.keyHandler, { once: false });
     }
     componentWillUnmount() {
         document.removeEventListener("keydown", this.keyHandler);

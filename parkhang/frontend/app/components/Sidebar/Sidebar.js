@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./Sidebar.css";
 import InfoIcon from "@mui/icons-material/Info";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
@@ -9,112 +9,167 @@ import Index from "./SidebarOptions";
 import useLocalStorage from "components/utility/useLocalStorage";
 import { Tabs, Tab, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/styles";
-function Resources() {
-  const [value, setValue] = useLocalStorage("selectedResources", 0);
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-  const theme = useTheme();
-  return (
-    <Box
-      sx={{
-        width: "100%",
-        marginTop:1,
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "background.default",
-        height: "100%",
-        maxWidth: "250px",
-        zIndex: 10,
-        position: "relative",
-        borderRight:
-          theme.palette.mode === "light" ? "2px solid lightgray" : "2px solid #d3d3d3",
-      }}
-    >
-      <Box
-        sx={{
-          borderBottom: 1,
-          borderColor: "divider",
-          display: "flex",
-        }}
-        className={styles.optionlist}
-      >
-        <Tabs
-          value={value}
-          style={{ flex: 1 }}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab
-            style={{ minWidth: 0, flex: 1 }}
-            icon={<InfoIcon />}
-            {...a11yProps(0)}
-          ></Tab>
+import MenuIcon from "@mui/icons-material/Menu";
+import { connect } from "react-redux";
+import * as reducers from "reducers";
+import CloseIcon from "@mui/icons-material/Close";
+import { motion } from "framer-motion";
+function Sidebar(props) {
+    const [value, setValue] = useLocalStorage("selectedResources", 0);
 
-          <Tab
-            style={{ minWidth: 0, flex: 1 }}
-            icon={<PermMediaIcon />}
-            {...a11yProps(1)}
-          ></Tab>
-          <Tab
-            style={{ minWidth: 0, flex: 1 }}
-            icon={<BookIcon />}
-            {...a11yProps(2)}
-          ></Tab>
-          <Tab
-            style={{ minWidth: 0, flex: 1 }}
-            icon={<FeedbackIcon />}
-            {...a11yProps(3)}
-          ></Tab>
-        </Tabs>
-      </Box>
-      <>
-        <TabPanel value={value} index={0}>
-          <Index.About />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <Index.Resources />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <Index.Dictionary />
-        </TabPanel>
-        <TabPanel value={value} index={3}>
-          <Index.Discussion />
-        </TabPanel>
-      </>
-     
-    </Box>
-  );
+    const [isOpen, setOpen] = useState(false);
+
+    React.useEffect(() => {
+        let timer = setTimeout(() => {
+            if (props.isSecondWindowOpen) {
+                window.dispatchEvent(new Event("resize"));
+            }
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [isOpen]);
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+    const handleOpen = () => {
+        setOpen((prev) => !prev);
+    };
+    const theme = useTheme();
+    return (
+        <Box
+            sx={{
+                width: isOpen ? "100%" : "45px",
+                bgcolor: "background.default",
+                position: props.isSecondWindowOpen ? "relative" : "absolute",
+                borderRight:
+                    theme.palette.mode === "light"
+                        ? "2px solid lightgray"
+                        : "2px solid #d3d3d3",
+            }}
+            className={styles.sidebar}
+        >
+            <Box className={styles.sidebar_header}>
+                <Typography
+                    className={styles.menu_title}
+                    sx={
+                        isOpen
+                            ? { width: "fit-content", opacity: 1 }
+                            : { width: "0", opacity: 0 }
+                    }
+                >
+                    Menu
+                </Typography>
+                <div
+                    onClick={handleOpen}
+                    style={{ cursor: "pointer", zIndex: 1 }}
+                >
+                    {!isOpen ? <MenuIcon /> : <CloseIcon />}
+                </div>
+            </Box>
+            <Box
+                sx={{
+                    borderBottom: 1,
+                    display: "flex",
+                }}
+                className={styles.optionlist}
+            >
+                <Tabs
+                    value={value}
+                    sx={{
+                        flex: 1,
+                    }}
+                    onChange={handleChange}
+                    orientation={!isOpen ? "vertical" : "horizontal"}
+                    aria-label="basic tabs example"
+                >
+                    <Tab
+                        style={{ minWidth: 0, flex: 1 }}
+                        onClick={() => setOpen(true)}
+                        icon={<InfoIcon />}
+                        {...a11yProps(0)}
+                    ></Tab>
+
+                    <Tab
+                        style={{ minWidth: 0, flex: 1 }}
+                        icon={<PermMediaIcon />}
+                        onClick={() => setOpen(true)}
+                        {...a11yProps(1)}
+                    ></Tab>
+                    <Tab
+                        style={{ minWidth: 0, flex: 1 }}
+                        icon={<BookIcon />}
+                        onClick={() => setOpen(true)}
+                        {...a11yProps(2)}
+                    ></Tab>
+                    <Tab
+                        style={{ minWidth: 0, flex: 1 }}
+                        icon={<FeedbackIcon />}
+                        onClick={() => setOpen(true)}
+                        {...a11yProps(3)}
+                    ></Tab>
+                </Tabs>
+            </Box>
+            {isOpen && (
+                <>
+                    <TabPanel value={value} index={0}>
+                        <Index.About />
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <Index.Resources />
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                        <Index.FullTextSearch />
+                    </TabPanel>
+                    <TabPanel value={value} index={3}>
+                        <Index.Discussion />
+                    </TabPanel>
+                </>
+            )}
+        </Box>
+    );
 }
 
-export default Resources;
+const mapStateToProps = (state: AppState): {} => {
+    const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
+
+    return {
+        isSecondWindowOpen,
+    };
+};
+export default connect(mapStateToProps)(Sidebar);
 
 interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
+    children?: React.ReactNode;
+    index: number;
+    value: number;
 }
 
 function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
+    return {
+        id: `simple-tab-${index}`,
+        "aria-controls": `simple-tabpanel-${index}`,
+    };
 }
 
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+    const { children, value, index, ...other } = props;
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-      style={{ paddingInline: 5 }}
-    >
-      {value === index && <Box pt={2}>{children}</Box>}
-    </div>
-  );
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+            style={{
+                flex: 1,
+                display: value == index ? "flex" : "none",
+                flexDirection: "column",
+            }}
+        >
+            {value === index && (
+                <div className={styles.listContainer}>{children}</div>
+            )}
+        </div>
+    );
 }

@@ -48,13 +48,9 @@ export type UIState = {
     isPanelLinked: boolean,
     isAnnotating: Boolean,
     scrollToId: {},
-    imageScrollId: {},
 
     SyncIdOnClick: String,
     SyncIdOnScroll: String,
-    SyncIdOnSearch: String,
-
-    SyncIdOnSearch2: String,
     SyncIdOnScroll2: String,
     conditionForAlignment: Boolean,
     theme: String,
@@ -67,6 +63,8 @@ export const initialUIState = {
     selectedTextWitness: {},
     selectedTextWitness2: {},
     selectedSearchResult: null,
+    selectedSearchResult2: null,
+
     searchValue: "",
     searchValue2: "",
 
@@ -90,10 +88,7 @@ export const initialUIState = {
     selectedWindow: 1,
     openTableContent: false,
     scrollToId: { from: 1, id: 0 },
-    imageScrollId: { from: 1, id: 0 },
     SyncIdOnClick: 0,
-    SyncIdOnSearch: null,
-    SyncIdOnSearch2: null,
     conditionForAlignment: false,
     theme: "light",
 };
@@ -107,18 +102,6 @@ function changeConditionForAlignment(state, action) {
     return {
         ...state,
         conditionForAlignment: action.payload,
-    };
-}
-function changeSyncIdOnSearch(state, action) {
-    return {
-        ...state,
-        SyncIdOnSearch: action.payload,
-    };
-}
-function changeSyncIdOnSearch2(state, action) {
-    return {
-        ...state,
-        SyncIdOnSearch2: action.payload,
     };
 }
 
@@ -191,12 +174,6 @@ function changeScrollToId(state, action) {
         scrollToId: { from: action.payload.from, id: action.payload.id },
     };
 }
-function changeImageScrollId(state, action) {
-    return {
-        ...state,
-        imageScrollId: { from: action.data.from, id: action.data.id },
-    };
-}
 
 function changeSyncIdOnClick(
     state: UIState,
@@ -261,6 +238,7 @@ function changedSearchValue(
 ): UIState {
     let searchValue = action.searchValue;
     if (!searchValue) {
+        state = clearSearchResult(state);
         searchValue = "";
     }
     return {
@@ -320,6 +298,29 @@ function selectedSearchResult(
             actions.changedActiveTextAnnotation(null);
         state = changedActiveTextAnnotation(state, resetActiveTextAnnotation);
     }
+
+    return state;
+}
+function selectedSearchResult2(
+    state: UIState,
+    action: actions.SelectedSearchResultAction
+): UIState {
+    let resultState = null;
+    if (
+        action.textId !== null &&
+        action.start !== null &&
+        action.length !== null
+    ) {
+        resultState = {
+            textId: action.textId,
+            start: action.start,
+            length: action.length,
+        };
+    }
+    state = {
+        ...state,
+        selectedSearchResult2: resultState,
+    };
 
     return state;
 }
@@ -561,7 +562,6 @@ uiReducers[actions.LOADED_USER_SETTINGS] = loadedUserSettings;
 uiReducers[actions.SELECTED_TEXT] = selectedText;
 uiReducers[actions.SELECTED_TEXT2] = selectedText2;
 uiReducers[actions.SCROLL_TO_ID] = changeScrollToId;
-uiReducers[actions.IMAGE_SCROLL_ID] = changeImageScrollId;
 
 uiReducers[actions.SYNC_ID_ON_CLICK] = changeSyncIdOnClick;
 uiReducers[actions.CHANGE_RANGE_SELECTION] = changeRangeSelection;
@@ -573,6 +573,8 @@ uiReducers[actions.CHANGED_SEARCH_VALUE] = changedSearchValue;
 uiReducers[actions.CHANGED_SEARCH_VALUE2] = changedSearchValue2;
 
 uiReducers[actions.SELECTED_SEARCH_RESULT] = selectedSearchResult;
+uiReducers[actions.SELECTED_SEARCH_RESULT2] = selectedSearchResult2;
+
 uiReducers[actions.CHANGED_SHOW_PAGE_IMAGES] = changedShowPageImages;
 uiReducers[actions.CHANGED_TEXT_FONT_SIZE] = changedTextFontSize;
 uiReducers[actions.CHANGED_TEXT_FONT_SIZE2] = changedTextFontSize2;
@@ -594,8 +596,6 @@ uiReducers[actions.CHANGE_ANNOTATING] = changeIsAnnotating;
 uiReducers[actions.CHANGE_SELECTED_WINDOW] = changeSelectedWindow;
 uiReducers[actions.SHOW_TABLE_CONTENT] = showTableContent;
 uiReducers[actions.SHOW_TABLE_CONTENT2] = showTableContent2;
-uiReducers[actions.SYNC_ID_ON_SEARCH] = changeSyncIdOnSearch;
-uiReducers[actions.SYNC_ID_ON_SEARCH2] = changeSyncIdOnSearch2;
 uiReducers[actions.CHANGE_THEME] = changeTheme;
 uiReducers[actions.CHANGE_CONDITION] = changeConditionForAlignment;
 
@@ -605,13 +605,6 @@ export const getConditionForAlignment = (state) => {
     return state.conditionForAlignment;
 };
 
-export const getSyncIdOnSearch = (state) => {
-    return state.SyncIdOnSearch;
-};
-
-export const getSyncIdOnSearch2 = (state) => {
-    return state.SyncIdOnSearch2;
-};
 export const getShowTableContent = (state) => {
     return state.openTableContent;
 };
@@ -771,6 +764,11 @@ export const getSelectedSearchResult = (
 ): null | { textId: number, start: number, length: number } => {
     return state.selectedSearchResult;
 };
+export const getSelectedSearchResult2 = (
+    state: UIState
+): null | { textId: number, start: number, length: number } => {
+    return state.selectedSearchResult2;
+};
 
 export const getAccountOverlayVisible = (state: UIState): boolean => {
     return state.showAccountOverlay;
@@ -784,7 +782,4 @@ export const getTextFontSize2 = (state: UIState): number => {
 };
 export const isSecondWindowOpen = (state: UIState): number => {
     return state.showSecondWindow;
-};
-export const getImageScrollId = (state) => {
-    return state.imageScrollId;
 };

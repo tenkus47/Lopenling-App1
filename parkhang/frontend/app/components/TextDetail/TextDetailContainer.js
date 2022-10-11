@@ -54,8 +54,6 @@ import {
     getSelectedTargetRange,
     getSearchResults,
     getShowTableContent,
-    getImageAlignmentById,
-    getImageScrollId,
 } from "reducers";
 import * as reducers from "reducers";
 import _ from "lodash";
@@ -181,7 +179,6 @@ const mapStateToProps = (state) => {
             textListVisible,
             fontSize: constants.DEFAULT_TEXT_FONT_SIZE,
             textAlignmentById,
-            imageAlignmentById: getImageAlignmentById(state),
         };
     }
 
@@ -349,9 +346,6 @@ const mapStateToProps = (state) => {
         selectedTargetRange: getSelectedTargetRange(state),
         searchResults: getSearchResults(state, searchValue),
         showTableContent: getShowTableContent(state),
-        syncIdOnSearch: reducers.getSyncIdOnSearch(state),
-        imageAlignmentById: getImageAlignmentById(state),
-        imageScrollId: getImageScrollId(state),
         selectedMedia: Media,
         condition: condition && isPanelLinked && isSecondWindowOpen,
     };
@@ -592,9 +586,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                 actions.changedActiveTextAnnotation(null);
             dispatch(dismissTextAnnotation);
         },
-        changeImageScrollId: (data) => {
-            dispatch(actions.changeImageScrollId(data));
-        },
     };
 };
 
@@ -731,4 +722,4 @@ const TextDetailContainer = connect(
     mergeProps
 )(TextDetail);
 
-export default React.memo(TextDetailContainer);
+export default TextDetailContainer;

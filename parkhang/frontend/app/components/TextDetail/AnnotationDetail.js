@@ -1,12 +1,12 @@
 // @flow
-import React, { useState } from "react";
+import React from "react";
 import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
-import Share from 'components/UI/ShareButton'
+import Share from "components/UI/ShareButton";
 import Voting from "components/UI/Voting";
 export type Props = {
     annotationData: AnnotationData,
@@ -15,44 +15,10 @@ export type Props = {
     isLoggedIn: boolean,
     editAnnotationHandler: () => void,
     fontSize: Number,
-    isWorkingSection: boolean,
 };
 const MAXIMUM_TEXT_LENGTH = 250;
 
 const AnnotationDetail = (props: Props) => {
-
-    function longest_str_in_array(arra) {
-        var max_str = arra[0].length;
-        var ans = arra[0].length;
-        for (var i = 0; i < arra.length; i++) {
-            var maxi = arra[i].length;
-            if (maxi > max_str) {
-                ans = arra[i].length;
-                max_str = maxi;
-            }
-        }
-        return ans;
-    }
-    function mergeArray(arr) {
-        var textCount = arr.length;
-        var maxPerLine = 55;
-
-        for (
-            var i = 0;
-            i < Math.ceil(arr.join().length / maxPerLine) + 1;
-            i++
-        ) {
-            if (arr[i] && arr[i + 1] && arr[i].length < maxPerLine) {
-                arr[i] = arr[i] + " " + arr[i + 1];
-                arr.splice(i + 1, 1);
-                mergeArray(arr);
-            } else if (arr[i] && arr[i + 1] && arr[i].length > maxPerLine) {
-                // code to cut selected text should be here
-            }
-        }
-        return arr;
-    }
-
     let desc = (
         <p>
             &lt;
@@ -100,13 +66,13 @@ const AnnotationDetail = (props: Props) => {
                     ></button>
                 )}
             </div>
-
-            {!props.isWorkingSection && desc }
-        {props.isActive &&     <div className={styles.contentOptions}>
-             <Voting data={props.annotationData}/>
-             <Share content={props.annotationData.content}/>
-</div>}
-            {/* {props.isWorkingSection  && <ShareButton props={props}/>} */}
+            {desc}
+            {props.isActive && (
+                <div className={styles.contentOptions}>
+                    <Voting data={props.annotationData} />
+                    <Share content={props.annotationData.content} />
+                </div>
+            )}
         </div>
     );
 };

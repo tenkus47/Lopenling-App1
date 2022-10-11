@@ -8,7 +8,6 @@ import { Box, Divider, Slide } from "@mui/material";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
 import classnames from "classnames";
-import Placeholder from "components/utility/Placeholder";
 
 import imageStyle from "components/MediaComponent/Image.css";
 import SplitTextComponent from "./SplitText";
@@ -40,11 +39,7 @@ function TextDetail(props) {
     let splitText = null;
     const selectedWindow = props.selectedWindow;
     if (!props.annotatedText || !props.text || props.loading) {
-        textComponent = (
-            <div key={Math.random()}>
-                <Placeholder />
-            </div>
-        );
+        textComponent = <div key={Math.random()} />;
     } else {
         let limitWidth = false;
         let splitter;
@@ -60,21 +55,13 @@ function TextDetail(props) {
         textComponent = (
             <SplitTextComponent
                 splitText={splitText}
-                // annotations={this.props.annotations}
-                // activeAnnotations={this.props.activeAnnotations}
-                // activeAnnotation={this.props.activeAnnotation}
                 limitWidth={limitWidth}
-                // didSelectSegmentIds={props.didSelectSegmentIds}
                 selectedSegmentId={props.selectedSegmentId}
                 annotationPositions={props.annotationPositions}
                 selectedAnnotatedSegments={props?.selectedAnnotatedSegments}
-                // textListVisible={this.props.textListVisible}
-                // showImages={this.props.pageImagesVisible}
-                // imagesBaseUrl={this.props.imagesBaseUrl}
                 selectedWitness={props.selectedWitness}
                 key={key}
-                // selectedSearchResult={this.props.selectedSearchResult}
-                // searchValue={this.props.searchValue}
+                selectedSearchResult={props.selectedSearchResult}
                 fontSize={props.textFontSize}
                 scrollToId={props.scrollToId}
                 syncIdOnClick={props.syncIdOnClick}
@@ -90,7 +77,6 @@ function TextDetail(props) {
                 searchResults={props.searchResults}
                 searchValue={props.searchValue}
                 selectedText={props.text}
-                syncIdOnSearch={props.syncIdOnSearch}
                 condition={props.condition}
             ></SplitTextComponent>
         );
@@ -99,7 +85,6 @@ function TextDetail(props) {
     let textComponents = [textComponent];
     let thirdWindowHeight = imageStyle.ThirdWindowHeight;
     let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
-    // let condition = props.isPanelVisible;
     return (
         <Box
             ref={ref}

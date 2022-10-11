@@ -12,6 +12,10 @@ from .serializers import (ImageAlignmentSerializer, TextAlignmentSerializer,
 def get_text_alignments(request, text_id):
 
     def _serialize_alignments(alignments):
+        
+        for alignment in alignments:
+            print(alignment)
+
         return [
             {"source": source, "target": target, "alignment": id}
             for id, source, target in alignments

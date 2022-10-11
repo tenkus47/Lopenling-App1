@@ -270,7 +270,6 @@ function* watchSelectedText2(): Saga<void> {
 // WITNESSES
 function* loadInitialTextData(action: actions.TextDataAction) {
     try {
-        const textId = action.text.id;
         let witnesses = yield call(api.fetchTextWitnesses, action.text);
         yield put(actions.loadedWitnesses(action.text, witnesses));
         let workingWitnessData: api.WitnessData | null = null;
@@ -283,7 +282,6 @@ function* loadInitialTextData(action: actions.TextDataAction) {
                 baseWitnessData = witness;
             }
         }
-
         if (workingWitnessData) {
             const workingWitness: Witness = yield (select(
                 reducers.getWitness,
@@ -423,7 +421,6 @@ function* loadAnnotations(witnessId: number) {
             api.fetchWitnessAnnotations,
             witnessData
         );
-
         yield put(actions.loadedWitnessAnnotations(witnessId, annotations));
     }
 }
@@ -454,22 +451,22 @@ function* loadAnnotationOperations(witnessId: number) {
 }
 
 function* loadAnnotationOperations2(witnessId: number) {
-    const user = yield select(reducers.getUser);
-    if (user.isLoggedIn) {
-        const witnessData = yield select(reducers.getWitnessData2, witnessId);
-        const operationsData = yield call(
-            api.fetchUserAnnotationOperations,
-            witnessData
-        );
-        yield put(
-            actions.loadedWitnessAnnotationOperations2(
-                witnessId,
-                operationsData
-            )
-        );
-    } else {
-        yield put(actions.loadedWitnessAnnotationOperations2(witnessId, []));
-    }
+    // const user = yield select(reducers.getUser);
+    // if (user.isLoggedIn) {
+    //     const witnessData = yield select(reducers.getWitnessData2, witnessId);
+    //     const operationsData = yield call(
+    //         api.fetchUserAnnotationOperations,
+    //         witnessData
+    //     );
+    //     yield put(
+    //         actions.loadedWitnessAnnotationOperations2(
+    //             witnessId,
+    //             operationsData
+    //         )
+    //     );
+    // } else {
+    //     yield put(actions.loadedWitnessAnnotationOperations2(witnessId, []));
+    // }
 }
 
 function* loadWitnessAnnotations(action: actions.WitnessAction) {
@@ -519,6 +516,7 @@ function* watchUpdatedAnnotation() {
 }
 
 function deleteAnnotation(action) {
+    console.log("annotation deleted");
     return call(api.deleteAnnotation, action.annotation);
 }
 

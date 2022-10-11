@@ -258,8 +258,7 @@ class Text extends React.Component<Props, State> {
                                 activeDeletions.push(annotation);
                             }
                         } else if (
-                            annotation.type === ANNOTATION_TYPES.pageBreak 
-                            &&
+                            annotation.type === ANNOTATION_TYPES.pageBreak &&
                             !renderProps.activeWitness.isWorking
                         ) {
                             pageBreakAnnotation = annotation;
@@ -342,13 +341,17 @@ class Text extends React.Component<Props, State> {
                     remainingAnnotations.length > 0 ||
                     activeInsertions.length > 0
                 ) {
-                    if(remainingAnnotations.some(l=>l.type==='V')){
-                    classes.push(styles.V_annotation);
+                    if (remainingAnnotations.some((l) => l.type === "P")) {
+                        classes.push(styles.P_annotation);
                     }
-                    else if(remainingAnnotations.some(l=>l.type==='P')){
-                        classes.push(styles.P_annotation)
-                    }else{
-                        classes.push(styles.Q_annotation)
+                    if (remainingAnnotations.some((l) => l.type === "Q")) {
+                        classes.push(styles.Q_annotation);
+                    }
+                    if (remainingAnnotations.some((l) => l.type === "N")) {
+                        classes.push(styles.N_annotation);
+                    }
+                    if (remainingAnnotations.some((l) => l.type === "V")) {
+                        classes.push(styles.V_annotation);
                     }
                 }
             }
@@ -507,8 +510,9 @@ class Text extends React.Component<Props, State> {
         return html;
     }
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const renderedHtml = this.generateHtml(nextProps, nextState);
+        this.textAlignmentById = this.props.textAlignmentById;
 
+        const renderedHtml = this.generateHtml(nextProps, nextState);
         if (this.props.fontSize !== nextProps.fontSize) {
             return true;
         } else if (
@@ -521,13 +525,6 @@ class Text extends React.Component<Props, State> {
             return true;
         }
     }
-   
-    componentDidUpdate() {
-        this.textAlignmentById = this.props.textAlignmentById;
-
-
-    }
-
     render() {
         let classes = [styles.text];
         if (this.props.row === 0) {
@@ -542,7 +539,7 @@ class Text extends React.Component<Props, State> {
             this._renderedHtml = html;
         }
         return (
-            <div className={styles.textContainer} >
+            <div className={styles.textContainer}>
                 <div
                     className={classnames(...classes)}
                     id="text1"

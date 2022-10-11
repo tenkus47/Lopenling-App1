@@ -166,8 +166,6 @@ export const getImageData = (state: DataState) => {
 export const getVideoData = (state: DataState) => {
     return state.videoData;
 };
-export const getImageAlignmentById = (state) => {
-    return state.imageAlignmentById;
-};
+
 
 export default mediaReducers;

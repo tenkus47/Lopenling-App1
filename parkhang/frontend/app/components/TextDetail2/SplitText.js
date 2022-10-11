@@ -46,7 +46,6 @@ export type Props = {
     selectedWindow: Boolean,
     selectedTargetRange: [],
     selectedSourceRange: [],
-    syncIdOnSearch: String,
     changeSyncIdOnClick: () => void,
 };
 
@@ -497,23 +496,28 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         let scrollToId = this.props.scrollToId;
         this.targetId2 = this.props.syncIdOnClick;
         this.selectedWindow = this.props.selectedWindow;
-        let SearchSyncId = this.props.syncIdOnSearch || null;
         let list = this.list;
         let result = this.props.searchResults;
         let Alignment = this.props.textAlignment;
         this.condition = this.props.condition;
-        let con =
-            prevProps?.searchResults !== this.props?.searchResults ||
-            prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
 
-        // for scrolling for search results;
-
-        if (con && result) {
-            if (SearchSyncId) {
-                let selectedTextIndex =
-                    this.props.splitText.getTextIndexOfPosition(SearchSyncId);
-                this.scrollToIndex(selectedTextIndex);
+        if (!this._didSetInitialScrollPosition && this.list) {
+            const list = this.list;
+            if (
+                this.props.activeAnnotation ||
+                this.props.selectedSearchResult
+            ) {
+                let selectedTextIndex = this.getSelectedTextIndex();
+                setTimeout(() => {
+                    list.scrollToRow(selectedTextIndex);
+                    // scrollToRow often positions the annotation at the
+                    // bottom of the screen, so scroll up a bit
+                    setTimeout(() => {
+                        list.scrollToPosition(list.props.scrollTop - 300);
+                    }, 0);
+                }, 100);
             }
+            this._didSetInitialScrollPosition = true;
         }
 
         // scroll dom with respect to window 1 scrolling
@@ -781,11 +785,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     cursor: "pointer",
                 }}
             >
-                <button
-                    id="updateList2"
-                    style={{ display: "none" }}
-                    onClick={() => this.updateList(true)}
-                ></button>
                 <AutoSizer disableWidth>
                     {({ height }) => (
                         <List
@@ -799,16 +798,15 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             deferredMeasurementCache={cache}
                             onScroll={this.scrollEvent}
                             scrollToAlignment="start"
-                             containerStyle={{
+                            containerStyle={{
                                 width: "100%",
                                 maxWidth: "100%",
-
                             }}
                             style={{
                                 width: "100%",
-                                paddingTop:30,
-                                paddingInline:50
-                                                            }}
+                                paddingTop: 30,
+                                paddingInline: 50,
+                            }}
                         ></List>
                     )}
                 </AutoSizer>
@@ -920,13 +918,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         return (
             <CellMeasurer
                 columnIndex={0}
-                key={key}
                 parent={parent}
                 rowIndex={index}
                 cache={cache}
+                key={key}
             >
                 <div
-                    key={key}
                     style={newStyle}
                     ref={this.splitTextRef}
                     id={`index2_${index}`}

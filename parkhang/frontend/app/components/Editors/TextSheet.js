@@ -12,24 +12,10 @@ import styles from "./resizerStyle.css";
 import classnames from "classnames";
 import TextDetailContainer2 from "components/TextDetail2/TextDetailContainer";
 import TextDetailContainer from "components/TextDetail/TextDetailContainer";
+import { handleKeyDown } from "../../shortcuts";
 
 function TextSheet(props) {
-    let [landScape, setLandScape] = useState(true);
     let editorRef = useRef(null);
-    const handleResize = (e) => {
-        let width = editorRef.current.clientWidth;
-        let height = editorRef.current.clientHeight;
-        if (width > height) {
-            setLandScape(true);
-        } else {
-            setLandScape(false);
-        }
-    };
-    useEffect(() => {
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
 
     return (
         <Box
@@ -42,40 +28,20 @@ function TextSheet(props) {
                 height: props.bodyHeight,
                 position: "relative",
             }}
+            onKeyDown={(e: SyntheticKeyboardEvent<*>) => {
+                handleKeyDown(e, props.state, props.dispatch);
+            }}
         >
-            {/* <SplitPane
-                defaultSize={props.Media.isPanelVisible ? "35vh" : 0}
-                size={props.Media.isPanelVisible ? "35vh" : 0}
-                split="horizontal"
-                resizerClassName={classnames(styles.Resizer, styles.horizontal)}
-                resizerStyle={{
-                    display: !props.Media.isPanelVisible ? "none" : "block",
-                }}
-            >
-                {props.Media.isPanelVisible ? <MediaComponent /> : <div />} */}
             <SplitPane
-                split={landScape ? "vertical" : "horizontal"}
                 size={
                     props.isSecondWindowOpen && props.selectedText
                         ? "50%"
-                        : "50vw"
+                        : "100%"
                 }
-                style={
-                    !props.isSecondWindowOpen && {
-                        marginLeft: "10%",
-                        marginTop: 10,
-                    }
-                }
-                resizerStyle={{display:!props.isSecondWindowOpen ?'none':'block'}}
-                // resizerClassName={
-                //     !props.isSecondWindowOpen
-                //         ? classnames(
-                //               styles.Resizer,
-                //               { [styles.vertical]: landScape },
-                //               { [styles.horizontal]: !landScape }
-                //           )
-                //         : null
-                // }
+                pane1Style={{ display: "flex", justifyContent: "center" }}
+                resizerStyle={{
+                    display: !props.isSecondWindowOpen ? "none" : "block",
+                }}
                 onDragFinished={(width: number) => {
                     if (width > 0) window.dispatchEvent(new Event("resize"));
                 }}
@@ -83,18 +49,19 @@ function TextSheet(props) {
                 <ErrorBoundary>
                     <TextDetailContainer />
                 </ErrorBoundary>
-                <ErrorBoundary>
-                    {props.isSecondWindowOpen && props.selectedText && (
+                {props.isSecondWindowOpen && props.selectedText ? (
+                    <ErrorBoundary>
                         <TextDetailContainer2 />
-                    )}
-                </ErrorBoundary>
+                    </ErrorBoundary>
+                ) : (
+                    <div />
+                )}
             </SplitPane>
             {props.Media.isPanelVisible && (
                 <ErrorBoundary>
                     <MediaComponent />
                 </ErrorBoundary>
             )}
-            {/* </SplitPane> */}
         </Box>
     );
 }
@@ -104,6 +71,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
     const Media = reducers.getMediaData(state);
     const selectedText = reducers.getSelectedText(state);
     return {
+        state,
         selectedText,
         isSecondWindowOpen,
         Media,
@@ -114,6 +82,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
 
     return {
+        dispatch,
         ...ownProps,
         ...stateProps,
     };

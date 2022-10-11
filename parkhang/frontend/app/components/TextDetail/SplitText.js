@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import { List } from "react-virtualized/dist/es/List";
 import lopenlinglogo from "images/lopenling_logo.png";
-import Zoom from 'components/utility/imageZoom';
+import Zoom from "components/utility/imageZoom";
 import {
     CellMeasurer,
     CellMeasurerCache,
@@ -47,10 +47,7 @@ let _searchResultsCache: {
         },
     },
 } = {};
-// function HttpUrl(data = "") {
-//     if (data.includes("https")) return data;
-//     return "https://" + data;
-// }
+
 export type Props = {
     textListVisible: boolean,
     editMenuVisible: Boolean,
@@ -90,9 +87,6 @@ export type Props = {
     selectedSourceRange: [],
     searchResults: [],
     showTableContent: Boolean,
-    syncIdOnSearch: String,
-    imageAlignmentById: [],
-    changeImageScrollId: () => void,
     condition: Boolean,
 };
 
@@ -128,7 +122,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     imageHeight: number | null;
     calculatedImageHeight: number | null;
     changeScrollToId: () => void;
-    changeImageScrollId: () => void;
     changeSyncIdOnClick: () => void;
     wheelScrolling: () => void;
     closeAnnotation: () => void;
@@ -142,8 +135,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
     debouncedScroll;
     targetId;
     condition;
-    imageAlignmentById;
-    changeImageScrollId;
     imageData;
     constructor(props: Props) {
         super(props);
@@ -153,8 +144,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
         });
-        this.imageAlignmentById = this.props.imageAlignmentById;
-        this.changeImageScrollId = this.props.changeImageScrollId;
         this.splitTextRef = React.createRef(null);
         this.rowRenderer = this.rowRenderer.bind(this);
         this.textListVisible = props.textListVisible;
@@ -177,7 +166,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.textAlignmentById = [];
         this.scrollEvent = this.scrollEvent.bind(this);
         this.selectedWindow = props.selectedWindow;
-        this.changeImageScrollId = props.changeImageScrollId;
         this.imageData = props.imageData;
         this.condition = props.condition;
     }
@@ -200,19 +188,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     }
                 }
             });
-            // this.imageAlignmentById.map((l) => {
-            //     let number = document.getElementById("s_" + l?.start);
-            //     if (number) {
-            //         let position = number.getBoundingClientRect();
-            //         if (position.top > 102) {
-            //             imageIdList.push({
-            //                 id: l.id,
-            //                 start: l.start,
-            //                 end: l.end,
-            //             });
-            //         }
-            //     }
-            // });
+
             if (!_.isEmpty(list) || !_.isEmpty(imageIdList)) {
                 if (this.selectedWindow === 1) {
                     this.debouncedScroll(list);
@@ -697,7 +673,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
 
     scrollToIndex(selectedTextIndex) {
         let list = this.list;
-        console.log('scrolling to index')
         setTimeout(() => {
             list.scrollToRow(selectedTextIndex);
             setTimeout(() => {
@@ -710,19 +685,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.calculatedImageHeight = null;
             this.updateList();
         }, 600).bind(this);
+        this.processProps(this.props);
+
         this.debouncedScroll = _.debounce((list) => {
             if (list.length) {
                 this.changeScrollToId({ id: list[0]?.start, from: 1 });
             }
-            // if (imagelist.length) {
-            //     this.changeImageScrollId({
-            //         id: {
-            //             start: imagelist[0]?.start,
-            //             end: imagelist[0]?.end,
-            //         },
-            //         from: 1,
-            //     });
-            // }
         }, 1000);
 
         window.addEventListener("resize", this.resizeHandler);
@@ -730,16 +698,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         this.selectionHandler = _.debounce((e) => {
             this.handleSelection(e);
         }, 200).bind(this);
-
+        setTimeout(() => {
+            window.dispatchEvent(new Event("resize"));
+        }, 2000);
         document.addEventListener("selectionchange", this.selectionHandler);
         document.addEventListener("mousedown", this.mouseDown.bind(this), true);
         document.addEventListener("mouseup", this.mouseUp.bind(this), true);
-        this.processProps(this.props);
-        this.timer = setTimeout(() => {
-            this.resizeHandler();
-        }, 2000);
-        this.splitText.style.scrollBehavior = "smooth";
-
         this.componentDidUpdate();
     }
 
@@ -751,26 +715,11 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
             this.updateList(true);
         }
         let Alignment = this.props.textAlignment;
-        this.imageAlignmentById = this.props.imageAlignmentById;
-        this.SearchSyncId = this.props.syncIdOnSearch || null;
         this.condition = this.props.condition;
-
         let scrollToId = this.props.scrollToId;
         let list = this.list;
-
-        let con =
-            prevProps?.searchResults !== this.props?.searchResults ||
-            prevProps?.syncIdOnSearch !== this.props?.syncIdOnSearch;
-
-        // scroll to word searched using search input
-        if (con && this.props.searchResults) {
-            if (this.SearchSyncId) {
-                let selectedTextIndex =
-                    this.props.splitText.getTextIndexOfPosition(
-                        this.SearchSyncId
-                    );
-                this.scrollToIndex(selectedTextIndex);
-            }
+        if (!this.props.isAnnotating) {
+            this.activeSelection = null;
         }
 
         this.textAlignmentById = this.props.textAlignmentById;
@@ -894,7 +843,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         window.removeEventListener("resize", this.resizeHandler);
 
         document.removeEventListener("selectionchange", this.selectionHandler);
-        clearTimeout(this.timer);
     }
 
     calculateImageHeight() {
@@ -961,11 +909,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 ref={(div) => (this.splitText = div)}
                 key={key}
             >
-                <button
-                    id="updateList"
-                    style={{ display: "none" }}
-                    onClick={()=>this.updateList()}
-                ></button>
                 <AutoSizer disableWidth>
                     {({ height }) => (
                         <List
@@ -982,13 +925,12 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             containerStyle={{
                                 width: "100%",
                                 maxWidth: "100%",
-
                             }}
                             style={{
                                 width: "100%",
-                                paddingTop:30,
-                                paddingInline:50
-                                                            }}
+                                paddingTop: 30,
+                                paddingInline: 50,
+                            }}
                         ></List>
                     )}
                 </AutoSizer>
@@ -1097,12 +1039,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         parent: {},
         style: {},
     }): React.Element<CellMeasurer> {
-        
         const props = this.props;
         const cache = this.cache;
         const component = this;
         const pechaImageClass = props.showImages ? styles.pechaImage : null;
-
 
         let imageUrl = "";
         // if (this.imageData?.alignment && props.selectedWitness) {
@@ -1127,7 +1067,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 index
             );
         }
-        let containerHeight=style.height;
+        let containerHeight = style.height;
         let pechaStyles = {};
         if (props.showImages && pechaImageClass && this.calculatedImageHeight) {
             pechaStyles["height"] = this.calculatedImageHeight + "px";
@@ -1140,10 +1080,10 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         return (
             <CellMeasurer
                 columnIndex={0}
-                key={key}
                 parent={parent}
                 rowIndex={index}
                 cache={cache}
+                key={key}
             >
                 <div
                     key={key}
@@ -1159,34 +1099,34 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 style={pechaStyles}
                             >
                                 <Zoom>
-                                <img
-                                    alt="Text related Image"
-                                    className={styles.image}
-                                    src={imageUrl}
-                                    width="100%"
-                                    height="100%"
-                                    loading="lazy"
-                                    decoding="async"
-                                    onLoad={(e) => {
-                                        if (
-                                            e.target &&
-                                            component.imageWidth === null
-                                        ) {
-                                            component.imageWidth =
-                                                e.target.naturalWidth;
-                                            component.imageHeight =
-                                                e.target.naturalHeight;
-                                            component.calculatedImageHeight =
-                                                null;
-                                            window.setTimeout(
-                                                component.updateList.bind(
-                                                    component
-                                                ),
-                                                0
-                                            );
-                                        }
-                                    }}
-                                />
+                                    <img
+                                        alt="Text related Image"
+                                        className={styles.image}
+                                        src={imageUrl}
+                                        width="100%"
+                                        height="100%"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onLoad={(e) => {
+                                            if (
+                                                e.target &&
+                                                component.imageWidth === null
+                                            ) {
+                                                component.imageWidth =
+                                                    e.target.naturalWidth;
+                                                component.imageHeight =
+                                                    e.target.naturalHeight;
+                                                component.calculatedImageHeight =
+                                                    null;
+                                                window.setTimeout(
+                                                    component.updateList.bind(
+                                                        component
+                                                    ),
+                                                    0
+                                                );
+                                            }
+                                        }}
+                                    />
                                 </Zoom>
                             </div>
                         )}

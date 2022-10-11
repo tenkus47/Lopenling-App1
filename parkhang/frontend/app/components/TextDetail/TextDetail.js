@@ -2,7 +2,6 @@
 import React from "react";
 import classnames from "classnames";
 import imageStyle from "components/MediaComponent/Image.css";
-import Placeholder from "components/utility/Placeholder";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import SplitText from "lib/SplitText";
@@ -56,6 +55,7 @@ export type Props = {
     changeScrollToId: () => void,
     changeSelectedImage: () => void,
     closeAnnotation: () => void,
+    textAlignment: [],
     textAlignmentById: {},
     selectedWindow: Number,
     changeSelectedWindow: () => void,
@@ -66,10 +66,8 @@ export type Props = {
     searchResults: [],
     changeShowTableContent: () => void,
     showTableContent: Boolean,
-    syncIdOnSearch: String,
-    imageAlignmentById: [],
-    changeImageScrollId: () => void,
     imageScrollId: {},
+    isAnnotating: Boolean,
 };
 
 let textDetailId = 0;
@@ -114,11 +112,7 @@ class TextDetail extends React.Component<Props> {
             !this.props.text ||
             this.props.loading
         ) {
-            textComponent = (
-                <div key={this.key}>
-                    <Placeholder />
-                </div>
-            );
+            textComponent = <div key={this.key} />;
         } else {
             let limitWidth = false;
             let splitter;
@@ -144,13 +138,12 @@ class TextDetail extends React.Component<Props> {
                     selectedAnnotatedSegments={
                         this.props.selectedAnnotatedSegments
                     }
+                    isAnnotating={this.props.isAnnotating}
                     syncIdOnClick={this.props.syncIdOnClick}
                     textListVisible={this.props.textListVisible}
                     showImages={this.props.pageImagesVisible}
-                    // showImages={this.props.selectedMedia.isImageVisible}
                     imagesBaseUrl={this.props.imagesBaseUrl}
                     selectedWitness={this.props.selectedWitness}
-                    selectedWitness2={this.props.selectedWitness2}
                     key={this.key}
                     selectedSearchResult={this.props.selectedSearchResult}
                     searchValue={this.props.searchValue}
@@ -162,7 +155,6 @@ class TextDetail extends React.Component<Props> {
                     isPanelLinked={this.props.isPanelLinked}
                     selectedImage={this.props.selectedImage}
                     changeSelectedImage={this.props.changeSelectedImage}
-                    isAnnotating={this.props.isAnnotating}
                     closeAnnotation={this.props.closeAnnotation}
                     textAlignment={this.props.textAlignment}
                     textAlignmentById={this.props.textAlignmentById}
@@ -175,10 +167,6 @@ class TextDetail extends React.Component<Props> {
                     searchResults={this.props.searchResults}
                     showTableContent={this.props.showTableContent}
                     selectedText={this.props.text}
-                    syncIdOnSearch={this.props.syncIdOnSearch}
-                    imageAlignmentById={this.props.imageAlignmentById}
-                    changeImageScrollId={this.props.changeImageScrollId}
-                    imageScrollId={this.props.imageScrollId}
                     condition={this.props.condition}
                 />
             );
@@ -187,8 +175,6 @@ class TextDetail extends React.Component<Props> {
         return (
             <Box
                 sx={{
-                    height: "100%",
-                    flex: 1,
                     bgcolor: "navbar.main",
                     color: "texts.main",
                 }}

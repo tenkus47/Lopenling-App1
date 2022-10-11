@@ -185,7 +185,7 @@ class SourceList(APIView):
 
 class WitnessList(APIView):
     def get(self, request, text_id):
-        """
+        """witness_id
         Get list of witnessesfor the given text.
         """
 
@@ -249,10 +249,7 @@ def get_annotation(request, unique_id, active_only=True):
             annotation = Annotation.objects.get(unique_id=unique_id)
     except Annotation.DoesNotExist:
         raise NotFound("An annotation with that ID does not exist.")
-
-    if annotation.creator_user:
-        if not request.user.is_authenticated or request.user != annotation.creator_user:
-            raise PermissionDenied("You do not have permission to view this annotation")
+   
 
     return annotation
 
@@ -300,7 +297,7 @@ class AnnotationDetail(APIView):
         annotation = get_annotation(request, annotation_unique_id)
         annotation.is_deleted = True
         annotation.save()
-
+        
         return Response("", status=status.HTTP_204_NO_CONTENT)
 
 
@@ -421,7 +418,6 @@ class UserAnnotationOperationDetail(APIView):
             raise NotFound("That annotation id is not applied to the given witness")
 
         user_annotation_operation.delete()
-
         return Response("", status=status.HTTP_204_NO_CONTENT)
 
 
@@ -501,7 +497,7 @@ class QuestionList(APIView):
                 question_title,
                 question_content,
             ) 
-            print(topic_data)
+           
             topic_id = topic_data["id"]
         except:
             topic_id = None
@@ -512,6 +508,20 @@ class QuestionList(APIView):
 
         return Response(topic_id, status=status.HTTP_201_CREATED)
 
+    def delete(self, request, witness_id, start, length):
+        question_annotations = Annotation.objects.filter(
+            witness_id=witness_id,
+            start=start,
+            length=length,
+            type=AnnotationType.question.value,
+        )
+        questions = Question.objects.filter(
+            annotation_id__in=question_annotations
+        ).select_related("annotation", "annotation__creator_user")
+        print('question deleted')
+        for question in questions:
+             question.delete()
+        return Response('deleted')
 
 class QuestionPostDetail(APIView):
     def get(self, request, annotation_id):
@@ -528,7 +538,8 @@ class QuestionPostDetail(APIView):
 class QuestionDetail(APIView):
     def get(self, request, annotation_id):
         question = Question.objects.get(annotation_id=annotation_id)
-
+       
+        
 
 class FeaturedTextList(generics.ListAPIView):
     queryset = FeaturedText.objects.all()

@@ -20,7 +20,6 @@ import {
     ButtonGroup,
     IconButton,
 } from "@mui/material";
-import Refresh from "./HeaderMenu/Refresh";
 import Search from "./HeaderMenu/Search";
 import Settings from "./HeaderMenu/Settings";
 import TableOfContent from "./HeaderMenu/TableOfContent";
@@ -46,6 +45,7 @@ type HeaderProps = {
     searchValue: String,
     changeShowTableContent: () => void,
     searchResults: [],
+    onSelectedSearchResult: () => void,
 };
 
 function TextDetailHeading(props: HeaderProps) {
@@ -148,7 +148,6 @@ function TextDetailHeading(props: HeaderProps) {
                     }}
                     className={styles.button_group_menu}
                 >
-                    <Refresh isSecondWindowOpen={props.isSecondWindowOpen} />
                     <Divider orientation="vertical" variant="middle" flexItem />
                     <Search handleWindowSearch={handleWindowSearch} />
                     <Settings
@@ -210,8 +209,8 @@ function TextDetailHeading(props: HeaderProps) {
                             >
                                 {condition && results.length > 0 && (
                                     <SearchList
-                                        handleListItemClick={
-                                            handleListItemClick
+                                        onSelectedSearchResult={
+                                            props.onSelectedSearchResult
                                         }
                                         searchValue={props.searchValue}
                                         results={results}
