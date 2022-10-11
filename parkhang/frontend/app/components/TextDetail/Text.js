@@ -343,15 +343,14 @@ class Text extends React.Component<Props, State> {
                 ) {
                     if (remainingAnnotations.some((l) => l.type === "P")) {
                         classes.push(styles.P_annotation);
-                    } else if (
-                        remainingAnnotations.some((l) => l.type === "Q")
-                    ) {
+                    }
+                    if (remainingAnnotations.some((l) => l.type === "Q")) {
                         classes.push(styles.Q_annotation);
-                    } else if (
-                        remainingAnnotations.some((l) => l.type === "N")
-                    ) {
+                    }
+                    if (remainingAnnotations.some((l) => l.type === "N")) {
                         classes.push(styles.N_annotation);
-                    } else {
+                    }
+                    if (remainingAnnotations.some((l) => l.type === "V")) {
                         classes.push(styles.V_annotation);
                     }
                 }
