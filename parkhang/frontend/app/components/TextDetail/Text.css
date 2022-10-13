@@ -96,6 +96,12 @@
 .Q_annotation {
     text-decoration: 2px underline red;
     cursor: pointer;
+    text-underline-offset: 5px;
+}
+.Q_annotation_double{
+    text-decoration-style: double;
+    text-decoration-color: red;
+
 }
 .P_annotation {
     color: inherit;
@@ -159,4 +165,7 @@
 
 .selectedImage {
     font-weight: bolder;
+}
+.mediaInterval{
+background-color: #bed8f880;
 }

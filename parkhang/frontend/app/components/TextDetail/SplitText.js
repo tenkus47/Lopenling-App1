@@ -88,6 +88,7 @@ export type Props = {
     searchResults: [],
     showTableContent: Boolean,
     condition: Boolean,
+    MediaInterval: {},
 };
 
 export default class SplitTextComponent extends React.PureComponent<Props> {
@@ -1159,6 +1160,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             selectedTargetRange={this.props.selectedTargetRange}
                             changeSelectedRange={this.props.changeSelectedRange}
                             condition={this.condition}
+                            selectedMedia={this.props.selectedMedia}
+                            MediaInterval={this.props.MediaInterval}
                         />
                     </div>
                     {this.props.isAnnotating &&

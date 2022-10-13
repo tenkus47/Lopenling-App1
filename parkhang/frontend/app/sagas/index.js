@@ -342,7 +342,6 @@ function* selectedWitness(action: actions.SelectedTextWitnessAction) {
         urlAction.payload.annotation = getAnnotationSlug(activeAnnotation);
     }
     yield put(urlAction);
-    yield call(loadImageData, action);
 }
 
 function* watchSelectedTextWitness() {
@@ -1061,41 +1060,6 @@ function* checkConditionForAlignment(action) {
 }
 //Media Load
 
-function* loadImageData(action, witnessid = null) {
-    let AlignmentData = yield select(reducers.getAlignment);
-    let TextId = yield select(reducers.getSelectedText);
-    let witness = yield select(reducers.getSelectedTextWitness);
-    let textCondition = TextId.id === parseInt(AlignmentData.text);
-    let ImageData = {};
-    if (!textCondition) {
-        ImageData = null;
-        yield put(actions.changeImageData(ImageData));
-        return;
-    }
-    if (!_.isEmpty(AlignmentData)) {
-        let alignmentImage = AlignmentData.alignments.image;
-        let message = null;
-        let data = alignmentImage.find((l) => {
-            if (witnessid === null)
-                return parseInt(l.source) === parseInt(witness.id);
-            return l.source === parseInt(witnessid);
-        });
-
-        if (_.isEmpty(data)) {
-            ImageData = {};
-            message = "Image not Available";
-        }
-
-        if (!_.isEmpty(data)) {
-            ImageData = yield call(
-                api.fetchImageWithAlignmentId,
-                data.alignment
-            );
-            message = null;
-        }
-        yield put(actions.changeImageData({ ...ImageData, message }));
-    }
-}
 function* loadVideoData(action, AlignmentData) {
     if (AlignmentData.alignments.video.length) {
         let alignmentid = AlignmentData.alignments.video[0].alignment;
@@ -1119,17 +1083,6 @@ function* loadMediaAlignment(action) {
 
 function* watchActivateMedia() {
     yield takeEvery(actions.ACTIVATE_MEDIA, loadMediaAlignment);
-}
-
-//Image Alignment Source Change
-
-function* changeImageSource(action) {
-    let id = parseInt(action.payload);
-    yield call(loadImageData, action, id);
-}
-
-function* watchChangeImageSource() {
-    yield takeEvery(actions.SELECT_IMAGE_VERSION, changeImageSource);
 }
 
 /**
@@ -1168,7 +1121,6 @@ const typeCalls: {
     [actions.TEXTS]: selectTextUrl,
     [actions.CREATED_QUESTION]: reqAction(createQuestion),
     [actions.LOAD_QUESTION]: loadQuestion,
-    [actions.SELECT_IMAGE_VERSION]: changeImageSource,
     [actions.ACTIVATE_MEDIA]: loadMediaAlignment,
 };
 
@@ -1208,7 +1160,6 @@ export default function* rootSaga(): Saga<void> {
         call(watchTextUrlActions2),
         call(watchSelectedText2),
         call(watchSelectedTextWitness2),
-        call(watchChangeImageSource),
         call(watchActivateMedia),
     ]);
 }

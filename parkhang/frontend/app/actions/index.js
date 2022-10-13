@@ -13,11 +13,8 @@ export const CHANGE_URL = "CHANGE_URL";
 //Media
 
 export const ACTIVATE_MEDIA = "MEDIA_SELECTION";
-export const LOAD_IMAGE_DATA = "LOAD_IMAGE_DATA";
 export const LOAD_VIDEO_DATA = "LOAD_VIDEO_DATA";
-export const IS_IMAGE_PORTRAIT = "IS_IMAGE_PORTRAIT";
-export const SELECT_IMAGE_VERSION = "SELECT_IMAGE_VERSION";
-export const SELECT_IMAGE = "SELECT_IMAGE";
+export const SELECT_MEDIA_INTERVAL = "SELECT_MEDIA_INTERVAL";
 // Data
 export const LOAD_ALIGNMENT = "LOAD_ALIGNMENT";
 export const TEXT_ALIGNMENTS = "TEXT_ALIGNMENTS";
@@ -982,9 +979,9 @@ export function setTextAlignment(data) {
     };
 }
 export function toggleSecondWindow(data) {
-    setTimeout(()=>{
-   window.dispatchEvent(new Event("resize"));
-    },10)
+    setTimeout(() => {
+        window.dispatchEvent(new Event("resize"));
+    }, 10);
     return {
         type: SECOND_WINDOW,
         payload: data,
@@ -998,17 +995,12 @@ export function changeScrollToId(payload) {
     };
 }
 
-
-
 export function changeSyncIdOnClick(payload) {
     return {
         type: SYNC_ID_ON_CLICK,
         payload,
     };
 }
-
-
-
 
 export function changeSelectedRange(payload) {
     return {
@@ -1043,12 +1035,7 @@ export function changePanelLink(payload) {
         payload: payload,
     };
 }
-export function changeImageData(data) {
-    return {
-        type: LOAD_IMAGE_DATA,
-        data: data,
-    };
-}
+
 export function changeVideoData(data) {
     return {
         type: LOAD_VIDEO_DATA,
@@ -1087,5 +1074,11 @@ export function selectImage(payload) {
     return {
         type: SELECT_IMAGE,
         payload,
+    };
+}
+export function selectMediaInterval(payload) {
+    return {
+        type: SELECT_MEDIA_INTERVAL,
+        interval: payload,
     };
 }

@@ -46,14 +46,12 @@ import {
     getSearchValue,
     getTextFontSize,
     isSecondWindowOpen,
-    getImageData,
-    getSelectedImage,
-    isImagePortrait,
     isPanelVisible,
     getSelectedSourceRange,
     getSelectedTargetRange,
     getSearchResults,
     getShowTableContent,
+    getMediaInterval,
 } from "reducers";
 import * as reducers from "reducers";
 import _ from "lodash";
@@ -307,7 +305,6 @@ const mapStateToProps = (state) => {
     const selectedWindow = reducers.getSelectedWindow(state);
     const selectedWitness2 = reducers.getSelectedTextWitness2(state);
     let Media = reducers.getMediaData(state);
-    const imageData = getImageData(state);
     const isSecondWindowOpen = reducers.isSecondWindowOpen(state);
     const condition = reducers.getConditionForAlignment(state);
     return {
@@ -333,9 +330,6 @@ const mapStateToProps = (state) => {
         searchValue,
         fontSize,
         isSecondWindowOpen,
-        imageData,
-        selectedImage: getSelectedImage(state),
-        isImagePortrait: isImagePortrait(state),
         isAnnotating: reducers.isAnnotating(state),
         textAlignment,
         textAlignmentById,
@@ -347,6 +341,7 @@ const mapStateToProps = (state) => {
         searchResults: getSearchResults(state, searchValue),
         showTableContent: getShowTableContent(state),
         selectedMedia: Media,
+        MediaInterval: getMediaInterval(state),
         condition: condition && isPanelLinked && isSecondWindowOpen,
     };
 };

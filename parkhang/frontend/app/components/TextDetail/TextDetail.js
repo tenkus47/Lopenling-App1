@@ -1,7 +1,6 @@
 // @flow
 import React from "react";
 import classnames from "classnames";
-import imageStyle from "components/MediaComponent/Image.css";
 import Loader from "react-loader";
 import AnnotationControlsContainer from "./AnnotationControlsContainer";
 import SplitText from "lib/SplitText";
@@ -67,6 +66,7 @@ export type Props = {
     changeShowTableContent: () => void,
     showTableContent: Boolean,
     imageScrollId: {},
+    MediaInterval: {},
     isAnnotating: Boolean,
 };
 
@@ -168,6 +168,8 @@ class TextDetail extends React.Component<Props> {
                     showTableContent={this.props.showTableContent}
                     selectedText={this.props.text}
                     condition={this.props.condition}
+                    selectedMedia={this.props.selectedMedia}
+                    MediaInterval={this.props.MediaInterval}
                 />
             );
         }

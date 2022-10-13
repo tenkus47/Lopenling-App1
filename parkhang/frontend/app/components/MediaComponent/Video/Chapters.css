@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.time_stamp{
+display: flex;
+padding:5px;
+cursor: pointer;
+}
+.active_stamp{
+background-color: hsl(0deg 0% 93%);
+
+}
+
+.time_stamp:hover{
+background-color: hsl(0deg 0% 93%);
+}
+.image{
+max-width: 100px;
+max-height: 55px;
+}
+.image>img{
+    height: 100%;
+    width: 100%;
+}
+.chapter_info{
+flex:1;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+margin-left:10px;
+}
+.topic{
+flex:1;
+font-size: 14px;
+font-weight: 700;
+font-family: 'Roboto', sans-serif;
+
+}
+.startTime{
+font-size: 12px;
+color:#065fd4;
+background-color: #bed8f880;
+border-radius: 3px;
+padding:2px;
+
+}
