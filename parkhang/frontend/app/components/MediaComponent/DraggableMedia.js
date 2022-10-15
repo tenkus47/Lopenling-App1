@@ -2,7 +2,6 @@ import React from "react";
 import Draggable from "react-draggable";
 import CloseIcon from "@mui/icons-material/Close";
 import Paper, { PaperProps } from "@mui/material/Paper";
-import { ResizableBox } from "react-resizable";
 import Video from "./Video/Video";
 import Audio from "./Audio";
 import { IconButton } from "@mui/material";
@@ -56,13 +55,7 @@ function DraggableMedia(props) {
                 </div>
                 <>
                     {props.selectedMedia.isVideoVisible && (
-                        <Video
-                            {...props}
-                            open={!hide}
-                            setOpen={setHide}
-                            changeMediaInterval={props.changeMediaInterval}
-                            mediaInterval={props.mediaInterval}
-                        />
+                        <Video {...props} open={!hide} setOpen={setHide} />
                     )}
                     {props.selectedMedia.isAudioVisible && (
                         <Audio open={!hide} setOpen={setHide} />

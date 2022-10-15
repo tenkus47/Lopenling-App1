@@ -400,8 +400,12 @@ class Text extends React.Component<Props, State> {
                         : styles.selectedRangeDark;
                 classes.push(newClass);
             }
-            if (renderProps.selectedMedia.isVideoVisible) {
+            if (
+                renderProps.selectedMedia.isVideoVisible &&
+                renderProps.isPanelLinked
+            ) {
                 if (
+                    renderProps.MediaInterval.source_segment &&
                     renderProps.MediaInterval.source_segment.start <
                         segment.start &&
                     renderProps.MediaInterval.source_segment.end > segment.start

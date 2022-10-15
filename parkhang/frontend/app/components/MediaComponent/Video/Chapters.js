@@ -12,13 +12,13 @@ import classnames from "classnames";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 
+let YOUTUBE_ID = "2MMM_ggekfE";
+
 function Chapters(props) {
     let target = props.mediaInterval.target_segment;
-    let youtube_video_id = "2MMM_ggekfE";
-    const handleClick = (time) => {};
 
     return (
-        <Accordion sx={{ border: "#eee 1px solid" }}>
+        <Accordion sx={{ border: "#eee 1px solid", maxHeight: "80vh" }}>
             <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="video-chapter-content"
@@ -26,14 +26,21 @@ function Chapters(props) {
             >
                 <Typography>Chapters</Typography>
             </AccordionSummary>
-            <AccordionDetails>
+
+            <AccordionDetails
+                sx={{
+                    position: "relative",
+                    overflow: "scroll",
+                    maxHeight: "400px",
+                }}
+            >
                 {props.videoData.map((l, index) => {
                     return (
                         <Box key={l.source_segment.start}>
                             <TimeStamp
                                 img={
                                     "//img.youtube.com/vi/" +
-                                    youtube_video_id +
+                                    YOUTUBE_ID +
                                     "/0.jpg"
                                 }
                                 topic={"first chapter of chojuk"}
@@ -42,7 +49,6 @@ function Chapters(props) {
                                     l.target_segment.start === target?.start
                                 }
                                 jumpToTime={props.jumpToTime}
-                                handleClick={handleClick}
                             />
                         </Box>
                     );

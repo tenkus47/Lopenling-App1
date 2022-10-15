@@ -7,7 +7,6 @@ import Chapters from "./Chapters";
 function Video(props) {
     let textIdfromAlignment = props.alignmentData.text;
     const syncIdOnClick = props.syncIdOnClick;
-    const interval = props.mediaInterval.source_segment;
     const videoRef = useRef();
     let sourceId = props?.videoData?.source?.text;
     const VideoData = props?.videoData?.alignment || [];
@@ -27,7 +26,10 @@ function Video(props) {
     }
 
     useEffect(() => {
-        if (textIdfromAlignment === props.selectedText.id) {
+        if (
+            textIdfromAlignment === props.selectedText.id &&
+            props.isPanelLinked
+        ) {
             let ClickId = syncIdOnClick;
 
             closestID = VideoIdListRange.find(
@@ -61,10 +63,11 @@ function Video(props) {
 
         if (!_.isEmpty(Interval) || Interval) {
             props.changeMediaInterval(Interval);
-            props.changeScrollToId({
-                id: Interval.source_segment.start || null,
-                from: "video",
-            });
+            props.isPanelLinked &&
+                props.changeScrollToId({
+                    id: Interval.source_segment.start || null,
+                    from: "video",
+                });
         }
     };
     if (VideoData.length === 0) return <div />;

@@ -1160,6 +1160,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             selectedTargetRange={this.props.selectedTargetRange}
                             changeSelectedRange={this.props.changeSelectedRange}
                             condition={this.condition}
+                            isPanelLinked={this.props.isPanelLinked}
                             selectedMedia={this.props.selectedMedia}
                             MediaInterval={this.props.MediaInterval}
                         />

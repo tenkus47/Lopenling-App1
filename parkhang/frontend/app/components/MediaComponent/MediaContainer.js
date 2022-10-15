@@ -13,8 +13,10 @@ const mapStateToProps = (state) => {
     const witness = reducers.getSelectedTextWitnessId(state, selectedText.id);
     const witnesses = reducers.getTextWitnesses(state, selectedText.id);
     //  const selectedSegmentId=reducers.getSelectedSegmentId(state);
+    const isPanelLinked = reducers.isPanelLinked(state);
 
     return {
+        isPanelLinked,
         scrollToId,
         syncIdOnClick,
         videoData,

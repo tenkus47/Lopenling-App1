@@ -6,12 +6,11 @@ import * as actions from "actions";
 import styles from "./App.css";
 import utilStyles from "css/util.css";
 import favimage from "images/favicon.png";
-import HomePage from "components/HomePage";
 import Favicon from "react-favicon";
 import { history } from "redux-first-router";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Backdrop, Box, CircularProgress, Skeleton } from "@mui/material";
-
+import { Box, CircularProgress } from "@mui/material";
+import LopenlingLogo from "images/lopenling_logo.png";
 // import Switcher from "./Switcher";
 // import Header from "components/Header";
 const Switcher = lazy(() => import("./Switcher"));
@@ -106,15 +105,24 @@ const App = (props: Props) => {
                 <Favicon url={favimage} />
                 <Suspense
                     fallback={
-                        <Backdrop
+                        <Box
                             sx={{
-                                color: "#fff",
                                 zIndex: (theme) => theme.zIndex.drawer + 1,
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "100vh",
                             }}
-                            open={true}
                         >
-                            <CircularProgress color="inherit" />
-                        </Backdrop>
+                            <img
+                                src={LopenlingLogo}
+                                alt="suspence image"
+                                height={150}
+                                style={{ objectFit: "contain" }}
+                            />
+                            <CircularProgress />
+                        </Box>
                     }
                 >
                     <Header />
@@ -126,71 +134,3 @@ const App = (props: Props) => {
 };
 
 export default App;
-
-//   {
-//       url.location.pathname === "/textSelection" ||
-//       (url.location.pathname === "" && !SelectedText) ? (
-//           <>
-//               <ErrorBoundary>
-//                   {/* check for any unknown error on Homepage without stopping renders */}
-//                   <HomePage />
-//               </ErrorBoundary>
-//               <Stack
-//                   style={{
-//                       width: "100%",
-//                       position: "fixed",
-//                       display: "flex",
-//                       alignItems: "center",
-//                       justifyContent: "center",
-//                       bottom: 0,
-//                   }}
-//               >
-//                   <Box
-//                       sx={{
-//                           height: "100%",
-//                           display: "flex",
-//                           background: "#292826",
-//                           width: "100%",
-//                           alignItems: "center",
-//                           justifyContent: "center",
-//                           height: 55,
-//                       }}
-//                   >
-//                       <Typography
-//                           textAlign={"center"}
-//                           variant="h6"
-//                           fontSize={{ md: "20px", xs: "10px" }}
-//                           textTransform={"capitalize"}
-//                           color="white"
-//                       >
-//                           Our Trusted partner
-//                       </Typography>
-
-//                       <img
-//                           src={Indrajala}
-//                           alt="indrajala logo"
-//                           style={{
-//                               objectFit: "contain",
-//                               maxHeight: "100%",
-//                               marginLeft: "40px",
-//                           }}
-//                       />
-//                   </Box>
-//                   <Marquee
-//                       pauseOnHover={true}
-//                       gradient={false}
-//                       style={{
-//                           background: "#292826",
-//                           color: "white",
-//                       }}
-//                   >
-//                       {prayer}
-//                   </Marquee>
-//               </Stack>
-//           </>
-//       ) : openEditor ? (
-//           <Editor />
-//       ) : (
-//           <div>refresh</div>
-//       );
-//   }

@@ -343,6 +343,7 @@ const mapStateToProps = (state) => {
         selectedMedia: Media,
         MediaInterval: getMediaInterval(state),
         condition: condition && isPanelLinked && isSecondWindowOpen,
+        isPanelLinked,
     };
 };
 
