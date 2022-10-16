@@ -11,11 +11,19 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
-
+import * as actions from "actions";
 let YOUTUBE_ID = "2MMM_ggekfE";
 
 function Chapters(props) {
     let target = props.mediaInterval.target_segment;
+
+    React.useEffect(() => {
+        if (props.isPanelLinked)
+            props.changeScrollToId({
+                id: props.mediaInterval.source_segment.start || null,
+                from: "video",
+            });
+    }, [target]);
 
     return (
         <Accordion sx={{ border: "#eee 1px solid", maxHeight: "80vh" }}>
@@ -81,14 +89,20 @@ function TimeStamp(props) {
 
 const mapStateToProps = (state) => {
     const videoData = reducers.getVideoData(state);
+    const isPanelLinked = reducers.isPanelLinked(state);
+
     return {
+        isPanelLinked,
         videoData: videoData.alignment,
         mediaInterval: reducers.getMediaInterval(state),
     };
 };
 
 const matchDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        changeScrollToId: (payload) =>
+            dispatch(actions.changeScrollToId(payload)),
+    };
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Chapters);

@@ -1531,9 +1531,6 @@ var matchDispatchToProps = function matchDispatchToProps(dispatch) {
     changeMediaInterval: changeMediaInterval,
     changeSelectedRange: function changeSelectedRange(payload) {
       dispatch(actions__WEBPACK_IMPORTED_MODULE_3__["changeSelectedRange"](payload));
-    },
-    changeScrollToId: function changeScrollToId(payload) {
-      return dispatch(actions__WEBPACK_IMPORTED_MODULE_3__["changeScrollToId"](payload));
     }
   };
 };
@@ -1575,6 +1572,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var reducers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! reducers */ "./app/reducers/index.js");
+/* harmony import */ var actions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! actions */ "./app/actions/index.js");
+
 
 
 
@@ -1586,6 +1585,12 @@ var YOUTUBE_ID = "2MMM_ggekfE";
 
 function Chapters(props) {
   var target = props.mediaInterval.target_segment;
+  react__WEBPACK_IMPORTED_MODULE_0___default.a.useEffect(function () {
+    if (props.isPanelLinked) props.changeScrollToId({
+      id: props.mediaInterval.source_segment.start || null,
+      from: "video"
+    });
+  }, [target]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_2__["Accordion"], {
     sx: {
       border: "#eee 1px solid",
@@ -1642,14 +1647,20 @@ function TimeStamp(props) {
 
 var mapStateToProps = function mapStateToProps(state) {
   var videoData = reducers__WEBPACK_IMPORTED_MODULE_6__["getVideoData"](state);
+  var isPanelLinked = reducers__WEBPACK_IMPORTED_MODULE_6__["isPanelLinked"](state);
   return {
+    isPanelLinked: isPanelLinked,
     videoData: videoData.alignment,
     mediaInterval: reducers__WEBPACK_IMPORTED_MODULE_6__["getMediaInterval"](state)
   };
 };
 
 var matchDispatchToProps = function matchDispatchToProps(dispatch) {
-  return {};
+  return {
+    changeScrollToId: function changeScrollToId(payload) {
+      return dispatch(actions__WEBPACK_IMPORTED_MODULE_7__["changeScrollToId"](payload));
+    }
+  };
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_5__["connect"])(mapStateToProps, matchDispatchToProps)(Chapters));
@@ -1726,6 +1737,8 @@ function Video(props) {
   }
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    console.log(props);
+
     if (textIdfromAlignment === props.selectedText.id && props.isPanelLinked) {
       var ClickId = syncIdOnClick;
       closestID = VideoIdListRange.find(function (_ref) {
@@ -1763,15 +1776,11 @@ function Video(props) {
 
     if (!lodash_isEmpty__WEBPACK_IMPORTED_MODULE_0___default()(Interval) || Interval) {
       props.changeMediaInterval(Interval);
-      props.isPanelLinked && props.changeScrollToId({
-        id: Interval.source_segment.start || null,
-        from: "video"
-      });
     }
   };
 
   if (VideoData.length === 0) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null);
-  if (sourceId !== props.selectedText.id) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null);
+  if (props.videoData.source.witness !== parseInt(props.witness)) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_mui_material__WEBPACK_IMPORTED_MODULE_3__["Collapse"], {
     "in": props.open
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_player__WEBPACK_IMPORTED_MODULE_2___default.a, {

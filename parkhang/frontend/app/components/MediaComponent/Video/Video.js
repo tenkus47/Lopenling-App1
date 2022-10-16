@@ -26,6 +26,7 @@ function Video(props) {
     }
 
     useEffect(() => {
+        console.log(props);
         if (
             textIdfromAlignment === props.selectedText.id &&
             props.isPanelLinked
@@ -63,15 +64,11 @@ function Video(props) {
 
         if (!_.isEmpty(Interval) || Interval) {
             props.changeMediaInterval(Interval);
-            props.isPanelLinked &&
-                props.changeScrollToId({
-                    id: Interval.source_segment.start || null,
-                    from: "video",
-                });
         }
     };
     if (VideoData.length === 0) return <div />;
-    if (sourceId !== props.selectedText.id) return <div />;
+    if (props.videoData.source.witness !== parseInt(props.witness))
+        return <div />;
     return (
         <Collapse in={props.open}>
             <ReactPlayer

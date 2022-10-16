@@ -62,8 +62,6 @@ const matchDispatchToProps = (dispatch) => {
         changeSelectedRange: (payload) => {
             dispatch(actions.changeSelectedRange(payload));
         },
-        changeScrollToId: (payload) =>
-            dispatch(actions.changeScrollToId(payload)),
     };
 };
 
