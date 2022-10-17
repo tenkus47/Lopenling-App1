@@ -5,6 +5,9 @@ import Paper, { PaperProps } from "@mui/material/Paper";
 import Video from "./Video/Video";
 import Audio from "./Audio";
 import { IconButton } from "@mui/material";
+
+const MEDIA_MAX_WIDTH = "400px";
+
 function PaperComponent(props: PaperProps) {
     return (
         <Draggable handle="#draggable-dialog-title" bounds="parent">
@@ -26,7 +29,12 @@ function DraggableMedia(props) {
 
     return (
         <PaperComponent
-            sx={{ position: "absolute", zIndex: 1, right: 0 }}
+            sx={{
+                position: "absolute",
+                zIndex: 1,
+                right: 0,
+                maxWidth: MEDIA_MAX_WIDTH,
+            }}
 
             // onClose={handleClose}
         >

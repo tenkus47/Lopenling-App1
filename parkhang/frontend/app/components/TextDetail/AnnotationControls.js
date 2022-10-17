@@ -21,7 +21,6 @@ import PageBreakIcon from "images/page_break_icon.svg";
 import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
-
 import type { AnnotationUniqueId } from "lib/Annotation";
 import { Snackbar } from "@mui/material";
 export const CONTROLS_MARGIN_LEFT = 10;
@@ -192,7 +191,7 @@ class AnnotationControls extends React.Component<Props> {
                 this.arrow.style.top = 0 - arrowHeight + "px";
             }
             // controls.style.top = top + measurements.height + arrowHeight + "px";
-            controls.style.top = top - measurements.height - 10 + "px"; // 20 added due to 30 px padding on splitTextRow first child
+            controls.style.top = top - measurements.height - 15 + "px";
             // controls.style.left =
             // selectedLeft + selectedWidth / 2 - width / 2 + moveRight + "px";
             controls.style.left = measurements.left + "px";
@@ -633,7 +632,6 @@ class AnnotationControls extends React.Component<Props> {
         if (anonymousUserMessage || breakSelected) showHeader = false;
         const annotationBody = ReactDom.createPortal(
             <div className={styles.annotationContent}>
-                {anonymousUserMessage}
                 {nothingSelected}
                 {!breakSelected && annotations}
                 {pageBreaksButton}
@@ -654,6 +652,7 @@ class AnnotationControls extends React.Component<Props> {
                     (this.controls = controls)
                 }
             >
+                {anonymousUserMessage}
                 {showHeader && (
                     <AnnotationControlsHeader
                         addPageBreak={

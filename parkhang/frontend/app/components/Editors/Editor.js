@@ -6,7 +6,7 @@ import * as constants from "app_constants";
 import lopenlingLogo from "images/lopenling_logo.png";
 import headerStyles from "components/Header/Header.css";
 import Sidebar from "components/Sidebar";
-import styles from "./EditorContainer.css";
+import styles from "./Editor.css";
 import classnames from "classnames";
 import utilStyles from "css/util.css";
 import TextSheet from "./TextSheet";
@@ -18,7 +18,7 @@ import {
     Alert,
     Collapse,
 } from "@mui/material";
-
+import AnnotationPortal from "./AnnotationPortal";
 import { Edit, Share, VerticalSplit, SyncAlt } from "@mui/icons-material";
 import { Box } from "@mui/system";
 const Editor = (props) => {
@@ -113,6 +113,7 @@ const Editor = (props) => {
         <div className={classnames(styles.interface, utilStyles.flex)}>
             <Sidebar />
             <TextSheet bodyHeight={bodyHeight} />
+            <AnnotationPortal />
             <SpeedDial
                 ariaLabel="SpeedDial basic"
                 sx={{ position: "absolute", bottom: 60, right: 16 }}

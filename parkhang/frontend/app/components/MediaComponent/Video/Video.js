@@ -8,9 +8,8 @@ function Video(props) {
     let textIdfromAlignment = props.alignmentData.text;
     const syncIdOnClick = props.syncIdOnClick;
     const videoRef = useRef();
-    let sourceId = props?.videoData?.source?.text;
     const VideoData = props?.videoData?.alignment || [];
-    const url = "https://www.youtube.com/watch?v=2MMM_ggekfE";
+    const url = "https://www.youtube.com/watch?v=2MMM_ggekfE"; //url should be from db api
     let VideoIdListRange = [];
     let closestID = [];
     const [state, setState] = useState({
@@ -24,9 +23,7 @@ function Video(props) {
             parseInt(l.source_segment.end),
         ]);
     }
-
     useEffect(() => {
-        console.log(props);
         if (
             textIdfromAlignment === props.selectedText.id &&
             props.isPanelLinked
@@ -43,29 +40,29 @@ function Video(props) {
 
                 if (!_.isEmpty(data)) {
                     jumpToTime(data.target_segment.start);
+                    props.changeMediaInterval(data);
                 }
             }
         }
     }, [syncIdOnClick]);
-
-    const jumpToTime = (time) => {
-        let newData = calTimeToSeek(state.duration, time);
-        videoRef.current.seekTo(parseFloat(newData));
-    };
-
-    const handleProgress = (e) => {
-        const played = e.playedSeconds;
-
+    const handleProgress = (state) => {
+        // We only want to update time slider if we are not currently seeking
+        const played = state.playedSeconds;
         const Interval = VideoData.find(
             (time) =>
                 toSec(time.target_segment.start) < played &&
                 toSec(time.target_segment.end) > played
         );
-
-        if (!_.isEmpty(Interval) || Interval) {
+        if (!_.isEmpty(Interval)) {
             props.changeMediaInterval(Interval);
         }
     };
+    const jumpToTime = (time) => {
+        let timeInSec = calTimeToSeek(state.duration, time);
+        console.log(state);
+        videoRef.current.seekTo(parseFloat(timeInSec));
+    };
+
     if (VideoData.length === 0) return <div />;
     if (props.videoData.source.witness !== parseInt(props.witness))
         return <div />;
@@ -88,22 +85,21 @@ function Video(props) {
                 playing
                 onPlay={() => setState({ ...state, playing: true })}
                 onPause={() => setState({ ...state, playing: false })}
-                onProgress={handleProgress}
                 onError={() => console.log("error in media sec")}
+                onSeek={(e) => console.log("onSeek", e)}
+                onProgress={handleProgress}
             />
 
-            <Chapters jumpToTime={jumpToTime} />
+            <Chapters
+                jumpToTime={jumpToTime}
+                changeMediaInterval={props.changeMediaInterval}
+            />
         </Collapse>
     );
 }
 
 export default Video;
 
-function toHMS(seconds) {
-    var date = new Date(null);
-    date.setSeconds(seconds);
-    return date.toISOString().substr(11, 8);
-}
 function toSec(hms = "") {
     var a = hms.split(":"); // split it at the colons
     // minutes are worth 60 seconds. Hours are worth 60 minutes.
@@ -113,7 +109,4 @@ function toSec(hms = "") {
 function calTimeToSeek(maxValue, currentTime) {
     let i = toSec(currentTime) / maxValue;
     return parseFloat(i);
-}
-function getClosestNumber(arr, d) {
-    return arr.reduce((a, b) => (b <= d && a < b ? b : a), 0);
 }
