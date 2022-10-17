@@ -31,6 +31,8 @@ import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
+import classNames from "classnames";
+
 const MIN_SPACE_RIGHT =
     parseInt(controlStyles.inlineWidth) + CONTROLS_MARGIN_LEFT;
 
@@ -1099,10 +1101,13 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 className={pechaImageClass}
                                 style={pechaStyles}
                             >
-                                <Zoom>
+                                <Zoom cl={`zoomableImage-${index}`}>
                                     <img
                                         alt="Text related Image"
-                                        className={styles.image}
+                                        className={classNames([
+                                            styles.image,
+                                            `zoomableImage-${index}`,
+                                        ])}
                                         src={imageUrl}
                                         width="100%"
                                         height="100%"

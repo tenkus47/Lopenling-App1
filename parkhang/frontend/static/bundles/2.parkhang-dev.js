@@ -5614,6 +5614,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lib_Witness__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! lib/Witness */ "./app/lib/Witness.js");
 /* harmony import */ var grapheme_splitter__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! grapheme-splitter */ "./node_modules/grapheme-splitter/index.js");
 /* harmony import */ var grapheme_splitter__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/__webpack_require__.n(grapheme_splitter__WEBPACK_IMPORTED_MODULE_22__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_23__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 
@@ -5657,6 +5659,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -6621,9 +6624,11 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
       }, props.showImages && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"]("div", {
         className: pechaImageClass,
         style: pechaStyles
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](components_utility_imageZoom__WEBPACK_IMPORTED_MODULE_8__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"]("img", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"](components_utility_imageZoom__WEBPACK_IMPORTED_MODULE_8__["default"], {
+        cl: "zoomableImage-".concat(index)
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__["createElement"]("img", {
         alt: "Text related Image",
-        className: _SplitText_css__WEBPACK_IMPORTED_MODULE_17___default.a.image,
+        className: classnames__WEBPACK_IMPORTED_MODULE_23___default()([_SplitText_css__WEBPACK_IMPORTED_MODULE_17___default.a.image, "zoomableImage-".concat(index)]),
         src: imageUrl,
         width: "100%",
         height: "100%",
@@ -13829,14 +13834,23 @@ var mapStateToProps = function mapStateToProps(state) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_map_interaction__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-map-interaction */ "./node_modules/react-map-interaction/dist/react-map-interaction.js");
-/* harmony import */ var react_map_interaction__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_map_interaction__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var medium_zoom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! medium-zoom */ "./node_modules/medium-zoom/dist/medium-zoom.esm.js");
+ // import { MapInteractionCSS } from "react-map-interaction";
 
 
 
 function imageZoom(_ref) {
-  var children = _ref.children;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_map_interaction__WEBPACK_IMPORTED_MODULE_1__["MapInteractionCSS"], null, children);
+  var children = _ref.children,
+      cl = _ref.cl;
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    var images = document.querySelector("." + cl);
+    Object(medium_zoom__WEBPACK_IMPORTED_MODULE_1__["default"])(images, {
+      margin: 50,
+      background: "#000",
+      scrollOffset: 200
+    });
+  }, []);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, children);
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (imageZoom);
