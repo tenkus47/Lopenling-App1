@@ -6,7 +6,7 @@ function imageZoom({ children, cl }) {
         const images = document.querySelector("." + cl);
         mediumZoom(images, {
             margin: 50,
-            background: "#000",
+            background: "rgba(0,0,0,0.4)",
             scrollOffset: 200,
         });
     }, []);

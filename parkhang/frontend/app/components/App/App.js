@@ -76,19 +76,15 @@ const App = (props: Props) => {
             }),
         [mode]
     );
-    const [openEditor, setOpenEditor] = React.useState(false);
-    setTitle(props.title);
-    let SelectedText = props.selectedText;
 
-    let url = history();
+    let SelectedText = props.selectedText;
+    setTitle(props.title);
     if (!SelectedText) {
-        setTitle("Parkhang");
+        setTitle("parkhang");
+    } else if (props.page === "Editors") {
+        setTitle(SelectedText?.name + "-" + props.title);
     }
-    React.useEffect(() => {
-        if (SelectedText) {
-            setOpenEditor(true);
-        } else setOpenEditor(true);
-    }, [SelectedText]);
+
     return (
         <ThemeProvider theme={theme}>
             <Box

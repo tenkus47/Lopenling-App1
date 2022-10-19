@@ -2,7 +2,7 @@ import React from "react";
 import Draggable from "react-draggable";
 import CloseIcon from "@mui/icons-material/Close";
 import Paper, { PaperProps } from "@mui/material/Paper";
-import Video from "./Video/Video";
+import Video from "./Video";
 import Audio from "./Audio";
 import { IconButton } from "@mui/material";
 
@@ -25,7 +25,6 @@ function DraggableMedia(props) {
     const toggleHide = () => {
         setHide((prev) => !prev);
     };
-    if (props.selectedMedia.isImageVisible) return null;
 
     return (
         <PaperComponent
@@ -63,7 +62,7 @@ function DraggableMedia(props) {
                 </div>
                 <>
                     {props.selectedMedia.isVideoVisible && (
-                        <Video {...props} open={!hide} setOpen={setHide} />
+                        <Video open={!hide} setOpen={setHide} />
                     )}
                     {props.selectedMedia.isAudioVisible && (
                         <Audio open={!hide} setOpen={setHide} />

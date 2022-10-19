@@ -2,7 +2,7 @@
     "locale": "en",
     "displayName": "English",
     "messages": {
-        "header.title": "Nalanda Texts Project",
+        "header.title": "Lopenling Application",
         "header.login": "Log In",
         "header.signUp": "Sign Up",
         "header.logout": "Sign Out",

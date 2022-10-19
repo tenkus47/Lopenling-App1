@@ -3,6 +3,9 @@ import ReactPlayer from "react-player";
 import _ from "lodash";
 import { Collapse } from "@mui/material";
 import Chapters from "./Chapters";
+import { connect } from "react-redux";
+import * as reducers from "reducers";
+import * as actions from "actions";
 
 function Video(props) {
     let textIdfromAlignment = props.alignmentData.text;
@@ -58,9 +61,7 @@ function Video(props) {
         }
     };
     const jumpToTime = (time) => {
-        let timeInSec = calTimeToSeek(state.duration, time);
-        console.log(state);
-        videoRef.current.seekTo(parseFloat(timeInSec));
+        videoRef.current.seekTo(toSec(time), "seconds");
     };
 
     if (VideoData.length === 0) return <div />;
@@ -81,7 +82,6 @@ function Video(props) {
                 onDuration={(duration) =>
                     setState({ ...state, duration: duration })
                 }
-                light
                 playing
                 onPlay={() => setState({ ...state, playing: true })}
                 onPause={() => setState({ ...state, playing: false })}
@@ -90,23 +90,75 @@ function Video(props) {
                 onProgress={handleProgress}
             />
 
-            <Chapters
-                jumpToTime={jumpToTime}
-                changeMediaInterval={props.changeMediaInterval}
-            />
+            <Chapters jumpToTime={jumpToTime} />
         </Collapse>
     );
 }
 
-export default Video;
+const mapStateToProps = (state) => {
+    const scrollToId = reducers.getScrollToId(state);
+    const syncIdOnClick = reducers.getSyncIdOnClick(state);
+    const videoData = reducers.getVideoData(state);
+    let Media = reducers.getMediaData(state);
+    const selectedText = reducers.getSelectedText(state);
+    const alignmentData = reducers.getAlignment(state);
+    const witness = reducers.getSelectedTextWitnessId(state, selectedText.id);
+    const isPanelLinked = reducers.isPanelLinked(state);
+
+    return {
+        isPanelLinked,
+        scrollToId,
+        syncIdOnClick,
+        videoData,
+        selectedMedia: Media,
+        selectedText,
+        alignmentData,
+        witness,
+        mediaInterval: reducers.getMediaInterval(state),
+    };
+};
+
+const matchDispatchToProps = (dispatch) => {
+    const toggleImage = (data) => dispatch(actions.changedShowPageImages(data));
+    const changeMediaSelection = (data) =>
+        dispatch(actions.mediaSelection(data));
+
+    const onSelectedSearchResult = (
+        text: api.TextData,
+        start: number,
+        length: number,
+        selectedText: api.TextData | null
+    ) => {
+        if (!selectedText || selectedText.id !== text.id) {
+            dispatch(
+                batchActions([
+                    actions.selectedSearchResult(text.id, start, length),
+                    actions.selectedText(text),
+                ])
+            );
+        } else {
+            dispatch(actions.selectedSearchResult(text.id, start, length));
+        }
+    };
+    const changeMediaInterval = (interval) => {
+        dispatch(actions.selectMediaInterval(interval));
+    };
+    return {
+        toggleImage,
+        onSelectedSearchResult,
+        changeMediaSelection,
+        changeMediaInterval,
+        changeSelectedRange: (payload) => {
+            dispatch(actions.changeSelectedRange(payload));
+        },
+    };
+};
+
+export default connect(mapStateToProps, matchDispatchToProps)(Video);
 
 function toSec(hms = "") {
     var a = hms.split(":"); // split it at the colons
     // minutes are worth 60 seconds. Hours are worth 60 minutes.
     var seconds = +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
     return seconds;
-}
-function calTimeToSeek(maxValue, currentTime) {
-    let i = toSec(currentTime) / maxValue;
-    return parseFloat(i);
 }

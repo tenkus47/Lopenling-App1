@@ -155,13 +155,21 @@ class AnnotationControls extends React.Component<Props> {
             }
         }
         let selectedWidth = selectedRight - selectedLeft;
+
+        let selectedRightSide = viewPortWidth - (selectedLeft + selectedWidth);
+
         let anchorPoint = anchorPoints.bottom;
         let moveToSide = false;
         let moveRight = 0;
         if (!offScreen && bottomGap < height) {
             moveToSide = true;
         }
-
+        if (
+            selectedRightSide < width + 50 ||
+            viewPortWidth - measurements.left < width + 50
+        ) {
+            moveToSide = true;
+        }
         if (moveToSide) {
             arrow.className = styles.arrowLeft;
             if (selectedLeft - width - arrow.offsetWidth < 0) {
@@ -198,8 +206,7 @@ class AnnotationControls extends React.Component<Props> {
         } else if (moveToSide) {
             arrow.className = styles.arrowRight;
             let arrowHeight = arrow.offsetHeight;
-            let controlsTop =
-                measurements.top + measurements.height / 2 - arrowHeight / 2;
+            let controlsTop = measurements.top - measurements.height - 15;
             if (
                 measurements.top +
                     measurements.height +
@@ -215,13 +222,17 @@ class AnnotationControls extends React.Component<Props> {
 
                 arrow.style.left = width - 2 + "px";
                 controls.style.left =
-                    selectedLeft - width - arrow.offsetWidth + "px";
+                    selectedLeft - width / 2 - arrow.offsetWidth + "px";
             } else {
                 // right-side of selection
                 arrow.className = styles.arrowLeft;
                 arrow.style.left = -arrow.offsetWidth + "px";
                 controls.style.left =
-                    selectedLeft + selectedWidth + arrow.offsetWidth + "px";
+                    selectedLeft +
+                    selectedWidth -
+                    width / 2 +
+                    arrow.offsetWidth +
+                    "px";
 
                 // controls.style.right = 0 + "px";
             }
@@ -234,7 +245,6 @@ class AnnotationControls extends React.Component<Props> {
 
             controls.style.top = controlsTop + "px";
         } else {
-            console.log("last");
             controls.style.top = top + "px";
         }
     }
@@ -648,6 +658,7 @@ class AnnotationControls extends React.Component<Props> {
         return (
             <div
                 className={classnames(...classes)}
+                style={{ maxWidth: 150 }}
                 ref={(controls: HTMLDivElement | null) =>
                     (this.controls = controls)
                 }

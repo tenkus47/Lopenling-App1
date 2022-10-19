@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "actions";
 import * as reducers from "reducers";
 import { Typography, Box } from "@mui/material";
-function Commentary({ alignmentData, text, selectSecondWindowText }) {
-    let targetWitness = alignmentData.target;
+
+const TEXT_DEMO_DETAIL_ID = 2;
+
+function Commentary({
+    getWitness,
+    alignmentData,
+    text,
+    selectSecondWindowText,
+}) {
     let textAlignments = alignmentData?.alignments.text || [];
+
     const handleSelectText = (text) => {
         selectSecondWindowText(text);
     };
@@ -17,19 +25,16 @@ function Commentary({ alignmentData, text, selectSecondWindowText }) {
             </Typography>
             {textAlignments.map((alignment, index) => {
                 return (
-                    <ul style={{ paddingLeft: 18 }} key={`commentary-${index}`}>
-                        <li
-                            style={{ cursor: "pointer" }}
-                            onClick={() =>
-                                handleSelectText({
-                                    id: 2,
-                                    name: "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་པའི་འགྲེལ་པ།",
-                                })
-                            }
-                        >
-                            {alignment.target}
-                        </li>
-                    </ul>
+                    <div
+                        key={`commentary-${index}`}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                            handleSelectText(text(TEXT_DEMO_DETAIL_ID))
+                        }
+                    >
+                        {text(2).name}
+                        {alignment.target}
+                    </div>
                 );
             })}
         </Box>
@@ -39,11 +44,13 @@ function Commentary({ alignmentData, text, selectSecondWindowText }) {
 const mapStateToProps = (state: AppState): {} => {
     let selectedMedia = reducers.getMediaData(state);
     const alignmentData = reducers.getAlignment(state);
-    let text = reducers.getText(state, alignmentData.target);
+    let text = (textId) => reducers.getText(state, textId);
+    let getWitness = (id) => reducers.getWitness(state, id);
     return {
         alignmentData,
         selectedMedia,
         text,
+        getWitness,
     };
 };
 
