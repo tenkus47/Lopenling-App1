@@ -18,6 +18,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           envs: SHA
           script_stop: true
+          debug: true
           script: |
             cd parkhang
             git pull origin master
