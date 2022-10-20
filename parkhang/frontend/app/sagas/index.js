@@ -547,6 +547,7 @@ function* loadQuestion(action) {
     if (!isLoading) {
         yield put(actions.loadingQuestion(action.annotation));
         const results = yield call(api.getQuestion, action.annotation);
+        console.log(results);
         yield put(actions.loadedQuestion(action.annotation, results));
     }
 }

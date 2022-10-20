@@ -22,24 +22,25 @@ class DiscourseAPI:
         auth_headers = self.auth_headers(username)
         new_topic_data = {
             'title': topic_name,
-            'category': category_id,
+            'category': 55,
             'raw': post_text
         }
+        print(new_topic_data)
+        print(self.SITE_URL)
+        print(auth_headers)
         r = requests.post(
             '{self.SITE_URL}/posts.json',
             json=new_topic_data,
             headers=auth_headers,
-            timeout=(10, 60)
+            timeout=None
         )
-
+        
         # TODO: handle potential error properly
         try:
             topic_data = r.json()
         except Exception as e:
             print(r.text)
             print(e)
-
-
         return {
             'id': topic_data['topic_id']
         }

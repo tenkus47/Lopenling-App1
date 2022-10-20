@@ -216,7 +216,7 @@ WEBPACK_LOADER = {
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
-        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats-dev.json'),
+        'STATS_FILE': str(ROOT_DIR / 'frontend/webpack-stats.json'),
     }
 }
 
@@ -229,6 +229,5 @@ DISCOURSE_SSO_SIGNUP_URL = env("DISCOURSE_SSO_SIGNUP_URL")
 # Discourse API
 DISCOURSE_SITE = env("DISCOURSE_SITE")
 DISCOURSE_API_KEY = env("DISCOURSE_API_KEY")
-print(DISCOURSE_API_KEY)
 DISCOURSE_SYSTEM_USER = env("DISCOURSE_SYSTEM_USER")
 DISCOURSE_QA_CATEGORY_ID = env("DISCOURSE_QA_CATEGORY_ID")

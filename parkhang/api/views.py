@@ -452,7 +452,6 @@ class QuestionList(APIView):
                                     "created": post["created"],
                                 }
                             )
-                            print(answers)
                     question.answers = answers
         except:
             print("Exception getting answers")
@@ -487,17 +486,14 @@ class QuestionList(APIView):
         question.annotation = annotation
         question.title = question_title
         question.question = question_content
-       
         try:
             api = DiscourseAPI(settings.DISCOURSE_SITE, settings.DISCOURSE_API_KEY)
-            print(settings)
             topic_data = api.add_topic(
                 user.sso_username,
                 settings.DISCOURSE_QA_CATEGORY_ID,
                 question_title,
                 question_content,
             ) 
-           
             topic_id = topic_data["id"]
         except:
             topic_id = None
