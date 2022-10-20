@@ -34,11 +34,15 @@ module.exports = {
             },
         }),
         new LodashModuleReplacementPlugin(),
-       
     ],
 
     module: {
         rules: [
+            {
+                test: /\.(js)$/,
+                exclude: /node_modules/,
+                use: ["babel-loader"],
+            },
             {
                 test: /\.mjs$/,
                 include: /node_modules/,
@@ -124,7 +128,7 @@ module.exports = {
                     },
                 ],
             },
-           {
+            {
                 test: /\.svg$/,
                 use: [
                     {
@@ -134,14 +138,14 @@ module.exports = {
                                 plugins: [
                                     {
                                         inlineStyles: {
-                                            onlyMatchedOnce: false
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                ]
+                                            onlyMatchedOnce: false,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(png|jpe?g|gif)$/i,
@@ -155,7 +159,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: [".js", ".jsx", "*", ".mjs"],
+        extensions: [".js", ".jsx", ".ts", "*", ".mjs"],
         modules: [path.resolve("./node_modules"), path.resolve("./app")],
     },
 

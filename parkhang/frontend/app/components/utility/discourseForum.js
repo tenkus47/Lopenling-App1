@@ -15,19 +15,22 @@ function postMessageReceived(e) {
 window.addEventListener("message", postMessageReceived, false);
 
 export function DiscourseForum({ topicId }) {
+    // const topicId=1446
     useEffect(() => {
-        window.DiscourseEmbed = {
-            discourseUrl: "https://lopenling.org/",
-            topicId: topicId,
-        };
-        const d = document.createElement("script");
-        d.type = "text/javascript";
-        d.async = true;
-        d.src = setting(topicId);
-        (
-            document.getElementsByTagName("head")[0] ||
-            document.getElementsByTagName("body")[0]
-        ).appendChild(d);
+        if (topicId) {
+            window.DiscourseEmbed = {
+                discourseUrl: "https://lopenling.org/",
+                topicId: topicId,
+            };
+            const d = document.createElement("script");
+            d.type = "text/javascript";
+            d.async = true;
+            d.src = setting(topicId);
+            (
+                document.getElementsByTagName("head")[0] ||
+                document.getElementsByTagName("body")[0]
+            ).appendChild(d);
+        }
     }, []);
     if (!topicId) return <div>Topic unavailable</div>;
     return <div id={`discourse-comments-${topicId}`}></div>;

@@ -62,6 +62,7 @@ export type Props = {
     textAlignmentById: {},
     selectedSourceRange: [],
     selectedTargetRange: [],
+    MediaInterval: {},
 };
 
 export type State = {
@@ -345,6 +346,12 @@ class Text extends React.Component<Props, State> {
                         classes.push(styles.P_annotation);
                     }
                     if (remainingAnnotations.some((l) => l.type === "Q")) {
+                        var double = remainingAnnotations.filter(
+                            (l) => l.type === "Q"
+                        );
+                        if (double.length > 1) {
+                            classes.push(styles.Q_annotation_double);
+                        }
                         classes.push(styles.Q_annotation);
                     }
                     if (remainingAnnotations.some((l) => l.type === "N")) {
@@ -392,6 +399,18 @@ class Text extends React.Component<Props, State> {
                         ? styles.selectedRangelight
                         : styles.selectedRangeDark;
                 classes.push(newClass);
+            }
+            if (
+                renderProps.selectedMedia.isVideoVisible &&
+                renderProps.isPanelLinked
+            ) {
+                if (
+                    renderProps.MediaInterval.source_segment &&
+                    renderProps.MediaInterval.source_segment.start <
+                        segment.start &&
+                    renderProps.MediaInterval.source_segment.end > segment.start
+                )
+                    classes.push(styles.mediaInterval);
             }
 
             if (classes.length > 0) {

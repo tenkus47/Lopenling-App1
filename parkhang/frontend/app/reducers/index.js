@@ -289,20 +289,13 @@ export const isPanelVisible = (state) => {
 export const getMediaData = (state) => {
     return media.getMediaData(state.media);
 };
-export const getSelectedImageVersion = (state) => {
-    return media.getSelectedImageVersion(state.media);
-};
-export const getImageData = (state: AppState) => {
-    return media.getImageData(state.media);
-};
+
 export const getVideoData = (state: AppState) => {
     return media.getVideoData(state.media);
 };
-export const isImagePortrait = (state: AppState) => {
-    return media.isImagePortrait(state.media);
-};
-export const getSelectedImage = (state: AppState) => {
-    return media.getSelectedImage(state.media);
+
+export const getMediaInterval = (state: AppState) => {
+    return media.getMediaInterval(state.media);
 };
 
 // data

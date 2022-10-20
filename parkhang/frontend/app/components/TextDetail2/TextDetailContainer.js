@@ -30,9 +30,7 @@ import {
     getSelectedSearchResult,
     getTextFontSize,
     isSecondWindowOpen,
-    getImageData,
     getSelectedImage,
-    isImagePortrait,
     isPanelVisible,
     getSelectedTargetRange,
     getSelectedSourceRange,
@@ -48,7 +46,7 @@ import {
     getTextAlignment,
     getSelectedWindow,
     getSearchValue2,
-    getConditionForAlignment
+    getConditionForAlignment,
 } from "reducers";
 
 const DISMISS_CONTROLS_ON_CLICK = true;
@@ -143,7 +141,7 @@ const mapStateToProps = (state: AppState): {} => {
     let selectedWitness = {};
     let annotatedText = null;
     let workingWitness;
-    let textFontSize =getTextFontSize2(state);
+    let textFontSize = getTextFontSize2(state);
     let selectedText = getSelectedText2(state);
     let annotationPositions = {};
     let annotations = [];
@@ -189,9 +187,6 @@ const mapStateToProps = (state: AppState): {} => {
         selectedWitness,
         loading,
         annotationPositions,
-        imageData: getImageData(state),
-        selectedImage: getSelectedImage(state),
-        isImagePortrait: isImagePortrait(state),
         scrollToId,
         syncIdOnClick,
         textAlignment,
@@ -200,7 +195,7 @@ const mapStateToProps = (state: AppState): {} => {
         selectedSourceRange: getSelectedSourceRange(state),
         selectedTargetRange: getSelectedTargetRange(state),
         showTableContent: getShowTableContent2(state),
-        selectedSearchResult : getSelectedSearchResult2(state),
+        selectedSearchResult: getSelectedSearchResult2(state),
         searchResults: getSearchResults2(state, searchValue),
         searchValue,
         condition: condition && isPanelLinked && isSecondWindowOpen,

@@ -1,0 +1,8 @@
+.annotation_portal{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background-color: #eee;
+    z-index: 10;
+    max-width: 300px;
+}

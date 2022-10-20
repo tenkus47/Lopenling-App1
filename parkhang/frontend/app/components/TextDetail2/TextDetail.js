@@ -9,7 +9,6 @@ import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
 import classnames from "classnames";
 
-import imageStyle from "components/MediaComponent/Image.css";
 import SplitTextComponent from "./SplitText";
 
 function TextDetail(props) {
@@ -83,8 +82,6 @@ function TextDetail(props) {
     }
 
     let textComponents = [textComponent];
-    let thirdWindowHeight = imageStyle.ThirdWindowHeight;
-    let bodyHeight = "calc(100% - " + thirdWindowHeight + ")";
     return (
         <Box
             ref={ref}

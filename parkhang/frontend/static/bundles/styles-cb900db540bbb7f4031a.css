@@ -153,54 +153,6 @@ body {
     font-weight: 400;
     src: local("arial");
 }
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src:
-        url("/static/fonts/monlam_bodyig-webfont.woff") format("woff"),
-        url("/static/fonts/monlam_bodyig-webfont.woff2") format("woff2");
-    unicode-range: U+0F00-0FFF;
-}
-@font-face {
-    font-family: "Tsumachu";
-    font-style: normal;
-    font-weight: 400;
-    src: url("/static/fonts/tsumachu.woff2") format("woff2");
-    unicode-range: U+0F00-0FFF;
-}
-.HomePage---title {
-    font-size: clamp(1.73rem, calc(1.45rem + 1.39vw), 2.44rem);
-    color: #888;
-    font-family: Macondo;
-}
-.HomePage---list {
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    /* Internet Explorer 10+ */
-    scrollbar-width: none;
-    /* Firefox */
-    scroll-behavior: smooth;
-    max-width: 100%;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
-}
-.HomePage---list h6 {
-    font-size: clamp(1.00rem, calc(0.9rem + 0.49vw), 1.25rem) !important;
-
-}
-.HomePage---list::-webkit-scrollbar {
-    display: none;
-    /* Safari and Chrome */
-    cursor: pointer;
-    height: 5px;
-}
-@font-face {
-    font-family: "Tibetan";
-    font-style: normal;
-    font-weight: 400;
-    src: local("arial");
-}
 
 @font-face {
     font-family: "Tibetan";
@@ -377,4 +329,4 @@ we require as we don't want to change the html.
 
 
 
-/*# sourceMappingURL=styles-2641acf8f91d5115f0ab.css.map*/
+/*# sourceMappingURL=styles-cb900db540bbb7f4031a.css.map*/

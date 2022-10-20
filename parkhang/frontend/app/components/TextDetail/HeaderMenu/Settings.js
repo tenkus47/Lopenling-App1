@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import WrenchIcon from "images/wrench.svg";
 import CheckIcon from "@mui/icons-material/Check";
 import useLocalStorage from "components/utility/useLocalStorage";
-import FontContainer from 'components/textDetail/fontSize'
+import FontContainer from "components/textDetail/fontSize";
 import {
     IconButton,
     MenuList,
@@ -30,10 +30,10 @@ function Settings(props) {
     const handlefont = (value) => {
         setFontSelect(value);
         document.body.style.setProperty("--tibetan-fonts", `${value}`);
-        
-        setTimeout(()=>{
-        
-        },1000)
+
+        setTimeout(() => {
+            window.dispatchEvent(new Event("resize"));
+        }, 1000);
         setShowOption(false);
     };
 
@@ -54,9 +54,11 @@ function Settings(props) {
                             bgcolor: "heading.main",
                         }}
                     >
-                    
-                        <FontContainer  fontSize={props.textFontSize}
-                            onChange={props.onChangedFontSize}/>
+                        <FontContainer
+                            fontSize={props.textFontSize}
+                            onChange={props.onChangedFontSize}
+                        />
+
                         <Divider />
                         <FontSelection
                             selectFont={handlefont}

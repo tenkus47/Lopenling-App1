@@ -403,7 +403,6 @@ function getQuestionUrl(
     if (annotation) {
         url += `${annotation.start}-${annotation.length}`;
     }
-
     return url;
 }
 
@@ -418,7 +417,6 @@ export function createQuestion(
         question_content: content,
         ...dataFromAnnotation(annotation),
     };
-
     return request(POST, url, data);
 }
 

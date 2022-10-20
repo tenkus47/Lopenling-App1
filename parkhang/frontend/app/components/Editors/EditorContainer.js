@@ -58,6 +58,7 @@ const mapStateToProps = (state) => {
         theme: reducers.getTheme(state),
         isPanelLinked: reducers.isPanelLinked(state),
         textListIsVisible: reducers.getTextListVisible(state),
+        isPanelVisible: reducers.isPanelVisible(state),
     };
 };
 
