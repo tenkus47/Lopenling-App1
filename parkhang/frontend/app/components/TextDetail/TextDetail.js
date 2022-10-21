@@ -18,7 +18,7 @@ import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
 import { Box, ClickAwayListener, Divider, Slide } from "@mui/material";
 import _ from "lodash";
 import TableOfContent from "./TableOfContent/TableOfContent";
-
+import AnnotationPortal from "./AnnotationProtal";
 import SplitTextComponent from "components/TextDetail/SplitText";
 
 export type Props = {
@@ -177,7 +177,7 @@ class TextDetail extends React.Component<Props> {
         return (
             <Box
                 sx={{
-                    bgcolor: "navbar.main",
+                    bgcolor: "heading.main",
                     color: "texts.main",
                 }}
                 className={classnames(
@@ -226,6 +226,7 @@ class TextDetail extends React.Component<Props> {
                         </Box>
                     </Slide>
                 </Box>
+                <AnnotationPortal />
             </Box>
         );
     }

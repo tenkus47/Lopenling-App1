@@ -358,6 +358,7 @@ class AnnotationControls extends React.Component<Props> {
 
         if (props.annotationsData) {
             props.annotationsData.map((annotationData) => {
+                const randomPercentage = Math.round(Math.random() * 99) + 1;
                 let isEditing = false;
                 let isActive = false;
                 if (annotationData.isTemporary) {
@@ -397,6 +398,7 @@ class AnnotationControls extends React.Component<Props> {
                 } else {
                     let annotationDetail = (
                         <AnnotationDetail
+                            accuracy={randomPercentage}
                             annotationData={annotationData}
                             key={annotationData.annotation.uniqueId}
                             isActive={isActive}
@@ -662,6 +664,7 @@ class AnnotationControls extends React.Component<Props> {
                 ref={(controls: HTMLDivElement | null) =>
                     (this.controls = controls)
                 }
+                id="annotation-control"
             >
                 {anonymousUserMessage}
                 {showHeader && (

@@ -19,6 +19,7 @@ export type Props = {
 const MAXIMUM_TEXT_LENGTH = 250;
 
 const AnnotationDetail = (props: Props) => {
+    let accuracyPercentage = props.accuracy;
     let desc = (
         <p>
             &lt;
@@ -34,7 +35,7 @@ const AnnotationDetail = (props: Props) => {
             content = content.substr(0, MAXIMUM_TEXT_LENGTH) + "…";
         }
         // content variable is the selected trimmed context
-        desc = <p>{content}</p>;
+        desc = <p style={{ minWidth: 100, maxWidth: "30ch" }}>{content}</p>;
     }
 
     let classes = [styles.annotationDetail];
@@ -47,7 +48,7 @@ const AnnotationDetail = (props: Props) => {
     return (
         <div className={className} onClick={props.selectAnnotationHandler}>
             <div className={styles.annotationHeader}>
-                {props.isActive && (
+                {/* {props.isActive && (
                     <div className={styles.activeIcon}>
                         <CheckIcon
                             style={{ fill: colours.activeButton }}
@@ -55,7 +56,7 @@ const AnnotationDetail = (props: Props) => {
                             height={15}
                         />
                     </div>
-                )}
+                )} */}
                 <h3>{props.annotationData.name}</h3>
                 {props.isLoggedIn && props.isActive && (
                     <button
@@ -66,7 +67,15 @@ const AnnotationDetail = (props: Props) => {
                     ></button>
                 )}
             </div>
-            {desc}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                }}
+            >
+                {desc}
+                {/* <div style={{ float: "right" }}>{accuracyPercentage + "%"}</div> */}
+            </div>
             {props.isActive && (
                 <div className={styles.contentOptions}>
                     <Voting data={props.annotationData} />

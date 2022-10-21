@@ -903,6 +903,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 <AutoSizer disableWidth>
                     {({ height }) => (
                         <List
+                            id="scroller"
                             width={1}
                             ref={(list) => (this.list = list)}
                             height={height}

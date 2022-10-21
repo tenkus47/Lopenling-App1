@@ -40,14 +40,18 @@
 
 .annotationContent {
     /* padding: 0 var(--paddingWidth) var(--paddingWidth) var(--paddingWidth); */
-    max-width: 400px;
     max-height: 70vh;
+    max-width: 250px;
+    min-width: 170px;
+
     overflow-y: scroll;
     overflow-x: hidden;
     -ms-overflow-style: none;
         /* Internet Explorer 10+ */
         scrollbar-width: none;
         /* Firefox */
+    border-radius: 10px;
+    box-shadow: 0 2px 6px 2px rgb(60 64 67 / 15%);
 
 }
 

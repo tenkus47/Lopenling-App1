@@ -6,14 +6,13 @@
     width: 100%;
     height: 100%;
     max-width: 700px;
-    overflow: hidden;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, .1),
         inset -1px -1px 10px rgba(0, 0, 0, .1);
 }
 
 .textDetail ::selection {
     color: black;
-    background-color: #ccc
+    background-color: #eee
 }
 
 .textContainer {

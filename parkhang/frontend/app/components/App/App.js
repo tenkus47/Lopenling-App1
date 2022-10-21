@@ -43,7 +43,7 @@ const App = (props: Props) => {
                         main: mode !== "dark" ? "#666666" : "#eee",
                     },
                     heading: {
-                        main: mode !== "dark" ? "#eee" : "#383838",
+                        main: mode !== "dark" ? "#fff" : "#383838",
                     },
                     Imagenavbar: {
                         main: mode !== "dark" ? "#aaa" : "#383838",

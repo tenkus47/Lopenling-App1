@@ -100,10 +100,9 @@ const getAnnotationsData = (
             selectedText?.name !==
             "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་སོ།"
         ) {
-            //Dominant only awailable for chojuk text
+            //Dominant only available for chojuk text
             Base = baseSourceNames.filter((l) => l !== "Dominant");
         }
-
         annotationsData = Object.keys(annotationsById).reduce((arr, key) => {
             const annotationData = annotationsById[key];
 

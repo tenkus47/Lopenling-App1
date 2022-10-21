@@ -12,12 +12,13 @@
         cursor: pointer;
     }
 }
-
+#annotation-desc{
+    width: 100%;
+}
 .annotationDetail {
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin: 5px 10px 0px 0;
     padding: 0 0 0 0;
     background-color: #ddd;
     position: relative;
@@ -49,14 +50,11 @@
     background-color: var(--dark-gray);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
     color: var(--text-color)
-
-    
 }
 
 .annotationHeader {
     display: flex;
     align-items: flex-start;
-    background-color: #aebcc7;
 }
 
 .annotationDetail.active h3 {
