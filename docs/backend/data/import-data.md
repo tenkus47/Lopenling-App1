@@ -24,3 +24,15 @@ make manage arg='delete_all_text'
 ```bash
 make manage arg='delete_all_text'
 ```
+
+## Import the text
+
+### Import Chonjuk
+```bash
+make manage arg="import_texts /var/parkhang/data/chonjuk Dominant"
+```
+
+### Import all other texts
+```bash
+make manage arg="import_texts /var/parkhang/data/texts སྡེ་དགེ"
+```
