@@ -63,10 +63,14 @@ class Command(BaseCommand):
             print("60:files", files)
             print()
 
-            self.create_variant_annotations(source_dir, files)
+            self.create_variant_annotations(
+                source_dir, files, is_base, source, working_source
+            )
             self.create_layout_annotations(source_dir, files)
 
-    def create_variant_annotations(self, source_dir, files):
+    def create_variant_annotations(
+        self, source_dir, files, is_base, source, working_source
+    ):
         for filename in files:
             filepath = source_dir / filename
 
