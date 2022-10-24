@@ -1,4 +1,3 @@
-import os
 import shlex
 import subprocess
 from collections import defaultdict
@@ -22,13 +21,8 @@ class Command(BaseCommand):
         base = options["base_edition"]
 
         assert source_dir.is_dir()
-
         source_dirs = list(source_dir.iterdir())
-        print(
-            "27:source_list", source_dirs
-        )  # ['path/Dominant', 'path/པེ་ཅིན', 'path/སྡེ་དགེ', 'path/སྣར་ཐང']
-
-        # TODO: assert if base is in dir_list
+        assert base in [d.name for d in source_dirs]
 
         self.texts = {}
         self.base_texts = {}  # filepaths to base texts
@@ -48,7 +42,6 @@ class Command(BaseCommand):
 
         for source_dir in source_dirs:
             is_base = True if source_dir.name == base else False
-            print("49:", source_dir, is_base)
 
             if source_dir.name not in self.sources:
                 source = Source.objects.create(name=source_dir.name, is_base=is_base)
@@ -56,12 +49,7 @@ class Command(BaseCommand):
             else:
                 source = self.sources[source_dir.name]
 
-            print("57:sources{}", self.sources)
-
-            files = next(os.walk(source_dir))[2]
             files = [f.name for f in source_dir.iterdir() if f.suffix == ".txt"]
-            print("60:files", files)
-            print()
 
             self.create_variant_annotations(
                 source_dir, files, is_base, source, working_source
@@ -135,7 +123,6 @@ class Command(BaseCommand):
                 annotations = parse_word_diff(diff)
             except Exception as e:
                 annotations = []
-                print(f"dir: {dir}, filename: {filename}")
 
             for annotation_data in annotations:
                 annotation = Annotation()
@@ -149,17 +136,12 @@ class Command(BaseCommand):
     def create_layout_annotations(self, source_dir, files):
         # Handle `_layout.txt` files
         for filename in files:
-            if "layout" not in filename:
+            if "_layout" not in filename:
                 continue
 
-            filepath = os.path.join(source_dir, filename)
-            print("144:layout", filepath)
-            print()
+            filepath = source_dir / filename
+            text_name = Path(filename).stem.split("_")[0]
 
-            text_name = os.path.splitext(filename)[0].replace("_layout", "")
-            # for now, assume page breaks are only for the base witness
-            # base_origin_witness = base_witnesses[text_name]
-            # working_witness = working_witnesses[text_name]
             witness = self.witnesses[text_name][source_dir.name]
             with open(filepath, "r") as file:
                 content = file.read()
