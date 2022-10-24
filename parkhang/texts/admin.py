@@ -44,4 +44,4 @@ if settings.DEBUG:
 
     @admin.register(Annotation)
     class AnnotationAdmin(admin.ModelAdmin):
-        list_display = ("id", "witness", "question", "created")
+        list_display = ("id", "witness", "type", "start", "length")
