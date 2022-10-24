@@ -63,108 +63,112 @@ class Command(BaseCommand):
             print("60:files", files)
             print()
 
-            # create diff annotations
-            for filename in files:
-                filepath = source_dir / filename
+            self.create_variant_annotations(source_dir, files)
+            self.create_layout_annotations(source_dir, files)
 
-                if "layout" in filename:
-                    continue
+    def create_variant_annotations(self, source_dir, files):
+        for filename in files:
+            filepath = source_dir / filename
 
-                text_name = Path(filename).stem
-                if text_name not in self.texts:
-                    text = Text()
-                    text.name = text_name
-                    text.save()
-                    self.texts[text_name] = text
-                else:
-                    text = self.texts[text_name]
+            if "layout" in filename:
+                continue
 
-                if (
-                    text_name in self.witnesses
-                    and source_dir.name in self.witnesses[text_name]
-                ):
-                    witness = self.witnesses[text_name][source_dir.name]
-                else:
-                    witness = Witness()
-                    witness.text = text
-                    witness.source = source
-                    witness.save()
-                    self.witnesses[text_name][source_dir.name] = witness
+            text_name = Path(filename).stem
+            if text_name not in self.texts:
+                text = Text()
+                text.name = text_name
+                text.save()
+                self.texts[text_name] = text
+            else:
+                text = self.texts[text_name]
 
-                if is_base:
-                    working_witness = witness
-                    working_witness.text = text
-                    working_witness.source = working_source
-                    with open(filepath, "r") as file:
-                        content = file.read()
-                        working_witness.content = content
-                    working_witness.save()
-
-                    self.base_texts[text_name] = filepath
-                    self.working_witnesses[text_name] = working_witness
-                    self.base_witnesses[text_name] = witness
-
-                    # there won't be any annotations for the base witness clone
-                    # or the base witness itself
-                    continue
-                else:
-                    base_path = self.base_texts[text_name]
-
-                working_witness = self.working_witnesses[text_name]
-
-                command_args = f'--start-delete="|-" --stop-delete="-/" --aggregate-changes -d "ཿ།།༌་ \n" "{base_path}" "{filepath}"'
-                command = f"dwdiff {command_args}"
-
-                try:
-                    diff = subprocess.run(
-                        shlex.split(command),
-                        stdout=subprocess.PIPE,
-                        encoding="utf-8",
-                    ).stdout
-                except Exception as e:
-                    print(e)
-
-                try:
-                    annotations = parse_word_diff(diff)
-                except Exception as e:
-                    annotations = []
-                    print(f"dir: {dir}, filename: {filename}")
-
-                for annotation_data in annotations:
-                    annotation = Annotation()
-                    annotation.witness = working_witness
-                    annotation.start = annotation_data["start"]
-                    annotation.length = annotation_data["length"]
-                    annotation.content = annotation_data["replacement"]
-                    annotation.creator_witness = witness
-                    annotation.save()
-
-            # Handle `_layout.txt` files
-            for filename in files:
-                if "layout" not in filename:
-                    continue
-
-                filepath = os.path.join(source_dir, filename)
-                print("144:layout", filepath)
-                print()
-
-                text_name = os.path.splitext(filename)[0].replace("_layout", "")
-                # for now, assume page breaks are only for the base witness
-                # base_origin_witness = base_witnesses[text_name]
-                # working_witness = working_witnesses[text_name]
+            if (
+                text_name in self.witnesses
+                and source_dir.name in self.witnesses[text_name]
+            ):
                 witness = self.witnesses[text_name][source_dir.name]
+            else:
+                witness = Witness()
+                witness.text = text
+                witness.source = source
+                witness.save()
+                self.witnesses[text_name][source_dir.name] = witness
+
+            if is_base:
+                working_witness = witness
+                working_witness.text = text
+                working_witness.source = working_source
                 with open(filepath, "r") as file:
                     content = file.read()
+                    working_witness.content = content
+                working_witness.save()
 
-                pb_count = 0
-                page_breaks = parse_layout_data(content)
-                for page_break in page_breaks:
-                    pb_count += 1
-                    annotation = Annotation()
-                    annotation.witness = witness
-                    annotation.start = page_break
-                    annotation.length = 0
-                    annotation.content = ""
-                    annotation.creator_witness = witness
-                    annotation.type = AnnotationType.page_break.value
-                    annotation.save()
+                self.base_texts[text_name] = filepath
+                self.working_witnesses[text_name] = working_witness
+                self.base_witnesses[text_name] = witness
+
+                # there won't be any annotations for the base witness clone
+                # or the base witness itself
+                continue
+            else:
+                base_path = self.base_texts[text_name]
+
+            working_witness = self.working_witnesses[text_name]
+
+            command_args = f'--start-delete="|-" --stop-delete="-/" --aggregate-changes -d "ཿ།།༌་ \n" "{base_path}" "{filepath}"'
+            command = f"dwdiff {command_args}"
+
+            try:
+                diff = subprocess.run(
+                    shlex.split(command),
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).stdout
+            except Exception as e:
+                print(e)
+
+            try:
+                annotations = parse_word_diff(diff)
+            except Exception as e:
+                annotations = []
+                print(f"dir: {dir}, filename: {filename}")
+
+            for annotation_data in annotations:
+                annotation = Annotation()
+                annotation.witness = working_witness
+                annotation.start = annotation_data["start"]
+                annotation.length = annotation_data["length"]
+                annotation.content = annotation_data["replacement"]
+                annotation.creator_witness = witness
+                annotation.save()
+
+    def create_layout_annotations(self, source_dir, files):
+        # Handle `_layout.txt` files
+        for filename in files:
+            if "layout" not in filename:
+                continue
+
+            filepath = os.path.join(source_dir, filename)
+            print("144:layout", filepath)
+            print()
+
+            text_name = os.path.splitext(filename)[0].replace("_layout", "")
+            # for now, assume page breaks are only for the base witness
+            # base_origin_witness = base_witnesses[text_name]
+            # working_witness = working_witnesses[text_name]
+            witness = self.witnesses[text_name][source_dir.name]
+            with open(filepath, "r") as file:
+                content = file.read()
+
+            pb_count = 0
+            page_breaks = parse_layout_data(content)
+            for page_break in page_breaks:
+                pb_count += 1
+                annotation = Annotation()
+                annotation.witness = witness
+                annotation.start = page_break
+                annotation.length = 0
+                annotation.content = ""
+                annotation.creator_witness = witness
+                annotation.type = AnnotationType.page_break.value
+                annotation.save()
