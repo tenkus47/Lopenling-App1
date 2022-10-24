@@ -1,8 +1,8 @@
 import os
 import shlex
 import subprocess
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
 from django.core.management.base import BaseCommand
 from texts.models import Annotation, AnnotationType, Source, Text, Witness
@@ -30,15 +30,15 @@ class Command(BaseCommand):
 
         # TODO: assert if base is in dir_list
 
-        texts = {}
-        base_texts = {}  # filepaths to base texts
-        working_witnesses = {}  # witnesses that are classes as a base text
-        base_witnesses = {}  # witnesses that the base was copied from
-        sources = {}
-        witnesses = defaultdict(dict)  # {text_name: {source_name: witness}}
+        self.texts = {}
+        self.base_texts = {}  # filepaths to base texts
+        self.working_witnesses = {}  # witnesses that are classes as a base text
+        self.base_witnesses = {}  # witnesses that the base was copied from
+        self.sources = {}
+        self.witnesses = defaultdict(dict)  # {text_name: {source_name: witness}}
 
         for source in Source.objects.all():
-            sources[source.name] = source
+            self.sources[source.name] = source
 
         # create base source and witness
         working_source, _ = Source.objects.get_or_create(
@@ -50,13 +50,13 @@ class Command(BaseCommand):
             is_base = True if source_dir.name == base else False
             print("49:", source_dir, is_base)
 
-            if source_dir.name not in sources:
+            if source_dir.name not in self.sources:
                 source = Source.objects.create(name=source_dir.name, is_base=is_base)
-                sources[source_dir.name] = source
+                self.sources[source_dir.name] = source
             else:
-                source = sources[source_dir.name]
+                source = self.sources[source_dir.name]
 
-            print("57:sources{}", sources)
+            print("57:sources{}", self.sources)
 
             files = next(os.walk(source_dir))[2]
             files = [f.name for f in source_dir.iterdir() if f.suffix == ".txt"]
@@ -71,22 +71,25 @@ class Command(BaseCommand):
                     continue
 
                 text_name = Path(filename).stem
-                if text_name not in texts:
+                if text_name not in self.texts:
                     text = Text()
                     text.name = text_name
                     text.save()
-                    texts[text_name] = text
+                    self.texts[text_name] = text
                 else:
-                    text = texts[text_name]
+                    text = self.texts[text_name]
 
-                if text_name in witnesses and source_dir.name in witnesses[text_name]:
-                    witness = witnesses[text_name][source_dir.name]
+                if (
+                    text_name in self.witnesses
+                    and source_dir.name in self.witnesses[text_name]
+                ):
+                    witness = self.witnesses[text_name][source_dir.name]
                 else:
                     witness = Witness()
                     witness.text = text
                     witness.source = source
                     witness.save()
-                    witnesses[text_name][source_dir.name] = witness
+                    self.witnesses[text_name][source_dir.name] = witness
 
                 if is_base:
                     working_witness = witness
@@ -97,17 +100,17 @@ class Command(BaseCommand):
                         working_witness.content = content
                     working_witness.save()
 
-                    base_texts[text_name] = filepath
-                    working_witnesses[text_name] = working_witness
-                    base_witnesses[text_name] = witness
+                    self.base_texts[text_name] = filepath
+                    self.working_witnesses[text_name] = working_witness
+                    self.base_witnesses[text_name] = witness
 
                     # there won't be any annotations for the base witness clone
                     # or the base witness itself
                     continue
                 else:
-                    base_path = base_texts[text_name]
+                    base_path = self.base_texts[text_name]
 
-                working_witness = working_witnesses[text_name]
+                working_witness = self.working_witnesses[text_name]
 
                 command_args = f'--start-delete="|-" --stop-delete="-/" --aggregate-changes -d "ཿ།།༌་ \n" "{base_path}" "{filepath}"'
                 command = f"dwdiff {command_args}"
@@ -147,8 +150,9 @@ class Command(BaseCommand):
 
                 text_name = os.path.splitext(filename)[0].replace("_layout", "")
                 # for now, assume page breaks are only for the base witness
-                base_origin_witness = base_witnesses[text_name]
-                working_witness = working_witnesses[text_name]
+                # base_origin_witness = base_witnesses[text_name]
+                # working_witness = working_witnesses[text_name]
+                witness = self.witnesses[text_name][source_dir.name]
                 with open(filepath, "r") as file:
                     content = file.read()
 
@@ -157,10 +161,10 @@ class Command(BaseCommand):
                 for page_break in page_breaks:
                     pb_count += 1
                     annotation = Annotation()
-                    annotation.witness = working_witness
+                    annotation.witness = witness
                     annotation.start = page_break
                     annotation.length = 0
                     annotation.content = ""
-                    annotation.creator_witness = base_origin_witness
+                    annotation.creator_witness = witness
                     annotation.type = AnnotationType.page_break.value
                     annotation.save()
