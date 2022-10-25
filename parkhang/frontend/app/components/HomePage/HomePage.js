@@ -27,7 +27,8 @@ function HomePage(props) {
     let { Textdata } = props;
     let { activeText, detail } = Textdata;
     let [page, setPage] = useState(1);
-    const [filteredData, setFilteredData] = useState([]);
+    console.log(detail);
+    const [filteredData, setFilteredData] = useState(detail);
     const [showFilter, setShowFilter] = useState(false);
     const [filteredTitle, setFilteredTitle] = useState("");
     // const [categorySelected, setCategorySelected] = useState([]);

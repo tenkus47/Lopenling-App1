@@ -154,8 +154,8 @@ const Tooltip = (props) => {
     ));
 
     return (
-        <MuiTooltip {...props}>
-            <Element />
+        <MuiTooltip title={props.title}>
+            <Element {...props} />
         </MuiTooltip>
     );
 };
