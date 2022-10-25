@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import WrenchIcon from "images/wrench.svg";
-import CheckIcon from "@mui/icons-material/Check";
+import { Check as CheckIcon } from "components/UI/muiIcon";
 import useLocalStorage from "components/utility/useLocalStorage";
 import FontContainer from "components/textDetail/fontSize";
 import {
@@ -12,7 +12,7 @@ import {
     Typography,
     Box,
     ClickAwayListener,
-} from "@mui/material";
+} from "components/UI/muiComponent";
 
 import { FONT_LIST } from "app_constants";
 function Settings(props) {

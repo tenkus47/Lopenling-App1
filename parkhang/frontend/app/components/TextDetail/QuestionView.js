@@ -8,9 +8,9 @@ import AnswerView from "./AnswerView";
 import { FormattedMessage, FormattedDate } from "react-intl";
 import classnames from "classnames";
 import { QUESTION_URL } from "app_constants";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton } from "components/UI/muiComponent";
 import { DiscourseForum } from "components/utility/discourseForum";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Delete as DeleteIcon } from "components/UI/muiIcon";
 type Props = {
     question: Question,
     delete: () => void,

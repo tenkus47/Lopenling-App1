@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Stack, Typography } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "components/UI/muiComponent";
 import React from "react";
 import Indrajala from "images/Indrajala_logo.png";
 

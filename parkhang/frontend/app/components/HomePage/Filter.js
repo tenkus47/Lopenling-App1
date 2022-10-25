@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import TextField from "@mui/material/TextField";
+import { TextField } from "components/UI/muiComponent";
 import {
     Box,
     Chip,
@@ -9,10 +9,12 @@ import {
     Typography,
     Autocomplete,
     Checkbox,
-} from "@mui/material";
+} from "components/UI/muiComponent";
 import _ from "lodash";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import {
+    CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
+    CheckBox as CheckBoxIcon,
+} from "components/UI/muiIcon";
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 function Filter({

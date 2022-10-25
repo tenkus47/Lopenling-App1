@@ -12,7 +12,6 @@ export default function segmentTibetanText(text: string): SegmentedText {
     let inBreak = false;
     let inSpace = false;
     let count = 0;
-    let sharSpaceCount = 0;
     for (let char of text) {
         if (breaks.includes(char)) {
             if (count > 0) {
@@ -50,6 +49,7 @@ export default function segmentTibetanText(text: string): SegmentedText {
                         currentStart,
                         currentSegment
                     );
+
                     segments.push(newSegment);
                 }
                 inBreak = false;

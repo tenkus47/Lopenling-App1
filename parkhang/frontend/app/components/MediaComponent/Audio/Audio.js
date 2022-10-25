@@ -1,4 +1,4 @@
-import { Collapse } from "@mui/material";
+import { Collapse } from "components/UI/muiComponent";
 import React from "react";
 import Player from "react-howler-player";
 import { useTheme } from "@mui/material/styles";

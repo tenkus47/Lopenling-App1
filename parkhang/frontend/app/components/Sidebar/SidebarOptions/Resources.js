@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import styles from "./Resources.css";
-import ImageIcon from "@mui/icons-material/Image";
-import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import AudiotrackIcon from "@mui/icons-material/Audiotrack";
+import {
+    Image as ImageIcon,
+    OndemandVideo as OndemandVideoIcon,
+    Audiotrack as AudiotrackIcon,
+} from "components/UI/muiIcon";
+
 import * as actions from "actions";
 import * as reducers from "reducers";
 import {
@@ -13,7 +16,7 @@ import {
     ListItemIcon,
     ListItemText,
     Typography,
-} from "@mui/material";
+} from "components/UI/muiComponent";
 function Resources(props) {
     const handleMediaToggle = (data) => {
         props.changeMediaSelection(data);

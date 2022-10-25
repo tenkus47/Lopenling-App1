@@ -22,7 +22,7 @@ import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
 import type { AnnotationUniqueId } from "lib/Annotation";
-import { Snackbar } from "@mui/material";
+import { Snackbar } from "components/UI/muiComponent";
 export const CONTROLS_MARGIN_LEFT = 10;
 export type QuestionData = {
     loading: boolean,
@@ -402,6 +402,7 @@ class AnnotationControls extends React.Component<Props> {
                             annotationData={annotationData}
                             key={annotationData.annotation.uniqueId}
                             isActive={isActive}
+                            user={props.user}
                             selectAnnotationHandler={() => {
                                 if (isLoggedIn && !isEditing) {
                                     props.didSelectAnnotation(

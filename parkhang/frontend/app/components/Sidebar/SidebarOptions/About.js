@@ -7,11 +7,11 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
-} from "@mui/material";
+} from "components/UI/muiComponent";
 import { connect } from "react-redux";
 import { text } from "@fortawesome/fontawesome-svg-core";
 import { FormattedMessage } from "react-intl";
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore } from "components/UI/muiIcon";
 function About(props) {
     const { Textdata, selectedText } = props;
 

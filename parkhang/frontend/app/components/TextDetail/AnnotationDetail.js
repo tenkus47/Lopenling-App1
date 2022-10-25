@@ -6,8 +6,10 @@ import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
+import { Box } from "components/UI/muiComponent";
 import Share from "components/UI/ShareButton";
 import Voting from "components/UI/Voting";
+import AnnotationAvatar from "components/UI/AnnotationAvatar";
 export type Props = {
     annotationData: AnnotationData,
     isActive: boolean,
@@ -45,19 +47,38 @@ const AnnotationDetail = (props: Props) => {
     }
 
     let className = classnames(...classes);
+
+    let name = props.annotationData.name
+        ? props.annotationData.name
+        : props.user.name;
     return (
         <div className={className} onClick={props.selectAnnotationHandler}>
-            <div className={styles.annotationHeader}>
-                {/* {props.isActive && (
-                    <div className={styles.activeIcon}>
-                        <CheckIcon
-                            style={{ fill: colours.activeButton }}
-                            width={15}
-                            height={15}
-                        />
-                    </div>
-                )} */}
-                <h3>{props.annotationData.name}</h3>
+            <Box
+                className={styles.annotationHeader}
+                sx={{
+                    bgcolor: "links.main",
+                    color: "texts.main",
+                }}
+            >
+                <AnnotationAvatar name={name} />
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <h3>{name}</h3>
+                    {name === "པེ་ཅིན།" && (
+                        <span className={styles.date}>
+                            1738, month, day N/A
+                        </span>
+                    )}
+                    {name === "སྣར་ཐང༌།" && (
+                        <span className={styles.date}>
+                            1742, month, day N/A
+                        </span>
+                    )}
+                    {name === "སྡེ་དགེ" && (
+                        <span className={styles.date}>
+                            1744, month, day N/A
+                        </span>
+                    )}
+                </div>
                 {props.isLoggedIn && props.isActive && (
                     <button
                         style={{ display: "none" }}
@@ -66,7 +87,7 @@ const AnnotationDetail = (props: Props) => {
                         id="editBtn"
                     ></button>
                 )}
-            </div>
+            </Box>
             <div
                 style={{
                     display: "flex",
@@ -76,12 +97,12 @@ const AnnotationDetail = (props: Props) => {
                 {desc}
                 {/* <div style={{ float: "right" }}>{accuracyPercentage + "%"}</div> */}
             </div>
-            {props.isActive && (
-                <div className={styles.contentOptions}>
-                    <Voting data={props.annotationData} />
+            <div className={styles.contentOptions}>
+                <Voting data={props.annotationData} />
+                {/* {props.isActive && (
                     <Share content={props.annotationData.content} />
-                </div>
-            )}
+                )} */}
+            </div>
         </div>
     );
 };

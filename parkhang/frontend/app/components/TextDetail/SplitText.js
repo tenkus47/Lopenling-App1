@@ -1034,7 +1034,6 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         const props = this.props;
         const cache = this.cache;
         const component = this;
-        const pechaImageClass = props.showImages ? styles.pechaImage : null;
 
         let imageUrl = "";
 
@@ -1055,6 +1054,8 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 index
             );
         }
+        const pechaImageClass =
+            props.showImages && imageUrl ? styles.pechaImage : null;
         let containerHeight = style.height;
         let pechaStyles = {};
         if (props.showImages && pechaImageClass && this.calculatedImageHeight) {
@@ -1081,7 +1082,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                     id={`index_${index}`}
                 >
                     <div className={styles.splitTextRowContent}>
-                        {props.showImages && (
+                        {props.showImages && imageUrl && (
                             <div
                                 className={pechaImageClass}
                                 style={pechaStyles}

@@ -4,32 +4,39 @@ import { getActiveTextAnnotation } from "reducers";
 
 let initialLoad = true;
 function AnnotationProtal({ activeAnnotation }) {
-    const [top, setTop] = React.useState(0);
+    const portal = React.useRef(null);
 
-    React.useEffect(() => {
-        const scrollElement = document.getElementById("scroller");
-        function measure() {
+    const measure = React.useCallback(
+        (e) => {
             let control = document.getElementById(
                 `s_${activeAnnotation?.start}`
             );
             if (control) {
                 const position = control.getBoundingClientRect();
                 let top = Math.floor(position.top - 40);
-                setTop(top);
+                portal.current.style.top = top + "px";
             }
-        }
+        },
+        [activeAnnotation?.start]
+    );
+
+    React.useEffect(() => {
+        const scrollElement = document.getElementById("scroller");
         if (!initialLoad) {
             let scrolling = false;
             if (scrollElement)
                 scrollElement.addEventListener("scroll", measure);
             if (!scrolling) {
-                let control = document.getElementById(
-                    `s_${activeAnnotation?.start}`
-                );
+                let start = activeAnnotation?.start;
+                let control = document.getElementById(`s_${start}`);
+                // while (!control) {
+                //     start = start + 1;
+                //     control = document.getElementById(`s_${start}`);
+                // }
                 if (control) {
                     const position = control.getBoundingClientRect();
                     let top = Math.floor(position.top - 40);
-                    setTop(top);
+                    portal.current.style.top = top + "px";
                 }
             }
         }
@@ -45,13 +52,14 @@ function AnnotationProtal({ activeAnnotation }) {
     return (
         <div
             id="annotation-portal"
+            ref={portal}
             style={{
-                top: top,
                 position: "absolute",
                 left: "97%",
                 zIndex: 10,
                 maxWidth: 300,
                 width: "max-content",
+                transition: "all 0.1s linear 0s",
             }}
         ></div>
     );

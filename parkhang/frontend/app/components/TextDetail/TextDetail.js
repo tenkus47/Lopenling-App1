@@ -15,7 +15,12 @@ import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
-import { Box, ClickAwayListener, Divider, Slide } from "@mui/material";
+import {
+    Box,
+    ClickAwayListener,
+    Divider,
+    Slide,
+} from "components/UI/muiComponent";
 import _ from "lodash";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import AnnotationPortal from "./AnnotationProtal";

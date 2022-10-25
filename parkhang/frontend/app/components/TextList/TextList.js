@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { AutoSizer } from "react-virtualized/dist/es/AutoSizer";
 import {
     CellMeasurer,
-    CellMeasurerCache
+    CellMeasurerCache,
 } from "react-virtualized/dist/es/CellMeasurer";
 import "react-virtualized/styles.css"; // only needs to be imported once
 import { List } from "react-virtualized/dist/es/List";
@@ -15,7 +15,7 @@ import Loader from "react-loader";
 import HighlightedString from "./HighlightedString";
 import ResultCount from "./ResultCount";
 import LoadMore from "./LoadMore";
-import {Box} from  "@mui/material"
+import { Box } from "components/UI/muiComponent";
 type Props = {
     selectedText: api.TextData,
     texts: api.TextData[],
@@ -32,9 +32,9 @@ type Props = {
     selectedSearchResult: null | {
         textId: number,
         start: number,
-        length: number
+        length: number,
     },
-    searching: boolean
+    searching: boolean,
 };
 
 const DEFAULT_ROW_HEIGHT = 60;
@@ -46,7 +46,7 @@ class TextList extends React.Component<Props> {
         key: string,
         index: number,
         parent: {},
-        style: {}
+        style: {},
     }) => React.Element<CellMeasurer>;
 
     constructor(props: Props) {
@@ -54,7 +54,7 @@ class TextList extends React.Component<Props> {
         this.cache = new CellMeasurerCache({
             fixedWidth: true,
             defaultHeight: DEFAULT_ROW_HEIGHT,
-            minHeight: DEFAULT_ROW_HEIGHT
+            minHeight: DEFAULT_ROW_HEIGHT,
         });
         this.rowRenderer = this.rowRenderer.bind(this);
     }
@@ -68,18 +68,18 @@ class TextList extends React.Component<Props> {
         key,
         index,
         parent,
-        style
+        style,
     }: {
         key: string,
         index: number,
         parent: {},
-        style: {}
+        style: {},
     }): React.Element<CellMeasurer> {
         const selectedText = this.props.selectedText;
         const selectedTextId = selectedText ? selectedText.id : -1;
         const selectedSearchResult = this.props.selectedSearchResult;
         const texts = this.props.texts;
-        
+
         const onSelectedText = this.props.onSelectedText;
         const onSelectedSearchResult = this.props.onSelectedSearchResult;
         const searchTerm = this.props.searchTerm;
@@ -123,7 +123,7 @@ class TextList extends React.Component<Props> {
 
         let textSearchResultRows = [];
         if (textSearchResults.length > 0) {
-            textSearchResultRows = textSearchResults.map(result => {
+            textSearchResultRows = textSearchResults.map((result) => {
                 const isSelected =
                     selectedSearchResult &&
                     selectedSearchResult.textId === text.id &&
@@ -146,7 +146,7 @@ class TextList extends React.Component<Props> {
                                 selectedText
                             );
                         }}
-                        sx={{bgcolor:'inherit',color:'inherit'}}
+                        sx={{ bgcolor: "inherit", color: "inherit" }}
                         className={className}
                     >
                         <HighlightedString
@@ -205,7 +205,7 @@ class TextList extends React.Component<Props> {
                     <AutoSizer>
                         {({ height, width }) => (
                             <List
-                                ref={list => (this.list = list)}
+                                ref={(list) => (this.list = list)}
                                 height={height}
                                 rowCount={rowCount}
                                 rowHeight={this.cache.rowHeight}

@@ -52,7 +52,7 @@ const getAnnotationsData = (
         let annotationsById = {};
         for (let i = 0; i < annotations.length; i++) {
             let annotation = annotations[i];
-            let id = annotation.content + annotation.start;
+            let id = annotation.content + annotation.start + i; // remove i if you want to make group of same annotations
             if (annotation.isTemporary) {
                 annotationsById[TEMPORARY_ANNOTATION_ID] = {
                     name: annotation.getSourceName(),
@@ -116,7 +116,6 @@ const getAnnotationsData = (
             return arr;
         }, []);
     }
-
     return annotationsData;
 };
 

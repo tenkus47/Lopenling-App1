@@ -276,6 +276,7 @@ const mapStateToProps = (state) => {
             }
 
             pageBreaks = getPageBreaks(witnessPageBreaks, basePageBreaks);
+
             for (let i = 0, len = pageBreaks.length; i < len; i++) {
                 let position = pageBreaks[i];
                 let segment = annotatedText.segmentAtOriginalPosition(position);
@@ -592,7 +593,6 @@ const getPageBreaks = (
     let witnessStarts = [];
     _.forIn(witnessPageBreaks, (o) => witnessStarts.push(o.start));
     witnessStarts = witnessStarts.sort((a, b) => a - b);
-
     if (!basePageBreaks) {
         return witnessStarts;
     }
@@ -600,7 +600,6 @@ const getPageBreaks = (
     let baseStarts = [];
     _.forIn(basePageBreaks, (o) => baseStarts.push(o.start));
     baseStarts = baseStarts.sort((a, b) => a - b);
-
     if (witnessStarts.length === 0) {
         return baseStarts;
     }
@@ -616,7 +615,6 @@ const getPageBreaks = (
             if (start > lastWitnessPageStart) witnessStarts.push(start);
         }
     }
-    console.log(witnessStarts);
     return witnessStarts;
 };
 

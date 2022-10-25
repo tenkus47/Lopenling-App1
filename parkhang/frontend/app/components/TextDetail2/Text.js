@@ -363,7 +363,6 @@ class Text2 extends React.Component<Props, State> {
         if (!this._renderedHtml) {
             this._renderedHtml = html;
         }
-
         return (
             <div className={styles.textContainer}>
                 <div

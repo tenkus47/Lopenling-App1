@@ -9,7 +9,7 @@ import styles from "./TextDetailHeading.css";
 import SelectVersion from "./SelectVersion";
 import _ from "lodash";
 import TextList from "./TextListContainer";
-import CloseIcon from "@mui/icons-material/Close";
+import { Close as CloseIcon } from "components/UI/muiIcon";
 import {
     Stack,
     Box,
@@ -19,7 +19,7 @@ import {
     Divider,
     ButtonGroup,
     IconButton,
-} from "@mui/material";
+} from "components/UI/muiComponent";
 import Search from "./HeaderMenu/Search";
 import Settings from "./HeaderMenu/Settings";
 import TableOfContent from "./HeaderMenu/TableOfContent";

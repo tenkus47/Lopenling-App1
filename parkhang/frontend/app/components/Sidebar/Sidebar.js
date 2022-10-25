@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import styles from "./Sidebar.css";
-import InfoIcon from "@mui/icons-material/Info";
-import PermMediaIcon from "@mui/icons-material/PermMedia";
-import BookIcon from "@mui/icons-material/Book";
-import FeedbackIcon from "@mui/icons-material/Feedback";
-import YoutubeSearchedForIcon from "@mui/icons-material/YoutubeSearchedFor";
+
+import {
+    Info as InfoIcon,
+    PermMedia as PermMediaIcon,
+    Book as BookIcon,
+    Feedback as FeedbackIcon,
+    YoutubeSearchedFor as YoutubeSearchedForIcon,
+    Menu as MenuIcon,
+    Close as CloseIcon,
+} from "components/UI/muiIcon";
 import Index from "./SidebarOptions";
 import useLocalStorage from "components/utility/useLocalStorage";
-import { Tabs, Tab, Typography, Box } from "@mui/material";
+import { Tabs, Tab, Typography, Box } from "components/UI/muiComponent";
 import { useTheme } from "@mui/styles";
-import MenuIcon from "@mui/icons-material/Menu";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
-import CloseIcon from "@mui/icons-material/Close";
-import { motion } from "framer-motion";
 function Sidebar(props) {
     const [value, setValue] = useLocalStorage("selectedResources", 0);
-
     const [isOpen, setOpen] = useState(false);
 
     React.useEffect(() => {

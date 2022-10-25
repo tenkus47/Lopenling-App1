@@ -4,16 +4,18 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
+    Link,
     Typography,
     Box,
-    Link,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+} from "components/UI/muiComponent";
+import {
+    ExpandMore as ExpandMoreIcon,
+    OpenInNew as OpenInNewIcon,
+} from "components/UI/muiIcon";
 import classnames from "classnames";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
 import * as actions from "actions";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 let YOUTUBE_ID = "2MMM_ggekfE";
 
 function Chapters(props) {

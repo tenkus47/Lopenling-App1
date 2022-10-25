@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as actions from "actions";
 import * as reducers from "reducers";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box } from "components/UI/muiComponent";
 
 const TEXT_DEMO_DETAIL_ID = 2;
 

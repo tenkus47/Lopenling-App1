@@ -15,7 +15,6 @@ import _, { split } from "lodash";
 import TextSegment from "lib/TextSegment";
 import Witness from "lib/Witness";
 import GraphemeSplitter from "grapheme-splitter";
-import { Box } from "@mui/material";
 
 let _searchResultsCache: {
     [splitTextUniqueId: string]: {

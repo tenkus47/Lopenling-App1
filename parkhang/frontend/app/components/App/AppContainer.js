@@ -4,8 +4,6 @@ import * as reducers from "reducers";
 import * as actions from "actions";
 import App from "components/App";
 
-let user;
-
 const mapStateToProps = (state) => {
     const selectedText = reducers.getSelectedText(state);
     let selectedWitness;
@@ -26,9 +24,6 @@ const mapStateToProps = (state) => {
         }
     }
 
-    if (!state.user.userId === -1) {
-        user = state.user;
-    }
     return {
         selectedText,
         selectedWitness,

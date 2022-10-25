@@ -17,9 +17,8 @@ import {
     Snackbar,
     Alert,
     Collapse,
-} from "@mui/material";
-import { Edit, Share, VerticalSplit, SyncAlt } from "@mui/icons-material";
-import { Box } from "@mui/system";
+} from "components/UI/muiComponent";
+import { Edit, Share, VerticalSplit, SyncAlt } from "components/UI/muiIcon";
 const Editor = (props) => {
     let textListClassnames = [styles.listContainer];
     let bodyHeight;
