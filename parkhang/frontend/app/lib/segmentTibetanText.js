@@ -12,7 +12,7 @@ export default function segmentTibetanText(text: string): SegmentedText {
     let segmented = [];
     textSplitData.forEach((text, index) => {
         count = index;
-        var datad = text;
+        var temp = text;
         if (text.includes(breaker)) {
             r = text.split(breaker);
             r[0] += breaker;
@@ -29,11 +29,13 @@ export default function segmentTibetanText(text: string): SegmentedText {
                 });
             }
         } else {
-            var currentSegment = datad + dot;
-            const newSegment = new TextSegment(currentStart, currentSegment);
-
+            var currentSegment = temp;
+            var newSegment = new TextSegment(currentStart, currentSegment);
             segmented.push(newSegment);
             currentStart += currentSegment.length;
+            newSegment = new TextSegment(currentStart, dot);
+            segmented.push(newSegment);
+            currentStart += 1;
         }
     });
     return new SegmentedText(segmented);
