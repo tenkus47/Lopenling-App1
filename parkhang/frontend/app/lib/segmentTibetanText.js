@@ -3,70 +3,38 @@ import SegmentedText from "./SegmentedText";
 import TextSegment from "./TextSegment";
 
 export default function segmentTibetanText(text: string): SegmentedText {
-    const breaks = "།།";
-    const spaces = "་་ \n";
-
-    let segments = [];
-    let currentSegment = "";
+    const dot = "་";
+    const breaker = "། །";
     let currentStart = 0;
-    let inBreak = false;
-    let inSpace = false;
     let count = 0;
-    for (let char of text) {
-        if (breaks.includes(char)) {
-            if (count > 0) {
-                const newSegment = new TextSegment(
-                    currentStart,
-                    currentSegment
-                );
-                segments.push(newSegment);
-            }
-            inBreak = true;
-            inSpace = false;
-            currentSegment = char;
-            currentStart = count;
-        } else if (spaces.includes(char)) {
-            if (inSpace) {
-                currentSegment += char;
-            } else {
-                if (count > 0) {
+    let textSplitData = text.split(dot);
+    let r = [];
+    let segmented = [];
+    textSplitData.forEach((text, index) => {
+        count = index;
+        var datad = text;
+        if (text.includes(breaker)) {
+            r = text.split(breaker);
+            r[0] += breaker;
+            if (r.length > 1) {
+                r.forEach((l, index) => {
+                    var currentSegment = index !== 0 ? l + dot : l;
                     const newSegment = new TextSegment(
                         currentStart,
                         currentSegment
                     );
-                    segments.push(newSegment);
-                }
 
-                inBreak = false;
-                inSpace = true;
-                currentSegment = char;
-                currentStart = count;
+                    segmented.push(newSegment);
+                    currentStart += currentSegment.length;
+                });
             }
         } else {
-            if (inSpace || inBreak) {
-                if (count > 0) {
-                    const newSegment = new TextSegment(
-                        currentStart,
-                        currentSegment
-                    );
+            var currentSegment = datad + dot;
+            const newSegment = new TextSegment(currentStart, currentSegment);
 
-                    segments.push(newSegment);
-                }
-                inBreak = false;
-                inSpace = false;
-                currentSegment = char;
-                currentStart = count;
-            } else {
-                currentSegment += char;
-            }
+            segmented.push(newSegment);
+            currentStart += currentSegment.length;
         }
-
-        count++;
-    }
-
-    if (currentSegment) {
-        const newSegment = new TextSegment(currentStart, currentSegment);
-        segments.push(newSegment);
-    }
-    return new SegmentedText(segments);
+    });
+    return new SegmentedText(segmented);
 }
