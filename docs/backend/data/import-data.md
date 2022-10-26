@@ -31,6 +31,11 @@ make manage arg='delete_all_text'
 ```bash
 make manage arg="import_texts /var/parkhang/data/chonjuk Dominant"
 ```
+or
+
+```bash
+docker-compose -f local.yml run --rm django python manage.py import_texts /var/parkhang/data/chonjuk Dominant
+```
 
 ### Import all other texts
 ```bash
