@@ -8595,7 +8595,7 @@ var SplitTextComponent = /*#__PURE__*/function (_React$PureComponent) {
       }
 
       var newStyle = _objectSpread(_objectSpread({}, style), {}, {
-        height: style.height,
+        height: style.height + 10,
         cursor: !this.props.isAnnotating ? "pointer" : "text"
       });
 

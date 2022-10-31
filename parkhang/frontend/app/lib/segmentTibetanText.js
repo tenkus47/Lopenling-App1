@@ -16,39 +16,7 @@ export default function segmentTibetanText(text: string): SegmentedText {
     textSplitData.forEach((text, index) => {
         count = index;
         var temp = text;
-        if (text.includes(TopicBreaker)) {
-            let splitWord = text.split(TopicBreaker);
-            splitWord[2] = splitWord[1];
-            splitWord[1] = TopicBreaker;
-            if (splitWord.length > 1) {
-                splitWord.forEach((l, index) => {
-                    if (index === 2) {
-                        var currentSegment = l;
-                        var newSegment = new TextSegment(
-                            currentStart,
-                            currentSegment
-                        );
-                        segments.push(newSegment);
-                        currentStart += currentSegment.length;
-
-                        if (!symbol.includes(currentSegment)) {
-                            newSegment = new TextSegment(currentStart, dot);
-                            segments.push(newSegment);
-                            currentStart += 1;
-                        }
-                    } else {
-                        var currentSegment = l;
-                        const newSegment = new TextSegment(
-                            currentStart,
-                            currentSegment
-                        );
-
-                        segments.push(newSegment);
-                        currentStart += currentSegment.length;
-                    }
-                });
-            }
-        } else if (text.includes(breaker)) {
+        if (text.includes(breaker)) {
             let splitWord = text.split(breaker);
 
             splitWord[2] = splitWord[1];
@@ -116,6 +84,38 @@ export default function segmentTibetanText(text: string): SegmentedText {
                     currentStart += currentSegment.length;
                 }
             });
+        } else if (text.includes(TopicBreaker)) {
+            let splitWord = text.split(TopicBreaker);
+            splitWord[2] = splitWord[1];
+            splitWord[1] = TopicBreaker;
+            if (splitWord.length > 1) {
+                splitWord.forEach((l, index) => {
+                    if (index === 2) {
+                        var currentSegment = l;
+                        var newSegment = new TextSegment(
+                            currentStart,
+                            currentSegment
+                        );
+                        segments.push(newSegment);
+                        currentStart += currentSegment.length;
+
+                        if (!symbol.includes(currentSegment)) {
+                            newSegment = new TextSegment(currentStart, dot);
+                            segments.push(newSegment);
+                            currentStart += 1;
+                        }
+                    } else {
+                        var currentSegment = l;
+                        const newSegment = new TextSegment(
+                            currentStart,
+                            currentSegment
+                        );
+
+                        segments.push(newSegment);
+                        currentStart += currentSegment.length;
+                    }
+                });
+            }
         } else {
             var currentSegment = temp;
             var newSegment = new TextSegment(currentStart, currentSegment);

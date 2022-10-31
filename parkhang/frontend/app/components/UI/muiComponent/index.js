@@ -155,7 +155,7 @@ const Tooltip = (props) => {
     ));
 
     return (
-        <MuiTooltip title={title}>
+        <MuiTooltip {...props} followCursor={false}>
             <Element {...Tprops} />
         </MuiTooltip>
     );

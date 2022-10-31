@@ -1063,7 +1063,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
         }
         let newStyle = {
             ...style,
-            height: style.height,
+            height: style.height + 10,
             cursor: !this.props.isAnnotating ? "pointer" : "text",
         };
         return (
