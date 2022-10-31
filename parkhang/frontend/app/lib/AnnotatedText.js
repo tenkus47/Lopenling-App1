@@ -691,7 +691,7 @@ export default class AnnotatedText {
         annotations: Annotation[]
     ): SegmentedText {
         const segments = text.segments;
-        const newSegments = segments.slice();
+        var newSegments = segments.slice();
         let replacedSegments = {};
 
         for (let i = 0, len = annotations.length; i < len; i++) {

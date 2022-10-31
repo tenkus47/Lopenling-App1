@@ -182,6 +182,9 @@
     display: flex;
     /*margin-bottom: 20px;*/
 }
+.breakButtons button{
+    width: 100%;
+}
 
 .breakButtons>button {
     margin-top: 5px;

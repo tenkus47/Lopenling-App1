@@ -28,15 +28,18 @@ function AnnotationProtal({ activeAnnotation }) {
                 scrollElement.addEventListener("scroll", measure);
             if (!scrolling) {
                 let start = activeAnnotation?.start;
-                let control = document.getElementById(`s_${start}`);
-                // while (!control) {
-                //     start = start + 1;
-                //     control = document.getElementById(`s_${start}`);
-                // }
-                if (control) {
-                    const position = control.getBoundingClientRect();
-                    let top = Math.floor(position.top - 40);
-                    portal.current.style.top = top + "px";
+                if (start) {
+                    let control = null;
+                    do {
+                        control = document.getElementById(`s_${start}`);
+                        start += 1;
+                    } while (!control);
+
+                    if (control) {
+                        const position = control.getBoundingClientRect();
+                        let top = Math.floor(position.top - 40);
+                        portal.current.style.top = top + "px";
+                    }
                 }
             }
         }
