@@ -147,7 +147,7 @@ const Collapse = (props) => (
 );
 const Divider = (props) => <MuiDivider {...props}>{props.children}</MuiDivider>;
 const Tooltip = (props) => {
-    const { title, ...Tprops } = props;
+    const { title, followCursor, ...Tprops } = props;
     const Element = React.forwardRef((props, ref) => (
         <div {...props} ref={ref}>
             {props.children}
@@ -155,7 +155,7 @@ const Tooltip = (props) => {
     ));
 
     return (
-        <MuiTooltip {...props} followCursor={false}>
+        <MuiTooltip {...props} followCursor={followCursor}>
             <Element {...Tprops} />
         </MuiTooltip>
     );

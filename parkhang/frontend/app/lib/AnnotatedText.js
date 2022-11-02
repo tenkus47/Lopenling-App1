@@ -387,7 +387,9 @@ export default class AnnotatedText {
         }
         if (origLength !== content.length) {
             console.log(
-                "Base annotation has different content length to length"
+                "Base annotation has different content length to length",
+                origLength,
+                content.length
             );
         }
         let annotation = new Annotation(

@@ -41,7 +41,8 @@ function Sidebar(props) {
             sx={{
                 width: isOpen ? "100%" : "45px",
                 bgcolor: "background.default",
-                position: props.isSecondWindowOpen ? "relative" : "absolute",
+                // position: props.isSecondWindowOpen ? "relative" : "absolute",
+                position: "relative",
                 borderRight:
                     theme.palette.mode === "light"
                         ? "2px solid lightgray"

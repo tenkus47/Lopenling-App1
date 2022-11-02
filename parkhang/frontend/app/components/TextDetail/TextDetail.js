@@ -132,6 +132,7 @@ class TextDetail extends React.Component<Props> {
             textComponent = (
                 <SplitTextComponent
                     splitText={splitText}
+                    annotatedText={this.props.annotatedText}
                     annotations={this.props.annotations}
                     activeAnnotations={this.props.activeAnnotations}
                     activeAnnotation={this.props.activeAnnotation}
@@ -178,11 +179,13 @@ class TextDetail extends React.Component<Props> {
             );
         }
         let textComponents = [textComponent];
+        const maxWidth = !this.props.pageImagesVisible ? 700 : "auto";
         return (
             <Box
                 sx={{
                     bgcolor: "heading.main",
                     color: "texts.main",
+                    maxWidth: maxWidth,
                 }}
                 className={classnames(
                     styles.textDetail,

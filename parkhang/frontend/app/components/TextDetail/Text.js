@@ -16,7 +16,6 @@ import Witness from "lib/Witness";
 import { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
-import { find } from "lodash";
 import { withTheme } from "@mui/styles";
 
 export function idForSegment(segment: TextSegment): string {
@@ -148,32 +147,8 @@ class Text extends React.Component<Props, State> {
             this.props.selectedSegmentId("");
             return;
         }
-        let sourceRangeSelection = [];
-        let targetRangeSelection = [];
-        const selection = document.getSelection();
-        var clickId = parseInt(element.id.replace("s_", ""));
-        this.props.changeSyncIdOnClick(clickId);
-        if (element?.id.includes("s_") && this.props.condition) {
-            this.props.changeScrollToId({ id: null, from: null });
 
-            let id = parseInt(element.id.replace("s_", ""));
-            let rangeUnique = find(
-                this.textAlignmentById,
-                (l) => id >= l.start && id < l.end
-            );
-            if (rangeUnique) {
-                for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
-                    sourceRangeSelection.push(i);
-                }
-                for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
-                    targetRangeSelection.push(i);
-                }
-                this.props.changeSelectedRange({
-                    source: sourceRangeSelection,
-                    target: targetRangeSelection,
-                });
-            }
-        }
+        const selection = document.getSelection();
 
         if (selection && selection.type === "Range") {
             return;

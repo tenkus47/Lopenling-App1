@@ -141,32 +141,7 @@ class Text2 extends React.Component<Props, State> {
     // }
 
     selectedElement(element: Element) {
-        let sourceRangeSelection = [];
-        let targetRangeSelection = [];
         const selection = document.getSelection();
-        if (element?.id.includes("s2_") && this.props.condition) {
-            var clickId = parseInt(element.id.replace("s2_", ""));
-
-            this.props.changeSyncIdOnClick(clickId);
-            this.props.changeScrollToId({ id: "ua", from: "ua" });
-
-            let id = parseInt(element.id.replace("s2_", ""));
-            let rangeUnique = this.textAlignmentById.find(
-                (l) => id >= l.TStart && id < l.TEnd
-            );
-            if (rangeUnique) {
-                for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
-                    sourceRangeSelection.push(i);
-                }
-                for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
-                    targetRangeSelection.push(i);
-                }
-                this.props.changeSelectedRange({
-                    source: sourceRangeSelection,
-                    target: targetRangeSelection,
-                });
-            }
-        }
 
         if (selection && selection.type === "Range") {
             return;

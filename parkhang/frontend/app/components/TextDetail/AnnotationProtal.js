@@ -1,9 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getActiveTextAnnotation } from "reducers";
+import {
+    getActiveTextAnnotation,
+    getSelectedTextWitnessId,
+    getSelectedText,
+    getTextWitnesses,
+    showPageImages,
+    getWitness,
+    getWorkingWitness,
+} from "reducers";
 
 let initialLoad = true;
-function AnnotationProtal({ activeAnnotation }) {
+function AnnotationProtal({ activeAnnotation, pageImagesVisible }) {
     const portal = React.useRef(null);
 
     const measure = React.useCallback(
@@ -58,7 +66,7 @@ function AnnotationProtal({ activeAnnotation }) {
             ref={portal}
             style={{
                 position: "absolute",
-                left: "97%",
+                right: !pageImagesVisible ? "-20%" : "0",
                 zIndex: 10,
                 maxWidth: 300,
                 width: "max-content",
@@ -69,6 +77,34 @@ function AnnotationProtal({ activeAnnotation }) {
 }
 
 const getStateUsingProp = (state) => {
-    return { activeAnnotation: getActiveTextAnnotation(state) };
+    const selectedText = getSelectedText(state);
+    let witnesses = {};
+    let pageImagesVisible = false;
+    let workingWitness;
+    let selectedWitness;
+    if (selectedText) {
+        workingWitness = getWorkingWitness(state, selectedText.id);
+
+        witnesses = getTextWitnesses(state, selectedText.id);
+        let selectedWitnessId = getSelectedTextWitnessId(
+            state,
+            selectedText.id
+        );
+        if (selectedWitnessId) {
+            selectedWitness = getWitness(state, selectedWitnessId);
+        }
+        if (!selectedWitness && workingWitness) {
+            selectedWitness = workingWitness;
+            selectedWitnessId = workingWitness.id;
+        }
+
+        if (selectedWitness?.id !== workingWitness?.id) {
+            pageImagesVisible = showPageImages(state);
+        }
+    }
+    return {
+        pageImagesVisible,
+        activeAnnotation: getActiveTextAnnotation(state),
+    };
 };
 export default connect(getStateUsingProp)(AnnotationProtal);

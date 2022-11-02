@@ -6,6 +6,8 @@ import * as actions from "actions";
 import * as reducers from "reducers";
 import AnnotatedText from "lib/AnnotatedText";
 import _ from "lodash";
+import { find } from "lodash";
+
 import * as TextStore2 from "state_helpers/TextStore2";
 import {
     showPageImages,
@@ -203,8 +205,38 @@ const mapStateToProps = (state: AppState): {} => {
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-    const { annotatedText, annotationPositions } = stateProps;
+    const { annotatedText, annotationPositions, condition } = stateProps;
     const { dispatch } = dispatchProps;
+
+    const changeSyncIdOnClick = (textSegment) => {
+        let startId = textSegment.start;
+        let { textAlignmentById } = stateProps;
+        dispatch(actions.changeSyncIdOnClick(startId));
+        let sourceRangeSelection = [];
+        let targetRangeSelection = [];
+        if (condition && startId) {
+            dispatch(actions.changeScrollToId({ id: null, from: null }));
+        }
+
+        let rangeUnique = find(
+            textAlignmentById,
+            (l) => textSegment.start >= l.TStart && textSegment.start < l.TEnd
+        );
+        if (rangeUnique) {
+            for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
+                sourceRangeSelection.push(i);
+            }
+            for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
+                targetRangeSelection.push(i);
+            }
+            dispatch(
+                actions.changeSelectedRange({
+                    source: sourceRangeSelection,
+                    target: targetRangeSelection,
+                })
+            );
+        }
+    };
 
     const isDeletion = (id) => {
         return id.indexOf("ds2_") !== -1;
@@ -227,9 +259,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         } else if (isDeletion(id)) {
             start = id.substr(3);
         } else {
-            start = id.substr(2);
+            start = id.substr(3);
         }
-
         return start;
     };
 
@@ -368,6 +399,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
             }
             // dispatch(changedActiveTextAnnotation(activeAnnotation));
         },
+
         changeScrollToId: (payload) =>
             dispatch(actions.changeScrollToId(payload)),
         changeSyncIdOnClick: (payload) => {
@@ -403,30 +435,32 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                         actions.changedActiveTextAnnotation(null);
                     dispatch(dismissTextAnnotation);
                 }
+            } else {
+                if (
+                    isInsertion(segmentId) ||
+                    isDeletion(segmentId) ||
+                    isPageBreak(segmentId) ||
+                    isLineBreak(segmentId)
+                ) {
+                    const length = 0;
+                    didSelectSegmentPosition(positionKey, start, length);
+                } else {
+                    let segmentPosition = Number(idFromSegmentId(segmentId));
+
+                    let textSegment =
+                        annotatedText.segmentedText.segmentAtPosition(
+                            segmentPosition
+                        );
+                    if (textSegment) {
+                        changeSyncIdOnClick(textSegment);
+                        didSelectSegmentPosition(
+                            textSegment.start,
+                            textSegment.start,
+                            textSegment.length
+                        );
+                    }
+                }
             }
-            //  else {
-            //     if (
-            //         isInsertion(segmentId) ||
-            //         isDeletion(segmentId) ||
-            //         isPageBreak(segmentId) ||
-            //         isLineBreak(segmentId)
-            //     ) {
-            //         const length = 0;
-            //         didSelectSegmentPosition(positionKey, start, length);
-            //     } else {
-            //         let segmentPosition = Number(idFromSegmentId(segmentId));
-            //         let textSegment = annotatedText.segmentedText.segmentAtPosition(
-            //             segmentPosition
-            //         );
-            //         if (textSegment) {
-            //             didSelectSegmentPosition(
-            //                 textSegment.start,
-            //                 textSegment.start,
-            //                 textSegment.length
-            //             );
-            //         }
-            //     }
-            // }
         },
     };
 };

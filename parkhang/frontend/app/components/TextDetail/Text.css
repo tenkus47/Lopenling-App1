@@ -45,11 +45,11 @@
     margin: 0;
     padding: 0;
     white-space: pre;
-    scrollbar-color: red;
 }
 
-.textline>span {
+.textline span {
     max-height: 4ch;
+    white-space: normal;
 }
 
 .limitWidth.textFirstRow {

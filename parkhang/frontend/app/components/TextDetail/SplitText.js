@@ -1075,6 +1075,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                 key={key}
             >
                 <div
+                    title={"page " + (index + 1)}
                     key={key}
                     style={newStyle}
                     className={styles.splitTextRow}
@@ -1087,39 +1088,39 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                                 className={pechaImageClass}
                                 style={pechaStyles}
                             >
-                                <Zoom cl={`zoomableImage-${index}`}>
-                                    <img
-                                        alt="Text related Image"
-                                        className={classNames([
-                                            styles.image,
-                                            `zoomableImage-${index}`,
-                                        ])}
-                                        src={imageUrl}
-                                        width="100%"
-                                        height="100%"
-                                        loading="lazy"
-                                        decoding="async"
-                                        onLoad={(e) => {
-                                            if (
-                                                e.target &&
-                                                component.imageWidth === null
-                                            ) {
-                                                component.imageWidth =
-                                                    e.target.naturalWidth;
-                                                component.imageHeight =
-                                                    e.target.naturalHeight;
-                                                component.calculatedImageHeight =
-                                                    null;
-                                                window.setTimeout(
-                                                    component.updateList.bind(
-                                                        component
-                                                    ),
-                                                    0
-                                                );
-                                            }
-                                        }}
-                                    />
-                                </Zoom>
+                                {/* <Zoom cl={`zoomableImage-${index}`}> */}
+                                <img
+                                    alt="Text related Image"
+                                    className={classNames([
+                                        styles.image,
+                                        `zoomableImage-${index}`,
+                                    ])}
+                                    src={imageUrl}
+                                    width="100%"
+                                    height="100%"
+                                    loading="lazy"
+                                    decoding="async"
+                                    onLoad={(e) => {
+                                        if (
+                                            e.target &&
+                                            component.imageWidth === null
+                                        ) {
+                                            component.imageWidth =
+                                                e.target.naturalWidth;
+                                            component.imageHeight =
+                                                e.target.naturalHeight;
+                                            component.calculatedImageHeight =
+                                                null;
+                                            window.setTimeout(
+                                                component.updateList.bind(
+                                                    component
+                                                ),
+                                                0
+                                            );
+                                        }
+                                    }}
+                                />
+                                {/* </Zoom> */}
                             </div>
                         )}
 
@@ -1129,6 +1130,7 @@ export default class SplitTextComponent extends React.PureComponent<Props> {
                             activeAnnotations={props.activeAnnotations}
                             activeAnnotation={props.activeAnnotation}
                             row={index}
+                            annotatedText={props.annotatedText}
                             selectedSegmentId={props.selectedSegmentId}
                             annotationPositions={props.annotationPositions}
                             selectedAnnotatedSegments={
