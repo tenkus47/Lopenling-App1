@@ -179,13 +179,15 @@ class TextDetail extends React.Component<Props> {
             );
         }
         let textComponents = [textComponent];
-        const maxWidth = !this.props.pageImagesVisible ? 700 : "auto";
+
+        const width = !this.props.pageImagesVisible ? 700 : "100%";
+
         return (
             <Box
                 sx={{
                     bgcolor: "heading.main",
                     color: "texts.main",
-                    maxWidth: maxWidth,
+                    width: width,
                 }}
                 className={classnames(
                     styles.textDetail,

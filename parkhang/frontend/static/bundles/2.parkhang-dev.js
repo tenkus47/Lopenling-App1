@@ -1289,8 +1289,6 @@ function HomePage(props) {
       page = _useState2[0],
       setPage = _useState2[1];
 
-  console.log(detail);
-
   var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(detail),
       _useState4 = _slicedToArray(_useState3, 2),
       filteredData = _useState4[0],
@@ -3642,6 +3640,7 @@ var AnnotationControls = /*#__PURE__*/function (_React$Component) {
               key: annotationData.annotation.uniqueId,
               isActive: isActive,
               user: props.user,
+              "delete": _this2.props.deleteAnnotation,
               selectAnnotationHandler: function selectAnnotationHandler() {
                 if (isLoggedIn && !isEditing) {
                   props.didSelectAnnotation(annotationData.annotation);
@@ -4085,7 +4084,7 @@ var getAnnotationsData = function getAnnotationsData(annotations, sources, worki
 
     var _loop = function _loop(i) {
       var annotation = annotations[i];
-      var id = annotation.content + annotation.start; // this controls the comibining of annnotations in UI
+      var id = annotation.content + annotation.start + i; // this controls the comibining of annnotations in UI
 
       if (annotation.isTemporary) {
         annotationsById[TEMPORARY_ANNOTATION_ID] = {
@@ -5189,13 +5188,9 @@ var AnnotationDetail = function AnnotationDetail(props) {
       display: "flex",
       flexDirection: "column"
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, name), name === "པེ་ཅིན།" && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     className: _AnnotationDetail_css__WEBPACK_IMPORTED_MODULE_3___default.a.date
-  }, "1738, month, day N/A"), name === "སྣར་ཐང༌།" && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    className: _AnnotationDetail_css__WEBPACK_IMPORTED_MODULE_3___default.a.date
-  }, "1742, month, day N/A"), name === "སྡེ་དགེ" && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    className: _AnnotationDetail_css__WEBPACK_IMPORTED_MODULE_3___default.a.date
-  }, "1744, month, day N/A")), props.isLoggedIn && props.isActive && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+  }, "1738, month, day N/A")), props.isLoggedIn && props.isActive && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     style: {
       display: "none"
     },
@@ -5209,9 +5204,17 @@ var AnnotationDetail = function AnnotationDetail(props) {
     }
   }, desc), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: _AnnotationDetail_css__WEBPACK_IMPORTED_MODULE_3___default.a.contentOptions
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_UI_Voting__WEBPACK_IMPORTED_MODULE_8__["default"], {
-    data: props.annotationData
-  })));
+  }, name === props.user.name && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_UI_muiComponent__WEBPACK_IMPORTED_MODULE_6__["Button"], {
+    size: "small",
+    variant: "contained",
+    color: "success"
+  }, "publish"), name === props.user.name && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_UI_muiComponent__WEBPACK_IMPORTED_MODULE_6__["Button"], {
+    size: "small",
+    color: "secondary",
+    onClick: function onClick() {
+      props["delete"](props.annotationData.annotation);
+    }
+  }, "delete")));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (AnnotationDetail);
@@ -7405,7 +7408,7 @@ var SelectVersion = function SelectVersion(props) {
     if (witness.isWorking) {
       var _props$user;
 
-      tabName = props.intl.locale === "en" ? ((_props$user = props.user) === null || _props$user === void 0 ? void 0 : _props$user.name) === "User" ? "Working" : "My Edition" : "མཉམ་འབྲེལ་པར་མ།";
+      tabName = props.intl.locale === "en" ? ((_props$user = props.user) === null || _props$user === void 0 ? void 0 : _props$user.name) === "User" ? "Working" : "Community" : "མཉམ་འབྲེལ་པར་མ།";
     }
 
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
@@ -10003,12 +10006,12 @@ var TextDetail = /*#__PURE__*/function (_React$Component) {
       }
 
       var textComponents = [textComponent];
-      var maxWidth = !this.props.pageImagesVisible ? 700 : "auto";
+      var width = !this.props.pageImagesVisible ? 700 : "100%";
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(components_UI_muiComponent__WEBPACK_IMPORTED_MODULE_15__["Box"], {
         sx: {
           bgcolor: "heading.main",
           color: "texts.main",
-          maxWidth: maxWidth
+          width: width
         },
         className: classnames__WEBPACK_IMPORTED_MODULE_1___default()(_TextDetail_css__WEBPACK_IMPORTED_MODULE_11___default.a.textDetail, css_util_css__WEBPACK_IMPORTED_MODULE_12___default.a.flex, css_util_css__WEBPACK_IMPORTED_MODULE_12___default.a.flexColumn),
         key: this.key,

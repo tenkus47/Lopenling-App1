@@ -6,7 +6,7 @@ import styles from "./AnnotationDetail.css";
 import type { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
-import { Box } from "components/UI/muiComponent";
+import { Box, Button } from "components/UI/muiComponent";
 import Share from "components/UI/ShareButton";
 import Voting from "components/UI/Voting";
 import AnnotationAvatar from "components/UI/AnnotationAvatar";
@@ -31,7 +31,6 @@ const AnnotationDetail = (props: Props) => {
     );
 
     let content = props.annotationData.content;
-
     if (content.trim() !== "") {
         if (content.length > MAXIMUM_TEXT_LENGTH) {
             content = content.substr(0, MAXIMUM_TEXT_LENGTH) + "…";
@@ -63,21 +62,7 @@ const AnnotationDetail = (props: Props) => {
                 <AnnotationAvatar name={name} />
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <h3>{name}</h3>
-                    {name === "པེ་ཅིན།" && (
-                        <span className={styles.date}>
-                            1738, month, day N/A
-                        </span>
-                    )}
-                    {name === "སྣར་ཐང༌།" && (
-                        <span className={styles.date}>
-                            1742, month, day N/A
-                        </span>
-                    )}
-                    {name === "སྡེ་དགེ" && (
-                        <span className={styles.date}>
-                            1744, month, day N/A
-                        </span>
-                    )}
+                    <span className={styles.date}>1738, month, day N/A</span>
                 </div>
                 {props.isLoggedIn && props.isActive && (
                     <button
@@ -95,13 +80,28 @@ const AnnotationDetail = (props: Props) => {
                 }}
             >
                 {desc}
-                {/* <div style={{ float: "right" }}>{accuracyPercentage + "%"}</div> */}
             </div>
             <div className={styles.contentOptions}>
-                <Voting data={props.annotationData} />
+                {/* <Voting data={props.annotationData} /> */}
                 {/* {props.isActive && (
                     <Share content={props.annotationData.content} />
                 )} */}
+                {name === props.user.name && (
+                    <Button size="small" variant="contained" color="success">
+                        publish
+                    </Button>
+                )}
+                {name === props.user.name && (
+                    <Button
+                        size="small"
+                        color="secondary"
+                        onClick={() => {
+                            props.delete(props.annotationData.annotation);
+                        }}
+                    >
+                        delete
+                    </Button>
+                )}
             </div>
         </div>
     );

@@ -68,7 +68,7 @@ const SelectVersion = (props: Props) => {
                         props.intl.locale === "en"
                             ? props.user?.name === "User"
                                 ? "Working"
-                                : "My Edition"
+                                : "Community"
                             : "མཉམ་འབྲེལ་པར་མ།";
                 }
 

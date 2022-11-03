@@ -52,7 +52,7 @@ const getAnnotationsData = (
         let annotationsById = {};
         for (let i = 0; i < annotations.length; i++) {
             let annotation = annotations[i];
-            let id = annotation.content + annotation.start; // this controls the comibining of annnotations in UI
+            let id = annotation.content + annotation.start + i; // this controls the comibining of annnotations in UI
             if (annotation.isTemporary) {
                 annotationsById[TEMPORARY_ANNOTATION_ID] = {
                     name: annotation.getSourceName(),

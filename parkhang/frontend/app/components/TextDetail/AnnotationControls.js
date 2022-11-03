@@ -403,6 +403,7 @@ class AnnotationControls extends React.Component<Props> {
                             key={annotationData.annotation.uniqueId}
                             isActive={isActive}
                             user={props.user}
+                            delete={this.props.deleteAnnotation}
                             selectAnnotationHandler={() => {
                                 if (isLoggedIn && !isEditing) {
                                     props.didSelectAnnotation(

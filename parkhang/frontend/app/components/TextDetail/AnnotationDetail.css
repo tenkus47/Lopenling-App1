@@ -94,7 +94,6 @@
     display: flex;
     justify-content: space-between;
     margin-inline: 10px;
-    flex-direction: row-reverse;
     align-items: center;
 
 }
