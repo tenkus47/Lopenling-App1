@@ -65,6 +65,7 @@ export type Props = {
     ) => void,
     list: List | null,
     closeAnnotation: () => void,
+    witnessAnnotationsById: {},
 };
 
 type AnchorPoint = "top" | "left" | "bottom" | "right";
@@ -355,7 +356,6 @@ class AnnotationControls extends React.Component<Props> {
             breakSelected = true;
         }
         // the selected word/sentence is props.anotationsData
-
         if (props.annotationsData) {
             props.annotationsData.map((annotationData) => {
                 const randomPercentage = Math.round(Math.random() * 99) + 1;
@@ -396,8 +396,15 @@ class AnnotationControls extends React.Component<Props> {
                     );
                     temporaryAnnotations.push(annotationDetail);
                 } else {
+                    let date = this.props.witnessAnnotationsById[
+                        annotationData.id
+                    ]?.created?.slice(0, 10);
+                    if (!date && !annotationData.name.includes("Working")) {
+                        date = "today";
+                    }
                     let annotationDetail = (
                         <AnnotationDetail
+                            date={date}
                             accuracy={randomPercentage}
                             annotationData={annotationData}
                             key={annotationData.annotation.uniqueId}

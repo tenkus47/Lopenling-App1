@@ -3,7 +3,7 @@ import React from "react";
 import classnames from "classnames";
 import { FormattedMessage } from "react-intl";
 import styles from "./AnnotationDetail.css";
-import type { AnnotationData } from "api";
+import { AnnotationData } from "api";
 import CheckIcon from "images/check_circle.svg";
 import colours from "css/colour.css";
 import { Box, Button } from "components/UI/muiComponent";
@@ -17,6 +17,7 @@ export type Props = {
     isLoggedIn: boolean,
     editAnnotationHandler: () => void,
     fontSize: Number,
+    date: String,
 };
 const MAXIMUM_TEXT_LENGTH = 250;
 
@@ -62,7 +63,7 @@ const AnnotationDetail = (props: Props) => {
                 <AnnotationAvatar name={name} />
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <h3>{name}</h3>
-                    <span className={styles.date}>1738, month, day N/A</span>
+                    <span className={styles.date}>{props.date}</span>
                 </div>
                 {props.isLoggedIn && props.isActive && (
                     <button
@@ -91,6 +92,7 @@ const AnnotationDetail = (props: Props) => {
                         publish
                     </Button>
                 )}
+
                 {name === props.user.name && (
                     <Button
                         size="small"

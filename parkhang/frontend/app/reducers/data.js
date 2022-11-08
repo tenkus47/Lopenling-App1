@@ -891,7 +891,8 @@ export function annotationFromData(
         creatorWitness,
         creatorUser,
         annotationData.unique_id,
-        basedOn
+        basedOn,
+        annotationData.created
     );
     if (annotationData.is_saved) {
         annotation.save();

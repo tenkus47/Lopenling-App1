@@ -25,6 +25,7 @@
     box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     margin-top: 10px;
+    border-radius: 4px;
 }
 .annotationDetail:first-child{
     margin-top: 0;
@@ -36,7 +37,7 @@
     font-family: var(--tibetan-fonts);
     font-weight: normal;
     margin:0;
-    padding: 5px 10px 0px 10px;
+    padding: 5px 10px 10px 10px;
 }
 .date{
         font-size: 11px;

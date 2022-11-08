@@ -316,22 +316,38 @@ class Text extends React.Component<Props, State> {
                     remainingAnnotations.length > 0 ||
                     activeInsertions.length > 0
                 ) {
-                    if (remainingAnnotations.some((l) => l.type === "P")) {
+                    if (
+                        remainingAnnotations.some(
+                            (l) => l.type === ANNOTATION_TYPES.pageBreak
+                        )
+                    ) {
                         classes.push(styles.P_annotation);
                     }
-                    if (remainingAnnotations.some((l) => l.type === "Q")) {
+                    if (
+                        remainingAnnotations.some(
+                            (l) => l.type === ANNOTATION_TYPES.question
+                        )
+                    ) {
                         var double = remainingAnnotations.filter(
-                            (l) => l.type === "Q"
+                            (l) => l.type === ANNOTATION_TYPES.question
                         );
                         if (double.length > 1) {
                             classes.push(styles.Q_annotation_double);
                         }
                         classes.push(styles.Q_annotation);
                     }
-                    if (remainingAnnotations.some((l) => l.type === "N")) {
+                    if (
+                        remainingAnnotations.some(
+                            (l) => l.type === ANNOTATION_TYPES.note
+                        )
+                    ) {
                         classes.push(styles.N_annotation);
                     }
-                    if (remainingAnnotations.some((l) => l.type === "V")) {
+                    if (
+                        remainingAnnotations.some(
+                            (l) => l.type === ANNOTATION_TYPES.variant
+                        )
+                    ) {
                         classes.push(styles.V_annotation);
                     }
                 }

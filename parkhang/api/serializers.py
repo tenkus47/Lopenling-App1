@@ -85,6 +85,7 @@ class AnnotationSerializer(serializers.ModelSerializer):
             "original",
             "is_deleted",
             "modified",
+            "created"
         )
 
 

@@ -96,13 +96,7 @@ const getAnnotationsData = (
         // Make sure Working source is first
         baseSourceNames.unshift(workingSourceName);
         let Base = baseSourceNames;
-        // if (
-        //     selectedText?.name !==
-        //     "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་སོ།"
-        // ) {
-        //     //Dominant only available for chojuk text
-        //     Base = baseSourceNames.filter((l) => l !== "Dominant");
-        // }
+
         annotationsData = Object.keys(annotationsById).reduce((arr, key) => {
             const annotationData = annotationsById[key];
 
@@ -289,7 +283,6 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         activeAnnotation.start,
         activeAnnotation.length
     );
-
     const annotations = getAvailableAnnotations(
         ownProps.annotatedText,
         activeAnnotation,
@@ -418,6 +411,8 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
     }
     let fontSize = getTextFontSize(state);
     return {
+        witnessAnnotationsById:
+            state.data.witnessAnnotationsById[selectedWitness.id],
         annotationsData: variantsData,
         activeAnnotation: activeAnnotation,
         baseAnnotation: baseAnnotation,
