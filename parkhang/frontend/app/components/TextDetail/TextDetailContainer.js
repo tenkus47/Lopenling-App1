@@ -1,5 +1,7 @@
 // @flow
 import React from "react";
+import { find } from "lodash";
+
 import { connect } from "react-redux";
 import Annotation, { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
@@ -261,10 +263,14 @@ const mapStateToProps = (state) => {
             }
         }
         if (selectedWitness && baseWitness && annotatedText) {
-            let witnessPageBreaks =
-                annotatedText.getAnnotationsOfType(
-                    ANNOTATION_TYPES.pageBreak
-                ) || {};
+            var selectedWitnessAnnotaion =
+                state.data.witnessAnnotationsById[selectedWitness.id];
+            let newArray = Object.values(selectedWitnessAnnotaion);
+            let witnessPageBreaks = newArray;
+            // annotatedText.getAnnotationsOfType(
+            //     ANNOTATION_TYPES.pageBreak
+            // ) || {};
+
             let basePageBreaks = null;
             if (selectedWitness.id !== baseWitness.id) {
                 basePageBreaks = getAnnotationsForWitnessId(
@@ -274,8 +280,8 @@ const mapStateToProps = (state) => {
                     baseWitness.id
                 );
             }
-
             pageBreaks = getPageBreaks(witnessPageBreaks, basePageBreaks);
+
             for (let i = 0, len = pageBreaks.length; i < len; i++) {
                 let position = pageBreaks[i];
                 let segment = annotatedText.segmentAtOriginalPosition(position);
@@ -349,8 +355,7 @@ const mapStateToProps = (state) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
     const { dispatch } = dispatchProps;
-    const { annotatedText, annotationPositions } = stateProps;
-
+    const { annotatedText, annotationPositions, condition } = stateProps;
     const didSelectSegmentPosition = (segmentPosition, start, length) => {
         let segmentAnnotations = annotationPositions[segmentPosition];
         let segmentVariants = [];
@@ -397,6 +402,34 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         }
 
         dispatch(changedActiveTextAnnotation(activeAnnotation));
+    };
+    const changeSyncIdOnClick = (textSegment) => {
+        let startId = textSegment.start;
+        let { textAlignmentById } = stateProps;
+        dispatch(actions.changeSyncIdOnClick(startId));
+        let sourceRangeSelection = [];
+        let targetRangeSelection = [];
+        if (condition && startId) {
+            dispatch(actions.changeScrollToId({ id: null, from: null }));
+        }
+        let rangeUnique = find(
+            textAlignmentById,
+            (l) => textSegment.start >= l.start && textSegment.start < l.end
+        );
+        if (rangeUnique) {
+            for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
+                sourceRangeSelection.push(i);
+            }
+            for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
+                targetRangeSelection.push(i);
+            }
+            dispatch(
+                actions.changeSelectedRange({
+                    source: sourceRangeSelection,
+                    target: targetRangeSelection,
+                })
+            );
+        }
     };
 
     const isInsertion = (id) => {
@@ -551,7 +584,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
                         annotatedText.segmentedText.segmentAtPosition(
                             segmentPosition
                         );
+
                     if (textSegment) {
+                        changeSyncIdOnClick(textSegment);
                         didSelectSegmentPosition(
                             textSegment.start,
                             textSegment.start,
@@ -592,7 +627,6 @@ const getPageBreaks = (
     let witnessStarts = [];
     _.forIn(witnessPageBreaks, (o) => witnessStarts.push(o.start));
     witnessStarts = witnessStarts.sort((a, b) => a - b);
-
     if (!basePageBreaks) {
         return witnessStarts;
     }
@@ -600,7 +634,6 @@ const getPageBreaks = (
     let baseStarts = [];
     _.forIn(basePageBreaks, (o) => baseStarts.push(o.start));
     baseStarts = baseStarts.sort((a, b) => a - b);
-
     if (witnessStarts.length === 0) {
         return baseStarts;
     }
@@ -616,7 +649,6 @@ const getPageBreaks = (
             if (start > lastWitnessPageStart) witnessStarts.push(start);
         }
     }
-    console.log(witnessStarts);
     return witnessStarts;
 };
 

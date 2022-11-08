@@ -52,7 +52,7 @@ const getAnnotationsData = (
         let annotationsById = {};
         for (let i = 0; i < annotations.length; i++) {
             let annotation = annotations[i];
-            let id = annotation.content + annotation.start;
+            let id = annotation.content + annotation.start + i; // this controls the comibining of annnotations in UI
             if (annotation.isTemporary) {
                 annotationsById[TEMPORARY_ANNOTATION_ID] = {
                     name: annotation.getSourceName(),
@@ -96,13 +96,6 @@ const getAnnotationsData = (
         // Make sure Working source is first
         baseSourceNames.unshift(workingSourceName);
         let Base = baseSourceNames;
-        if (
-            selectedText?.name !==
-            "བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ་བཞུགས་སོ།"
-        ) {
-            //Dominant only awailable for chojuk text
-            Base = baseSourceNames.filter((l) => l !== "Dominant");
-        }
 
         annotationsData = Object.keys(annotationsById).reduce((arr, key) => {
             const annotationData = annotationsById[key];
@@ -117,7 +110,6 @@ const getAnnotationsData = (
             return arr;
         }, []);
     }
-
     return annotationsData;
 };
 
@@ -291,7 +283,6 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
         activeAnnotation.start,
         activeAnnotation.length
     );
-
     const annotations = getAvailableAnnotations(
         ownProps.annotatedText,
         activeAnnotation,
@@ -420,6 +411,8 @@ export const mapStateToProps = (state: AppState, ownProps: ContainerProps) => {
     }
     let fontSize = getTextFontSize(state);
     return {
+        witnessAnnotationsById:
+            state.data.witnessAnnotationsById[selectedWitness.id],
         annotationsData: variantsData,
         activeAnnotation: activeAnnotation,
         baseAnnotation: baseAnnotation,

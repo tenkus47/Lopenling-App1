@@ -15,10 +15,15 @@ import utilStyles from "css/util.css";
 import type { TextData } from "api";
 import TextSegment from "lib/TextSegment";
 import TextDetailHeadingContainer from "./TextDetailHeadingContainer";
-import { Box, ClickAwayListener, Divider, Slide } from "@mui/material";
+import {
+    Box,
+    ClickAwayListener,
+    Divider,
+    Slide,
+} from "components/UI/muiComponent";
 import _ from "lodash";
 import TableOfContent from "./TableOfContent/TableOfContent";
-
+import AnnotationPortal from "./AnnotationProtal";
 import SplitTextComponent from "components/TextDetail/SplitText";
 
 export type Props = {
@@ -121,13 +126,13 @@ class TextDetail extends React.Component<Props> {
             } else {
                 splitter = lengthSplitter(1000, /^།[\s]+(?!།[\s]+)/, 2, 5);
             }
-
             splitText = new SplitText(this.props.annotatedText, splitter);
 
             inlineControls = true;
             textComponent = (
                 <SplitTextComponent
                     splitText={splitText}
+                    annotatedText={this.props.annotatedText}
                     annotations={this.props.annotations}
                     activeAnnotations={this.props.activeAnnotations}
                     activeAnnotation={this.props.activeAnnotation}
@@ -174,11 +179,15 @@ class TextDetail extends React.Component<Props> {
             );
         }
         let textComponents = [textComponent];
+
+        const width = !this.props.pageImagesVisible ? 700 : "100%";
+
         return (
             <Box
                 sx={{
-                    bgcolor: "navbar.main",
+                    bgcolor: "heading.main",
                     color: "texts.main",
+                    width: width,
                 }}
                 className={classnames(
                     styles.textDetail,
@@ -226,6 +235,7 @@ class TextDetail extends React.Component<Props> {
                         </Box>
                     </Slide>
                 </Box>
+                <AnnotationPortal />
             </Box>
         );
     }

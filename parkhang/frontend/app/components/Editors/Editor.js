@@ -17,10 +17,8 @@ import {
     Snackbar,
     Alert,
     Collapse,
-} from "@mui/material";
-import AnnotationPortal from "./AnnotationPortal";
-import { Edit, Share, VerticalSplit, SyncAlt } from "@mui/icons-material";
-import { Box } from "@mui/system";
+} from "components/UI/muiComponent";
+import { Edit, Share, VerticalSplit, SyncAlt } from "components/UI/muiIcon";
 const Editor = (props) => {
     let textListClassnames = [styles.listContainer];
     let bodyHeight;
@@ -113,7 +111,6 @@ const Editor = (props) => {
         <div className={classnames(styles.interface, utilStyles.flex)}>
             <Sidebar />
             <TextSheet bodyHeight={bodyHeight} />
-            <AnnotationPortal />
             <SpeedDial
                 ariaLabel="SpeedDial basic"
                 sx={{ position: "absolute", bottom: 60, right: 16 }}

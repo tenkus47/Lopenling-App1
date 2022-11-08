@@ -4,12 +4,14 @@ import SplitText from "lib/SplitText";
 import Loader from "react-loader";
 import lengthSplitter from "lib/text_splitters/lengthSplitter";
 import styles from "components/TextDetail/TextDetail.css";
-import { Box, Divider, Slide } from "@mui/material";
+import { Box, Divider, Slide } from "components/UI/muiComponent";
 import TableOfContent from "./TableOfContent/TableOfContent";
 import utilStyles from "css/util.css";
 import classnames from "classnames";
+import TestHtml from "./TestHtml";
 
 import SplitTextComponent from "./SplitText";
+import TextHtml from "./TestHtml";
 
 function TextDetail(props) {
     const ref = useRef();
@@ -89,7 +91,7 @@ function TextDetail(props) {
             sx={{
                 height: "100%",
                 flex: 1,
-                bgcolor: "navbar.main",
+                bgcolor: "heading.main",
                 color: "texts.main",
             }}
         >

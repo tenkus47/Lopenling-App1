@@ -427,7 +427,6 @@ function* loadAnnotations(witnessId: number) {
 function* loadAnnotations2(witnessId: number) {
     const witnessData = yield select(reducers.getWitnessData2, witnessId);
     const annotations = yield call(api.fetchWitnessAnnotations, witnessData);
-
     // const annotations = [];
 
     yield put(actions.loadedWitnessAnnotations2(witnessId, annotations));
@@ -844,7 +843,7 @@ function* loadedTextUrl(
             let matches = /([0-9]+)-([0-9]+)-?(.+)?/.exec(
                 action.payload.annotation
             );
-            let start, length, uniqueIdSegment;
+            let start, length, uniqueIdSegment, created;
             if (matches) {
                 if (matches[1]) start = Number(matches[1]);
                 if (matches[2]) length = Number(matches[2]);

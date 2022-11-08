@@ -1,14 +1,14 @@
 import React from "react";
 import Draggable from "react-draggable";
-import CloseIcon from "@mui/icons-material/Close";
-import Paper, { PaperProps } from "@mui/material/Paper";
+import { Close as CloseIcon } from "components/UI/muiIcon";
+import { Paper } from "components/UI/muiComponent";
 import Video from "./Video";
 import Audio from "./Audio";
-import { IconButton } from "@mui/material";
+import { IconButton } from "components/UI/muiComponent";
 
 const MEDIA_MAX_WIDTH = "400px";
 
-function PaperComponent(props: PaperProps) {
+function PaperComponent(props) {
     return (
         <Draggable handle="#draggable-dialog-title" bounds="parent">
             <Paper {...props} />

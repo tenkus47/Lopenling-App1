@@ -33,8 +33,8 @@ import {
     IconButton,
     MenuItem,
     AppBar,
-} from "@mui/material";
-import { Person as PersonIcon, Menu as MenuIcon } from "@mui/icons-material";
+} from "components/UI/muiComponent";
+import { Person as PersonIcon, Menu as MenuIcon } from "components/UI/muiIcon";
 import _ from "lodash";
 type LoginProps = {
     successRedirect: string,
@@ -205,7 +205,11 @@ export const Header = (props: HeaderProps) => {
         <AppBar
             position="static"
             color="navbar"
-            sx={{ boxShadow: 1, zIndex: 3,display: props.page==='Vote' ?'none':'block' }}
+            sx={{
+                boxShadow: 1,
+                zIndex: 3,
+                display: props.page === "Vote" ? "none" : "block",
+            }}
             // className={styles.header}
         >
             <Stack
@@ -226,16 +230,16 @@ export const Header = (props: HeaderProps) => {
                         alignItems: { md: "center" },
                     }}
                 >
-                        <NavLink to="/">
-                            <div className={styles.logo}>
-                                <img
-                                    src={lopenlingLogo}
-                                    height="37"
-                                    width={173}
-                                    alt="parkhang-logo"
-                                />
-                            </div>
-                        </NavLink>
+                    <NavLink to="/">
+                        <div className={styles.logo}>
+                            <img
+                                src={lopenlingLogo}
+                                height="37"
+                                width={173}
+                                alt="parkhang-logo"
+                            />
+                        </div>
+                    </NavLink>
 
                     {/* {props.page === "Editors" && (
                         <NavigationButton
@@ -352,8 +356,6 @@ export const Header = (props: HeaderProps) => {
                                 <FormattedMessage id={"Nalanda"} />
                             </Button>
                         </MenuItem>
-
-                    
                     </Menu>
                 </Box>
                 <Stack
@@ -381,7 +383,7 @@ const mapStateToProps = (state: AppState): { user: User } => {
     const csrfToken = CSRF_TOKEN;
     const page = state.page;
     return {
-        page:state.page,
+        page: state.page,
         user: user,
         activeLocale: activeLocale,
         textListIsVisible: getTextListVisible(state),

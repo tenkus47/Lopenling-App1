@@ -1,5 +1,11 @@
 import React from "react";
-import { Box, ClickAwayListener, Typography } from "@mui/material";
+import {
+    Box,
+    ClickAwayListener,
+    Typography,
+    Toolbar,
+    InputBase,
+} from "components/UI/muiComponent";
 import { connect } from "react-redux";
 import * as actions from "actions";
 import * as reducers from "reducers";
@@ -7,9 +13,7 @@ import * as reducers from "reducers";
 import Loader from "react-loader";
 import styles from "./TableOfContent.css";
 import { styled, alpha } from "@mui/material/styles";
-import SearchIcon from "@mui/icons-material/Search";
-import InputBase from "@mui/material/InputBase";
-import Toolbar from "@mui/material/Toolbar";
+import { Search as SearchIcon } from "components/UI/muiIcon/";
 import Commentary from "./Commentary";
 const Search = styled("div")(({ theme }) => ({
     position: "relative",

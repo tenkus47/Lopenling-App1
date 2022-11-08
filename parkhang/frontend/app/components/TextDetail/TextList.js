@@ -20,7 +20,7 @@ import {
     Typography,
     Button,
     Grow,
-} from "@mui/material";
+} from "components/UI/muiComponent";
 import addShay from "lib/addTibetanShay";
 import { filter } from "lodash";
 function TextList(props) {

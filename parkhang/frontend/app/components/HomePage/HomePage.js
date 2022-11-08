@@ -5,24 +5,18 @@ import addTibetanShay from "lib/addTibetanShay";
 import styles from "./HomePage.css";
 import { FormattedMessage, injectIntl } from "react-intl";
 import {
-    CircularProgress,
-    Card,
-    CardContent,
     Typography,
-    Grid,
     Container,
     Stack,
-    Chip,
     Box,
+    Card,
+    CardContent,
     IconButton,
     Collapse,
-    FormControlLabel,
-    Checkbox,
-    Divider,
     Pagination,
-} from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+    Tooltip,
+} from "components/UI/muiComponent";
+import { FilterAlt as FilterAltIcon } from "components/UI/muiIcon";
 import Filter from "./Filter";
 import { motion } from "framer-motion";
 import Footer from "./Footer";
@@ -33,7 +27,7 @@ function HomePage(props) {
     let { Textdata } = props;
     let { activeText, detail } = Textdata;
     let [page, setPage] = useState(1);
-    const [filteredData, setFilteredData] = useState([]);
+    const [filteredData, setFilteredData] = useState(detail);
     const [showFilter, setShowFilter] = useState(false);
     const [filteredTitle, setFilteredTitle] = useState("");
     // const [categorySelected, setCategorySelected] = useState([]);

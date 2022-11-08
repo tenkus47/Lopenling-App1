@@ -4,7 +4,7 @@ import _ from "lodash";
 import { FormattedMessage, injectIntl } from "react-intl";
 import styles from "components/TextDetail/SelectVersion.css";
 import Witness from "lib/Witness";
-import { NativeSelect } from "@mui/material";
+import { NativeSelect } from "components/UI/muiComponent";
 
 export type Props = {
     witnesses: Witness[],

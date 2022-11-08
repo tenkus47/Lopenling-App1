@@ -4,7 +4,7 @@ import * as reducers from "reducers";
 import * as actions from "actions";
 import MediaComponent from "components/MediaComponent";
 import { batchActions } from "redux-batched-actions";
-import { Box, Divider } from "@mui/material";
+import { Box, Divider } from "components/UI/muiComponent";
 import Loader from "react-loader";
 import ErrorBoundary from "components/ErrorBoundary/ErrorBoundary";
 import SplitPane from "react-split-pane";

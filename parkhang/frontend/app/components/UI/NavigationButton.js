@@ -2,8 +2,8 @@ import React from "react";
 import classnames from "classnames";
 import styles from "./NavigationButton.css";
 import HamburgerIcon from "images/hamburger.svg";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
+import { Close as CloseIcon } from "components/UI/muiIcon";
+import { IconButton } from "components/UI/muiComponent";
 type Props = {
     onClick?: () => void,
     className?: string,

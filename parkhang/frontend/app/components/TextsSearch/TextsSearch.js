@@ -5,9 +5,9 @@ import * as constants from "app_constants";
 
 import { injectIntl } from "react-intl";
 // import Button from "components/UI/Button";
-import { Button, IconButton } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import { Box } from "@mui/system";
+import { Button, IconButton } from "components/UI/muiComponent";
+import { Search as SearchIcon } from "components/UI/muiIcon";
+import { Box } from "components/UI/muiComponent";
 
 type Props = {
     searchValue: string,

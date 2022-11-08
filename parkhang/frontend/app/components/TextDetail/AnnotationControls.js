@@ -22,7 +22,7 @@ import { List } from "react-virtualized/dist/es/List";
 import AnnotationControlsHeader from "./AnnotationControlsHeader";
 import Question from "lib/Question";
 import type { AnnotationUniqueId } from "lib/Annotation";
-import { Snackbar } from "@mui/material";
+import { Snackbar } from "components/UI/muiComponent";
 export const CONTROLS_MARGIN_LEFT = 10;
 export type QuestionData = {
     loading: boolean,
@@ -65,6 +65,7 @@ export type Props = {
     ) => void,
     list: List | null,
     closeAnnotation: () => void,
+    witnessAnnotationsById: {},
 };
 
 type AnchorPoint = "top" | "left" | "bottom" | "right";
@@ -355,9 +356,9 @@ class AnnotationControls extends React.Component<Props> {
             breakSelected = true;
         }
         // the selected word/sentence is props.anotationsData
-
         if (props.annotationsData) {
             props.annotationsData.map((annotationData) => {
+                const randomPercentage = Math.round(Math.random() * 99) + 1;
                 let isEditing = false;
                 let isActive = false;
                 if (annotationData.isTemporary) {
@@ -395,11 +396,21 @@ class AnnotationControls extends React.Component<Props> {
                     );
                     temporaryAnnotations.push(annotationDetail);
                 } else {
+                    let date = this.props.witnessAnnotationsById[
+                        annotationData.id
+                    ]?.created?.slice(0, 10);
+                    if (!date && !annotationData.name.includes("Working")) {
+                        date = "today";
+                    }
                     let annotationDetail = (
                         <AnnotationDetail
+                            date={date}
+                            accuracy={randomPercentage}
                             annotationData={annotationData}
                             key={annotationData.annotation.uniqueId}
                             isActive={isActive}
+                            user={props.user}
+                            delete={this.props.deleteAnnotation}
                             selectAnnotationHandler={() => {
                                 if (isLoggedIn && !isEditing) {
                                     props.didSelectAnnotation(
@@ -424,22 +435,14 @@ class AnnotationControls extends React.Component<Props> {
                 // NOTE: FormattedMessage cannot take a child when using
                 // the values option, so need to wrap it in a div
                 anonymousUserMessage = (
-                    <div
-                        className={styles.anonymousMessage}
-                        style={{
-                            position: "relative",
-                            width: "fit-content",
-                            border: "1px solid gray",
-                            paddingInline: 10,
-                        }}
-                    >
+                    <div className={styles.anonymousMessage}>
                         <FormattedMessage
                             id="annotations.loginMessage"
                             values={{
                                 loginLink: (
-                                    <>
+                                    <a href="/accounts/login/">
                                         <FormattedMessage id="annotations.loginLink" />
-                                    </>
+                                    </a>
                                 ),
                             }}
                         />
@@ -642,6 +645,7 @@ class AnnotationControls extends React.Component<Props> {
         if (anonymousUserMessage || breakSelected) showHeader = false;
         const annotationBody = ReactDom.createPortal(
             <div className={styles.annotationContent}>
+                {anonymousUserMessage}
                 {nothingSelected}
                 {!breakSelected && annotations}
                 {pageBreaksButton}
@@ -662,8 +666,8 @@ class AnnotationControls extends React.Component<Props> {
                 ref={(controls: HTMLDivElement | null) =>
                     (this.controls = controls)
                 }
+                id="annotation-control"
             >
-                {anonymousUserMessage}
                 {showHeader && (
                     <AnnotationControlsHeader
                         addPageBreak={

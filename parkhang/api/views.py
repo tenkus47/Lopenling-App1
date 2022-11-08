@@ -203,7 +203,7 @@ class AnnotationList(APIView):
         If the user is logged in, also return any of that
         user's annotations for the text.
         """
-
+        # annotation_list = Annotation.objects.active()
         if request.user.is_authenticated:
             annotation_list = Annotation.objects.active().filter(
                 Q(witness=witness_id),

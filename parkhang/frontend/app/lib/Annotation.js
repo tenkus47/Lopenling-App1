@@ -9,7 +9,7 @@ export const ANNOTATION_TYPES: { [string]: string } = {
     marker: "M",
     pageBreak: "P",
     lineBreak: "L",
-    question: "Q"
+    question: "Q",
 };
 
 export const TEMPORARY_TYPE: string = "T";
@@ -29,7 +29,7 @@ export function getNaturalId(
         creatorWitnessId,
         workingWitnessId,
         start,
-        length
+        length,
     ].join("-");
 }
 
@@ -65,6 +65,7 @@ export default class Annotation {
      * @param {User|null} creatorUser
      * @param {string|null} [uniqueId=null] - UUID4. Generates a new one if not provided.
      * @param {Annotation|null} [basedOn=null] - The annotation this is based on (if any).
+     * @param {string|null} created
      */
     constructor(
         id: number | null,
@@ -76,7 +77,8 @@ export default class Annotation {
         creatorWitness: Witness,
         creatorUser: User | null = null,
         uniqueId: AnnotationUniqueId | null = null,
-        basedOn: Annotation | null = null
+        basedOn: Annotation | null = null,
+        created: String | null = null
     ) {
         this._id = id;
         this.witness = workingWitness;
@@ -93,6 +95,7 @@ export default class Annotation {
         this._uniqueId = uniqueId;
         this.basedOn = basedOn;
         this._isSaved = false;
+        this.created = created;
     }
 
     get id(): number | null {
@@ -252,7 +255,8 @@ export class TemporaryAnnotation extends Annotation {
         type: string = ANNOTATION_TYPES.variant,
         creatorWitness: Witness,
         creatorUser: User | null = null,
-        uniqueId: string | null = null
+        uniqueId: string | null = null,
+        created: string | null = null
     ) {
         super(
             null,
@@ -263,7 +267,8 @@ export class TemporaryAnnotation extends Annotation {
             type,
             creatorWitness,
             creatorUser,
-            uniqueId
+            uniqueId,
+            created
         );
         this.basedOn = basedOn;
     }

@@ -43,9 +43,6 @@ const mapStateToProps = (state) => {
         }
     }
 
-    if (!state.user.userId === -1) {
-        user = state.user;
-    }
     return {
         selectedText,
         selectedWitness,

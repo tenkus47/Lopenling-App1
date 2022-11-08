@@ -7,7 +7,7 @@ import Settings from "./HeaderMenu/Settings";
 import Search from "./HeaderMenu/Search";
 import TableOfContent from "./HeaderMenu/TableOfContent";
 import _ from "lodash";
-import CloseIcon from "@mui/icons-material/Close";
+import { Close as CloseIcon } from "components/UI/muiIcon";
 
 import {
     Stack,
@@ -20,7 +20,7 @@ import {
     ListItem,
     List,
     IconButton,
-} from "@mui/material";
+} from "components/UI/muiComponent";
 
 import SearchList from "./HeaderMenu/SearchList";
 type HeaderProps = {

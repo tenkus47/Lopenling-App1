@@ -18,7 +18,7 @@
 }
 
 .text {
-    font-size: 24px;
+    font-size: 16px;
     line-height: 1.8;
     padding: 0 var(--paddingSide);
     font-family: var(--tibetan-fonts);
@@ -30,14 +30,6 @@
     flex-wrap: wrap;
     /* background-color: var(--text-bg); */
 
-}
-
-
-
-.syncIdClass {
-    font-weight: 900;
-    font-size: 10px;
-    cursor: pointer;
 }
 
 .textFirstRow {
@@ -53,11 +45,11 @@
     margin: 0;
     padding: 0;
     white-space: pre;
-    scrollbar-color: red;
 }
 
-.textline>span {
+.textline span {
     max-height: 4ch;
+    white-space: normal;
 }
 
 .limitWidth.textFirstRow {
@@ -110,7 +102,7 @@ border-radius: 4px;
 }
 .selectedAnnotation {
     background-color: hsl(0, 0%, 93%);
-    color: hsl(0, 0%, 19%);
+
 
 }
 

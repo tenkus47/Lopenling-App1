@@ -403,7 +403,6 @@ export const hasLoadedWitnessAnnotations = (
     state: AppState,
     witnessId: number
 ): boolean => {
-    // console.log(state.data["witnessAnnotationsById"]);
     return state.data["witnessAnnotationsById"].hasOwnProperty(witnessId);
 };
 

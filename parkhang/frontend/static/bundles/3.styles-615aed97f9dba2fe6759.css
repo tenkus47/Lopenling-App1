@@ -806,10 +806,7 @@ padding:2px;
 }
 .TextDetail---textDetail {
     position: relative;
-    width: 100%;
     height: 100%;
-    max-width: 700px;
-    overflow: hidden;
     -webkit-box-shadow: 1px 1px 10px rgba(0, 0, 0, .1),
         inset -1px -1px 10px rgba(0, 0, 0, .1);
             box-shadow: 1px 1px 10px rgba(0, 0, 0, .1),
@@ -817,11 +814,11 @@ padding:2px;
 }
 .TextDetail---textDetail ::-moz-selection {
     color: black;
-    background-color: #ccc
+    background-color: #eee
 }
 .TextDetail---textDetail ::selection {
     color: black;
-    background-color: #ccc
+    background-color: #eee
 }
 .TextDetail---textContainer {
     -webkit-box-flex: 1;
@@ -866,7 +863,7 @@ padding:2px;
 }
 
 .Text---text {
-    font-size: 24px;
+    font-size: 16px;
     line-height: 1.8;
     padding: 0 20px;
     font-family: "Tibetan",
@@ -885,12 +882,6 @@ padding:2px;
 
 }
 
-.Text---syncIdClass {
-    font-weight: 900;
-    font-size: 10px;
-    cursor: pointer;
-}
-
 .Text---textFirstRow {
     padding-block: 5px;
     border-top: 15px;
@@ -907,11 +898,11 @@ padding:2px;
     margin: 0;
     padding: 0;
     white-space: pre;
-    scrollbar-color: red;
 }
 
-.Text---textline>span {
+.Text---textline span {
     max-height: 4ch;
+    white-space: normal;
 }
 
 .Text---limitWidth.Text---textFirstRow {
@@ -978,7 +969,7 @@ border-radius: 4px;
 
 .Text---selectedAnnotation {
     background-color: hsl(0, 0%, 93%);
-    color: hsl(0, 0%, 19%);
+
 
 }
 
@@ -1104,14 +1095,19 @@ background-color: rgba(190, 216, 248, 0.50196);
 
 .SplitText---annotationContent {
     /* padding: 0 var(--paddingWidth) var(--paddingWidth) var(--paddingWidth); */
-    max-width: 400px;
     max-height: 70vh;
+    max-width: 250px;
+    min-width: 170px;
+
     overflow-y: scroll;
     overflow-x: hidden;
     -ms-overflow-style: none;
         /* Internet Explorer 10+ */
         scrollbar-width: none;
         /* Firefox */
+    border-radius: 10px;
+    -webkit-box-shadow: 0 2px 6px 2px rgba(60, 64, 67, .15);
+            box-shadow: 0 2px 6px 2px rgba(60, 64, 67, .15);
 
 }
 
@@ -1221,11 +1217,11 @@ background-color: rgba(190, 216, 248, 0.50196);
 
 .SplitText---anonymousMessage {
     background: rgba(175, 175, 175, .9);
-    color: #fff;
-    letter-spacing: 3px;
     font-weight: bold;
     font-size: 12.8px;
     font-size: 0.8rem;
+    padding-inline: 2px;
+    text-align: center;
 }
 
 .SplitText---anonymousMessage a:link,
@@ -1247,6 +1243,10 @@ background-color: rgba(190, 216, 248, 0.50196);
     /*margin-bottom: 20px;*/
 }
 
+.SplitText---breakButtons button{
+    width: 100%;
+}
+
 .SplitText---breakButtons>button {
     margin-top: 5px;
     -webkit-box-flex: 1;
@@ -1264,8 +1264,7 @@ blockquote {
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
-    font-size: 24px;
-    width: 100%;
+    width: 100%; 
 }
 
 .SplitText---splitText * {
@@ -1418,6 +1417,10 @@ span {
     unicode-range: U+0F00-0FFF;
 }
 
+#AnnotationDetail---annotation-desc{
+    width: 100%;
+}
+
 .AnnotationDetail---annotationDetail {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1427,13 +1430,18 @@ span {
         -ms-flex-direction: column;
             flex-direction: column;
     width: 100%;
-    margin: 5px 10px 0px 0;
     padding: 0 0 0 0;
     background-color: #ddd;
     position: relative;
     -webkit-box-shadow: 0px 2px 1px rgba(0, 0, 0, .2);
             box-shadow: 0px 2px 1px rgba(0, 0, 0, .2);
     cursor: pointer;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.AnnotationDetail---annotationDetail:first-child{
+    margin-top: 0;
 }
 
 .AnnotationDetail---annotationDetail h3 {
@@ -1446,8 +1454,14 @@ span {
         "Tsumachu",
         "Dutsa";
     font-weight: normal;
-    margin: 0 0 10px 0;
-    padding: 5px 10px 0px 10px;
+    margin:0;
+    padding: 5px 10px 10px 10px;
+}
+
+.AnnotationDetail---date{
+        font-size: 11px;
+    color: rgba(0, 0, 0, .6);
+    padding-left: 10px;
 }
 
 .AnnotationDetail---annotationDetail p {
@@ -1468,18 +1482,17 @@ span {
     -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, .8);
             box-shadow: 0px 1px 2px rgba(0, 0, 0, .8);
     color: black
-
-    
 }
 
 .AnnotationDetail---annotationHeader {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: start;
-        -ms-flex-align: start;
-            align-items: flex-start;
-    background-color: #aebcc7;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    padding-inline:10px;
+
 }
 
 .AnnotationDetail---annotationDetail.AnnotationDetail---active h3 {
@@ -1511,13 +1524,12 @@ span {
         -ms-flex-positive: 1;
             flex-grow: 1;
     max-width: 100%;
-    resize: none;
     overflow: hidden;
     min-height: 50px;
-    max-height: 100px;
 }
 
 .AnnotationDetail---contentOptions{
+    padding-bottom:10px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1722,6 +1734,48 @@ font-size: 0.7rem;
         -ms-flex-align: center;
             align-items: center;
     cursor: pointer;
+    gap:2px
+}
+.AnnotationAvatar---avatars {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.AnnotationAvatar---avatar {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid white;
+  display: inline-block;
+  position: relative;
+  -webkit-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .2);
+          box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .2);
+  -webkit-transition: .2s ease;
+  transition: .2s ease;
+  overflow: hidden;
+}
+
+.AnnotationAvatar---avatar>img{
+     width: 100%;
+  height: 100%;
+}
+
+.AnnotationAvatar---avatar:nth-child(1) { background: blue; }
+
+.AnnotationAvatar---avatar:nth-child(2) { background: green; }
+
+.AnnotationAvatar---avatar:nth-child(3) { background: purple; }
+
+.AnnotationAvatar---avatar:nth-child(4) { background: tomato; }
+
+.AnnotationAvatar---avatar:nth-child(n+2) { margin-left: -10px; }
+
+.AnnotationAvatar---avatars:hover .AnnotationAvatar---avatar:nth-child(n+2) {
+   margin-left: -5px;
 }
 @font-face {
     font-family: "Tibetan";
@@ -1783,14 +1837,19 @@ font-size: 0.7rem;
 
 .AnnotationControls---annotationContent {
     /* padding: 0 var(--paddingWidth) var(--paddingWidth) var(--paddingWidth); */
-    max-width: 400px;
     max-height: 70vh;
+    max-width: 250px;
+    min-width: 170px;
+
     overflow-y: scroll;
     overflow-x: hidden;
     -ms-overflow-style: none;
         /* Internet Explorer 10+ */
         scrollbar-width: none;
         /* Firefox */
+    border-radius: 10px;
+    -webkit-box-shadow: 0 2px 6px 2px rgba(60, 64, 67, .15);
+            box-shadow: 0 2px 6px 2px rgba(60, 64, 67, .15);
 
 }
 
@@ -1900,11 +1959,11 @@ font-size: 0.7rem;
 
 .AnnotationControls---anonymousMessage {
     background: rgba(175, 175, 175, .9);
-    color: #fff;
-    letter-spacing: 3px;
     font-weight: bold;
     font-size: 12.8px;
     font-size: 0.8rem;
+    padding-inline: 2px;
+    text-align: center;
 }
 
 .AnnotationControls---anonymousMessage a:link,
@@ -1924,6 +1983,10 @@ font-size: 0.7rem;
     display: -ms-flexbox;
     display: flex;
     /*margin-bottom: 20px;*/
+}
+
+.AnnotationControls---breakButtons button{
+    width: 100%;
 }
 
 .AnnotationControls---breakButtons>button {
@@ -2006,7 +2069,6 @@ blockquote {
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
-    margin-bottom: 1em;
     padding: 10px;
     background-color: #ddd;
 }
@@ -2143,7 +2205,6 @@ blockquote {
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
-    margin-bottom: 1em;
     padding: 10px;
     background-color: #ddd;
 }
@@ -2438,14 +2499,6 @@ blockquote {
     right: 0;
 
 }
-.AnnotationPortal---annotation_portal{
-    position:absolute;
-    top:20px;
-    right:20px;
-    background-color: #eee;
-    z-index: 10;
-    max-width: 300px;
-}
 @font-face {
     font-family: "Tibetan";
     font-style: normal;
@@ -2500,4 +2553,4 @@ blockquote {
     display: flex;
 }
 
-/*# sourceMappingURL=4.styles-cb900db540bbb7f4031a.css.map*/
+/*# sourceMappingURL=3.styles-615aed97f9dba2fe6759.css.map*/

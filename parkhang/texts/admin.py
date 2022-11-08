@@ -1,14 +1,7 @@
+from django.conf import settings
 from django.contrib import admin
 
-from .models import (
-    Author,
-    Question,
-    FeaturedText,
-    Source,
-    Text,
-    Topic,
-    Witness,
-)
+from texts.models import Author, FeaturedText, Question, Source, Text, Topic, Witness
 
 
 @admin.register(Author)
@@ -44,3 +37,11 @@ class QuestionAdmin(admin.ModelAdmin):
 @admin.register(FeaturedText)
 class FeaturedTextAmin(admin.ModelAdmin):
     list_display = ("id", "text", "order")
+
+
+if settings.DEBUG:
+    from texts.models import Annotation
+
+    @admin.register(Annotation)
+    class AnnotationAdmin(admin.ModelAdmin):
+        list_display = ("id", "witness", "type", "start", "length","created")

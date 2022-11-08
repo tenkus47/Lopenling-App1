@@ -16,7 +16,7 @@ import {
     Typography,
     Button,
     Grow,
-} from "@mui/material";
+} from "components/UI/muiComponent";
 import { useMemo } from "react";
 function TextList(props) {
     const temptext = useRef(props.texts);

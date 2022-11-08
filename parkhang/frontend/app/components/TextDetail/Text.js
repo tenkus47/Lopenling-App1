@@ -16,7 +16,6 @@ import Witness from "lib/Witness";
 import { ANNOTATION_TYPES } from "lib/Annotation";
 import type { AnnotationUniqueId } from "lib/Annotation";
 import GraphemeSplitter from "grapheme-splitter";
-import { find } from "lodash";
 import { withTheme } from "@mui/styles";
 
 export function idForSegment(segment: TextSegment): string {
@@ -148,32 +147,8 @@ class Text extends React.Component<Props, State> {
             this.props.selectedSegmentId("");
             return;
         }
-        let sourceRangeSelection = [];
-        let targetRangeSelection = [];
-        const selection = document.getSelection();
-        var clickId = parseInt(element.id.replace("s_", ""));
-        this.props.changeSyncIdOnClick(clickId);
-        if (element?.id.includes("s_") && this.props.condition) {
-            this.props.changeScrollToId({ id: null, from: null });
 
-            let id = parseInt(element.id.replace("s_", ""));
-            let rangeUnique = find(
-                this.textAlignmentById,
-                (l) => id >= l.start && id < l.end
-            );
-            if (rangeUnique) {
-                for (let i = rangeUnique.start; i < rangeUnique.end; i++) {
-                    sourceRangeSelection.push(i);
-                }
-                for (let i = rangeUnique.TStart; i < rangeUnique.TEnd; i++) {
-                    targetRangeSelection.push(i);
-                }
-                this.props.changeSelectedRange({
-                    source: sourceRangeSelection,
-                    target: targetRangeSelection,
-                });
-            }
-        }
+        const selection = document.getSelection();
 
         if (selection && selection.type === "Range") {
             return;
@@ -187,7 +162,6 @@ class Text extends React.Component<Props, State> {
 
     generateHtml(renderProps: Props, renderState: State): { __html: string } {
         let segments = renderState.segmentedText.segments;
-
         let textLineClass = styles.textLine;
         let segmentHTML = '<p class="' + textLineClass + '">';
         if (segments.length === 0) return { __html: segmentHTML };
@@ -342,22 +316,38 @@ class Text extends React.Component<Props, State> {
                     remainingAnnotations.length > 0 ||
                     activeInsertions.length > 0
                 ) {
-                    if (remainingAnnotations.some((l) => l.type === "P")) {
+                    if (
+                        remainingAnnotations.some(
+                            (l) => l.type === ANNOTATION_TYPES.pageBreak
+                        )
+                    ) {
                         classes.push(styles.P_annotation);
                     }
-                    if (remainingAnnotations.some((l) => l.type === "Q")) {
+                    if (
+                        remainingAnnotations.some(
+                            (l) => l.type === ANNOTATION_TYPES.question
+                        )
+                    ) {
                         var double = remainingAnnotations.filter(
-                            (l) => l.type === "Q"
+                            (l) => l.type === ANNOTATION_TYPES.question
                         );
                         if (double.length > 1) {
                             classes.push(styles.Q_annotation_double);
                         }
                         classes.push(styles.Q_annotation);
                     }
-                    if (remainingAnnotations.some((l) => l.type === "N")) {
+                    if (
+                        remainingAnnotations.some(
+                            (l) => l.type === ANNOTATION_TYPES.note
+                        )
+                    ) {
                         classes.push(styles.N_annotation);
                     }
-                    if (remainingAnnotations.some((l) => l.type === "V")) {
+                    if (
+                        remainingAnnotations.some(
+                            (l) => l.type === ANNOTATION_TYPES.variant
+                        )
+                    ) {
                         classes.push(styles.V_annotation);
                     }
                 }

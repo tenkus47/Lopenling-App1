@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import ReactPlayer from "react-player";
 import _ from "lodash";
-import { Collapse } from "@mui/material";
+import { Collapse } from "components/UI/muiComponent";
 import Chapters from "./Chapters";
 import { connect } from "react-redux";
 import * as reducers from "reducers";
